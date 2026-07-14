@@ -1,0 +1,104 @@
+/* Button family: base button + variants. Composes .ds-state-layer for hover/press. */
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-md);
+  font-family: var(--ds-font-family-sans);
+  font-weight: var(--ds-font-weight-medium);
+  line-height: var(--ds-font-line-height-tight);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard),
+    border-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard);
+}
+
+.ds-button:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* Sizes */
+.ds-button--sm {
+  height: var(--ds-size-control-sm);
+  padding-inline: var(--ds-space-3);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-button--md {
+  height: var(--ds-size-control-md);
+  padding-inline: var(--ds-space-4);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-button--lg {
+  height: var(--ds-size-control-lg);
+  padding-inline: var(--ds-space-5);
+  font-size: var(--ds-font-size-md);
+}
+
+/* Variants */
+.ds-button--primary {
+  background: var(--ds-color-accent-role-bg);
+  color: var(--ds-color-fg-on-accent);
+}
+
+.ds-button--secondary {
+  background: var(--ds-color-bg-surface);
+  color: var(--ds-color-fg-primary);
+  border-color: var(--ds-color-border-strong);
+}
+
+.ds-button--tertiary {
+  background: transparent;
+  color: var(--ds-color-accent-role-fg);
+}
+
+.ds-button--destructive {
+  background: var(--ds-color-danger-role-bg);
+  color: var(--ds-color-fg-on-accent);
+}
+
+/* States — aria-disabled keeps the control focusable/discoverable for AT */
+.ds-button:disabled,
+.ds-button[aria-disabled="true"] {
+  opacity: var(--ds-state-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.ds-button[data-loading] {
+  cursor: progress;
+}
+
+/* Icon button — square control that holds a single icon */
+.ds-icon-button {
+  padding-inline: 0;
+}
+
+.ds-icon-button.ds-button--sm {
+  width: var(--ds-size-control-sm);
+}
+
+.ds-icon-button.ds-button--md {
+  width: var(--ds-size-control-md);
+}
+
+.ds-icon-button.ds-button--lg {
+  width: var(--ds-size-control-lg);
+}
+
+/* Link button — button semantics, link appearance */
+.ds-link-button {
+  background: none;
+  border: none;
+  height: auto;
+  padding: 0;
+  color: var(--ds-color-accent-role-fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

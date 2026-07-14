@@ -1,0 +1,18 @@
+{
+  "name": "button",
+  "title": "Button",
+  "family": "buttons",
+  "description": "Primary, secondary, tertiary, and destructive actions in three sizes, with loading and icon-only modes.",
+  "status": {
+    "css": { "state": "latest", "version": "0.1.0" },
+    "react": { "state": "latest", "version": "0.1.0" },
+    "figma": { "state": "future" }
+  },
+  "dependencies": ["state-layer", "spinner"],
+  "files": [
+    { "source": "packages/css/src/button.css", "target": "styles/button.css" },
+    { "source": "packages/react/src/button.tsx", "target": "components/button.tsx" },
+    { "source": "packages/react/src/cx.ts", "target": "lib/cx.ts" }
+  ],
+  "tier": "free"
+}

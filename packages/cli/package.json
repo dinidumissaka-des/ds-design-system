@@ -1,0 +1,15 @@
+{
+  "name": "@ds/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Copy-paste distribution CLI: lists registry components and copies their source into a consumer project.",
+  "bin": {
+    "ds": "./bin/ds.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "scripts": {
+    "build": "node -e \"process.exit(0)\""
+  }
+}

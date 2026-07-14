@@ -1,0 +1,14 @@
+{
+  "name": "dialog",
+  "title": "Dialog",
+  "family": "overlays",
+  "description": "Modal dialog with focus trapping, scroll locking, and dismiss behavior.",
+  "status": {
+    "css": { "state": "future" },
+    "react": { "state": "future" },
+    "figma": { "state": "future" }
+  },
+  "dependencies": [],
+  "files": [],
+  "tier": "free"
+}

@@ -1,0 +1,30 @@
+/* State layer — hover/press feedback as a composable overlay (its own primitive,
+   so every interactive component gets identical state behavior). */
+.ds-state-layer {
+  position: relative;
+}
+
+.ds-state-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ds-motion-duration-fast) var(--ds-motion-easing-standard);
+}
+
+.ds-state-layer:hover::after {
+  opacity: var(--ds-state-hover-opacity);
+}
+
+.ds-state-layer:active::after {
+  opacity: var(--ds-state-press-opacity);
+}
+
+.ds-state-layer:disabled::after,
+.ds-state-layer[aria-disabled="true"]::after,
+.ds-state-layer[data-loading]::after {
+  opacity: 0;
+}

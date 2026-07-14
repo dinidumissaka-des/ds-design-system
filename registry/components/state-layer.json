@@ -1,0 +1,16 @@
+{
+  "name": "state-layer",
+  "title": "State layer",
+  "family": "foundations",
+  "description": "Composable hover/press overlay that gives every interactive component identical state feedback.",
+  "status": {
+    "css": { "state": "latest", "version": "0.1.0" },
+    "react": { "state": "na" },
+    "figma": { "state": "future" }
+  },
+  "dependencies": [],
+  "files": [
+    { "source": "packages/css/src/state-layer.css", "target": "styles/state-layer.css" }
+  ],
+  "tier": "free"
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DS component registry entry",
+  "type": "object",
+  "required": ["name", "title", "family", "description", "status"],
+  "properties": {
+    "name": { "type": "string", "description": "kebab-case id, doubles as docs slug and CLI arg" },
+    "title": { "type": "string" },
+    "family": {
+      "type": "string",
+      "description": "Component family for docs IA (e.g. buttons, inputs, notices)"
+    },
+    "description": { "type": "string" },
+    "status": {
+      "type": "object",
+      "description": "Per-artifact lifecycle status — drives the public status matrix",
+      "properties": {
+        "css": { "$ref": "#/definitions/artifact" },
+        "react": { "$ref": "#/definitions/artifact" },
+        "figma": { "$ref": "#/definitions/artifact" }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other registry components this one requires (CLI installs them too)"
+    },
+    "files": {
+      "type": "array",
+      "description": "Files the CLI copies into a consumer repo",
+      "items": {
+        "type": "object",
+        "required": ["source", "target"],
+        "properties": {
+          "source": { "type": "string", "description": "Path relative to repo root" },
+          "target": { "type": "string", "description": "Path relative to the consumer's ds directory" }
+        }
+      }
+    },
+    "tier": { "enum": ["free", "pro"], "default": "free" }
+  },
+  "definitions": {
+    "artifact": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["latest", "in-progress", "future", "deprecated", "na"] },
+        "version": { "type": "string" }
+      }
+    }
+  }
+}

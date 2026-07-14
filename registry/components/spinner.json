@@ -1,0 +1,17 @@
+{
+  "name": "spinner",
+  "title": "Loading: Spinner",
+  "family": "loading",
+  "description": "Inline loading indicator that scales with font size.",
+  "status": {
+    "css": { "state": "latest", "version": "0.1.0" },
+    "react": { "state": "latest", "version": "0.1.0" },
+    "figma": { "state": "future" }
+  },
+  "dependencies": [],
+  "files": [
+    { "source": "packages/css/src/spinner.css", "target": "styles/spinner.css" },
+    { "source": "packages/react/src/spinner.tsx", "target": "components/spinner.tsx" }
+  ],
+  "tier": "free"
+}

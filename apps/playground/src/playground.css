@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ds-font-family-sans);
+  background: var(--ds-color-bg-canvas);
+  color: var(--ds-color-fg-primary);
+}
+
+.pg-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--ds-space-8) var(--ds-space-6) var(--ds-space-16);
+}
+
+.pg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-space-8);
+}
+
+.pg-section {
+  margin-bottom: var(--ds-space-10);
+}
+
+.pg-section h2 {
+  font-size: var(--ds-font-size-lg);
+  margin: 0 0 var(--ds-space-4);
+}
+
+.pg-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--ds-space-3);
+}
+
+.pg-row-label {
+  width: 96px;
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pg-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: var(--ds-space-2);
+}
+
+.pg-swatch {
+  border-radius: var(--ds-radius-sm);
+  border: 1px solid var(--ds-color-border-default);
+  height: 48px;
+}
+
+.pg-swatch-name {
+  font-size: 10px;
+  color: var(--ds-color-fg-muted);
+  margin-top: 2px;
+}
+
+.pg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ds-font-size-sm);
+}
+
+.pg-table th,
+.pg-table td {
+  text-align: left;
+  padding: var(--ds-space-2) var(--ds-space-3);
+  border-bottom: 1px solid var(--ds-color-border-default);
+}
+
+.pg-table th {
+  font-size: var(--ds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-color-fg-muted);
+}
+
+.pg-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--ds-radius-full);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.pg-status--latest {
+  background: var(--ds-color-success-role-subtle);
+  color: var(--ds-color-success-role-fg);
+}
+
+.pg-status--in-progress {
+  background: var(--ds-color-warning-role-subtle);
+  color: var(--ds-color-warning-role-fg);
+}
+
+.pg-status--future {
+  background: var(--ds-color-bg-muted);
+  color: var(--ds-color-fg-secondary);
+}
+
+.pg-status--na,
+.pg-status--deprecated {
+  background: var(--ds-color-bg-muted);
+  color: var(--ds-color-fg-muted);
+}

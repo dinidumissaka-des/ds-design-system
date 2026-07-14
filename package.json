@@ -1,0 +1,19 @@
+{
+  "name": "ds-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @ds/tokens && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react",
+    "dev": "npm run build && npm run dev -w playground",
+    "test": "npm run test -w @ds/primitives",
+    "build:playground": "npm run build && npm run build -w playground"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

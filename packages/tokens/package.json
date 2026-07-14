@@ -1,0 +1,22 @@
+{
+  "name": "@ds/tokens",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Design tokens: single JSON source of truth, built to CSS variables, TypeScript, and a Tailwind preset.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./css": "./dist/css/tokens.css",
+    "./tailwind": "./dist/tailwind/preset.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

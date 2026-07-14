@@ -1,0 +1,45 @@
+{
+  "color": {
+    "bg": {
+      "canvas": "{color.neutral.950}",
+      "surface": "{color.neutral.900}",
+      "subtle": "{color.neutral.900}",
+      "muted": "{color.neutral.800}"
+    },
+    "fg": {
+      "primary": "{color.neutral.50}",
+      "secondary": "{color.neutral.300}",
+      "muted": "{color.neutral.400}",
+      "on-accent": "{color.white}"
+    },
+    "border": {
+      "default": "{color.neutral.800}",
+      "strong": "{color.neutral.700}"
+    },
+    "accent-role": {
+      "bg": "{color.accent.500}",
+      "bg-hover": "{color.accent.400}",
+      "bg-active": "{color.accent.300}",
+      "fg": "{color.accent.400}",
+      "subtle": "{color.accent.950}"
+    },
+    "success-role": {
+      "bg": "{color.success.500}",
+      "fg": "{color.success.400}",
+      "subtle": "{color.success.950}"
+    },
+    "warning-role": {
+      "bg": "{color.warning.500}",
+      "fg": "{color.warning.400}",
+      "subtle": "{color.warning.950}"
+    },
+    "danger-role": {
+      "bg": "{color.danger.500}",
+      "bg-hover": "{color.danger.400}",
+      "bg-active": "{color.danger.300}",
+      "fg": "{color.danger.400}",
+      "subtle": "{color.danger.950}"
+    },
+    "focus-ring": "{color.accent.400}"
+  }
+}
