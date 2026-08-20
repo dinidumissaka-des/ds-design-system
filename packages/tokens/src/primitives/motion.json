@@ -1,0 +1,18 @@
+{
+  "duration": {
+    "fast-min": "130ms",
+    "fast": "175ms",
+    "fast-max": "230ms",
+    "medium-min": "310ms",
+    "medium": "410ms",
+    "medium-max": "550ms",
+    "slow-min": "730ms",
+    "slow": "975ms",
+    "slow-max": "1300ms"
+  },
+  "easing": {
+    "standard": "cubic-bezier(0.24, 1, 0.4, 1)",
+    "enter": "cubic-bezier(0, 0, 0.38, 0.9)",
+    "exit": "cubic-bezier(0.2, 0, 1, 0.9)"
+  }
+}

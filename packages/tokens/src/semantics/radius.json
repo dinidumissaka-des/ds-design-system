@@ -1,0 +1,8 @@
+{
+  "inner": "{radius.sm}",
+  "element": "{radius.md}",
+  "container": "{radius.lg}",
+  "chat": "{radius.xl}",
+  "page": "{radius.2xl}",
+  "pill": "{radius.full}"
+}

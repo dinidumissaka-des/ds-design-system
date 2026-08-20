@@ -1,0 +1,5 @@
+{
+  "ring-width": "{border.2}",
+  "ring-offset": "{border.3}",
+  "ring-style": "solid"
+}
