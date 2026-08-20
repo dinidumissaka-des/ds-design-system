@@ -1,0 +1,50 @@
+{
+  "gap": {
+    "xs": "{space.1}",
+    "sm": "{space.2}",
+    "md": "{space.3}",
+    "lg": "{space.4}"
+  },
+  "stack": {
+    "xs": "{space.2}",
+    "sm": "{space.3}",
+    "md": "{space.4}",
+    "lg": "{space.6}"
+  },
+  "padding": {
+    "xs": "{space.2}",
+    "sm": "{space.3}",
+    "md": "{space.4}",
+    "lg": "{space.6}"
+  },
+  "section": "{space.10}",
+  "control": {
+    "padding-inline": {
+      "sm": "{space.3}",
+      "md": "{space.4}",
+      "lg": "{space.5}"
+    }
+  },
+  "page": {
+    "gutter": "{space.6}",
+    "block-start": "{space.8}",
+    "block-end": "{space.12}"
+  },
+  "size": {
+    "0": "{space.0}",
+    "0-5": "{space.0-5}",
+    "1": "{space.1}",
+    "1-5": "{space.1-5}",
+    "2": "{space.2}",
+    "3": "{space.3}",
+    "4": "{space.4}",
+    "5": "{space.5}",
+    "6": "{space.6}",
+    "7": "{space.7}",
+    "8": "{space.8}",
+    "9": "{space.9}",
+    "10": "{space.10}",
+    "11": "{space.11}",
+    "12": "{space.12}"
+  }
+}

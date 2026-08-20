@@ -27,19 +27,19 @@
 .ds-button--sm {
   height: var(--ds-size-control-sm);
   padding-inline: var(--ds-space-3);
-  font-size: var(--ds-font-size-sm);
+  font-size: var(--ds-font-size-base);
 }
 
 .ds-button--md {
   height: var(--ds-size-control-md);
   padding-inline: var(--ds-space-4);
-  font-size: var(--ds-font-size-sm);
+  font-size: var(--ds-font-size-base);
 }
 
 .ds-button--lg {
   height: var(--ds-size-control-lg);
   padding-inline: var(--ds-space-5);
-  font-size: var(--ds-font-size-md);
+  font-size: var(--ds-font-size-lg);
 }
 
 /* Variants */

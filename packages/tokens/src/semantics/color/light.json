@@ -18,10 +18,16 @@
     },
     "accent-role": {
       "bg": "{color.accent.600}",
-      "bg-hover": "{color.accent.700}",
-      "bg-active": "{color.accent.800}",
       "fg": "{color.accent.600}",
       "subtle": "{color.accent.50}"
+    },
+    "secondary-role": {
+      "bg": "{color.white}",
+      "fg": "{color.neutral.900}",
+      "border": "{color.neutral.300}"
+    },
+    "tertiary-role": {
+      "fg": "{color.accent.600}"
     },
     "success-role": {
       "bg": "{color.success.600}",
@@ -35,9 +41,7 @@
     },
     "danger-role": {
       "bg": "{color.danger.600}",
-      "bg-hover": "{color.danger.700}",
-      "bg-active": "{color.danger.800}",
-      "fg": "{color.danger.600}",
+      "fg": "{color.danger.700}",
       "subtle": "{color.danger.50}"
     },
     "focus-ring": "{color.accent.500}"
