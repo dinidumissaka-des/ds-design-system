@@ -11,12 +11,15 @@
       "default": "./dist/index.js"
     },
     "./css": "./dist/css/tokens.css",
-    "./tailwind": "./dist/tailwind/preset.cjs"
+    "./tailwind": "./dist/tailwind/preset.cjs",
+    "./usage": "./dist/usage.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "TOKENS.md"
   ],
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "docs:check": "node build.mjs --check"
   }
 }

@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "npm run build -w @ds/tokens && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react",
+    "docs:check": "npm run docs:check -w @ds/tokens",
     "dev": "npm run build && npm run dev -w playground",
     "test": "npm run test -w @ds/primitives",
     "build:playground": "npm run build && npm run build -w playground"
