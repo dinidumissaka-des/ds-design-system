@@ -299,7 +299,7 @@ Foreground for content sitting on a filled role background. The only correct tex
 
 **Pairs with** `color.accent-role.bg`, `color.danger-role.bg`
 
-> This token is white in both themes by design, because role backgrounds are saturated in both. That makes it the one foreground token you must never use on a neutral background.
+> This token is white in both themes by design, because the accent and danger fills are saturated in both. That makes it the one foreground token you must never use on a neutral background.
 
 ```css
 .ds-button--primary { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }
@@ -367,7 +367,7 @@ The higher-contrast border that marks something as interactive or emphasised.
 
 ### `color.accent-role.bg`
 
-`var(--ds-color-accent-role-bg)` · light `#2563eb` · dark `#3b82f6`
+`var(--ds-color-accent-role-bg)` · light `#2563eb` · dark `#2563eb`
 
 Filled accent background for the single highest-priority action in a view.
 
@@ -399,7 +399,7 @@ Filled accent background for the single highest-priority action in a view.
 
 ### `color.accent-role.bg-hover`
 
-`var(--ds-color-accent-role-bg-hover)` · light `#1d4ed8` · dark `#60a5fa`
+`var(--ds-color-accent-role-bg-hover)` · light `#1d4ed8` · dark `#1d4ed8`
 
 Hover value for a filled accent surface. Only for components that cannot use the shared state layer.
 
@@ -428,7 +428,7 @@ Hover value for a filled accent surface. Only for components that cannot use the
 
 ### `color.accent-role.bg-active`
 
-`var(--ds-color-accent-role-bg-active)` · light `#1e40af` · dark `#93c5fd`
+`var(--ds-color-accent-role-bg-active)` · light `#1e40af` · dark `#1e40af`
 
 Pressed/active value for a filled accent surface. Only for components that cannot use the shared state layer.
 
@@ -691,7 +691,7 @@ Tinted warning background — the correct background for any warning message tha
 
 ### `color.danger-role.bg`
 
-`var(--ds-color-danger-role-bg)` · light `#dc2626` · dark `#ef4444`
+`var(--ds-color-danger-role-bg)` · light `#dc2626` · dark `#dc2626`
 
 Filled danger background for destructive actions and blocking error indicators.
 
@@ -722,7 +722,7 @@ Filled danger background for destructive actions and blocking error indicators.
 
 ### `color.danger-role.bg-hover`
 
-`var(--ds-color-danger-role-bg-hover)` · light `#b91c1c` · dark `#f87171`
+`var(--ds-color-danger-role-bg-hover)` · light `#b91c1c` · dark `#b91c1c`
 
 Hover value for a filled danger surface. Only for components that cannot use the shared state layer.
 
@@ -749,7 +749,7 @@ Hover value for a filled danger surface. Only for components that cannot use the
 
 ### `color.danger-role.bg-active`
 
-`var(--ds-color-danger-role-bg-active)` · light `#991b1b` · dark `#fca5a5`
+`var(--ds-color-danger-role-bg-active)` · light `#991b1b` · dark `#991b1b`
 
 Pressed/active value for a filled danger surface. Only for components that cannot use the shared state layer.
 
@@ -1196,17 +1196,20 @@ Line-height scale, unitless so it multiplies the element's font size.
 
 ### `motion.duration`
 
-Animation and transition durations. Duration scales with how far a thing travels, not with how important it is.
+Animation and transition durations. For transitions, duration scales with how far a thing travels, not with how important it is; continuous loops have their own steps.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
 | `fast` | `var(--ds-motion-duration-fast)` | `100ms` | state feedback on an element already on screen: hover, press, color and border changes. |
 | `normal` | `var(--ds-motion-duration-normal)` | `200ms` | small entrances and exits: dropdowns, tooltips, popovers, accordion panels. |
 | `slow` | `var(--ds-motion-duration-slow)` | `300ms` | large surfaces that travel a distance: dialogs, drawers, sheets, full-page transitions. |
+| `spin` | `var(--ds-motion-duration-spin)` | `800ms` | one full rotation of a continuous loading indicator. A loop, not a transition, so it is not on the fast/normal/slow band. |
+| `spin-reduced` | `var(--ds-motion-duration-spin-reduced)` | `2000ms` | the same rotation under prefers-reduced-motion. The indicator keeps turning so it still reads as busy, slowly enough not to trigger motion sensitivity. |
 
 **Use for**
 
 - transition-duration and animation-duration.
+- The cycle length of a continuous loading indicator (the spin steps).
 
 **Do not use for**
 
@@ -1345,12 +1348,12 @@ Ratios are measured from the resolved token values every build. A pairing listed
 | `color.danger-role.fg` | `color.bg.canvas` | AA-text | 4.83:1 | 7.29:1 |
 | `color.danger-role.fg` | `color.bg.surface` | AA-text | 4.83:1 | 6.45:1 |
 | `color.danger-role.fg` | `color.danger-role.subtle` | AA-large | 4.41:1 | 5.84:1 |
-| `color.fg.on-accent` | `color.accent-role.bg` | AA-text | 5.17:1 | n/a |
-| `color.fg.on-accent` | `color.accent-role.bg-hover` | AA-text | 6.70:1 | n/a |
-| `color.fg.on-accent` | `color.accent-role.bg-active` | AA-text | 8.72:1 | n/a |
-| `color.fg.on-accent` | `color.danger-role.bg` | AA-text | 4.83:1 | n/a |
-| `color.fg.on-accent` | `color.danger-role.bg-hover` | AA-text | 6.47:1 | n/a |
-| `color.fg.on-accent` | `color.danger-role.bg-active` | AA-text | 8.31:1 | n/a |
+| `color.fg.on-accent` | `color.accent-role.bg` | AA-text | 5.17:1 | 5.17:1 |
+| `color.fg.on-accent` | `color.accent-role.bg-hover` | AA-text | 6.70:1 | 6.70:1 |
+| `color.fg.on-accent` | `color.accent-role.bg-active` | AA-text | 8.72:1 | 8.72:1 |
+| `color.fg.on-accent` | `color.danger-role.bg` | AA-text | 4.83:1 | 4.83:1 |
+| `color.fg.on-accent` | `color.danger-role.bg-hover` | AA-text | 6.47:1 | 6.47:1 |
+| `color.fg.on-accent` | `color.danger-role.bg-active` | AA-text | 8.31:1 | 8.31:1 |
 | `color.focus-ring` | `color.bg.canvas` | AA-nontext | 3.68:1 | 7.93:1 |
 | `color.focus-ring` | `color.bg.surface` | AA-nontext | 3.68:1 | 7.02:1 |
 
@@ -1360,21 +1363,9 @@ These combinations fall short of the stated level. They are verified every build
 
 | Foreground | Background | Falls short of | Light | Dark |
 |---|---|---|---|---|
-| `color.fg.on-accent` | `color.accent-role.bg` | AA-text | n/a | 3.68:1 |
-| `color.fg.on-accent` | `color.accent-role.bg-hover` | AA-text | n/a | 2.54:1 |
-| `color.fg.on-accent` | `color.accent-role.bg-active` | AA-large | n/a | 1.80:1 |
-| `color.fg.on-accent` | `color.danger-role.bg` | AA-text | n/a | 3.76:1 |
-| `color.fg.on-accent` | `color.danger-role.bg-hover` | AA-text | n/a | 2.77:1 |
-| `color.fg.on-accent` | `color.danger-role.bg-active` | AA-large | n/a | 1.90:1 |
 | `color.fg.on-accent` | `color.success-role.bg` | AA-text | 3.30:1 | 2.28:1 |
 | `color.fg.on-accent` | `color.warning-role.bg` | AA-large | 2.15:1 | 2.15:1 |
 
-- **`color.fg.on-accent` on `color.accent-role.bg`** (dark) — The dark-theme accent fill is lighter than the light-theme one, so white on a primary button falls short of the 4.5 body-text threshold, and hover/press make it worse. Until the dark accent ramp is retuned, avoid body-size text on a filled accent surface in the dark theme; a tertiary button (color.accent-role.fg on a neutral background) is a compliant alternative.
-- **`color.fg.on-accent` on `color.accent-role.bg-hover`** (dark) — Hover lightens the fill further, reducing contrast against white. Rely on .ds-state-layer, which overlays currentColor rather than swapping to this lighter fill.
-- **`color.fg.on-accent` on `color.accent-role.bg-active`** (dark) — The pressed fill is the lightest of the three, leaving white nearly invisible. Rely on .ds-state-layer instead of swapping the background on :active.
-- **`color.fg.on-accent` on `color.danger-role.bg`** (dark) — Same cause as the accent gap: the dark-theme danger fill is lighter than its light-theme counterpart. Keep destructive button labels short and consider size lg (font.size.md) so the text qualifies as large.
-- **`color.fg.on-accent` on `color.danger-role.bg-hover`** (dark) — Rely on .ds-state-layer rather than swapping the background.
-- **`color.fg.on-accent` on `color.danger-role.bg-active`** (dark) — Rely on .ds-state-layer rather than swapping the background.
 - **`color.fg.on-accent` on `color.success-role.bg`** (light, dark) — color.success-role.bg is a non-text indicator color in both themes. Put success text on color.success-role.subtle using color.success-role.fg.
 - **`color.fg.on-accent` on `color.warning-role.bg`** (light, dark) — color.warning-role.bg is the lightest role fill and carries no text at any size. Put warning text on color.warning-role.subtle using color.warning-role.fg.
 

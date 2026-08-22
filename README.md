@@ -58,7 +58,7 @@ node packages/cli/bin/ds.mjs add button --dir /tmp/demo
 ## Open items
 
 - Product name + npm scope (placeholder: `@ds`)
-- Own color palette (current scales are placeholders, not brand-differentiated). Retuning it should also close the dark-theme contrast gaps listed in [TOKENS.md](packages/tokens/TOKENS.md#known-gaps--do-not-use-these-combinations): white on the dark accent and danger fills falls below WCAG AA.
+- Own color palette (current scales are placeholders, not brand-differentiated)
 - Docs site with eBay-Playbook-grade guidance pages (Types / Anatomy / Placement / Behavior / A11y / Tokens / API)
 - Figma variables export + component library
 - Visual regression (Playwright) and axe a11y gates in CI

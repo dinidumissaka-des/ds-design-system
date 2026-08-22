@@ -1,22 +1,24 @@
 {
-  "$comment": "Usage documentation for every token. Consumed by build.mjs, which validates coverage against the token tree and emits CSS comments, JSDoc, TOKENS.md, and usage.json. Edit this file — never the generated output.",
-
+  "$comment": "Usage documentation for every token. Consumed by build.mjs, which validates coverage against the token tree and emits CSS comments, JSDoc, TOKENS.md, and usage.json. Edit this file \u2014 never the generated output.",
   "rules": [
     "Never use a raw palette token (color.neutral.*, color.accent.*, color.success.*, color.warning.*, color.danger.*, color.white, color.black) in a component. They do not change between light and dark themes, so any component using them breaks in one theme. Use a semantic token instead.",
-    "Every color decision has exactly one correct semantic token. If none of them fits, the component needs a new semantic token added to both themes/light.json and themes/dark.json — do not reach into the palette.",
+    "Every color decision has exactly one correct semantic token. If none of them fits, the component needs a new semantic token added to both themes/light.json and themes/dark.json \u2014 do not reach into the palette.",
     "Backgrounds come from color.bg.* or a role's bg/subtle. Text and icons come from color.fg.* or a role's fg. Never put a role's bg behind text unless a pairing below allows it.",
     "Reference tokens as CSS variables (var(--ds-<path-with-dashes>)), not as literal values. color.accent-role.bg is var(--ds-color-accent-role-bg).",
     "Use the space scale for every margin, padding, and gap. Never write an arbitrary pixel value; pick the nearest step.",
     "Interactive controls get their height from size.control.*, their hover/press feedback from the .ds-state-layer class (not from hand-written hover colors), and their focus ring from focus.* plus color.focus-ring.",
     "Semantic tokens are the only tokens whose value differs between light and dark. Everything in base.json is theme-independent."
   ],
-
   "tokens": {
     "color.white": {
       "layer": "palette",
       "summary": "Literal white. A palette primitive, not a usable UI color.",
-      "use": ["Only as a reference target inside themes/light.json and themes/dark.json."],
-      "dont": ["Any use inside a component, stylesheet, or JSX."],
+      "use": [
+        "Only as a reference target inside themes/light.json and themes/dark.json."
+      ],
+      "dont": [
+        "Any use inside a component, stylesheet, or JSX."
+      ],
       "instead": {
         "A white page or card background": "color.bg.canvas or color.bg.surface",
         "White text on a colored button": "color.fg.on-accent"
@@ -25,15 +27,26 @@
     "color.black": {
       "layer": "palette",
       "summary": "Literal black. A palette primitive, not a usable UI color.",
-      "use": ["Only as a reference target inside theme files, and inside elevation shadow definitions."],
-      "dont": ["Any use inside a component, stylesheet, or JSX.", "Body text — pure black on white is harsher than the design system intends."],
-      "instead": { "Darkest text": "color.fg.primary" }
+      "use": [
+        "Only as a reference target inside theme files, and inside elevation shadow definitions."
+      ],
+      "dont": [
+        "Any use inside a component, stylesheet, or JSX.",
+        "Body text \u2014 pure black on white is harsher than the design system intends."
+      ],
+      "instead": {
+        "Darkest text": "color.fg.primary"
+      }
     },
     "color.neutral": {
       "layer": "palette",
-      "summary": "Greyscale ramp, 50 (lightest) → 950 (darkest). Source for every background, text, and border semantic token.",
-      "use": ["Only as a reference target inside themes/light.json and themes/dark.json."],
-      "dont": ["Direct use in components — these values are identical in both themes, so a component using them is unreadable in one of them."],
+      "summary": "Greyscale ramp, 50 (lightest) \u2192 950 (darkest). Source for every background, text, and border semantic token.",
+      "use": [
+        "Only as a reference target inside themes/light.json and themes/dark.json."
+      ],
+      "dont": [
+        "Direct use in components \u2014 these values are identical in both themes, so a component using them is unreadable in one of them."
+      ],
       "instead": {
         "Page/card background": "color.bg.canvas, color.bg.surface",
         "Recessed or striped background": "color.bg.subtle, color.bg.muted",
@@ -50,9 +63,13 @@
     },
     "color.accent": {
       "layer": "palette",
-      "summary": "Brand/accent hue ramp, 50 → 950. Source for the accent role and the focus ring.",
-      "use": ["Only as a reference target inside theme files."],
-      "dont": ["Direct use in components."],
+      "summary": "Brand/accent hue ramp, 50 \u2192 950. Source for the accent role and the focus ring.",
+      "use": [
+        "Only as a reference target inside theme files."
+      ],
+      "dont": [
+        "Direct use in components."
+      ],
       "instead": {
         "Primary button background": "color.accent-role.bg",
         "Link or accent text": "color.accent-role.fg",
@@ -62,41 +79,66 @@
     },
     "color.success": {
       "layer": "palette",
-      "summary": "Green ramp, 50 → 950. Source for the success role.",
-      "use": ["Only as a reference target inside theme files."],
-      "dont": ["Direct use in components."],
-      "instead": { "Any success styling": "color.success-role.bg, color.success-role.fg, color.success-role.subtle" }
+      "summary": "Green ramp, 50 \u2192 950. Source for the success role.",
+      "use": [
+        "Only as a reference target inside theme files."
+      ],
+      "dont": [
+        "Direct use in components."
+      ],
+      "instead": {
+        "Any success styling": "color.success-role.bg, color.success-role.fg, color.success-role.subtle"
+      }
     },
     "color.warning": {
       "layer": "palette",
-      "summary": "Amber ramp, 50 → 950. Source for the warning role.",
-      "use": ["Only as a reference target inside theme files."],
-      "dont": ["Direct use in components."],
-      "instead": { "Any warning styling": "color.warning-role.bg, color.warning-role.fg, color.warning-role.subtle" }
+      "summary": "Amber ramp, 50 \u2192 950. Source for the warning role.",
+      "use": [
+        "Only as a reference target inside theme files."
+      ],
+      "dont": [
+        "Direct use in components."
+      ],
+      "instead": {
+        "Any warning styling": "color.warning-role.bg, color.warning-role.fg, color.warning-role.subtle"
+      }
     },
     "color.danger": {
       "layer": "palette",
-      "summary": "Red ramp, 50 → 950. Source for the danger role.",
-      "use": ["Only as a reference target inside theme files."],
-      "dont": ["Direct use in components."],
-      "instead": { "Any destructive/error styling": "color.danger-role.bg, color.danger-role.fg, color.danger-role.subtle" }
+      "summary": "Red ramp, 50 \u2192 950. Source for the danger role.",
+      "use": [
+        "Only as a reference target inside theme files."
+      ],
+      "dont": [
+        "Direct use in components."
+      ],
+      "instead": {
+        "Any destructive/error styling": "color.danger-role.bg, color.danger-role.fg, color.danger-role.subtle"
+      }
     },
-
     "color.bg.canvas": {
       "layer": "semantic",
-      "summary": "The furthest-back surface — the page itself. Everything else sits on top of it.",
+      "summary": "The furthest-back surface \u2014 the page itself. Everything else sits on top of it.",
       "use": [
         "html/body background.",
         "The background of a full-screen app shell or route container.",
         "The scrim-free area behind cards, tables, and panels."
       ],
       "dont": [
-        "Card, popover, menu, or dialog backgrounds — those sit on top of the canvas and use color.bg.surface.",
+        "Card, popover, menu, or dialog backgrounds \u2014 those sit on top of the canvas and use color.bg.surface.",
         "Any element that needs to read as raised or separated from the page."
       ],
-      "instead": { "A raised container on the page": "color.bg.surface" },
-      "pairsWith": ["color.fg.primary", "color.fg.secondary", "color.fg.muted"],
-      "example": { "css": "body { background: var(--ds-color-bg-canvas); color: var(--ds-color-fg-primary); }" }
+      "instead": {
+        "A raised container on the page": "color.bg.surface"
+      },
+      "pairsWith": [
+        "color.fg.primary",
+        "color.fg.secondary",
+        "color.fg.muted"
+      ],
+      "example": {
+        "css": "body { background: var(--ds-color-bg-canvas); color: var(--ds-color-fg-primary); }"
+      }
     },
     "color.bg.surface": {
       "layer": "semantic",
@@ -108,15 +150,25 @@
         "The resting background of a secondary (outlined) button."
       ],
       "dont": [
-        "The page background — that is color.bg.canvas.",
-        "Zebra striping or recessed wells — use color.bg.subtle or color.bg.muted."
+        "The page background \u2014 that is color.bg.canvas.",
+        "Zebra striping or recessed wells \u2014 use color.bg.subtle or color.bg.muted."
       ],
-      "instead": { "Page background": "color.bg.canvas", "Recessed area": "color.bg.subtle" },
-      "pairsWith": ["color.fg.primary", "color.fg.secondary", "color.fg.muted", "color.border.default"],
+      "instead": {
+        "Page background": "color.bg.canvas",
+        "Recessed area": "color.bg.subtle"
+      },
+      "pairsWith": [
+        "color.fg.primary",
+        "color.fg.secondary",
+        "color.fg.muted",
+        "color.border.default"
+      ],
       "notes": [
-        "In the light theme this is identical to color.bg.canvas (both are white). Separation on a light page comes from color.border.default or an elevation shadow — not from the background color. Always add one of those when a surface must read as distinct."
+        "In the light theme this is identical to color.bg.canvas (both are white). Separation on a light page comes from color.border.default or an elevation shadow \u2014 not from the background color. Always add one of those when a surface must read as distinct."
       ],
-      "example": { "css": ".card { background: var(--ds-color-bg-surface); border: 1px solid var(--ds-color-border-default); border-radius: var(--ds-radius-lg); box-shadow: var(--ds-elevation-sm); }" }
+      "example": {
+        "css": ".card { background: var(--ds-color-bg-surface); border: 1px solid var(--ds-color-border-default); border-radius: var(--ds-radius-lg); box-shadow: var(--ds-elevation-sm); }"
+      }
     },
     "color.bg.subtle": {
       "layer": "semantic",
@@ -128,15 +180,24 @@
         "Empty-state and placeholder containers."
       ],
       "dont": [
-        "Disabled control backgrounds — disabled state is expressed with state.disabled-opacity, not a different background.",
-        "Anything needing a clearly visible fill — that is color.bg.muted."
+        "Disabled control backgrounds \u2014 disabled state is expressed with state.disabled-opacity, not a different background.",
+        "Anything needing a clearly visible fill \u2014 that is color.bg.muted."
       ],
-      "instead": { "A more pronounced recess": "color.bg.muted", "Disabled appearance": "state.disabled-opacity" },
-      "pairsWith": ["color.fg.primary", "color.fg.secondary", "color.fg.muted"],
+      "instead": {
+        "A more pronounced recess": "color.bg.muted",
+        "Disabled appearance": "state.disabled-opacity"
+      },
+      "pairsWith": [
+        "color.fg.primary",
+        "color.fg.secondary",
+        "color.fg.muted"
+      ],
       "notes": [
         "In the dark theme this resolves to the same value as color.bg.surface, so a subtle-on-surface stack is invisible in dark mode. When the distinction must survive both themes, add color.border.default or step up to color.bg.muted."
       ],
-      "example": { "css": "thead th { background: var(--ds-color-bg-subtle); color: var(--ds-color-fg-secondary); }" }
+      "example": {
+        "css": "thead th { background: var(--ds-color-bg-subtle); color: var(--ds-color-fg-secondary); }"
+      }
     },
     "color.bg.muted": {
       "layer": "semantic",
@@ -148,17 +209,24 @@
         "Avatar and thumbnail placeholders."
       ],
       "dont": [
-        "Large page regions — it is heavy enough to read as a component, not a backdrop.",
+        "Large page regions \u2014 it is heavy enough to read as a component, not a backdrop.",
         "Behind color.fg.muted text at body size; that pairing only reaches large-text contrast in the light theme."
       ],
-      "instead": { "A large quiet region": "color.bg.subtle", "Low-emphasis text on this background": "color.fg.secondary" },
-      "pairsWith": ["color.fg.primary", "color.fg.secondary"],
-      "example": { "css": ".progress-track { background: var(--ds-color-bg-muted); border-radius: var(--ds-radius-full); }" }
+      "instead": {
+        "A large quiet region": "color.bg.subtle",
+        "Low-emphasis text on this background": "color.fg.secondary"
+      },
+      "pairsWith": [
+        "color.fg.primary",
+        "color.fg.secondary"
+      ],
+      "example": {
+        "css": ".progress-track { background: var(--ds-color-bg-muted); border-radius: var(--ds-radius-full); }"
+      }
     },
-
     "color.fg.primary": {
       "layer": "semantic",
-      "summary": "Default text and icon color — the highest-emphasis foreground.",
+      "summary": "Default text and icon color \u2014 the highest-emphasis foreground.",
       "use": [
         "Body copy, headings, and any text the user must read.",
         "Icons that carry meaning on their own.",
@@ -166,16 +234,26 @@
         "Values in a key/value pair (the key uses color.fg.secondary)."
       ],
       "dont": [
-        "On top of a filled role background (accent-role.bg, danger-role.bg, …) — use color.fg.on-accent there.",
+        "On top of a filled role background (accent-role.bg, danger-role.bg, \u2026) \u2014 use color.fg.on-accent there.",
         "Every piece of text on a screen; supporting text should step down to color.fg.secondary so hierarchy exists."
       ],
-      "instead": { "Text on a filled colored button": "color.fg.on-accent", "Supporting text": "color.fg.secondary" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.bg.subtle", "color.bg.muted"],
-      "example": { "css": ".card-title { color: var(--ds-color-fg-primary); font-size: var(--ds-font-size-lg); font-weight: var(--ds-font-weight-semibold); }" }
+      "instead": {
+        "Text on a filled colored button": "color.fg.on-accent",
+        "Supporting text": "color.fg.secondary"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.bg.subtle",
+        "color.bg.muted"
+      ],
+      "example": {
+        "css": ".card-title { color: var(--ds-color-fg-primary); font-size: var(--ds-font-size-lg); font-weight: var(--ds-font-weight-semibold); }"
+      }
     },
     "color.fg.secondary": {
       "layer": "semantic",
-      "summary": "Supporting text — readable at body size, but visibly subordinate to primary.",
+      "summary": "Supporting text \u2014 readable at body size, but visibly subordinate to primary.",
       "use": [
         "Helper text under a form field, descriptions, and captions.",
         "Table header labels and key/value labels.",
@@ -183,12 +261,22 @@
         "Icons that accompany a primary-colored label."
       ],
       "dont": [
-        "The main label of a control — that is color.fg.primary.",
-        "Error or validation messages — those use color.danger-role.fg."
+        "The main label of a control \u2014 that is color.fg.primary.",
+        "Error or validation messages \u2014 those use color.danger-role.fg."
       ],
-      "instead": { "Validation message": "color.danger-role.fg", "Primary label": "color.fg.primary" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.bg.subtle", "color.bg.muted"],
-      "example": { "css": ".field-help { color: var(--ds-color-fg-secondary); font-size: var(--ds-font-size-sm); }" }
+      "instead": {
+        "Validation message": "color.danger-role.fg",
+        "Primary label": "color.fg.primary"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.bg.subtle",
+        "color.bg.muted"
+      ],
+      "example": {
+        "css": ".field-help { color: var(--ds-color-fg-secondary); font-size: var(--ds-font-size-sm); }"
+      }
     },
     "color.fg.muted": {
       "layer": "semantic",
@@ -201,11 +289,20 @@
       ],
       "dont": [
         "Body copy or anything the user must read carefully.",
-        "On color.bg.muted at body size — that pairing only reaches large-text contrast in the light theme; step up to color.fg.secondary."
+        "On color.bg.muted at body size \u2014 that pairing only reaches large-text contrast in the light theme; step up to color.fg.secondary."
       ],
-      "instead": { "Readable supporting text": "color.fg.secondary", "Text on color.bg.muted": "color.fg.secondary" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.bg.subtle"],
-      "example": { "css": ".input::placeholder { color: var(--ds-color-fg-muted); }" }
+      "instead": {
+        "Readable supporting text": "color.fg.secondary",
+        "Text on color.bg.muted": "color.fg.secondary"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.bg.subtle"
+      ],
+      "example": {
+        "css": ".input::placeholder { color: var(--ds-color-fg-muted); }"
+      }
     },
     "color.fg.on-accent": {
       "layer": "semantic",
@@ -216,20 +313,24 @@
         "Text on a filled accent or danger banner, badge, or tag."
       ],
       "dont": [
-        "On color.success-role.bg or color.warning-role.bg — both fail body-text contrast (measured 3.30 and 2.15 in the light theme). Use a subtle background with the matching role fg instead.",
-        "On any color.bg.* background — it is white in both themes and will disappear on light surfaces."
+        "On color.success-role.bg or color.warning-role.bg \u2014 both fail body-text contrast (measured 3.30 and 2.15 in the light theme). Use a subtle background with the matching role fg instead.",
+        "On any color.bg.* background \u2014 it is white in both themes and will disappear on light surfaces."
       ],
       "instead": {
         "Text in a success or warning notice": "color.success-role.subtle / color.warning-role.subtle background with color.success-role.fg / color.warning-role.fg text",
         "Text on a neutral background": "color.fg.primary"
       },
-      "pairsWith": ["color.accent-role.bg", "color.danger-role.bg"],
-      "notes": [
-        "This token is white in both themes by design, because role backgrounds are saturated in both. That makes it the one foreground token you must never use on a neutral background."
+      "pairsWith": [
+        "color.accent-role.bg",
+        "color.danger-role.bg"
       ],
-      "example": { "css": ".ds-button--primary { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }" }
+      "notes": [
+        "This token is white in both themes by design, because the accent and danger fills are saturated in both. That makes it the one foreground token you must never use on a neutral background."
+      ],
+      "example": {
+        "css": ".ds-button--primary { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }"
+      }
     },
-
     "color.border.default": {
       "layer": "semantic",
       "summary": "The standard separator: card outlines, dividers, table rules, and the resting border of an unfocused container.",
@@ -240,14 +341,19 @@
         "The resting border of a non-interactive container."
       ],
       "dont": [
-        "The border of an interactive control such as an input or an outlined button — those need color.border.strong to read as operable.",
-        "Focus indication — that is color.focus-ring."
+        "The border of an interactive control such as an input or an outlined button \u2014 those need color.border.strong to read as operable.",
+        "Focus indication \u2014 that is color.focus-ring."
       ],
-      "instead": { "Input or outlined-button border": "color.border.strong", "Focus indicator": "color.focus-ring" },
+      "instead": {
+        "Input or outlined-button border": "color.border.strong",
+        "Focus indicator": "color.focus-ring"
+      },
       "notes": [
-        "This is a deliberately low-contrast hairline (measured 1.23 against the light canvas). It separates regions; it does not carry meaning. Never rely on it alone to communicate state — pair it with text, an icon, or a role color."
+        "This is a deliberately low-contrast hairline (measured 1.23 against the light canvas). It separates regions; it does not carry meaning. Never rely on it alone to communicate state \u2014 pair it with text, an icon, or a role color."
       ],
-      "example": { "css": ".divider { border-top: 1px solid var(--ds-color-border-default); }" }
+      "example": {
+        "css": ".divider { border-top: 1px solid var(--ds-color-border-default); }"
+      }
     },
     "color.border.strong": {
       "layer": "semantic",
@@ -259,13 +365,17 @@
         "The outline of a selected but unfocused item."
       ],
       "dont": [
-        "Every border on the page — reserve it so interactive elements stand out from static ones.",
-        "As a focus ring — focus uses color.focus-ring with focus.ring-width and focus.ring-offset."
+        "Every border on the page \u2014 reserve it so interactive elements stand out from static ones.",
+        "As a focus ring \u2014 focus uses color.focus-ring with focus.ring-width and focus.ring-offset."
       ],
-      "instead": { "Static separators": "color.border.default", "Focus indicator": "color.focus-ring" },
-      "example": { "css": ".ds-button--secondary { background: var(--ds-color-bg-surface); color: var(--ds-color-fg-primary); border-color: var(--ds-color-border-strong); }" }
+      "instead": {
+        "Static separators": "color.border.default",
+        "Focus indicator": "color.focus-ring"
+      },
+      "example": {
+        "css": ".ds-button--secondary { background: var(--ds-color-bg-surface); color: var(--ds-color-fg-primary); border-color: var(--ds-color-border-strong); }"
+      }
     },
-
     "color.accent-role.bg": {
       "layer": "semantic",
       "summary": "Filled accent background for the single highest-priority action in a view.",
@@ -276,13 +386,20 @@
         "Checked checkbox and radio fill."
       ],
       "dont": [
-        "More than one action per view — a screen with two primary buttons has no primary button.",
+        "More than one action per view \u2014 a screen with two primary buttons has no primary button.",
         "Large background regions; it is a control fill, not a page color.",
-        "Behind color.fg.primary or color.fg.secondary — the only foreground permitted here is color.fg.on-accent."
+        "Behind color.fg.primary or color.fg.secondary \u2014 the only foreground permitted here is color.fg.on-accent."
       ],
-      "instead": { "A second, lower-priority action": "color.bg.surface with color.border.strong (secondary button)", "A tinted accent region": "color.accent-role.subtle" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".ds-button--primary { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }" }
+      "instead": {
+        "A second, lower-priority action": "color.bg.surface with color.border.strong (secondary button)",
+        "A tinted accent region": "color.accent-role.subtle"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".ds-button--primary { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }"
+      }
     },
     "color.accent-role.bg-hover": {
       "layer": "semantic",
@@ -292,13 +409,19 @@
         "Hover on a custom accent surface built outside the CSS component layer."
       ],
       "dont": [
-        "Alongside .ds-state-layer — the state layer already applies state.hover-opacity, and doing both doubles the effect.",
+        "Alongside .ds-state-layer \u2014 the state layer already applies state.hover-opacity, and doing both doubles the effect.",
         "As a resting background; it exists only for the hover state.",
-        "As a press/active value — that is color.accent-role.bg-active."
+        "As a press/active value \u2014 that is color.accent-role.bg-active."
       ],
-      "instead": { "Any component using the DS button/CSS layer": "add the .ds-state-layer class and change nothing else" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".custom-accent-tile:hover { background: var(--ds-color-accent-role-bg-hover); }" }
+      "instead": {
+        "Any component using the DS button/CSS layer": "add the .ds-state-layer class and change nothing else"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".custom-accent-tile:hover { background: var(--ds-color-accent-role-bg-hover); }"
+      }
     },
     "color.accent-role.bg-active": {
       "layer": "semantic",
@@ -309,16 +432,23 @@
       ],
       "dont": [
         "Alongside .ds-state-layer, which already applies state.press-opacity.",
-        "For hover — that is color.accent-role.bg-hover.",
+        "For hover \u2014 that is color.accent-role.bg-hover.",
         "For a persistent selected state; selection uses color.accent-role.bg."
       ],
-      "instead": { "Any component using the DS CSS layer": "add the .ds-state-layer class", "Persistent selection": "color.accent-role.bg" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".custom-accent-tile:active { background: var(--ds-color-accent-role-bg-active); }" }
+      "instead": {
+        "Any component using the DS CSS layer": "add the .ds-state-layer class",
+        "Persistent selection": "color.accent-role.bg"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".custom-accent-tile:active { background: var(--ds-color-accent-role-bg-active); }"
+      }
     },
     "color.accent-role.fg": {
       "layer": "semantic",
-      "summary": "Accent-colored text and icons on a neutral background — links and low-emphasis accent actions.",
+      "summary": "Accent-colored text and icons on a neutral background \u2014 links and low-emphasis accent actions.",
       "use": [
         "Inline text links.",
         "Tertiary (text-only) and link button labels.",
@@ -326,13 +456,22 @@
         "Accent icons drawn on a neutral background."
       ],
       "dont": [
-        "On top of color.accent-role.bg — accent-on-accent is unreadable; use color.fg.on-accent.",
+        "On top of color.accent-role.bg \u2014 accent-on-accent is unreadable; use color.fg.on-accent.",
         "As a background fill; it is tuned as a foreground.",
-        "For destructive actions — those use color.danger-role.fg."
+        "For destructive actions \u2014 those use color.danger-role.fg."
       ],
-      "instead": { "Text on a filled accent surface": "color.fg.on-accent", "Accent fill": "color.accent-role.bg" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.accent-role.subtle"],
-      "example": { "css": ".ds-button--tertiary { background: transparent; color: var(--ds-color-accent-role-fg); }" }
+      "instead": {
+        "Text on a filled accent surface": "color.fg.on-accent",
+        "Accent fill": "color.accent-role.bg"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.accent-role.subtle"
+      ],
+      "example": {
+        "css": ".ds-button--tertiary { background: transparent; color: var(--ds-color-accent-role-fg); }"
+      }
     },
     "color.accent-role.subtle": {
       "layer": "semantic",
@@ -344,14 +483,20 @@
         "The tinted body of an accent-outlined container."
       ],
       "dont": [
-        "As a button fill for a primary action — that is color.accent-role.bg.",
+        "As a button fill for a primary action \u2014 that is color.accent-role.bg.",
         "Under color.fg.on-accent, which is white and would vanish."
       ],
-      "instead": { "Primary action fill": "color.accent-role.bg" },
-      "pairsWith": ["color.accent-role.fg", "color.fg.primary"],
-      "example": { "css": ".notice--info { background: var(--ds-color-accent-role-subtle); color: var(--ds-color-accent-role-fg); border-radius: var(--ds-radius-md); padding: var(--ds-space-3) var(--ds-space-4); }" }
+      "instead": {
+        "Primary action fill": "color.accent-role.bg"
+      },
+      "pairsWith": [
+        "color.accent-role.fg",
+        "color.fg.primary"
+      ],
+      "example": {
+        "css": ".notice--info { background: var(--ds-color-accent-role-subtle); color: var(--ds-color-accent-role-fg); border-radius: var(--ds-radius-md); padding: var(--ds-space-3) var(--ds-space-4); }"
+      }
     },
-
     "color.success-role.bg": {
       "layer": "semantic",
       "summary": "Saturated success fill for non-text indicators only.",
@@ -361,42 +506,64 @@
         "A thin accent bar on the leading edge of a success notice."
       ],
       "dont": [
-        "Behind text of any color. White on this background measures 3.30 in the light theme and 2.28 in the dark theme — both fail WCAG AA for body text.",
+        "Behind text of any color. White on this background measures 3.30 in the light theme and 2.28 in the dark theme \u2014 both fail WCAG AA for body text.",
         "As a success button background."
       ],
-      "instead": { "A success notice with text": "color.success-role.subtle background with color.success-role.fg text", "Success text alone": "color.success-role.fg" },
-      "example": { "css": ".status-dot--online { background: var(--ds-color-success-role-bg); width: var(--ds-space-2); height: var(--ds-space-2); border-radius: var(--ds-radius-full); }" }
+      "instead": {
+        "A success notice with text": "color.success-role.subtle background with color.success-role.fg text",
+        "Success text alone": "color.success-role.fg"
+      },
+      "example": {
+        "css": ".status-dot--online { background: var(--ds-color-success-role-bg); width: var(--ds-space-2); height: var(--ds-space-2); border-radius: var(--ds-radius-full); }"
+      }
     },
     "color.success-role.fg": {
       "layer": "semantic",
-      "summary": "Success text and icons — confirmation messages and positive validation.",
+      "summary": "Success text and icons \u2014 confirmation messages and positive validation.",
       "use": [
         "Success validation messages under a form field.",
         "The title, body text, and icon of a success notice.",
         "Positive delta values in a metric or table cell."
       ],
       "dont": [
-        "As the only signal that something succeeded — pair it with an icon or text, since color alone is not accessible.",
+        "As the only signal that something succeeded \u2014 pair it with an icon or text, since color alone is not accessible.",
         "As a background fill."
       ],
-      "instead": { "Success fill": "color.success-role.bg", "Success notice background": "color.success-role.subtle" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.success-role.subtle"],
-      "example": { "css": ".field-success { color: var(--ds-color-success-role-fg); font-size: var(--ds-font-size-sm); }" }
+      "instead": {
+        "Success fill": "color.success-role.bg",
+        "Success notice background": "color.success-role.subtle"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.success-role.subtle"
+      ],
+      "example": {
+        "css": ".field-success { color: var(--ds-color-success-role-fg); font-size: var(--ds-font-size-sm); }"
+      }
     },
     "color.success-role.subtle": {
       "layer": "semantic",
-      "summary": "Tinted success background — the correct background for any success message that contains text.",
+      "summary": "Tinted success background \u2014 the correct background for any success message that contains text.",
       "use": [
         "Success banner, toast, and inline-notice backgrounds.",
         "Success chip or badge background.",
         "A row highlighted to show a completed operation."
       ],
-      "dont": ["Under color.fg.on-accent, which is white and would vanish."],
-      "instead": { "Non-text success indicator": "color.success-role.bg" },
-      "pairsWith": ["color.success-role.fg", "color.fg.primary"],
-      "example": { "css": ".notice--success { background: var(--ds-color-success-role-subtle); color: var(--ds-color-success-role-fg); }" }
+      "dont": [
+        "Under color.fg.on-accent, which is white and would vanish."
+      ],
+      "instead": {
+        "Non-text success indicator": "color.success-role.bg"
+      },
+      "pairsWith": [
+        "color.success-role.fg",
+        "color.fg.primary"
+      ],
+      "example": {
+        "css": ".notice--success { background: var(--ds-color-success-role-subtle); color: var(--ds-color-success-role-fg); }"
+      }
     },
-
     "color.warning-role.bg": {
       "layer": "semantic",
       "summary": "Saturated warning fill for non-text indicators only.",
@@ -406,42 +573,63 @@
         "The filled portion of a gauge entering a warning range."
       ],
       "dont": [
-        "Behind text of any color. White on this background measures 2.15 in both themes — it fails WCAG AA even for large text.",
+        "Behind text of any color. White on this background measures 2.15 in both themes \u2014 it fails WCAG AA even for large text.",
         "As a warning button background."
       ],
-      "instead": { "A warning notice with text": "color.warning-role.subtle background with color.warning-role.fg text" },
-      "example": { "css": ".severity-bar--warning { background: var(--ds-color-warning-role-bg); }" }
+      "instead": {
+        "A warning notice with text": "color.warning-role.subtle background with color.warning-role.fg text"
+      },
+      "example": {
+        "css": ".severity-bar--warning { background: var(--ds-color-warning-role-bg); }"
+      }
     },
     "color.warning-role.fg": {
       "layer": "semantic",
-      "summary": "Warning text and icons — cautions that do not block the user.",
+      "summary": "Warning text and icons \u2014 cautions that do not block the user.",
       "use": [
         "Warning validation messages that permit submission.",
         "The title, body text, and icon of a warning notice.",
         "Text flagging a deprecated or soon-to-expire item."
       ],
       "dont": [
-        "For blocking errors — those are color.danger-role.fg.",
+        "For blocking errors \u2014 those are color.danger-role.fg.",
         "As the only signal; pair with an icon or text."
       ],
-      "instead": { "Blocking error": "color.danger-role.fg", "Warning fill": "color.warning-role.bg" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.warning-role.subtle"],
-      "example": { "css": ".notice--warning { color: var(--ds-color-warning-role-fg); }" }
+      "instead": {
+        "Blocking error": "color.danger-role.fg",
+        "Warning fill": "color.warning-role.bg"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.warning-role.subtle"
+      ],
+      "example": {
+        "css": ".notice--warning { color: var(--ds-color-warning-role-fg); }"
+      }
     },
     "color.warning-role.subtle": {
       "layer": "semantic",
-      "summary": "Tinted warning background — the correct background for any warning message that contains text.",
+      "summary": "Tinted warning background \u2014 the correct background for any warning message that contains text.",
       "use": [
         "Warning banner, toast, and inline-notice backgrounds.",
         "Warning chip or badge background.",
         "A table row flagged as needing attention."
       ],
-      "dont": ["Under color.fg.on-accent, which is white and would vanish."],
-      "instead": { "Non-text warning indicator": "color.warning-role.bg" },
-      "pairsWith": ["color.warning-role.fg", "color.fg.primary"],
-      "example": { "css": ".notice--warning { background: var(--ds-color-warning-role-subtle); color: var(--ds-color-warning-role-fg); }" }
+      "dont": [
+        "Under color.fg.on-accent, which is white and would vanish."
+      ],
+      "instead": {
+        "Non-text warning indicator": "color.warning-role.bg"
+      },
+      "pairsWith": [
+        "color.warning-role.fg",
+        "color.fg.primary"
+      ],
+      "example": {
+        "css": ".notice--warning { background: var(--ds-color-warning-role-subtle); color: var(--ds-color-warning-role-fg); }"
+      }
     },
-
     "color.danger-role.bg": {
       "layer": "semantic",
       "summary": "Filled danger background for destructive actions and blocking error indicators.",
@@ -451,31 +639,60 @@
         "The filled portion of a bar that has crossed an error threshold."
       ],
       "dont": [
-        "For warnings or cautions — reserve it for destructive or blocking situations.",
+        "For warnings or cautions \u2014 reserve it for destructive or blocking situations.",
         "Behind color.fg.primary or color.fg.secondary; the only permitted foreground is color.fg.on-accent.",
-        "As an error-message background — text-bearing errors use color.danger-role.subtle."
+        "As an error-message background \u2014 text-bearing errors use color.danger-role.subtle."
       ],
-      "instead": { "Error message with text": "color.danger-role.subtle with color.danger-role.fg", "Caution": "color.warning-role.bg" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".ds-button--destructive { background: var(--ds-color-danger-role-bg); color: var(--ds-color-fg-on-accent); }" }
+      "instead": {
+        "Error message with text": "color.danger-role.subtle with color.danger-role.fg",
+        "Caution": "color.warning-role.bg"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".ds-button--destructive { background: var(--ds-color-danger-role-bg); color: var(--ds-color-fg-on-accent); }"
+      }
     },
     "color.danger-role.bg-hover": {
       "layer": "semantic",
       "summary": "Hover value for a filled danger surface. Only for components that cannot use the shared state layer.",
-      "use": ["The :hover background of a danger-filled control that does not compose .ds-state-layer."],
-      "dont": ["Alongside .ds-state-layer, which already applies state.hover-opacity.", "As a resting background."],
-      "instead": { "Any component using the DS CSS layer": "add the .ds-state-layer class" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".custom-danger-tile:hover { background: var(--ds-color-danger-role-bg-hover); }" }
+      "use": [
+        "The :hover background of a danger-filled control that does not compose .ds-state-layer."
+      ],
+      "dont": [
+        "Alongside .ds-state-layer, which already applies state.hover-opacity.",
+        "As a resting background."
+      ],
+      "instead": {
+        "Any component using the DS CSS layer": "add the .ds-state-layer class"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".custom-danger-tile:hover { background: var(--ds-color-danger-role-bg-hover); }"
+      }
     },
     "color.danger-role.bg-active": {
       "layer": "semantic",
       "summary": "Pressed/active value for a filled danger surface. Only for components that cannot use the shared state layer.",
-      "use": ["The :active background of a danger-filled control that does not compose .ds-state-layer."],
-      "dont": ["Alongside .ds-state-layer, which already applies state.press-opacity.", "For hover — that is color.danger-role.bg-hover."],
-      "instead": { "Any component using the DS CSS layer": "add the .ds-state-layer class" },
-      "pairsWith": ["color.fg.on-accent"],
-      "example": { "css": ".custom-danger-tile:active { background: var(--ds-color-danger-role-bg-active); }" }
+      "use": [
+        "The :active background of a danger-filled control that does not compose .ds-state-layer."
+      ],
+      "dont": [
+        "Alongside .ds-state-layer, which already applies state.press-opacity.",
+        "For hover \u2014 that is color.danger-role.bg-hover."
+      ],
+      "instead": {
+        "Any component using the DS CSS layer": "add the .ds-state-layer class"
+      },
+      "pairsWith": [
+        "color.fg.on-accent"
+      ],
+      "example": {
+        "css": ".custom-danger-tile:active { background: var(--ds-color-danger-role-bg-active); }"
+      }
     },
     "color.danger-role.fg": {
       "layer": "semantic",
@@ -487,27 +704,45 @@
         "The border of an input in an invalid state."
       ],
       "dont": [
-        "On top of color.danger-role.bg — use color.fg.on-accent there.",
+        "On top of color.danger-role.bg \u2014 use color.fg.on-accent there.",
         "As the only indication of an error; always pair with text and set aria-invalid on the control."
       ],
-      "instead": { "Text on a filled danger surface": "color.fg.on-accent", "Destructive button fill": "color.danger-role.bg" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface", "color.danger-role.subtle"],
-      "example": { "css": ".field-error { color: var(--ds-color-danger-role-fg); font-size: var(--ds-font-size-sm); }" }
+      "instead": {
+        "Text on a filled danger surface": "color.fg.on-accent",
+        "Destructive button fill": "color.danger-role.bg"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface",
+        "color.danger-role.subtle"
+      ],
+      "example": {
+        "css": ".field-error { color: var(--ds-color-danger-role-fg); font-size: var(--ds-font-size-sm); }"
+      }
     },
     "color.danger-role.subtle": {
       "layer": "semantic",
-      "summary": "Tinted danger background — the correct background for any error message that contains text.",
+      "summary": "Tinted danger background \u2014 the correct background for any error message that contains text.",
       "use": [
         "Error banner, toast, and inline-notice backgrounds.",
         "The background of a row that failed to save.",
         "Error chip or badge background."
       ],
-      "dont": ["As a destructive button fill — that is color.danger-role.bg.", "Under color.fg.on-accent, which is white and would vanish."],
-      "instead": { "Destructive button": "color.danger-role.bg" },
-      "pairsWith": ["color.danger-role.fg", "color.fg.primary"],
-      "example": { "css": ".notice--error { background: var(--ds-color-danger-role-subtle); color: var(--ds-color-danger-role-fg); }" }
+      "dont": [
+        "As a destructive button fill \u2014 that is color.danger-role.bg.",
+        "Under color.fg.on-accent, which is white and would vanish."
+      ],
+      "instead": {
+        "Destructive button": "color.danger-role.bg"
+      },
+      "pairsWith": [
+        "color.danger-role.fg",
+        "color.fg.primary"
+      ],
+      "example": {
+        "css": ".notice--error { background: var(--ds-color-danger-role-subtle); color: var(--ds-color-danger-role-fg); }"
+      }
     },
-
     "color.focus-ring": {
       "layer": "semantic",
       "summary": "The keyboard focus indicator color. The only token permitted in a focus outline.",
@@ -516,276 +751,461 @@
         "Always together with focus.ring-width and focus.ring-offset."
       ],
       "dont": [
-        "For hover or selection — focus is a distinct state that must never be conflated with them.",
+        "For hover or selection \u2014 focus is a distinct state that must never be conflated with them.",
         "On :focus rather than :focus-visible; mouse users should not see the ring.",
         "Removing it. Never write outline: none without an equivalent replacement indicator.",
-        "Directly on top of color.accent-role.bg — the ring and the accent fill are too close in color to separate. The focus.ring-offset gap is what makes the ring visible on a primary button, so never set the offset to 0 there."
+        "Directly on top of color.accent-role.bg \u2014 the ring and the accent fill are too close in color to separate. The focus.ring-offset gap is what makes the ring visible on a primary button, so never set the offset to 0 there."
       ],
-      "instead": { "Hover feedback": "the .ds-state-layer class", "Selected state": "color.accent-role.bg or color.accent-role.subtle" },
-      "pairsWith": ["color.bg.canvas", "color.bg.surface"],
-      "example": { "css": ".ds-button:focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring); outline-offset: var(--ds-focus-ring-offset); }" }
+      "instead": {
+        "Hover feedback": "the .ds-state-layer class",
+        "Selected state": "color.accent-role.bg or color.accent-role.subtle"
+      },
+      "pairsWith": [
+        "color.bg.canvas",
+        "color.bg.surface"
+      ],
+      "example": {
+        "css": ".ds-button:focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring); outline-offset: var(--ds-focus-ring-offset); }"
+      }
     },
-
     "space": {
       "layer": "base",
       "summary": "The 4px-based spacing scale. Every margin, padding, and gap comes from here.",
-      "use": ["padding, margin, gap, and inset values.", "Small fixed sizes for decorative elements such as status dots."],
-      "dont": ["Arbitrary pixel values — pick the nearest step instead.", "Font sizes or line heights, which have their own scales."],
+      "use": [
+        "padding, margin, gap, and inset values.",
+        "Small fixed sizes for decorative elements such as status dots."
+      ],
+      "dont": [
+        "Arbitrary pixel values \u2014 pick the nearest step instead.",
+        "Font sizes or line heights, which have their own scales."
+      ],
       "scale": {
         "0": "Explicitly remove space; use instead of a bare 0 so the intent reads as deliberate.",
-        "1": "4px — the gap between an icon and its adjacent glyph; hairline insets.",
-        "2": "8px — gap between a control's icon and label (the .ds-button gap); tight chip padding.",
-        "3": "12px — padding inside small controls; gap between closely related buttons in a row.",
-        "4": "16px — the default. Card padding, gap between form fields, standard component inset.",
-        "5": "20px — horizontal padding of a large control.",
-        "6": "24px — padding of a large card or dialog; gap between subsections.",
-        "8": "32px — vertical rhythm between distinct sections of a page.",
-        "10": "40px — space between major page blocks.",
-        "12": "48px — leading space above a page-level section heading.",
-        "16": "64px — page top/bottom margins and hero padding."
+        "1": "4px \u2014 the gap between an icon and its adjacent glyph; hairline insets.",
+        "2": "8px \u2014 gap between a control's icon and label (the .ds-button gap); tight chip padding.",
+        "3": "12px \u2014 padding inside small controls; gap between closely related buttons in a row.",
+        "4": "16px \u2014 the default. Card padding, gap between form fields, standard component inset.",
+        "5": "20px \u2014 horizontal padding of a large control.",
+        "6": "24px \u2014 padding of a large card or dialog; gap between subsections.",
+        "8": "32px \u2014 vertical rhythm between distinct sections of a page.",
+        "10": "40px \u2014 space between major page blocks.",
+        "12": "48px \u2014 leading space above a page-level section heading.",
+        "16": "64px \u2014 page top/bottom margins and hero padding."
       },
-      "example": { "css": ".card { padding: var(--ds-space-4); display: grid; gap: var(--ds-space-3); }" }
+      "example": {
+        "css": ".card { padding: var(--ds-space-4); display: grid; gap: var(--ds-space-3); }"
+      }
     },
     "radius": {
       "layer": "base",
       "summary": "Corner radius scale. Radius encodes element size: the larger the element, the larger its radius.",
-      "use": ["border-radius on every rounded element."],
-      "dont": ["Arbitrary radius values.", "Mixing several radii within one component."],
+      "use": [
+        "border-radius on every rounded element."
+      ],
+      "dont": [
+        "Arbitrary radius values.",
+        "Mixing several radii within one component."
+      ],
       "scale": {
-        "none": "0px — flush elements, full-bleed media, and table cells.",
-        "sm": "4px — small inline elements: chips, badges, tags, swatches, checkboxes.",
-        "md": "6px — the default for controls: buttons, inputs, selects, menu items.",
-        "lg": "10px — containers: cards, panels, popovers.",
-        "xl": "16px — large surfaces: dialogs, sheets, hero panels.",
-        "full": "9999px — pills and circles: avatars, status dots, spinners, toggle knobs, progress tracks."
+        "none": "0px \u2014 flush elements, full-bleed media, and table cells.",
+        "sm": "4px \u2014 small inline elements: chips, badges, tags, swatches, checkboxes.",
+        "md": "6px \u2014 the default for controls: buttons, inputs, selects, menu items.",
+        "lg": "10px \u2014 containers: cards, panels, popovers.",
+        "xl": "16px \u2014 large surfaces: dialogs, sheets, hero panels.",
+        "full": "9999px \u2014 pills and circles: avatars, status dots, spinners, toggle knobs, progress tracks."
       },
-      "example": { "css": ".ds-button { border-radius: var(--ds-radius-md); } .card { border-radius: var(--ds-radius-lg); }" }
+      "example": {
+        "css": ".ds-button { border-radius: var(--ds-radius-md); } .card { border-radius: var(--ds-radius-lg); }"
+      }
     },
     "size.control": {
       "layer": "base",
       "summary": "Standard interactive control heights. Any control a user clicks or taps takes its height from here so controls line up on a row.",
-      "use": ["height on buttons, inputs, selects, and their icon-only square variants (where it is also the width)."],
-      "dont": ["Ad-hoc heights on interactive controls — a mismatched height breaks alignment in a form row.", "Non-interactive elements."],
+      "use": [
+        "height on buttons, inputs, selects, and their icon-only square variants (where it is also the width)."
+      ],
+      "dont": [
+        "Ad-hoc heights on interactive controls \u2014 a mismatched height breaks alignment in a form row.",
+        "Non-interactive elements."
+      ],
       "scale": {
-        "sm": "32px — dense desktop UI: toolbars, table row actions, filter bars. Below the 44px minimum touch target, so pointer-primary contexts only.",
-        "md": "40px — the default for forms and page actions.",
-        "lg": "48px — touch-primary and marketing contexts; comfortably clears the 44px touch-target minimum."
+        "sm": "32px \u2014 dense desktop UI: toolbars, table row actions, filter bars. Below the 44px minimum touch target, so pointer-primary contexts only.",
+        "md": "40px \u2014 the default for forms and page actions.",
+        "lg": "48px \u2014 touch-primary and marketing contexts; comfortably clears the 44px touch-target minimum."
       },
-      "example": { "css": ".ds-button--md { height: var(--ds-size-control-md); padding-inline: var(--ds-space-4); }" }
+      "example": {
+        "css": ".ds-button--md { height: var(--ds-size-control-md); padding-inline: var(--ds-space-4); }"
+      }
     },
     "font.family": {
       "layer": "base",
       "summary": "Font stacks. Both are system stacks, so they load instantly and add no network cost.",
-      "use": ["font-family on the root element (sans) and on code/tabular content (mono)."],
-      "dont": ["Naming a font directly in a component."],
+      "use": [
+        "font-family on the root element (sans) and on code/tabular content (mono)."
+      ],
+      "dont": [
+        "Naming a font directly in a component."
+      ],
       "scale": {
-        "sans": "All UI text — the default set on body.",
+        "sans": "All UI text \u2014 the default set on body.",
         "mono": "Code, identifiers, keyboard shortcuts, and numeric columns that must align."
       },
-      "example": { "css": "body { font-family: var(--ds-font-family-sans); } code { font-family: var(--ds-font-family-mono); }" }
+      "example": {
+        "css": "body { font-family: var(--ds-font-family-sans); } code { font-family: var(--ds-font-family-mono); }"
+      }
     },
     "font.size": {
       "layer": "base",
       "summary": "Type scale. Pick by role, not by desired appearance.",
-      "use": ["font-size on text elements."],
-      "dont": ["Arbitrary sizes.", "Sizes below xs — 12px is the floor for legibility."],
+      "use": [
+        "font-size on text elements."
+      ],
+      "dont": [
+        "Arbitrary sizes.",
+        "Sizes below xs \u2014 12px is the floor for legibility."
+      ],
       "scale": {
-        "xs": "12px — eyebrows, badge text, dense table metadata. Never body copy.",
-        "sm": "14px — the workhorse: helper text, table cells, and the label of sm/md buttons.",
-        "md": "16px — body copy and the label of a lg button.",
-        "lg": "18px — card titles and subsection headings.",
-        "xl": "20px — section headings.",
-        "2xl": "24px — page titles.",
-        "3xl": "30px — hero and display headings."
+        "xs": "12px \u2014 eyebrows, badge text, dense table metadata. Never body copy.",
+        "sm": "14px \u2014 the workhorse: helper text, table cells, and the label of sm/md buttons.",
+        "md": "16px \u2014 body copy and the label of a lg button.",
+        "lg": "18px \u2014 card titles and subsection headings.",
+        "xl": "20px \u2014 section headings.",
+        "2xl": "24px \u2014 page titles.",
+        "3xl": "30px \u2014 hero and display headings."
       },
-      "example": { "css": ".card-title { font-size: var(--ds-font-size-lg); }" }
+      "example": {
+        "css": ".card-title { font-size: var(--ds-font-size-lg); }"
+      }
     },
     "font.weight": {
       "layer": "base",
       "summary": "Weight scale. Weight signals hierarchy; it is not a substitute for size or color.",
-      "use": ["font-weight on text elements."],
-      "dont": ["Numeric literals such as 500.", "Bolding whole paragraphs — emphasis loses meaning when everything carries it."],
+      "use": [
+        "font-weight on text elements."
+      ],
+      "dont": [
+        "Numeric literals such as 500.",
+        "Bolding whole paragraphs \u2014 emphasis loses meaning when everything carries it."
+      ],
       "scale": {
-        "regular": "400 — body copy and all long-form text.",
-        "medium": "500 — control labels, including every .ds-button label.",
-        "semibold": "600 — headings and card titles.",
-        "bold": "700 — reserve for display headings and genuine emphasis inside running text."
+        "regular": "400 \u2014 body copy and all long-form text.",
+        "medium": "500 \u2014 control labels, including every .ds-button label.",
+        "semibold": "600 \u2014 headings and card titles.",
+        "bold": "700 \u2014 reserve for display headings and genuine emphasis inside running text."
       },
-      "example": { "css": ".ds-button { font-weight: var(--ds-font-weight-medium); }" }
+      "example": {
+        "css": ".ds-button { font-weight: var(--ds-font-weight-medium); }"
+      }
     },
     "font.line-height": {
       "layer": "base",
       "summary": "Line-height scale, unitless so it multiplies the element's font size.",
-      "use": ["line-height on text elements."],
-      "dont": ["Pixel line heights, which break when the font size changes."],
+      "use": [
+        "line-height on text elements."
+      ],
+      "dont": [
+        "Pixel line heights, which break when the font size changes."
+      ],
       "scale": {
-        "tight": "1.25 — headings and single-line control labels, where extra leading would misalign the control's vertical centering.",
-        "normal": "1.5 — the default for UI text and short paragraphs.",
-        "relaxed": "1.625 — long-form reading passages and documentation prose."
+        "tight": "1.25 \u2014 headings and single-line control labels, where extra leading would misalign the control's vertical centering.",
+        "normal": "1.5 \u2014 the default for UI text and short paragraphs.",
+        "relaxed": "1.625 \u2014 long-form reading passages and documentation prose."
       },
-      "example": { "css": ".ds-button { line-height: var(--ds-font-line-height-tight); }" }
+      "example": {
+        "css": ".ds-button { line-height: var(--ds-font-line-height-tight); }"
+      }
     },
     "motion.duration": {
       "layer": "base",
-      "summary": "Animation and transition durations. Duration scales with how far a thing travels, not with how important it is.",
-      "use": ["transition-duration and animation-duration."],
-      "dont": ["Arbitrary durations.", "Animating without honouring prefers-reduced-motion."],
+      "summary": "Animation and transition durations. For transitions, duration scales with how far a thing travels, not with how important it is; continuous loops have their own steps.",
+      "use": [
+        "transition-duration and animation-duration.",
+        "The cycle length of a continuous loading indicator (the spin steps)."
+      ],
+      "dont": [
+        "Arbitrary durations.",
+        "Animating without honouring prefers-reduced-motion."
+      ],
       "scale": {
-        "fast": "100ms — state feedback on an element already on screen: hover, press, color and border changes.",
-        "normal": "200ms — small entrances and exits: dropdowns, tooltips, popovers, accordion panels.",
-        "slow": "300ms — large surfaces that travel a distance: dialogs, drawers, sheets, full-page transitions."
+        "fast": "100ms \u2014 state feedback on an element already on screen: hover, press, color and border changes.",
+        "normal": "200ms \u2014 small entrances and exits: dropdowns, tooltips, popovers, accordion panels.",
+        "slow": "300ms \u2014 large surfaces that travel a distance: dialogs, drawers, sheets, full-page transitions.",
+        "spin": "800ms \u2014 one full rotation of a continuous loading indicator. A loop, not a transition, so it is not on the fast/normal/slow band.",
+        "spin-reduced": "2000ms \u2014 the same rotation under prefers-reduced-motion. The indicator keeps turning so it still reads as busy, slowly enough not to trigger motion sensitivity."
       },
-      "example": { "css": ".ds-button { transition: background-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard); }" }
+      "example": {
+        "css": ".ds-button { transition: background-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard); }"
+      }
     },
     "motion.easing": {
       "layer": "base",
       "summary": "Easing curves. The curve is chosen by whether the element is arriving, leaving, or changing in place.",
-      "use": ["transition-timing-function and animation-timing-function."],
-      "dont": ["ease, ease-in-out, or raw cubic-bezier values.", "linear for anything except a continuously spinning indicator."],
+      "use": [
+        "transition-timing-function and animation-timing-function."
+      ],
+      "dont": [
+        "ease, ease-in-out, or raw cubic-bezier values.",
+        "linear for anything except a continuously spinning indicator."
+      ],
       "scale": {
-        "standard": "Elements that stay on screen and change in place — color, size, position. The default.",
+        "standard": "Elements that stay on screen and change in place \u2014 color, size, position. The default.",
         "enter": "Elements arriving on screen: a menu opening, a toast appearing. Decelerates into place.",
         "exit": "Elements leaving the screen: a dialog closing. Accelerates away."
       },
-      "example": { "css": ".popover[data-open] { transition: opacity var(--ds-motion-duration-normal) var(--ds-motion-easing-enter); }" }
+      "example": {
+        "css": ".popover[data-open] { transition: opacity var(--ds-motion-duration-normal) var(--ds-motion-easing-enter); }"
+      }
     },
     "elevation": {
       "layer": "base",
       "summary": "Box-shadow scale expressing how far a surface floats above the page. Height encodes how temporary a surface is.",
-      "use": ["box-shadow on raised surfaces, always together with color.bg.surface."],
+      "use": [
+        "box-shadow on raised surfaces, always together with color.bg.surface."
+      ],
       "dont": [
         "Custom shadows.",
-        "Elevation to separate two elements that sit in the same plane — use color.border.default.",
+        "Elevation to separate two elements that sit in the same plane \u2014 use color.border.default.",
         "Shadow as the only distinction on a dark background, where shadows are nearly invisible; add color.border.default too."
       ],
       "scale": {
-        "sm": "Resting cards and panels — content that is part of the page.",
-        "md": "Dropdowns, menus, popovers, and tooltips — transient surfaces anchored to a trigger.",
-        "lg": "Dialogs, drawers, and sheets — surfaces that take over the screen."
+        "sm": "Resting cards and panels \u2014 content that is part of the page.",
+        "md": "Dropdowns, menus, popovers, and tooltips \u2014 transient surfaces anchored to a trigger.",
+        "lg": "Dialogs, drawers, and sheets \u2014 surfaces that take over the screen."
       },
-      "example": { "css": ".menu { background: var(--ds-color-bg-surface); box-shadow: var(--ds-elevation-md); border-radius: var(--ds-radius-lg); }" }
+      "example": {
+        "css": ".menu { background: var(--ds-color-bg-surface); box-shadow: var(--ds-elevation-md); border-radius: var(--ds-radius-lg); }"
+      }
     },
     "state": {
       "layer": "base",
       "summary": "Interaction-state opacities. Prefer the .ds-state-layer class, which applies these for you; use the raw tokens only when building a component outside the CSS layer.",
-      "use": ["The opacity of a state overlay, and the opacity of a disabled control."],
+      "use": [
+        "The opacity of a state overlay, and the opacity of a disabled control."
+      ],
       "dont": [
-        "Hand-rolling hover feedback when .ds-state-layer would do — that is the whole reason the primitive exists.",
+        "Hand-rolling hover feedback when .ds-state-layer would do \u2014 that is the whole reason the primitive exists.",
         "Using the native disabled attribute to express a disabled control. This system uses aria-disabled so the control stays focusable and screen-reader discoverable, with activation blocked in the behavior layer."
       ],
       "scale": {
-        "hover-opacity": "0.08 — the currentColor overlay on :hover.",
-        "press-opacity": "0.12 — the currentColor overlay on :active.",
-        "disabled-opacity": "0.5 — applied to the whole disabled control; do not also change its colors."
+        "hover-opacity": "0.08 \u2014 the currentColor overlay on :hover.",
+        "press-opacity": "0.12 \u2014 the currentColor overlay on :active.",
+        "disabled-opacity": "0.5 \u2014 applied to the whole disabled control; do not also change its colors."
       },
-      "example": { "css": ".ds-state-layer:hover::after { opacity: var(--ds-state-hover-opacity); }" }
+      "example": {
+        "css": ".ds-state-layer:hover::after { opacity: var(--ds-state-hover-opacity); }"
+      }
     },
     "focus": {
       "layer": "base",
       "summary": "Focus-ring geometry. Always used together with color.focus-ring.",
-      "use": ["outline-width and outline-offset in a :focus-visible rule."],
+      "use": [
+        "outline-width and outline-offset in a :focus-visible rule."
+      ],
       "dont": [
         "Removing the ring or shrinking it below these values.",
-        "Setting the offset to 0 on a filled accent control — the gap is what separates the ring from the accent fill behind it."
+        "Setting the offset to 0 on a filled accent control \u2014 the gap is what separates the ring from the accent fill behind it."
       ],
       "scale": {
-        "ring-width": "2px — the outline thickness, thick enough to see at a glance.",
-        "ring-offset": "2px — the gap between the element and the ring, which keeps the ring legible against a filled background."
+        "ring-width": "2px \u2014 the outline thickness, thick enough to see at a glance.",
+        "ring-offset": "2px \u2014 the gap between the element and the ring, which keeps the ring legible against a filled background."
       },
-      "example": { "css": ":focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring); outline-offset: var(--ds-focus-ring-offset); }" }
+      "example": {
+        "css": ":focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring); outline-offset: var(--ds-focus-ring-offset); }"
+      }
     }
   },
-
   "pairings": [
-    { "fg": "color.fg.primary", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.bg.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.bg.muted", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.accent-role.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.success-role.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.warning-role.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.primary", "bg": "color.danger-role.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.secondary", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.fg.secondary", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.fg.secondary", "bg": "color.bg.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.secondary", "bg": "color.bg.muted", "requires": "AA-text" },
-    { "fg": "color.fg.muted", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.fg.muted", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.fg.muted", "bg": "color.bg.subtle", "requires": "AA-text" },
-    { "fg": "color.fg.muted", "bg": "color.bg.muted", "requires": "AA-large", "note": "Large text and non-text only. For body-size text on color.bg.muted use color.fg.secondary." },
-    { "fg": "color.accent-role.fg", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.accent-role.fg", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.accent-role.fg", "bg": "color.accent-role.subtle", "requires": "AA-text" },
-    { "fg": "color.success-role.fg", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.success-role.fg", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.success-role.fg", "bg": "color.success-role.subtle", "requires": "AA-text" },
-    { "fg": "color.warning-role.fg", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.warning-role.fg", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.warning-role.fg", "bg": "color.warning-role.subtle", "requires": "AA-text" },
-    { "fg": "color.danger-role.fg", "bg": "color.bg.canvas", "requires": "AA-text" },
-    { "fg": "color.danger-role.fg", "bg": "color.bg.surface", "requires": "AA-text" },
-    { "fg": "color.danger-role.fg", "bg": "color.danger-role.subtle", "requires": "AA-large", "note": "Reaches 4.41 in the light theme — large text and icons only there. Use color.fg.primary for body-size text on this background." },
-    { "fg": "color.fg.on-accent", "bg": "color.accent-role.bg", "requires": "AA-text", "themes": ["light"], "note": "Light theme only — see knownGaps for the dark theme." },
-    { "fg": "color.fg.on-accent", "bg": "color.accent-role.bg-hover", "requires": "AA-text", "themes": ["light"] },
-    { "fg": "color.fg.on-accent", "bg": "color.accent-role.bg-active", "requires": "AA-text", "themes": ["light"] },
-    { "fg": "color.fg.on-accent", "bg": "color.danger-role.bg", "requires": "AA-text", "themes": ["light"], "note": "Light theme only — see knownGaps for the dark theme." },
-    { "fg": "color.fg.on-accent", "bg": "color.danger-role.bg-hover", "requires": "AA-text", "themes": ["light"] },
-    { "fg": "color.fg.on-accent", "bg": "color.danger-role.bg-active", "requires": "AA-text", "themes": ["light"] },
-    { "fg": "color.focus-ring", "bg": "color.bg.canvas", "requires": "AA-nontext" },
-    { "fg": "color.focus-ring", "bg": "color.bg.surface", "requires": "AA-nontext" }
-  ],
-
-  "knownGaps": [
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.bg.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.bg.muted",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.accent-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.success-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.warning-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.primary",
+      "bg": "color.danger-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.secondary",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.secondary",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.secondary",
+      "bg": "color.bg.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.secondary",
+      "bg": "color.bg.muted",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.muted",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.muted",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.muted",
+      "bg": "color.bg.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.fg.muted",
+      "bg": "color.bg.muted",
+      "requires": "AA-large",
+      "note": "Large text and non-text only. For body-size text on color.bg.muted use color.fg.secondary."
+    },
+    {
+      "fg": "color.accent-role.fg",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.accent-role.fg",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.accent-role.fg",
+      "bg": "color.accent-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.success-role.fg",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.success-role.fg",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.success-role.fg",
+      "bg": "color.success-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.warning-role.fg",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.warning-role.fg",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.warning-role.fg",
+      "bg": "color.warning-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.danger-role.fg",
+      "bg": "color.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.danger-role.fg",
+      "bg": "color.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "color.danger-role.fg",
+      "bg": "color.danger-role.subtle",
+      "requires": "AA-large",
+      "note": "Reaches 4.41 in the light theme \u2014 large text and icons only there. Use color.fg.primary for body-size text on this background."
+    },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.accent-role.bg",
-      "themes": ["dark"],
-      "below": "AA-text",
-      "note": "The dark-theme accent fill is lighter than the light-theme one, so white on a primary button falls short of the 4.5 body-text threshold, and hover/press make it worse.",
-      "workaround": "Until the dark accent ramp is retuned, avoid body-size text on a filled accent surface in the dark theme; a tertiary button (color.accent-role.fg on a neutral background) is a compliant alternative."
+      "requires": "AA-text"
     },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.accent-role.bg-hover",
-      "themes": ["dark"],
-      "below": "AA-text",
-      "note": "Hover lightens the fill further, reducing contrast against white.",
-      "workaround": "Rely on .ds-state-layer, which overlays currentColor rather than swapping to this lighter fill."
+      "requires": "AA-text"
     },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.accent-role.bg-active",
-      "themes": ["dark"],
-      "below": "AA-large",
-      "note": "The pressed fill is the lightest of the three, leaving white nearly invisible.",
-      "workaround": "Rely on .ds-state-layer instead of swapping the background on :active."
+      "requires": "AA-text"
     },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.danger-role.bg",
-      "themes": ["dark"],
-      "below": "AA-text",
-      "note": "Same cause as the accent gap: the dark-theme danger fill is lighter than its light-theme counterpart.",
-      "workaround": "Keep destructive button labels short and consider size lg (font.size.md) so the text qualifies as large."
+      "requires": "AA-text"
     },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.danger-role.bg-hover",
-      "themes": ["dark"],
-      "below": "AA-text",
-      "workaround": "Rely on .ds-state-layer rather than swapping the background."
+      "requires": "AA-text"
     },
     {
       "fg": "color.fg.on-accent",
       "bg": "color.danger-role.bg-active",
-      "themes": ["dark"],
-      "below": "AA-large",
-      "workaround": "Rely on .ds-state-layer rather than swapping the background."
+      "requires": "AA-text"
     },
+    {
+      "fg": "color.focus-ring",
+      "bg": "color.bg.canvas",
+      "requires": "AA-nontext"
+    },
+    {
+      "fg": "color.focus-ring",
+      "bg": "color.bg.surface",
+      "requires": "AA-nontext"
+    }
+  ],
+  "knownGaps": [
     {
       "fg": "color.fg.on-accent",
       "bg": "color.success-role.bg",
-      "themes": ["light", "dark"],
+      "themes": [
+        "light",
+        "dark"
+      ],
       "below": "AA-text",
       "note": "color.success-role.bg is a non-text indicator color in both themes.",
       "workaround": "Put success text on color.success-role.subtle using color.success-role.fg."
@@ -793,13 +1213,15 @@
     {
       "fg": "color.fg.on-accent",
       "bg": "color.warning-role.bg",
-      "themes": ["light", "dark"],
+      "themes": [
+        "light",
+        "dark"
+      ],
       "below": "AA-large",
       "note": "color.warning-role.bg is the lightest role fill and carries no text at any size.",
       "workaround": "Put warning text on color.warning-role.subtle using color.warning-role.fg."
     }
   ],
-
   "recipes": {
     "button-primary": {
       "summary": "The single highest-priority action in a view.",
@@ -816,7 +1238,7 @@
         "transition-duration": "motion.duration.fast",
         "transition-timing-function": "motion.easing.standard",
         "outline (focus-visible)": "focus.ring-width solid color.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background"
+        "hover/press": "compose the .ds-state-layer class \u2014 do not swap the background"
       }
     },
     "button-secondary": {
@@ -883,7 +1305,7 @@
         "padding": "space.3 space.4",
         "border-radius": "radius.md",
         "gap between icon and text": "space.2",
-        "leading accent bar (optional)": "the matching role bg — a non-text use"
+        "leading accent bar (optional)": "the matching role bg \u2014 a non-text use"
       }
     },
     "dialog": {

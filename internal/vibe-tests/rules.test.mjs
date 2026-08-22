@@ -45,14 +45,37 @@ test("a pairing that fails in every theme is an error", () => {
 });
 
 test("a pairing verified in one theme is a warning, not an error", () => {
-  // The primary button is the sanctioned pattern; the dark theme's accent ramp
-  // is the thing at fault, so this must not read as a component defect.
-  const v = find(
-    ".button { background: var(--ds-color-accent-role-bg); color: var(--ds-color-fg-on-accent); }",
-    "forbidden-pairing"
-  );
-  assert.ok(v);
-  assert.equal(v.severity, "warn");
+  // Graded severity: a combination that is sanctioned in one theme and short in
+  // another is the palette's fault, not the component's. Built on a synthetic
+  // model so the branch stays covered no matter what the real ramps measure.
+  const synthetic = {
+    index: {
+      "ds-fg": { path: "fg", layer: "semantic" },
+      "ds-bg": { path: "bg", layer: "semantic" },
+      "ds-bg2": { path: "bg2", layer: "semantic" },
+    },
+    validVars: new Set(["ds-fg", "ds-bg", "ds-bg2"]),
+    forbidden: new Map([
+      ["fg|bg", { below: "AA-text", themes: ["dark"], measured: { dark: 3.68 }, workaround: "" }],
+      ["fg|bg2", { below: "AA-text", themes: ["light", "dark"], measured: { light: 2.1 }, workaround: "" }],
+    ]),
+    verified: new Set(["fg|bg"]),
+  };
+  const severityFor = (bg) =>
+    evaluateSource(`.a { background: var(--ds-${bg}); color: var(--ds-fg); }`, synthetic)
+      .violations.find((v) => v.rule === "forbidden-pairing")?.severity;
+
+  assert.equal(severityFor("bg"), "warn", "verified somewhere → warning");
+  assert.equal(severityFor("bg2"), "error", "short everywhere → error");
+});
+
+test("the primary and destructive button pairings are clean in both themes", () => {
+  // The dark accent and danger fills were retuned to step 600 so white text
+  // clears AA in both themes; this guards against them drifting back.
+  for (const bg of ["accent", "danger"]) {
+    const css = `.button { background: var(--ds-color-${bg}-role-bg); color: var(--ds-color-fg-on-accent); }`;
+    assert.equal(find(css, "forbidden-pairing"), undefined, `${bg} fill must clear AA in both themes`);
+  }
 });
 
 test("accepts the documented success and warning notice recipe", () => {
@@ -116,6 +139,21 @@ test("ds-allow records a deliberate exception", () => {
   const css = `/* ds-allow: hardcoded-motion — the spin cycle has no token */
     .spinner { animation: spin 0.8s linear infinite; }`;
   assert.ok(!rules(css).includes("hardcoded-motion"));
+});
+
+test("ds-allow covers only the block it precedes", () => {
+  // A file-wide exemption would quietly cover violations added later.
+  const css = `/* ds-allow: hardcoded-dimension — app layout constant */
+    .shell { width: 960px; }
+    .later { padding: 13px; }`;
+  const v = evaluateSource(css, model).violations.filter((x) => x.rule === "hardcoded-dimension");
+  assert.equal(v.length, 1, "the second block must still be reported");
+  assert.match(v[0].message, /13px/);
+});
+
+test("layout constraints are not scale violations", () => {
+  assert.deepEqual(rules(".shell { max-width: 960px; }"), []);
+  assert.ok(rules(".swatch { height: 48px; }").includes("hardcoded-dimension"));
 });
 
 test("scoring reports a missing required token", () => {

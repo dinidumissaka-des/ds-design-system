@@ -45,22 +45,29 @@ export function loadTokenModel() {
 const isPalette = (model, varName) => model.index[varName]?.layer === "palette";
 
 // Properties where a raw dimension means the author skipped the space/size/radius
-// scale. Border and outline widths are excluded: 1px hairlines are idiomatic here
-// and the system's own components use them.
+// scale. Two deliberate exclusions:
+//   - border and outline widths: 1px hairlines are idiomatic and the system's own
+//     components use them;
+//   - min-*/max-* constraints: a container's max-width is a layout bound (readable
+//     line length, breakpoint), not a step on a sizing scale.
 const SCALE_PROPS =
-  /^(padding|margin|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|min-width|min-height|max-width|max-height|font-size|border-radius|line-height)(-(top|right|bottom|left|inline|block|inline-start|inline-end|block-start|block-end))?$/;
+  /^(padding|margin|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|font-size|border-radius|line-height)(-(top|right|bottom|left|inline|block|inline-start|inline-end|block-start|block-end))?$/;
+
+const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
 // Split a stylesheet into { selector, declarations } blocks. Good enough for the
 // flat component CSS this system produces; nested at-rules are flattened out.
+// Parses the original source, comments included, so reported line numbers match
+// the file and a `ds-allow` comment can be tied to the block it precedes.
 function parseBlocks(css) {
-  const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
   const blocks = [];
   const re = /([^{}]+)\{([^{}]*)\}/g;
   let m;
-  while ((m = re.exec(withoutComments)) !== null) {
-    const selector = m[1].trim().split("\n").pop().trim();
+  while ((m = re.exec(css)) !== null) {
+    const selector = m[1].replace(/\/\*[\s\S]*?\*\//g, "").trim().split("\n").pop().trim();
     if (!selector || selector.startsWith("@")) continue;
     const declarations = m[2]
+      .replace(/\/\*[\s\S]*?\*\//g, "")
       .split(";")
       .map((d) => d.trim())
       .filter(Boolean)
@@ -69,12 +76,20 @@ function parseBlocks(css) {
         return i === -1 ? null : { prop: d.slice(0, i).trim().toLowerCase(), value: d.slice(i + 1).trim() };
       })
       .filter(Boolean);
-    blocks.push({ selector, declarations, index: m.index });
+    // Anchor on the first non-whitespace character: the raw match begins at the
+    // newline left over from the previous block, which would report the line
+    // above the selector.
+    const start = m.index + (m[0].length - m[0].trimStart().length);
+    blocks.push({
+      selector,
+      declarations,
+      index: start,
+      startLine: lineOf(css, start),
+      endLine: lineOf(css, m.index + m[0].length),
+    });
   }
   return blocks;
 }
-
-const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 
 /**
  * Score one source file. `source` is raw CSS or TSX text.
@@ -84,17 +99,27 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
   const violations = [];
   const tokensUsed = new Set();
 
+  const blocks = parseBlocks(source);
+
   // `/* ds-allow: rule-name, other-rule — why */` records a deliberate exception
-  // in the file itself, so the reason travels with the code.
-  const allowed = new Set(
-    [...source.matchAll(/\/\*\s*ds-allow:\s*([a-z-,\s]+?)(?:—|--|\*\/)/g)].flatMap((m) =>
-      m[1].split(",").map((r) => r.trim()).filter(Boolean)
-    )
-  );
+  // in the file itself, so the reason travels with the code. It covers the rule
+  // block it sits inside or immediately precedes — never the whole file, so a
+  // later violation of the same rule is still reported.
+  const allows = [];
+  for (const m of source.matchAll(/\/\*\s*ds-allow:\s*([a-z-,\s]+?)(?:—|--|\*\/)/g)) {
+    const line = lineOf(source, m.index);
+    const scope = blocks.find((b) => b.endLine >= line) ?? null;
+    for (const rule of m[1].split(",").map((r) => r.trim()).filter(Boolean)) {
+      allows.push({ rule, from: line, to: scope ? Math.max(scope.endLine, line) : line });
+    }
+  }
+  const suppressed = (rule, line) =>
+    allows.some((a) => a.rule === rule && line >= a.from && line <= a.to);
 
   const add = (rule, severity, message, index) => {
-    if (allowed.has(rule)) return;
-    violations.push({ rule, severity, message, line: lineOf(source, index ?? 0), file: filename });
+    const line = lineOf(source, index ?? 0);
+    if (suppressed(rule, line)) return;
+    violations.push({ rule, severity, message, line, file: filename });
   };
 
   // --- token references -------------------------------------------------
@@ -121,7 +146,6 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
     add("hardcoded-color", "error", `Hardcoded color \`${m[0]}\` — every color has a token.`, m.index);
   }
 
-  const blocks = parseBlocks(source);
   for (const block of blocks) {
     for (const { prop, value } of block.declarations) {
       if (SCALE_PROPS.test(prop)) {
