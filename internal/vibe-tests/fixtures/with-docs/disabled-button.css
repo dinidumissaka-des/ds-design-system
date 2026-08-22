@@ -1,0 +1,11 @@
+/* Disabled — aria-disabled keeps the control focusable and discoverable;
+   activation is blocked in @ds/primitives. Opacity only, no color swap. */
+.button[aria-disabled="true"] {
+  opacity: var(--ds-state-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.button:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}

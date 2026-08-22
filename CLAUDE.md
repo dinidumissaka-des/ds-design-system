@@ -60,11 +60,24 @@ So adding a token means documenting it, and changing a color means the contrast 
 get re-verified. `npm run docs:check` verifies `TOKENS.md` is current without rewriting it;
 CI runs it on every PR.
 
+## Do the docs work?
+
+`internal/vibe-tests/` measures whether the guidance above actually changes what an agent
+writes, rather than only whether it is current. It scores generated component code against
+rules derived from `packages/tokens/dist/usage.json` — palette tokens, hardcoded values,
+forbidden contrast pairings, missing focus rings, hand-rolled hover. `npm run vibe` runs the
+committed A/B fixtures and fails if the checker stops telling the two arms apart.
+
+Use `node internal/vibe-tests/run.mjs check <file>` to lint any component you write against
+the same rules. See [`internal/vibe-tests/README.md`](internal/vibe-tests/README.md).
+
 ## Commands
 
 ```sh
 npm run build        # tokens → css → primitives → react
 npm run docs:check   # fail if TOKENS.md is out of date with usage.json
+npm run vibe         # score the token-guidance A/B fixtures
+npm run vibe:test    # unit-test the checker
 npm test             # primitives unit tests
 npm run dev          # playground at http://localhost:5173
 ```

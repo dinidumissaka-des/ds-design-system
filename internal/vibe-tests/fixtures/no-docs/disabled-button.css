@@ -1,0 +1,7 @@
+/* Disabled — the native attribute, which removes the control from the tab order. */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--ds-color-neutral-300);
+  color: var(--ds-color-neutral-500);
+}

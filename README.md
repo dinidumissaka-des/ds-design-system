@@ -35,12 +35,15 @@ The same content ships in three machine-readable forms, so an editor or a coding
 
 Contributors and agents working in this repo should start with [`CLAUDE.md`](CLAUDE.md).
 
+Whether that documentation actually changes what an agent writes is measured, not assumed: [`internal/vibe-tests`](internal/vibe-tests) scores generated component code against rules derived from the token build, and CI fails if the checker stops distinguishing documented answers from naive ones.
+
 ## Develop
 
 ```sh
 npm install
 npm run build      # tokens → css → primitives → react
 npm run docs:check # fail if TOKENS.md is out of date with usage.json
+npm run vibe       # score the token-guidance A/B fixtures
 npm test           # primitives unit tests
 npm run dev        # playground at http://localhost:5173
 ```

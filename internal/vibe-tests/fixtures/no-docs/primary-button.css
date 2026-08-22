@@ -1,0 +1,23 @@
+/* Primary button — palette blue, hardcoded metrics, no focus ring. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--ds-color-accent-600);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--ds-color-accent-700);
+}
+
+.button:focus {
+  outline: none;
+}

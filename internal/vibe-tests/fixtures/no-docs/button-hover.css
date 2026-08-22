@@ -1,0 +1,8 @@
+/* Hover and press — hand-rolled background swaps. */
+.button:hover {
+  background: var(--ds-color-accent-role-bg-hover);
+}
+
+.button:active {
+  background: var(--ds-color-accent-role-bg-active);
+}

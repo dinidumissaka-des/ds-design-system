@@ -1,0 +1,27 @@
+/* Dropdown — the menu recipe. */
+.menu {
+  background: var(--ds-color-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-elevation-md);
+  padding: var(--ds-space-1);
+  transition: opacity var(--ds-motion-duration-normal) var(--ds-motion-easing-enter);
+}
+
+.menu__item {
+  height: var(--ds-size-control-sm);
+  padding-inline: var(--ds-space-3);
+  color: var(--ds-color-fg-primary);
+}
+
+.menu__item--destructive {
+  color: var(--ds-color-danger-role-fg);
+}
+
+.menu__item--selected {
+  background: var(--ds-color-accent-role-subtle);
+}
+
+.menu__item:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}

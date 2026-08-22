@@ -18,4 +18,6 @@ jobs:
       - run: npm run build
       - run: npm run docs:check
       - run: npm test
+      - run: npm run vibe:test
+      - run: npm run vibe
       - run: npm run build -w playground
