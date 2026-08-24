@@ -1,0 +1,12 @@
+/* Hover and press — composed, not hand-rolled. The element carries
+   .ds-state-layer alongside .button; no background swap is needed. */
+.button {
+  transition:
+    background-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard),
+    border-color var(--ds-motion-duration-fast) var(--ds-motion-easing-standard);
+}
+
+.button:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}

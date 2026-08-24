@@ -17,9 +17,9 @@
       "strong": "{color.neutral.700}"
     },
     "accent-role": {
-      "bg": "{color.accent.500}",
-      "bg-hover": "{color.accent.400}",
-      "bg-active": "{color.accent.300}",
+      "bg": "{color.accent.600}",
+      "bg-hover": "{color.accent.700}",
+      "bg-active": "{color.accent.800}",
       "fg": "{color.accent.400}",
       "subtle": "{color.accent.950}"
     },
@@ -34,9 +34,9 @@
       "subtle": "{color.warning.950}"
     },
     "danger-role": {
-      "bg": "{color.danger.500}",
-      "bg-hover": "{color.danger.400}",
-      "bg-active": "{color.danger.300}",
+      "bg": "{color.danger.600}",
+      "bg-hover": "{color.danger.700}",
+      "bg-active": "{color.danger.800}",
       "fg": "{color.danger.400}",
       "subtle": "{color.danger.950}"
     },
