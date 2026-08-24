@@ -5,6 +5,10 @@ registry, `@ds/react` source, and `@ds/tokens`. Same lookups are also
 available live via `npm run ui -- props|tokens|pages` (see CLAUDE.md).
 
 Generated: 2026-08-24T19:21:34.474Z
+There is deliberately no generation timestamp here: this file is rewritten by
+every build, and a wall-clock stamp made the working tree dirty on every one
+of them even when nothing about the components had changed. `git log` for
+this path is the honest answer to when it last actually moved.
 
 ## Components
 
