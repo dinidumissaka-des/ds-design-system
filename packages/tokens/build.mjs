@@ -12,121 +12,39 @@ import { mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
+import { contrastRatio } from "./src/theme/color.mjs";
+import { resolveTheme } from "./src/theme/resolveTokens.mjs";
+
 const root = path.dirname(fileURLToPath(import.meta.url));
 const PREFIX = "ds";
 const CHECK_ONLY = process.argv.includes("--check");
 
 const readJson = async (p) => JSON.parse(await readFile(path.join(root, p), "utf8"));
 
-// One file per primitive scale (src/primitives/color.json, space.json, …) —
-// each file's basename becomes its top-level key, so `space.json` fills
-// `base.space` exactly as a "space" key inside a single base.json would.
-// Keeps a color-palette-sized diff from ever touching a one-line scale like
-// border.json, and matches the design-tokens skill's one-scale-at-a-time model.
-async function readBase() {
-  const dir = path.join(root, "src/primitives");
-  const base = {};
-  for (const file of (await readdir(dir)).sort()) {
-    if (!file.endsWith(".json")) continue;
-    base[file.replace(/\.json$/, "")] = await readJson(path.join("src/primitives", file));
-  }
-  return base;
-}
-
-const base = await readBase();
-const light = await readJson("src/semantics/theme/light.json");
-const dark = await readJson("src/semantics/theme/dark.json");
 const usage = await readJson("src/usage.json");
 
-// Non-theme semantic roles (src/semantics/*.json) — theme-invariant, so
-// unlike color/elevation they don't branch into light/dark. Those two live in
-// src/semantics/theme/{light,dark}.json instead, folded under one shared
-// "theme" key — same "one file per semantic group" layout, just the group
-// that needs two files because it's the thing that varies by theme; read
-// separately above, not by this loop (the "theme" subdirectory is skipped
-// here — it doesn't end in .json, only files directly under src/semantics/ do).
-// Each file's basename maps to the primitive category it extends
-// (spacing.json's roles fold into the "space" family alongside the raw
-// space.0..12 steps); typography.json has no primitive category of the same
-// name, so it becomes its own "type" family instead of colliding with
-// font.*. Theme is the one group that does NOT fold into a same-named
-// primitive family — there's no "theme" primitive scale to fold into, so
-// theme.* lands as its own top-level family in the JS/TS output, separate
-// from color.* (which stays the raw primitive ramp: color.accent, color.neutral, …).
-const SEMANTIC_TARGET = { spacing: "space", radius: "radius", typography: "type", motion: "motion" };
+// The theme is code, not data: it declares a handful of seeds and the
+// expanders in src/theme/ generate the rest. Everything scheme-dependent
+// lives there as a [light, dark] tuple rather than in two parallel files —
+// one place to read a role's full story. See src/themes/base.mjs.
+const { baseTheme } = await import("./src/themes/base.mjs");
+const themeName = baseTheme.name;
 
-async function readSemantics() {
-  const dir = path.join(root, "src/semantics");
-  const groups = {};
-  for (const file of (await readdir(dir)).sort()) {
-    if (!file.endsWith(".json")) continue;
-    const key = file.replace(/\.json$/, "");
-    const targetKey = SEMANTIC_TARGET[key] ?? key;
-    const parsed = await readJson(path.join("src/semantics", file));
-    groups[targetKey] = { ...(groups[targetKey] ?? {}), ...parsed };
-  }
-  return groups;
-}
+const {
+  resolvedBase,
+  resolvedLight,
+  flatBase,
+  flatLight,
+  flatDark,
+  variantPaths,
+  flatVariantDark,
+  themeValues,
+} = await resolveTheme({ root, theme: baseTheme });
 
-const semantics = await readSemantics();
-
-function getPath(obj, dotted) {
-  return dotted.split(".").reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
-}
-
-// Resolve "{a.b.c}" references against the base token tree (refs may chain).
-function resolve(node, source, trail = []) {
-  if (typeof node === "string") {
-    let value = node;
-    let guard = 0;
-    while (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
-      const ref = value.slice(1, -1);
-      if (trail.includes(ref) || ++guard > 10) throw new Error(`Circular token reference: ${ref}`);
-      const next = getPath(source, ref);
-      if (next === undefined) throw new Error(`Unknown token reference: ${ref}`);
-      value = typeof next === "string" ? next : resolve(next, source, [...trail, ref]);
-    }
-    return value;
-  }
-  return Object.fromEntries(
-    Object.entries(node).map(([k, v]) => [k, resolve(v, source, trail)])
-  );
-}
-
-// Flat token list carrying both the CSS variable name and the dotted token path.
-// Token segments may themselves contain "-" (accent-role, on-accent), so the
-// dotted path cannot be recovered from the CSS name — it is tracked here.
-function flatten(node, prefix = []) {
-  const out = [];
-  for (const [k, v] of Object.entries(node)) {
-    const next = [...prefix, k];
-    if (typeof v === "string") out.push({ name: next.join("-"), path: next.join("."), leaf: k, value: v });
-    else out.push(...flatten(v, next));
-  }
-  return out;
-}
-
-const resolvedBase = resolve(base, base);
-const resolvedLight = resolve(light, base);
-const resolvedDark = resolve(dark, base);
-
-// Fold each resolved semantic group into the primitive family it extends —
-// e.g. spacing.json's "control"/"stack"/"section"/"page" land as new sibling
-// keys next to space's raw "0".."12" steps, same way border.json's
-// "border.default" sits alongside border's raw "1"/"2"/"3" steps. Theme
-// isn't part of this loop — it has no same-named primitive family to fold
-// into, so it's merged separately below instead (light values into the
-// JS/TS "merged" tree; light+dark both into the CSS custom properties).
-for (const [targetKey, group] of Object.entries(semantics)) {
-  const resolvedGroup = resolve(group, base);
-  resolvedBase[targetKey] = { ...(resolvedBase[targetKey] ?? {}), ...resolvedGroup };
-}
-
-const flatBase = flatten(resolvedBase);
-const flatLight = flatten(resolvedLight);
-const flatDark = flatten(resolvedDark);
-
-const semanticPaths = new Set(flatLight.map((t) => t.path));
+// Kept under its historical name: everything downstream (usage.json coverage,
+// TOKENS.md sectioning, the emitted {light, dark} value pairs) means
+// "scheme-dependent" when it says "semantic".
+const semanticPaths = variantPaths;
 const allPaths = new Set([...flatBase, ...flatLight].map((t) => t.path));
 
 /* ------------------------------------------------------------------ *
@@ -156,12 +74,19 @@ for (const key of Object.keys(usage.tokens)) {
   }
 }
 
-// Semantic tokens carry the theme-dependent meaning, so each one needs its own
-// entry — inheriting a group description is not specific enough to build from.
+// A token whose value changes with the scheme carries theme-dependent
+// meaning, so each one needs its own entry — inheriting a group description
+// is not specific enough to build from. Theme tokens that resolve the same in
+// both schemes (the generated type, radius and duration steps) are ordinary
+// scale members and may inherit their group's docs, as primitives do.
 for (const token of flatLight) {
   const doc = docFor(token.path);
-  if (!doc || !doc.exact) {
-    errors.push(`Semantic token "${token.path}" has no entry of its own in usage.json.`);
+  if (variantPaths.has(token.path)) {
+    if (!doc || !doc.exact) {
+      errors.push(`Scheme-dependent token "${token.path}" has no entry of its own in usage.json.`);
+    }
+  } else if (!doc) {
+    errors.push(`Generated token "${token.path}" is undocumented in usage.json.`);
   }
 }
 
@@ -207,6 +132,20 @@ for (const [name, entry] of Object.entries(usage.tokens)) {
   for (const ref of entry.pairsWith ?? []) {
     if (!allPaths.has(ref)) errors.push(`usage.json entry "${name}" pairsWith unknown token "${ref}".`);
   }
+
+  // A `scale` block documents the steps of a real scale, so every key in it
+  // must resolve to a real token. Without this, renaming a scale leaves its
+  // documentation describing steps that no longer exist — which is how the
+  // radius, font and type entries came to describe a scale the generator had
+  // already replaced. Prose that is not a step belongs in `notes`.
+  for (const step of Object.keys(entry.scale ?? {})) {
+    if (!allPaths.has(`${name}.${step}`)) {
+      errors.push(
+        `usage.json entry "${name}" documents step "${step}", which is not a token ` +
+          `("${name}.${step}" does not exist). If it is commentary rather than a step, move it to "notes".`,
+      );
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -218,24 +157,16 @@ for (const [name, entry] of Object.entries(usage.tokens)) {
 
 const LEVELS = { "AA-text": 4.5, "AA-large": 3, "AA-nontext": 3 };
 
-function relativeLuminance(hex) {
-  const h = hex.trim().replace("#", "");
-  const full = h.length === 3 ? [...h].map((c) => c + c).join("") : h;
-  const [r, g, b] = [0, 2, 4]
-    .map((i) => parseInt(full.slice(i, i + 2), 16) / 255)
-    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-function contrast(a, b) {
-  const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-}
-
-const themeValues = {
-  light: Object.fromEntries([...flatBase, ...flatLight].map((t) => [t.path, t.value])),
-  dark: Object.fromEntries([...flatBase, ...flatDark].map((t) => [t.path, t.value])),
-};
+// Contrast comes from src/theme/color.mjs now, not a private copy here.
+//
+// The copy this replaces read an 8-digit #RRGGBBAA by slicing off the first
+// six characters, so a translucent colour measured as if it were opaque —
+// a tinted background at 12% alpha scored identically to the solid hue it
+// was mixed from, which is how a 1:1 pairing could pass as compliant.
+// The shared implementation composites a translucent foreground over its
+// background, and throws on a translucent *background* rather than guess at
+// what sits behind it.
+const contrast = contrastRatio;
 
 const round = (n) => Math.round(n * 100) / 100;
 
@@ -394,9 +325,10 @@ const css = [
   ].join("\n"),
   cssBlock(":root", [...flatBase, ...flatLight], { groupHeaders: true }),
   [
-    "/* Dark theme — only the theme.* semantic tokens change. Every token below has",
-    " * the same meaning as its :root counterpart; only the value differs. */",
-    cssBlock('[data-theme="dark"]', flatDark, { groupHeaders: false }),
+    "/* Dark theme — only the tokens whose value actually differs are re-declared.",
+    " * Every token below has the same meaning as its :root counterpart; a token",
+    " * absent here resolved identically in both schemes and needs no override. */",
+    cssBlock('[data-theme="dark"]', flatVariantDark, { groupHeaders: false }),
   ].join("\n"),
 ].join("\n");
 
@@ -828,7 +760,8 @@ await writeFile(path.join(root, "dist/usage.json"), usageJson);
 await writeFile(mdPath, markdown);
 
 console.log(
-  `@ds/tokens built: ${flatBase.length} base + ${flatLight.length} semantic tokens, ` +
+  `@ds/tokens built: theme "${themeName}" — ${flatBase.length} base + ` +
+    `${flatLight.length} generated (${variantPaths.size} scheme-dependent), ` +
     `${Object.keys(usage.tokens).length} documented entries, ` +
     `${contrastReport.length} verified pairings, ${gapReport.length} known gaps, ` +
     `${Object.keys(usage.recipes).length} recipes`

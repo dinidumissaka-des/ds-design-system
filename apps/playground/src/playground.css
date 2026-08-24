@@ -209,7 +209,7 @@ body {
 /* ds-allow: hardcoded-dimension — the swatch preview box is a playground
    layout constant, not a step on the sizing scale */
 .pg-swatch {
-  border-radius: var(--ds-radius-sm);
+  border-radius: var(--ds-radius-inner);
   border: var(--ds-border-1) solid var(--ds-theme-border-default);
   height: 48px;
 }
@@ -220,7 +220,7 @@ body {
 }
 
 .pg-swatch-name {
-  font-size: var(--ds-type-size-xs);
+  font-size: var(--ds-font-size-xs);
   color: var(--ds-theme-fg-muted);
   margin-top: var(--ds-space-0-5);
 }
@@ -249,7 +249,7 @@ body {
 .pg-bar-track {
   flex: 1;
   background: var(--ds-theme-bg-muted);
-  border-radius: var(--ds-radius-sm);
+  border-radius: var(--ds-radius-inner);
   overflow: hidden;
   height: 12px;
 }
@@ -258,7 +258,7 @@ body {
   display: block;
   height: 100%;
   background: var(--ds-theme-accent-role-bg);
-  border-radius: var(--ds-radius-sm);
+  border-radius: var(--ds-radius-inner);
 }
 
 .pg-bar-value {
@@ -331,7 +331,7 @@ body {
   left: 3px;
   width: 22px;
   height: 22px;
-  border-radius: var(--ds-radius-full);
+  border-radius: var(--ds-radius-pill);
   background: var(--ds-theme-accent-role-bg);
   transition-property: transform;
 }

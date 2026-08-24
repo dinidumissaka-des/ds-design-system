@@ -116,9 +116,12 @@ The rules that matter most:
   weights, no `ease-in-out`. Every one of those has a token — `space.*`,
   `size.control.*`, `radius.*`, `type.*`, `motion.*`. If nothing fits, add a
   token — don't inline a value.
-- **`theme.fg.on-accent` goes on `accent-role.bg` and `danger-role.bg`
-  only.** It's white in both themes and fails contrast on `success-role.bg`
-  and `warning-role.bg` — see TOKENS.md's Known gaps table.
+- **Every filled role owns its label token.** `theme.fg.on-accent` goes on
+  `theme.accent-role.bg` and nowhere else; the status roles have
+  `theme.danger-role.on`, `theme.warning-role.on`, `theme.success-role.on`.
+  This is not tidiness — `on-accent` *inverts* with the accent in the dark
+  scheme while the status fills don't, so reusing it puts dark text on a dark
+  red button.
 - **Success/warning/danger messages use the role's `subtle` background with
   its `fg` text.** The saturated `bg` of those roles is for non-text
   indicators (status dots, bars) only, never text.
@@ -141,15 +144,26 @@ The rules that matter most:
   button today) — there's no `@layer` boundary protecting overrides. Adding a
   component whose CSS must come before another's means adding it to `ORDER`,
   not relying on file listing order.
-- **New token needed → use the `design-tokens` skill**, not an ad hoc edit
-  to `packages/tokens/src/semantics/*.json`. It's the Gate 1/2/3 interview that
-  gets a new primitive or semantic token proposed, described (Purpose / Use
-  when / Don't use for / Pairs with), and approved before it's written —
-  see [STRUCTURE.md](STRUCTURE.md#the-design-tokens-skill-and-this-repos-actual-token-pipeline)
-  for how it maps onto this repo's actual JSON pipeline. Adding or renaming a
-  token also means adding its `usage.json` entry — the build fails on an
-  undocumented token, a `usage.json` entry naming a token that doesn't
-  exist, or a documented contrast pairing that stops holding.
+- **Never hand-write a value a seed already generates.** Colour, type, radius
+  and duration all come out of four seeds in
+  `packages/tokens/src/themes/base.mjs`. Change the seed, not the output —
+  a hand-listed value drifts from the rule it was meant to express, and this
+  repo has already been bitten by exactly that (two of nine motion steps were
+  wrong before the generator replaced them). See
+  [THEME-ENGINE.md](packages/tokens/THEME-ENGINE.md).
+- **New token needed → use the `design-tokens` skill**, not an ad hoc edit.
+  It's the Gate 1/2/3 interview that gets a token proposed, described
+  (Purpose / Use when / Don't use for / Pairs with), and approved before it's
+  written — see [STRUCTURE.md](STRUCTURE.md#the-design-tokens-skill-and-this-repos-actual-token-pipeline).
+  Where it lands depends on what it is: a *generated* role belongs in the
+  expander, a *stated* one in the theme's `tokens` map, a raw scale step in
+  `src/primitives/*.json`. Either way it needs a `usage.json` entry — the
+  build fails on an undocumented token, an entry naming a token that doesn't
+  exist, a `scale` block describing steps that no longer exist, or a
+  documented contrast pairing that stops holding.
+- **A new brand is a new theme package, not a fork.** `packages/themes/*`
+  each state a few seeds and `extends: baseTheme`; `npm run themes:check`
+  re-measures every contrast promise against each brand.
 
 ### Do the docs work?
 
@@ -170,7 +184,9 @@ write against the same rules — see [internal/vibe-tests/README.md](internal/vi
 | Invent a prop | `npm run ui -- props <name>` first |
 | Hardcode a color or pixel value | The matching `--ds-*` token |
 | A palette token (`--ds-color-neutral-*`, `--ds-color-accent-*`, …) directly in a component | The matching `theme.*` semantic token — palette tokens are identical in both themes |
-| `theme.fg.on-accent` on `success-role.bg` or `warning-role.bg` | The role's `subtle` background with its own `fg` — see TOKENS.md's Known gaps |
+| `theme.fg.on-accent` on a status fill | That role's own label token (`theme.danger-role.on`, …) — `on-accent` inverts in dark, the status fills don't |
+| Hand-writing a colour, size, radius or duration | Change the seed in `packages/tokens/src/themes/base.mjs` — the scale is generated |
+| Forking the tokens for a new brand | A theme package under `packages/themes/*` with `extends: baseTheme` |
 | `disabled` attribute on a new interactive primitive | `aria-disabled` + a click guard, like `getButtonProps` |
 | A new `:hover`/`:active` rule for feedback | Compose `.ds-state-layer` |
 | A `<div className="card">` wrapper | Plain `<section>` — there's no Card yet, don't invent one |
@@ -201,6 +217,7 @@ these without looking — if you can't, run the lookup commands above first:
 | Component added, renamed, or its props changed | `npm run ui:sync` (or just `npm run build`, which runs it last) |
 | A registry manifest changes (`registry/components/*.json`) | Same — `npm run build` |
 | A token is added, renamed, or its value changes | `npm run build -w @ds/tokens` regenerates `TOKENS.md`; `npm run docs:check` verifies it's committed current (CI runs both) |
+| A theme seed changes | `npm run build` regenerates everything downstream; `npm run themes:check` re-verifies every brand's contrast |
 | You're not sure a token change is actually enforced | `npm run vibe` — the A/B self-test fails if the checker stops discriminating documented answers from naive ones |
 | You give the same correction twice in one session | It belongs in this file, not a chat message |
 
@@ -211,6 +228,8 @@ npm run build        # tokens → css → primitives → react → ui:sync
 npm run docs:check   # fail if TOKENS.md is out of date with usage.json
 npm run vibe         # score the token-guidance A/B fixtures
 npm run vibe:test    # unit-test the vibe-tests checker itself
+npm run themes:check # re-verify every brand theme's contrast promises
+npm run test:theme   # port-fidelity tests for the theme engine
 npm test             # primitives unit tests
 npm run dev          # playground at http://localhost:5173
 ```

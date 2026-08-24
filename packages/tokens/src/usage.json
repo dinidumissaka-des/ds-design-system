@@ -2,20 +2,21 @@
   "$comment": "Usage documentation for every token. Consumed by build.mjs, which validates coverage against the token tree and emits CSS comments, JSDoc, TOKENS.md, and dist/usage.json. Edit this file — never the generated output.",
   "rules": [
     "Never use a raw palette token (color.neutral.*, color.accent.*, color.success.*, color.warning.*, color.danger.*, color.white, color.black) in a component. They are identical in both themes, so a component using one is broken in the other. Use a theme.* semantic token instead. color.data.* is the one exception — it exists for direct use in data visualization.",
-    "Every color decision has exactly one correct semantic token. If none of them fits, the component needs a new semantic token added to both semantics/theme/light.json and semantics/theme/dark.json via the design-tokens skill — do not reach into the palette.",
+    "Every color decision has exactly one correct semantic token. If none fits, the theme needs a new semantic token — add it in packages/tokens/src/themes/base.mjs via the design-tokens skill, not by reaching into the palette.",
     "Backgrounds come from theme.bg.* or a role's bg/subtle. Text and icons come from theme.fg.* or a role's fg. Never put a role's bg behind text unless a pairing below allows it.",
     "Reference tokens as CSS variables (var(--ds-<path-with-dashes>)), not as literal values. theme.accent-role.bg is var(--ds-theme-accent-role-bg).",
     "Use the space scale for every margin, padding, and gap. Never write an arbitrary pixel value; pick the nearest step, or the rolled-up gap/stack/padding/page/control role that already names the situation.",
     "Interactive controls get their height from size.control.*, their hover/press feedback from the .ds-state-layer class (not from hand-written hover colors), their focus ring from focus.* plus theme.focus-ring, and validation/selection emphasis from a role's ring (an inset stroke, not the focus outline).",
-    "theme.* is the only family whose value differs between light and dark. Everything under src/primitives/*.json is theme-independent, including color.data.*.",
-    "aria-disabled, not the disabled attribute, on interactive primitives — the control stays focusable and screen-reader discoverable, styled with state.disabled-opacity."
+    "theme.* is the only family whose value differs between light and dark. Primitives and the generated scales (font.size.*, type.*, radius.*, motion.duration.*) are scheme-independent, as is color.data.*.",
+    "aria-disabled, not the disabled attribute, on interactive primitives — the control stays focusable and screen-reader discoverable, styled with state.disabled-opacity.",
+    "Do not hand-write a value a seed already generates. Colour, type, radius and duration all come from the theme's seeds in packages/tokens/src/themes/base.mjs — change the seed, not the output."
   ],
   "tokens": {
     "color": {
       "layer": "palette",
       "summary": "Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from the underlying design system. Theme-independent — do not use directly in a component.",
       "use": [
-        "Only as a reference target inside semantics/theme/light.json and semantics/theme/dark.json."
+        "Only as a reference target inside a theme's `tokens` map (packages/tokens/src/themes/*.mjs)."
       ],
       "dont": [
         "Direct use in components — these values are identical in both themes, so a component using them is unreadable in one of them."
@@ -26,13 +27,9 @@
         "Border or divider": "theme.border.default, theme.border.strong",
         "Role fill, text, or tint": "theme.accent-role.bg, theme.success-role.bg, theme.warning-role.bg, or theme.danger-role.bg (and each role's .fg / .subtle)"
       },
-      "scale": {
-        "50-100": "Backgrounds in light theme.",
-        "200-300": "Borders in light theme.",
-        "400-500": "Low-emphasis text; the midpoint that reads acceptably on both light and dark backgrounds.",
-        "600-700": "Secondary text and role fills in light theme; borders in dark theme.",
-        "800-950": "Primary text in light theme; backgrounds and role subtles in dark theme."
-      }
+      "notes": [
+        "Tonal ranges, for orientation only — these are not token names: 50-100 backgrounds (light), 200-300 borders (light), 400-500 low-emphasis text, 600-700 role fills and secondary text (light) / borders (dark), 800-950 primary text (light) / backgrounds and role subtles (dark)."
+      ]
     },
     "color.data": {
       "layer": "base",
@@ -66,7 +63,11 @@
       "instead": {
         "A card or panel background": "theme.bg.surface"
       },
-      "pairsWith": ["theme.fg.primary", "theme.fg.secondary", "theme.fg.muted"],
+      "pairsWith": [
+        "theme.fg.primary",
+        "theme.fg.secondary",
+        "theme.fg.muted"
+      ],
       "example": {
         "css": "body { background: var(--ds-theme-bg-canvas); color: var(--ds-theme-fg-primary); }"
       }
@@ -81,7 +82,11 @@
       "dont": [
         "The page background itself — that is theme.bg.canvas."
       ],
-      "pairsWith": ["theme.fg.primary", "theme.fg.secondary", "theme.fg.muted"]
+      "pairsWith": [
+        "theme.fg.primary",
+        "theme.fg.secondary",
+        "theme.fg.muted"
+      ]
     },
     "theme.bg.subtle": {
       "layer": "semantic",
@@ -93,7 +98,10 @@
       "dont": [
         "An interactive hover/press background — use .ds-state-layer instead of a static fill."
       ],
-      "pairsWith": ["theme.fg.primary", "theme.fg.secondary"]
+      "pairsWith": [
+        "theme.fg.primary",
+        "theme.fg.secondary"
+      ]
     },
     "theme.bg.muted": {
       "layer": "semantic",
@@ -106,7 +114,9 @@
       "instead": {
         "Body text on this background": "theme.fg.secondary, not theme.fg.muted, which falls to AA-large here"
       },
-      "pairsWith": ["theme.fg.secondary"]
+      "pairsWith": [
+        "theme.fg.secondary"
+      ]
     },
     "theme.fg.primary": {
       "layer": "semantic",
@@ -114,7 +124,11 @@
       "use": [
         "Body copy, headings, and meaningful (non-decorative) icons."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.bg.subtle"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.bg.subtle"
+      ]
     },
     "theme.fg.secondary": {
       "layer": "semantic",
@@ -122,7 +136,12 @@
       "use": [
         "Helper text, captions, timestamps, metadata."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.bg.subtle", "theme.bg.muted"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.bg.subtle",
+        "theme.bg.muted"
+      ]
     },
     "theme.fg.muted": {
       "layer": "semantic",
@@ -134,7 +153,12 @@
         "Input placeholder text.",
         "A decorative icon that carries no meaning on its own."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.bg.subtle", "theme.bg.muted"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.bg.subtle",
+        "theme.bg.muted"
+      ]
     },
     "theme.fg.on-accent": {
       "layer": "semantic",
@@ -146,7 +170,10 @@
       "dont": [
         "On theme.success-role.bg or theme.warning-role.bg — both are known contrast gaps (see Known gaps). Use the role's subtle/fg pairing for text instead."
       ],
-      "pairsWith": ["theme.accent-role.bg", "theme.danger-role.bg"]
+      "pairsWith": [
+        "theme.accent-role.bg",
+        "theme.danger-role.bg"
+      ]
     },
     "theme.border.default": {
       "layer": "semantic",
@@ -187,7 +214,9 @@
         "A second, lower-priority action": "theme.bg.surface with theme.border.strong (secondary button), or theme.secondary-role.bg",
         "A tinted accent region": "theme.accent-role.subtle"
       },
-      "pairsWith": ["theme.fg.on-accent"],
+      "pairsWith": [
+        "theme.fg.on-accent"
+      ],
       "example": {
         "css": ".ds-button--primary { background: var(--ds-theme-accent-role-bg); color: var(--ds-theme-fg-on-accent); }"
       }
@@ -200,7 +229,11 @@
         "The tertiary/text button variant's label.",
         "Icon or text on an accent-role.subtle background."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.accent-role.subtle"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.accent-role.subtle"
+      ]
     },
     "theme.accent-role.subtle": {
       "layer": "semantic",
@@ -240,7 +273,9 @@
     "theme.secondary-role.fg": {
       "layer": "semantic",
       "summary": "Text/icon color for content on theme.secondary-role.bg.",
-      "pairsWith": ["theme.secondary-role.bg"]
+      "pairsWith": [
+        "theme.secondary-role.bg"
+      ]
     },
     "theme.secondary-role.border": {
       "layer": "semantic",
@@ -279,13 +314,57 @@
         "Success banner/message text.",
         "A success icon."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.success-role.subtle"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.success-role.subtle"
+      ]
     },
     "theme.success-role.subtle": {
       "layer": "semantic",
       "summary": "Tinted success background that safely carries text.",
       "use": [
         "Success banner/message background, paired with theme.success-role.fg."
+      ]
+    },
+    "theme.success-role.on": {
+      "layer": "semantic",
+      "summary": "The label colour for content sitting on theme.success-role.bg.",
+      "use": [
+        "Text or icon on a filled success indicator, in the rare case one carries a label."
+      ],
+      "dont": [
+        "As a general foreground — it is meaningful only against this role's filled bg.",
+        "Assuming it clears AA: success-role.bg is a non-text indicator fill and this pairing is a documented known gap. Put real success text on theme.success-role.subtle."
+      ],
+      "instead": {
+        "A readable success message": "theme.success-role.subtle background with theme.success-role.fg text"
+      }
+    },
+    "theme.warning-role.on": {
+      "layer": "semantic",
+      "summary": "The label colour for content sitting on theme.warning-role.bg — dark, because that fill is the lightest of the three.",
+      "use": [
+        "Text or icon on a filled warning indicator."
+      ],
+      "dont": [
+        "Swapping in theme.fg.on-accent, which is white and vanishes on this fill."
+      ],
+      "pairsWith": [
+        "theme.warning-role.bg"
+      ]
+    },
+    "theme.danger-role.on": {
+      "layer": "semantic",
+      "summary": "The label colour for content sitting on theme.danger-role.bg.",
+      "use": [
+        "Destructive button label and icon."
+      ],
+      "dont": [
+        "Reusing theme.fg.on-accent here — it inverts to dark in the dark scheme, which lands dark text on a dark red fill."
+      ],
+      "pairsWith": [
+        "theme.danger-role.bg"
       ]
     },
     "theme.success-role.ring": {
@@ -311,7 +390,11 @@
     "theme.warning-role.fg": {
       "layer": "semantic",
       "summary": "Warning-colored text for messages and icons.",
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.warning-role.subtle"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.warning-role.subtle"
+      ]
     },
     "theme.warning-role.subtle": {
       "layer": "semantic",
@@ -337,7 +420,9 @@
       "instead": {
         "An error message with text at any size": "theme.danger-role.subtle background with theme.danger-role.fg text (theme.danger-role.subtle with theme.fg.on-accent falls to AA-large in light — see Known gaps)"
       },
-      "pairsWith": ["theme.fg.on-accent"]
+      "pairsWith": [
+        "theme.fg.on-accent"
+      ]
     },
     "theme.danger-role.fg": {
       "layer": "semantic",
@@ -346,7 +431,11 @@
         "Field validation error text.",
         "Error banner/message text and icon."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface", "theme.danger-role.subtle"]
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface",
+        "theme.danger-role.subtle"
+      ]
     },
     "theme.danger-role.subtle": {
       "layer": "semantic",
@@ -371,7 +460,10 @@
       "dont": [
         "Removing the ring, or reusing this color for anything that isn't a focus indicator."
       ],
-      "pairsWith": ["theme.bg.canvas", "theme.bg.surface"],
+      "pairsWith": [
+        "theme.bg.canvas",
+        "theme.bg.surface"
+      ],
       "example": {
         "css": ":focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring); outline-offset: var(--ds-focus-ring-offset); }"
       }
@@ -562,71 +654,66 @@
     },
     "radius": {
       "layer": "base",
-      "summary": "Corner radius, plus rolled-up roles that name a specific surface's radius.",
+      "summary": "Corner radius, generated from a base unit, a multiplier and a step table. Every name is a role: there is no raw sm/md/lg ramp underneath.",
       "use": [
-        "border-radius — prefer the matching role (radius.element, radius.container, …) over a raw step when one names the situation."
+        "border-radius, using the role that names the surface you are rounding."
+      ],
+      "dont": [
+        "Hand-writing a px radius — change the theme's `radius` seed instead, which moves the whole scale together."
       ],
       "scale": {
-        "none": "Square corners.",
-        "sm": "Smallest usable radius — a chip or tag.",
-        "md": "The default control radius.",
-        "lg": "A card or panel's radius.",
-        "xl": "A large surface's radius, e.g. a bottom sheet.",
-        "2xl": "The largest fixed radius, for full-page surfaces.",
-        "full": "A pill / fully rounded edge.",
-        "inner": "radius.sm — an element nested inside an already-rounded container.",
-        "element": "radius.md — the default control radius, named for reuse in recipes.",
-        "container": "radius.lg — a card or panel.",
-        "chat": "radius.xl — a chat bubble or similarly large rounded surface.",
-        "page": "radius.2xl — a full-page or sheet-level surface.",
-        "pill": "radius.full — a pill-shaped control or badge."
+        "none": "Square corners. A fixed anchor — the multiplier never touches it.",
+        "inner": "An element nested inside an already-rounded container.",
+        "element": "The default control radius — buttons, inputs, chips.",
+        "container": "A card or panel.",
+        "chat": "A chat bubble or similarly large rounded surface.",
+        "page": "A full-page or sheet-level surface.",
+        "pill": "A pill-shaped control or badge. A fixed anchor, like none."
       }
     },
     "font": {
       "layer": "base",
-      "summary": "Raw typography primitives (family, size steps, weight steps, line-height steps, letter-spacing steps). Do not use directly — use the type.* semantic scale, which is built from these.",
+      "summary": "Typography primitives. Sizes are generated from the theme's {base, ratio} seed; family, weight and letter-spacing are stated, because no ratio can produce them.",
+      "use": [
+        "font.family.* and font.weight.* directly; font.size.* via a type.* role rather than on its own."
+      ],
       "dont": [
-        "Direct use of font.size.*, font.weight.*, or font.line-height.* in component CSS — use type.* instead, which names the role (body, heading, label, control) rather than a raw step."
+        "Reaching for font.size.* in component CSS when a type.* role already names the situation."
       ],
       "instead": {
-        "Any text sizing decision": "type.size.base, type.body.size, type.heading.size, type.label.size, or type.control.size.md"
+        "Any text sizing decision": "font.size.base, type.body.size, type.heading.size, type.label.size, or type.control.size.md"
       },
       "scale": {
         "family.sans": "The system's default UI typeface.",
         "family.mono": "Monospace, for code and tabular figures.",
-        "size.smallest": "Smallest usable text size.",
-        "size.small": "Small/caption text.",
-        "size.body": "Default body text size.",
-        "size.medium": "A modest heading size.",
-        "size.large-1": "A prominent heading size.",
-        "size.large-2": "A larger heading size.",
-        "size.giant-1": "Display-scale text.",
-        "size.giant-2": "Larger display-scale text.",
-        "size.giant-3": "Larger still.",
-        "size.giant-4": "The largest display size.",
+        "family.heading": "Heading typeface. Falls back to the body family when a theme names no separate one.",
         "weight.regular": "Default text weight.",
-        "weight.bold": "Emphasis weight — headings, labels, and button text.",
-        "line-height.default": "The general-purpose unitless line-height.",
-        "line-height.150": "Tightest fixed line-height, matches type.label.",
-        "line-height.200": "A compact fixed line-height.",
-        "line-height.250": "Body-text fixed line-height.",
-        "line-height.300": "Heading fixed line-height.",
-        "line-height.350": "A looser fixed line-height, for a large control.",
-        "line-height.400": "Display-scale line-height.",
-        "line-height.500": "Larger display-scale line-height.",
-        "line-height.575": "Larger still.",
-        "line-height.600": "The largest fixed line-height.",
+        "weight.medium": "One step up — the label role.",
+        "weight.semibold": "Emphasis weight — headings and control text.",
+        "weight.bold": "The heaviest step.",
+        "size.4xs": "Five steps below body.",
+        "size.3xs": "Four steps below body.",
+        "size.2xs": "Three steps below body.",
+        "size.xs": "Two steps below body — h6.",
+        "size.sm": "One step below body — h5 and supporting text.",
+        "size.base": "Body size — the seed. h4, body, label and code all sit here.",
+        "size.lg": "One step above body — h3 and large text.",
+        "size.xl": "Two above — h2.",
+        "size.2xl": "Three above — h1.",
+        "size.3xl": "Four above — display-3.",
+        "size.4xl": "Five above — display-2.",
+        "size.5xl": "Six above — display-1.",
         "letter-spacing.tightest": "Tightest tracking, for the largest display text.",
         "letter-spacing.tighter": "Very tight tracking.",
         "letter-spacing.tight": "Slightly tight tracking.",
         "letter-spacing.normal": "No adjustment.",
-        "letter-spacing.wide": "Slightly open tracking, used by type.label for its uppercase treatment.",
+        "letter-spacing.wide": "Slightly open tracking — the label role's uppercase treatment.",
         "letter-spacing.wider": "More open tracking."
       }
     },
     "type": {
       "layer": "base",
-      "summary": "The usable typography scale — role-based (body, heading, label, control) and a raw size scale, both built from font.*.",
+      "summary": "The usable typography scale. Each role carries a matched size, weight and line-height, generated together from the theme's {base, ratio} seed so they stay in proportion.",
       "use": [
         "type.body.* for paragraph and default UI text.",
         "type.heading.* for section/card headings.",
@@ -638,17 +725,53 @@
         "Reaching into font.size.* or font.weight.* directly — always go through type.*."
       ],
       "scale": {
+        "heading-1.size": "h1 size.",
+        "heading-1.weight": "h1 weight.",
+        "heading-1.line-height": "h1 line-height, snapped to the 4px grid.",
+        "heading-2.size": "h2 size.",
+        "heading-2.weight": "h2 weight.",
+        "heading-2.line-height": "h2 line-height, snapped to the 4px grid.",
+        "heading-3.size": "h3 size.",
+        "heading-3.weight": "h3 weight.",
+        "heading-3.line-height": "h3 line-height, snapped to the 4px grid.",
+        "heading-4.size": "h4 size.",
+        "heading-4.weight": "h4 weight.",
+        "heading-4.line-height": "h4 line-height, snapped to the 4px grid.",
+        "heading-5.size": "h5 size.",
+        "heading-5.weight": "h5 weight.",
+        "heading-5.line-height": "h5 line-height, snapped to the 4px grid.",
+        "heading-6.size": "h6 size.",
+        "heading-6.weight": "h6 weight.",
+        "heading-6.line-height": "h6 line-height, snapped to the 4px grid.",
+        "heading.size": "Alias for heading-3 — 'a heading' when the level does not matter.",
+        "heading.weight": "Alias for heading-3.",
+        "heading.line-height": "Alias for heading-3.",
         "body.size": "Default paragraph/UI text size.",
         "body.weight": "Default paragraph/UI text weight.",
         "body.line-height": "Default paragraph/UI text line-height.",
-        "heading.size": "Section/card heading size.",
-        "heading.weight": "Section/card heading weight.",
-        "heading.line-height": "Section/card heading line-height.",
-        "label.size": "Uppercase eyebrow / form-field label size.",
-        "label.weight": "Uppercase eyebrow / form-field label weight.",
-        "label.line-height": "Uppercase eyebrow / form-field label line-height.",
+        "large.size": "One step above body, for lead paragraphs.",
+        "large.weight": "Lead paragraph weight.",
+        "large.line-height": "Lead paragraph line-height.",
+        "label.size": "Form-field and eyebrow label size.",
+        "label.weight": "Label weight.",
+        "label.line-height": "Label line-height.",
         "label.letter-spacing": "Tracking for the label role's uppercase treatment.",
         "label.text-transform": "Always uppercase for the label role.",
+        "code.size": "Inline and block code size.",
+        "code.weight": "Code weight.",
+        "code.line-height": "Code line-height.",
+        "supporting.size": "Helper and caption size.",
+        "supporting.weight": "Helper weight.",
+        "supporting.line-height": "Helper line-height.",
+        "display-1.size": "Display 1 size — above h1.",
+        "display-1.weight": "Display 1 weight.",
+        "display-1.line-height": "Display 1 line-height.",
+        "display-2.size": "Display 2 size — above h1.",
+        "display-2.weight": "Display 2 weight.",
+        "display-2.line-height": "Display 2 line-height.",
+        "display-3.size": "Display 3 size — above h1.",
+        "display-3.weight": "Display 3 weight.",
+        "display-3.line-height": "Display 3 line-height.",
         "control.size.sm": "Text size inside a size.control.sm control.",
         "control.size.md": "Text size inside a size.control.md control.",
         "control.size.lg": "Text size inside a size.control.lg control.",
@@ -656,126 +779,248 @@
         "control.line-height.md": "Line-height inside a size.control.md control.",
         "control.line-height.lg": "Line-height inside a size.control.lg control.",
         "control.weight": "Text weight inside any control.",
-        "tracking.display-1": "Tightest tracking, for type.size.5xl-scale display text.",
-        "tracking.display-2": "Very tight tracking, for large display text.",
-        "tracking.display-3": "Slightly tight tracking, for headings.",
+        "tracking.display-1": "Tightest tracking, for the largest display text.",
+        "tracking.display-2": "Very tight tracking.",
+        "tracking.display-3": "Slightly tight tracking.",
         "tracking.signal-1": "Open tracking, for small all-caps signal text.",
-        "tracking.signal-2": "Slightly open tracking.",
-        "size.4xs": "Smallest raw step.",
-        "size.3xs": "Smallest raw step.",
-        "size.2xs": "Smallest raw step.",
-        "size.xs": "Smallest raw step.",
-        "size.sm": "Small text.",
-        "size.base": "Body text.",
-        "size.lg": "A modest heading.",
-        "size.xl": "A prominent heading.",
-        "size.2xl": "A larger heading.",
-        "size.3xl": "Display-scale text.",
-        "size.4xl": "Larger display-scale text.",
-        "size.5xl": "The largest display size."
+        "tracking.signal-2": "Slightly open tracking."
       }
     },
     "motion": {
       "layer": "base",
-      "summary": "Duration and easing primitives, plus rolled-up roles that name a specific transition situation.",
+      "summary": "Duration and easing. The duration bands are generated from the theme's {fast, medium, slow, ratio} seed; the roles below name which band a transition belongs to.",
       "use": [
         "transition-duration / transition-timing-function, via a role (motion.interactive.*, motion.overlay.*, motion.modal.*) rather than a raw duration when one names the situation."
       ],
       "scale": {
-        "duration.fast-min": "Fastest usable duration.",
-        "duration.fast": "Backing value for motion.interactive — hover/press feedback, toggles.",
-        "duration.fast-max": "Upper bound of the fast band.",
-        "duration.medium-min": "Lower bound of the medium band.",
-        "duration.medium": "Backing value for motion.overlay — menus, popovers, tooltips entering/leaving.",
-        "duration.medium-max": "Upper bound of the medium band.",
-        "duration.slow-min": "Lower bound of the slow band.",
-        "duration.slow": "Backing value for motion.modal — dialogs, sheets, drawers.",
-        "duration.slow-max": "Slowest usable duration.",
+        "duration.fast-min": "Fastest step of the fast band.",
+        "duration.fast": "Micro-interactions — hover, toggle.",
+        "duration.fast-max": "Slowest step of the fast band.",
+        "duration.medium-min": "Fastest step of the medium band.",
+        "duration.medium": "Entrance/exit — menus, popovers.",
+        "duration.medium-max": "Slowest step of the medium band.",
+        "duration.slow-min": "Fastest step of the slow band.",
+        "duration.slow": "Continuous animation.",
+        "duration.slow-max": "Slowest step of the slow band.",
         "duration.spin": "A full spinner rotation.",
         "duration.spin-reduced": "A slowed spinner rotation for prefers-reduced-motion.",
-        "easing.standard": "The default curve for most transitions.",
-        "easing.enter": "Curve for something appearing/entering.",
-        "easing.exit": "Curve for something disappearing/exiting.",
-        "interactive.duration": "duration.fast — hover/press feedback, toggles.",
-        "interactive.easing": "easing.standard, for interactive transitions.",
-        "overlay.duration": "duration.medium — menus, popovers, tooltips entering/leaving.",
-        "overlay.easing": "easing.standard, for overlay transitions.",
-        "modal.duration": "duration.slow — dialogs, sheets, drawers.",
-        "modal.easing": "easing.standard, for modal transitions."
+        "easing.standard": "The default curve.",
+        "easing.enter": "Something appearing.",
+        "easing.exit": "Something leaving.",
+        "interactive.duration": "Hover/press feedback, toggles.",
+        "interactive.easing": "Curve for interactive transitions.",
+        "overlay.duration": "Menus, popovers, tooltips.",
+        "overlay.easing": "Curve for overlay transitions.",
+        "modal.duration": "Dialogs, sheets, drawers.",
+        "modal.easing": "Curve for modal transitions."
       }
     }
   },
   "pairings": [
-    { "fg": "theme.fg.primary", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.bg.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.bg.muted", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.accent-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.success-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.warning-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.primary", "bg": "theme.danger-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.secondary", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.fg.secondary", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.fg.secondary", "bg": "theme.bg.subtle", "requires": "AA-text" },
-    { "fg": "theme.fg.secondary", "bg": "theme.bg.muted", "requires": "AA-text" },
-    { "fg": "theme.fg.muted", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.fg.muted", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.fg.muted", "bg": "theme.bg.subtle", "requires": "AA-text" },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.bg.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.bg.muted",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.accent-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.success-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.warning-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.primary",
+      "bg": "theme.danger-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.secondary",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.secondary",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.secondary",
+      "bg": "theme.bg.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.secondary",
+      "bg": "theme.bg.muted",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.muted",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.muted",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.fg.muted",
+      "bg": "theme.bg.subtle",
+      "requires": "AA-text"
+    },
     {
       "fg": "theme.fg.muted",
       "bg": "theme.bg.muted",
       "requires": "AA-large",
       "note": "Large text and non-text only. For body-size text on theme.bg.muted use theme.fg.secondary."
     },
-    { "fg": "theme.accent-role.fg", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.accent-role.fg", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.accent-role.fg", "bg": "theme.accent-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.tertiary-role.fg", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.tertiary-role.fg", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.secondary-role.fg", "bg": "theme.secondary-role.bg", "requires": "AA-text" },
-    { "fg": "theme.success-role.fg", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.success-role.fg", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.success-role.fg", "bg": "theme.success-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.warning-role.fg", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.warning-role.fg", "bg": "theme.bg.surface", "requires": "AA-text" },
-    { "fg": "theme.warning-role.fg", "bg": "theme.warning-role.subtle", "requires": "AA-text" },
-    { "fg": "theme.danger-role.fg", "bg": "theme.bg.canvas", "requires": "AA-text" },
-    { "fg": "theme.danger-role.fg", "bg": "theme.bg.surface", "requires": "AA-text" },
+    {
+      "fg": "theme.accent-role.fg",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.accent-role.fg",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.accent-role.fg",
+      "bg": "theme.accent-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.tertiary-role.fg",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.tertiary-role.fg",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.secondary-role.fg",
+      "bg": "theme.secondary-role.bg",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.success-role.fg",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.success-role.fg",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.success-role.fg",
+      "bg": "theme.success-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.warning-role.fg",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.warning-role.fg",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.warning-role.fg",
+      "bg": "theme.warning-role.subtle",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.danger-role.fg",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.danger-role.fg",
+      "bg": "theme.bg.surface",
+      "requires": "AA-text"
+    },
     {
       "fg": "theme.danger-role.fg",
       "bg": "theme.danger-role.subtle",
       "requires": "AA-large",
       "note": "Large text and icons only on this background in the light theme. Use theme.fg.primary for body-size text on theme.danger-role.subtle."
     },
-    { "fg": "theme.fg.on-accent", "bg": "theme.accent-role.bg", "requires": "AA-text" },
-    { "fg": "theme.fg.on-accent", "bg": "theme.danger-role.bg", "requires": "AA-text" },
-    { "fg": "theme.focus-ring", "bg": "theme.bg.canvas", "requires": "AA-nontext" },
-    { "fg": "theme.focus-ring", "bg": "theme.bg.surface", "requires": "AA-nontext" }
+    {
+      "fg": "theme.fg.on-accent",
+      "bg": "theme.accent-role.bg",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.focus-ring",
+      "bg": "theme.bg.canvas",
+      "requires": "AA-nontext"
+    },
+    {
+      "fg": "theme.focus-ring",
+      "bg": "theme.bg.surface",
+      "requires": "AA-nontext"
+    },
+    {
+      "fg": "theme.danger-role.on",
+      "bg": "theme.danger-role.bg",
+      "requires": "AA-text"
+    },
+    {
+      "fg": "theme.warning-role.on",
+      "bg": "theme.warning-role.bg",
+      "requires": "AA-text"
+    }
   ],
   "knownGaps": [
     {
       "fg": "theme.fg.on-accent",
-      "bg": "theme.success-role.bg",
-      "themes": ["light", "dark"],
-      "below": "AA-text",
-      "note": "theme.success-role.bg is a non-text indicator color in both themes.",
-      "workaround": "Put success text on theme.success-role.subtle using theme.success-role.fg."
-    },
-    {
-      "fg": "theme.fg.on-accent",
-      "bg": "theme.warning-role.bg",
-      "themes": ["light", "dark"],
-      "below": "AA-large",
-      "note": "theme.warning-role.bg is the lightest role fill and carries no text at any size.",
-      "workaround": "Put warning text on theme.warning-role.subtle using theme.warning-role.fg."
-    },
-    {
-      "fg": "theme.fg.on-accent",
       "bg": "theme.danger-role.subtle",
-      "themes": ["light"],
+      "themes": [
+        "light"
+      ],
       "below": "AA-large",
       "note": "theme.fg.on-accent is white; theme.danger-role.subtle is a light tint in the light theme, so white text disappears on it.",
       "workaround": "Use theme.danger-role.fg for text on theme.danger-role.subtle, or theme.fg.on-accent only on theme.danger-role.bg."
+    },
+    {
+      "fg": "theme.success-role.on",
+      "bg": "theme.success-role.bg",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "below": "AA-text",
+      "note": "theme.success-role.bg is a non-text indicator colour in both schemes; white on it lands in the low 3s.",
+      "workaround": "Put success text on theme.success-role.subtle using theme.success-role.fg."
     }
   ],
   "recipes": {

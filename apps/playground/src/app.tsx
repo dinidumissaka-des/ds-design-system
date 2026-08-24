@@ -249,7 +249,10 @@ const spacePrimitives: Array<[string, string]> = [
 // radius.json's primitive + semantic entries all end up as flat sibling
 // strings on tokens.radius (no nested sub-objects) — merged into one list,
 // same treatment as everything else on this page now.
-const radiusNames = ["none", "sm", "md", "lg", "xl", "2xl", "full", "inner", "element", "container", "chat", "page", "pill"] as const;
+// The radius scale is generated from a base unit and a step table now, so
+// there is no separate raw sm/md/lg ramp underneath these role names —
+// see packages/tokens/src/themes/base.mjs.
+const radiusNames = ["none", "inner", "element", "container", "chat", "page", "pill"] as const;
 
 export function App() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -452,15 +455,14 @@ export function App() {
           {page === "typography" && (
             <section className="pg-section">
               <h2>Typography</h2>
-              <TypeSamples
-                title="size"
-                items={[...Object.entries(tokens.font.size), ...Object.entries(tokens.type.size)]}
-              />
+              {/* One geometric ramp now — font.size.* is generated from
+                  {base, ratio}, so there is no second hand-listed scale
+                  sitting beside it to show. */}
+              <TypeSamples title="font.size" items={Object.entries(tokens.font.size)} />
               <table className="pg-table">
                 <thead>
                   <tr>
                     <th>font.weight</th>
-                    <th>font.line-height</th>
                     <th>font.letter-spacing</th>
                   </tr>
                 </thead>
@@ -468,11 +470,6 @@ export function App() {
                   <tr>
                     <td>
                       {Object.entries(tokens.font.weight)
-                        .map(([n, v]) => `${n}: ${v}`)
-                        .join(" · ")}
-                    </td>
-                    <td>
-                      {Object.entries(tokens.font["line-height"])
                         .map(([n, v]) => `${n}: ${v}`)
                         .join(" · ")}
                     </td>

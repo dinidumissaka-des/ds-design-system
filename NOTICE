@@ -1,0 +1,29 @@
+DS Design System
+Copyright (c) 2026 Dinidu Missaka
+
+This product includes software developed at Meta Platforms, Inc.
+
+--------------------------------------------------------------------------
+Astryx (https://github.com/facebook/astryx)
+Copyright (c) 2026 Meta Platforms, Inc.
+Licensed under the MIT License.
+
+The following files are ports of Astryx source, adapted to this repo's token
+addressing scheme and semantic role names. See packages/tokens/THEME-ENGINE.md
+for the full list of deviations and the reasoning behind each.
+
+  packages/tokens/src/theme/color.mjs
+  packages/tokens/src/theme/hct.mjs
+  packages/tokens/src/theme/expandColorScale.mjs
+  packages/tokens/src/theme/expandTypeScale.mjs
+  packages/tokens/src/theme/expandRadiusScale.mjs
+  packages/tokens/src/theme/expandMotionScale.mjs
+  packages/tokens/src/theme/defineTheme.mjs
+
+--------------------------------------------------------------------------
+material-color-utilities (https://github.com/material-foundation/material-color-utilities)
+Copyright (c) Google LLC
+Licensed under the Apache License, Version 2.0.
+
+packages/tokens/src/theme/hct.mjs implements the HCT colour space, which
+Astryx itself ported from material-color-utilities.

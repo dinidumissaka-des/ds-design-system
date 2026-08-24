@@ -5,19 +5,23 @@
   "type": "module",
   "workspaces": [
     "packages/*",
+    "packages/themes/*",
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @ds/tokens && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run ui:sync",
+    "build": "npm run build -w @ds/tokens && npm run build:themes && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run ui:sync",
     "docs:check": "npm run docs:check -w @ds/tokens",
     "vibe": "node internal/vibe-tests/run.mjs fixtures",
     "vibe:tasks": "node internal/vibe-tests/run.mjs tasks",
     "vibe:test": "node --test internal/vibe-tests/rules.test.mjs",
     "dev": "npm run build && npm run dev -w playground",
-    "test": "npm run test -w @ds/primitives",
+    "test": "npm run test -w @ds/primitives && npm run test:theme",
     "build:playground": "npm run build && npm run build -w playground",
     "ui": "node packages/cli/bin/ds.mjs",
-    "ui:sync": "node scripts/generate-ui-context.mjs"
+    "ui:sync": "node scripts/generate-ui-context.mjs",
+    "build:themes": "npm run build -w @ds/theme-ember -w @ds/theme-slate",
+    "themes:check": "npm run check -w @ds/theme-ember -w @ds/theme-slate",
+    "test:theme": "node --test packages/tokens/src/theme/theme.test.mjs"
   },
   "devDependencies": {
     "typescript": "^5.6.0"

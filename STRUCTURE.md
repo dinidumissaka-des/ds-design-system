@@ -2,13 +2,23 @@
 
 ```
 packages/
-  tokens/       @ds/tokens — JSON source of truth: src/primitives/*.json (one file
-                per scale), src/semantics/*.json (theme-invariant roles) + src/semantics/theme/
-                {light,dark}.json (color + elevation roles, folded under one shared
-                "theme" key — the group needing two files, since theme is the thing
-                that varies by light/dark) → dist/css/tokens.css,
-                dist/index.{js,d.ts}, dist/tailwind/preset.cjs. TOKENS.md documents
-                every semantic token.
+  tokens/       @ds/tokens — the token engine and the default theme.
+    src/theme/      the generator: hct + colour maths, the four expanders,
+                    defineTheme (composition/extends), resolveTokens (the shared
+                    resolve pipeline). Ported from Astryx — see THEME-ENGINE.md.
+    src/themes/     base.mjs — the default theme: four seeds plus the roles a
+                    seed cannot know (status, rings, elevation, control text)
+    src/primitives/ *.json, one file per scale, for what is NOT generated
+                    (colour ramps, space, size, opacity, border, elevation, ring,
+                    font family/weight/tracking)
+    src/semantics/  *.json — theme-invariant roles a generator cannot produce
+                    (spacing roles, border default, focus, state, motion roles)
+    src/usage.json  the hand-written doc source; TOKENS.md is generated from it
+    → dist/css/tokens.css, dist/index.{js,d.ts}, dist/tailwind/preset.cjs,
+      dist/usage.json, TOKENS.md
+  themes/       @ds/theme-* — brand themes: a few seeds + `extends: baseTheme`,
+                built by tokens/build-theme.mjs into scoped override CSS that
+                only emits if the brand holds every contrast promise
   css/          @ds/css — framework-free component CSS, built from packages/css/src/*.css
                 → dist/index.css (concatenated) + dist/components/*.css (per-file)
   primitives/   @ds/primitives — headless behavior, pure functions, no DOM/React
@@ -111,20 +121,25 @@ assume a project starting from nothing: `tokens/primitives.css` +
 This repo doesn't look like that, and the gap is worth knowing before
 reaching for the skill's `scripts/validate-tokens.mjs` directly:
 
-- **Source is JSON, not CSS files.** `packages/tokens/src/primitives/*.json`
-  (one file per scale — `color.json`, `space.json`, `radius.json`,
-  `elevation.json`, …) and `src/semantics/*.json` (roles — `spacing.json`,
-  `radius.json`, `typography.json`, `motion.json`, `border.json`,
-  `focus.json`, `state.json`, plus `theme/{light,dark}.json` for the one
-  group — color and elevation together — that branches by theme) already
-  *are* the two-layer split, referencing primitives via
-  `"{color.accent.600}"`-style strings that resolve across files the same
-  as within one — `packages/tokens/build.mjs` is the resolver.
+- **Most of the two layers are generated, not written.** The skill's model is
+  "write primitives, then write semantics on top". Here, colour, typography,
+  radius and duration are produced from four seeds in
+  `src/themes/base.mjs` (see [THEME-ENGINE.md](packages/tokens/THEME-ENGINE.md)),
+  so there is nothing to hand-write for those scales at either layer — the
+  skill's Gate 1/2/3 interview still applies, but its output is usually a
+  changed *seed* or a new entry in the theme's `tokens` map, not a new JSON
+  key. What remains genuinely hand-written is `src/primitives/*.json` (the
+  scales no generator owns) and `src/semantics/*.json` (theme-invariant
+  roles), both referencing others via `"{color.accent.600}"`-style strings
+  that resolve across files the same as within one.
 - **The built CSS has no `var()` chain.** `build.mjs` resolves every
   reference to a literal before writing `dist/css/tokens.css`, so both
   primitive and semantic custom properties land as raw values (e.g.
-  `--ds-theme-accent-role-bg: #2563eb`) — retheming happens by rebuilding
-  from JSON, not by cascade override. The skill's validator checks for
+  `--ds-theme-accent-role-bg: #2563EB`) — retheming happens by rebuilding
+  from the seeds, not by cascade override. This is a deliberate divergence
+  from Astryx, which keeps `var()` chains so a scoped override re-themes a
+  subtree at runtime: a `var()` chain has no measurable contrast ratio, and
+  this repo would rather verify than re-theme live. The skill's validator checks for
   literal values it would call a bug; run it against this repo's *source*
   JSON structure conceptually, not against `dist/css/tokens.css` literally.
 - **`packages/tokens/TOKENS.md`** is this repo's equivalent of the skill's
@@ -161,7 +176,7 @@ skill's naming rule; data-viz primitives only carry their light-mode value
 (Astryx's dark-mode alternates for `data-gray` would violate "primitives
 reference nothing / are theme-invariant" if copied in as-is).
 
-`semantics/color/{light,dark}.json` *was* touched in a later pass, once semantics
+`semantics/theme/{light,dark}.json` *was* touched in a later pass, once semantics
 for the non-color scales were built out too: `accent-role`/`danger-role`'s
 `bg-hover`/`bg-active` were removed (dead — modeled a color-swap hover
 mechanism this system doesn't use), and `secondary-role`/`tertiary-role`
@@ -289,6 +304,53 @@ string was silently corrupting the generated `.d.ts` (a JSDoc comment
 closing early, so the parser treated real code after it as more comment);
 `build.mjs` now rejects any usage entry containing `*/` before it writes
 anything.
+
+**The hand-listed scales were then replaced by a generator ported from
+[Astryx](https://github.com/facebook/astryx)** (Meta's open-source design
+system — MIT, and the same source the primitive values above were read off).
+Colour, typography, radius and duration are no longer enumerated anywhere:
+`packages/tokens/src/themes/base.mjs` states four seeds and the expanders in
+`src/theme/` produce 127 tokens from them.
+
+The argument for doing this is in the repo's own history. The motion scale
+above was transcribed from Astryx's *published output* rather than derived
+from its formula, and two of the nine steps were wrong — `fast-max` read 230ms
+against a true 235ms (`175 ÷ 0.75`), `medium-max` 550ms against 545ms. Nothing
+caught it, because a list of values has nothing to be checked against. The
+colour generator carries the point further: HCT tone is CIE L*, which pins
+relative luminance independently of hue, so the tone assignments hold their
+WCAG guarantees *for any accent a brand seeds* — `theme.test.mjs` asserts that
+across five unrelated seeds.
+
+Four real defects surfaced during the port, each caught by the enforcement
+layer rather than by review:
+
+- The build's private contrast helper read `#RRGGBBAA` by slicing off the
+  first six characters, so a translucent colour measured as if it were opaque
+  — a 12%-alpha tint scored identically to the solid hue behind it, and a 1:1
+  pairing passed as compliant. Contrast now comes from `src/theme/color.mjs`,
+  which composites a translucent foreground and refuses a translucent
+  background outright.
+- `theme.fg.on-accent` was doing duty as the label for every filled role. Once
+  the generator made the accent invert in the dark scheme (light fill, dark
+  label) while the status fills stayed dark, that put dark text on a dark red
+  destructive button. Each role owns its label now (`theme.danger-role.on`,
+  `-warning-role.on`, `-success-role.on`), matching Astryx's own
+  `--color-on-success` / `-warning` / `-error` split.
+- `usage.json`'s `radius`, `font` and `type` entries documented scale steps the
+  generator had replaced. The build now rejects a `scale` block whose keys are
+  not real tokens.
+- A theme that does not `extends` the base produced a bare stack trace when a
+  semantic role referenced a scale it had no seed for. The resolver names the
+  token and the reference it wanted.
+
+`packages/themes/*` are brand themes: a few seeds plus `extends: baseTheme`,
+built by `build-theme.mjs` into scoped CSS containing only what differs from
+base — and refusing to emit at all if the brand breaks a contrast promise
+`usage.json` makes. That is the multi-brand theming the README lists as the
+paid tier, with the safety property that makes it sellable.
+[THEME-ENGINE.md](packages/tokens/THEME-ENGINE.md) documents the precedence
+rules, what is generated versus stated, and every deviation from Astryx.
 
 Full reasoning for every primitive and semantic token is in
 [TOKENS.md](packages/tokens/TOKENS.md).
