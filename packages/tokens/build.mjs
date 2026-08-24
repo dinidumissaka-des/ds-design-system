@@ -27,22 +27,24 @@ async function readBase() {
 }
 
 const base = await readBase();
-const light = await readJson("src/semantics/color/light.json");
-const dark = await readJson("src/semantics/color/dark.json");
+const light = await readJson("src/semantics/theme/light.json");
+const dark = await readJson("src/semantics/theme/dark.json");
 
-// Non-color semantic roles (src/semantics/*.json) — theme-invariant, so
-// unlike color they don't branch into light/dark. Color's semantics live in
-// src/semantics/color/{light,dark}.json instead — same "one file per
-// semantic group" layout, just the one group that needs two files because
-// it's the one thing that varies by theme; read separately above, not by
-// this loop (the "color" subdirectory is skipped here — it doesn't end in
-// .json, only files directly under src/semantics/ do).
+// Non-theme semantic roles (src/semantics/*.json) — theme-invariant, so
+// unlike color/elevation they don't branch into light/dark. Those two live in
+// src/semantics/theme/{light,dark}.json instead, folded under one shared
+// "theme" key — same "one file per semantic group" layout, just the group
+// that needs two files because it's the thing that varies by theme; read
+// separately above, not by this loop (the "theme" subdirectory is skipped
+// here — it doesn't end in .json, only files directly under src/semantics/ do).
 // Each file's basename maps to the primitive category it extends
 // (spacing.json's roles fold into the "space" family alongside the raw
-// space.0..12 steps, same way color's accent-role shares the "color" family
-// with color.accent's raw ramp); typography.json has no primitive category
-// of the same name, so it becomes its own "type" family instead of
-// colliding with font.*.
+// space.0..12 steps); typography.json has no primitive category of the same
+// name, so it becomes its own "type" family instead of colliding with
+// font.*. Theme is the one group that does NOT fold into a same-named
+// primitive family — there's no "theme" primitive scale to fold into, so
+// theme.* lands as its own top-level family in the JS/TS output, separate
+// from color.* (which stays the raw primitive ramp: color.accent, color.neutral, …).
 const SEMANTIC_TARGET = { spacing: "space", radius: "radius", typography: "type", motion: "motion" };
 
 async function readSemantics() {
@@ -98,8 +100,11 @@ const resolvedDark = resolve(dark, base);
 
 // Fold each resolved semantic group into the primitive family it extends —
 // e.g. spacing.json's "control"/"stack"/"section"/"page" land as new sibling
-// keys next to space's raw "0".."12" steps, exactly how color's semantic
-// roles already sit alongside color's raw ramps.
+// keys next to space's raw "0".."12" steps, same way border.json's
+// "border.default" sits alongside border's raw "1"/"2"/"3" steps. Theme
+// isn't part of this loop — it has no same-named primitive family to fold
+// into, so it's merged separately below instead (light values into the
+// JS/TS "merged" tree; light+dark both into the CSS custom properties).
 for (const [targetKey, group] of Object.entries(semantics)) {
   const resolvedGroup = resolve(group, base);
   resolvedBase[targetKey] = { ...(resolvedBase[targetKey] ?? {}), ...resolvedGroup };
@@ -153,33 +158,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        canvas: v("color-bg-canvas"),
-        surface: v("color-bg-surface"),
-        subtle: v("color-bg-subtle"),
-        muted: v("color-bg-muted"),
-        foreground: v("color-fg-primary"),
-        secondary: v("color-fg-secondary"),
+        canvas: v("theme-bg-canvas"),
+        surface: v("theme-bg-surface"),
+        subtle: v("theme-bg-subtle"),
+        muted: v("theme-bg-muted"),
+        foreground: v("theme-fg-primary"),
+        secondary: v("theme-fg-secondary"),
         accent: {
-          DEFAULT: v("color-accent-role-bg"),
-          fg: v("color-accent-role-fg"),
-          subtle: v("color-accent-role-subtle"),
+          DEFAULT: v("theme-accent-role-bg"),
+          fg: v("theme-accent-role-fg"),
+          subtle: v("theme-accent-role-subtle"),
         },
         danger: {
-          DEFAULT: v("color-danger-role-bg"),
-          fg: v("color-danger-role-fg"),
-          subtle: v("color-danger-role-subtle"),
+          DEFAULT: v("theme-danger-role-bg"),
+          fg: v("theme-danger-role-fg"),
+          subtle: v("theme-danger-role-subtle"),
         },
         success: {
-          DEFAULT: v("color-success-role-bg"),
-          fg: v("color-success-role-fg"),
-          subtle: v("color-success-role-subtle"),
+          DEFAULT: v("theme-success-role-bg"),
+          fg: v("theme-success-role-fg"),
+          subtle: v("theme-success-role-subtle"),
         },
         warning: {
-          DEFAULT: v("color-warning-role-bg"),
-          fg: v("color-warning-role-fg"),
-          subtle: v("color-warning-role-subtle"),
+          DEFAULT: v("theme-warning-role-bg"),
+          fg: v("theme-warning-role-fg"),
+          subtle: v("theme-warning-role-subtle"),
         },
-        border: v("color-border-default"),
+        border: v("theme-border-default"),
+      },
+      boxShadow: {
+        raised: v("theme-elevation-raised"),
+        overlay: v("theme-elevation-overlay"),
+        modal: v("theme-elevation-modal"),
       },
       borderRadius: {
         sm: v("radius-sm"),

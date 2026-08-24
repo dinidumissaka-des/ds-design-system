@@ -89,9 +89,12 @@ Every value comes from `@ds/tokens`, exposed as `--ds-<path>` custom
 properties (`npm run ui -- tokens` for the full list). Never a bare hex or
 pixel value in component CSS or inline styles.
 
-- **Semantic first.** Reach for `--ds-color-accent-role-bg` before
+- **Semantic first.** Reach for `--ds-theme-accent-role-bg` before
   `--ds-color-accent-600` — the `-role-*` tokens are the ones that survive a
   theme or brand change; the numbered scale under them is raw material.
+  (`theme` is the semantic layer — colors *and* elevation, since both branch
+  by light/dark; `color` on its own, with no `-role-*`/`bg`/`fg` suffix, is
+  always the raw primitive ramp.)
 - **New token needed → use the `design-tokens` skill**, not an ad hoc edit
   to `packages/tokens/src/semantics/*.json`. It's the Gate 1/2/3 interview that
   gets a new primitive or semantic token proposed, described (Purpose / Use

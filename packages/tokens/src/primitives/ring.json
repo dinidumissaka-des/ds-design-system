@@ -1,0 +1,8 @@
+{
+  "neutral": "inset 0px 0px 0px 2px rgb(5 54 89 / 0.15)",
+  "neutral-strong": "inset 0px 0px 0px 2px rgb(223 226 229 / 0.2)",
+  "accent": "inset 0px 0px 0px 2px rgb(1 113 227 / 0.5)",
+  "success": "inset 0px 0px 0px 2px rgb(38 167 86 / 0.3)",
+  "warning": "inset 0px 0px 0px 2px rgb(226 164 0 / 0.3)",
+  "danger": "inset 0px 0px 0px 2px rgb(227 25 59 / 0.3)"
+}

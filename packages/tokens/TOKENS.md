@@ -1,7 +1,7 @@
 # Design Tokens
 
 Generated CSS/JS/Tailwind output is built from `src/primitives/*.json` and
-`src/semantics/*.json` (including `src/semantics/color/{light,dark}.json`)
+`src/semantics/*.json` (including `src/semantics/theme/{light,dark}.json`)
 by `build.mjs` — see
 [STRUCTURE.md](../../STRUCTURE.md#the-design-tokens-skill-and-this-repos-actual-token-pipeline)
 for how this maps onto the `.claude/skills/design-tokens/` skill's generic
@@ -13,11 +13,12 @@ consulting this file, not guessing from the name.
 
 Two layers. **Primitives** (`src/primitives/*.json`) are named by appearance
 or measure and reference nothing — `color.accent.600`, `space.4`. **Semantics**
-(`src/semantics/*.json`, including `color/{light,dark}.json` — the one
-group needing two files, since it's the one thing that varies by theme)
-are named by role and reference primitives only — `color.accent-role.bg`,
-`space.control.gap`. Component CSS should reference semantics, not
-primitives directly, the same way it already does for color.
+(`src/semantics/*.json`, including `theme/{light,dark}.json` — the one
+group needing two files, since color and elevation are the two things that
+vary by theme) are named by role and reference primitives only —
+`theme.accent-role.bg`, `theme.elevation.raised`, `space.control.gap`.
+Component CSS should reference semantics, not primitives directly, the
+same way it already does for theme.
 
 ## Primitives
 
@@ -68,7 +69,7 @@ manufacturing an unused step. Originally a single Astryx-sourced value
 (`width: 1px`); expanded to a proper scale once `border`/`focus` moved to
 Semantics and needed something to reference.
 **Range:** `1`(1px) → `3`(3px).
-**Not for:** color (`color.border.*`, semantic) or radius. Also not for
+**Not for:** color (`theme.border.*`, semantic) or radius. Also not for
 border *style* — `solid`/`dashed`/etc. are enumerated keywords with no
 underlying scale, so `focus.ring-style` (Semantics) keeps a literal value
 rather than pointing at a manufactured one-item "primitive."
@@ -130,11 +131,51 @@ utilitarian motion better than guessing.
 `motion.overlay`/`motion.modal` in Semantics.
 
 ### Elevation
-**Generation rule:** 3-step layered shadow scale, unchanged from the
-original scaffold — Astryx's shadow tokens weren't extracted with enough
-fidelity to adopt safely (see the fetch notes in this session's history).
-**Range:** `sm`→`lg`.
-**Not for:** nothing consumes this yet — reserved for a future Card/Popover/Dialog.
+**Generation rule:** 3-step layered shadow scale (two stacked shadows per
+step — a tight one and a diffuse one), sourced from Astryx's real
+`--shadow-low`/`-med`/`-high` tokens (fetched directly from the built page
+CSS at [astryx.atmeta.com/docs/tokens](https://astryx.atmeta.com/docs/tokens) —
+the doc page itself only renders swatch previews, not printed values, so
+the raw HTML's inline `style="box-shadow:…"` attributes were read directly;
+see Primitive provenance in [STRUCTURE.md](../../STRUCTURE.md) for the
+fetch method). This supersedes the earlier scaffold values (flagged at the
+time as "not extracted with enough fidelity to adopt safely") now that a
+real source was actually fetched. Astryx expresses each step as one
+`light-dark()` CSS value; since primitives in this system are
+theme-invariant (the theme decision belongs in Semantics), each step's two
+`light-dark()` halves became two separate primitive steps — `low`/`med`/`high`
+(the light half) and `low-strong`/`med-strong`/`high-strong` (the dark half,
+real Astryx opacity — not a guessed multiplier). Offsets/blur are identical
+between the two halves; only the alpha channel changes (and asymmetrically
+for `high`: its second shadow is 0.3 in dark vs. 0.1 in light, not a flat
+2x like the others — kept exactly as sourced, not rounded to fit a pattern).
+**Range:** `low`→`high` (light), `low-strong`→`high-strong` (dark).
+**Not for:** picking a shadow directly in component CSS — go through
+`theme.elevation.raised`/`overlay`/`modal` in Semantics, which already
+resolves the light/dark split.
+
+### Ring
+**Generation rule:** inset-shadow scale for validation/selection feedback,
+sourced from Astryx's real `--shadow-inset-*` tokens (same fetch as
+Elevation above). Each is `inset 0px 0px 0px 2px <color>` — a fixed 2px
+ring width (not a new primitive: this is the same width as
+`focus.ring-width`, i.e. `{border.2}`, already primitive in this system;
+the ring's width isn't re-declared here, only its color+opacity, which
+`focus.ring-width` doesn't carry). Named by hue family, matching this
+system's existing `color.accent`/`success`/`warning`/`danger` vocabulary
+(Astryx's own token names — `selected`/`success`/`warning`/`error` — mix
+role into the primitive name, the same mixup already caught and fixed once
+for `radius` and letter-spacing; re-keyed here for the same reason, with
+`error`→`danger` to match this system's existing term for the same status).
+`neutral`'s two steps are Astryx's real `light-dark()` pair for
+`shadow-inset-hover`; the other four are flat, identical rgba in both
+themes in the real source (no `light-dark()` wrapper), so they don't need
+a `-strong` counterpart.
+**Range:** `neutral`/`neutral-strong`, `accent`, `success`, `warning`, `danger`.
+**Not for:** `neutral`/`neutral-strong` are not wired to any semantic token
+in this pass — see the Decisions entry below for why (conflicts with this
+system's opacity-only hover-feedback rule). Kept here as real, sourced data
+in case that rule is revisited, not because it has a consumer today.
 
 `State` and `Focus` are **not** primitive scales in this system — see the
 Semantics section below. Both were briefly kept here on the reasoning that
@@ -149,16 +190,16 @@ to give them primitives to point at now that they've moved.
 ## Semantics
 
 ### Background & Surface
-(`src/semantics/color/{light,dark}.json` → `color.bg.*`)
+(`src/semantics/theme/{light,dark}.json` → `theme.bg.*`)
 
-#### `--color-bg-canvas`
+#### `--theme-bg-canvas`
 → `color.white` (light) / `color.neutral.950` (dark)
 **Purpose:** The page itself — furthest-back layer.
 **Use when:** `<body>` background.
 **Don't use for:** A component's own surface — use `bg-surface`.
 **Pairs with:** `fg-primary`, `fg-secondary`.
 
-#### `--color-bg-surface`
+#### `--theme-bg-surface`
 → `color.white` (light) / `color.neutral.900` (dark)
 **Purpose:** Default surface for a component sitting above canvas.
 **Use when:** Secondary button fill; future Card.
@@ -166,7 +207,7 @@ to give them primitives to point at now that they've moved.
 light mode today; that's not a reason to merge them — dark mode diverges.
 **Pairs with:** `border-default`, `fg-primary`.
 
-#### `--color-bg-subtle`
+#### `--theme-bg-subtle`
 → `color.neutral.50` (light) / `color.neutral.900` (dark)
 **Purpose:** Faint tint marking a region without a hard edge.
 **Use when:** Not consumed by any component yet — reserved for a subdued
@@ -175,7 +216,7 @@ section background.
 signal, not a state.
 **Pairs with:** `fg-primary`, `fg-muted`.
 
-#### `--color-bg-muted`
+#### `--theme-bg-muted`
 → `color.neutral.100` (light) / `color.neutral.800` (dark)
 **Purpose:** Background for an inert, non-interactive chip.
 **Use when:** `.pg-status--future`/`--na`/`--deprecated` badge backgrounds.
@@ -183,23 +224,23 @@ signal, not a state.
 **Pairs with:** `fg-secondary`, `fg-muted`.
 
 ### Text
-(`color.fg.*`)
+(`theme.fg.*`)
 
-#### `--color-fg-primary`
+#### `--theme-fg-primary`
 → `color.neutral.900` (light) / `color.neutral.50` (dark)
 **Purpose:** Default body/heading text.
 **Use when:** `body` color; secondary-button text.
 **Don't use for:** Text on a filled accent/danger surface — use `fg-on-accent`.
 **Pairs with:** `bg-canvas`, `bg-surface`.
 
-#### `--color-fg-secondary`
+#### `--theme-fg-secondary`
 → `color.neutral.600` (light) / `color.neutral.300` (dark)
 **Purpose:** De-emphasized but still substantive text.
 **Use when:** `.pg-status--future` badge text.
 **Don't use for:** The next tier down (helper/caption text) — that's `fg-muted`.
 **Pairs with:** `bg-canvas`, `bg-muted`.
 
-#### `--color-fg-muted`
+#### `--theme-fg-muted`
 → `color.neutral.500` (light) / `color.neutral.400` (dark)
 **Purpose:** Least-emphasized readable text.
 **Use when:** Row labels, table headers, swatch captions.
@@ -208,7 +249,7 @@ token (open gap); disabled state is currently expressed as opacity on the
 whole control, not a text-color swap. Don't improvise `fg-muted` as a stand-in.
 **Pairs with:** `bg-canvas`, `bg-surface`.
 
-#### `--color-fg-on-accent`
+#### `--theme-fg-on-accent`
 → `color.white` (both themes)
 **Purpose:** Text/icon guaranteed legible on a filled accent or danger surface.
 **Use when:** Primary/destructive button text.
@@ -219,23 +260,23 @@ because it's a general "light text" token.
 against anything else.
 
 ### Border
-(`color.border.*`, plus `color.focus-ring`)
+(`theme.border.*`, plus `theme.focus-ring`)
 
-#### `--color-border-default`
+#### `--theme-border-default`
 → `color.neutral.200` (light) / `color.neutral.800` (dark)
 **Purpose:** Resting-state border.
 **Use when:** Swatch tiles, table row dividers.
 **Don't use for:** An emphasized/hovered edge — use `border-strong`.
 **Pairs with:** `bg-surface`, `bg-canvas`.
 
-#### `--color-border-strong`
+#### `--theme-border-strong`
 → `color.neutral.300` (light) / `color.neutral.700` (dark)
 **Purpose:** Emphasized border.
 **Use when:** Secondary button (needs a visible edge — it has no fill).
 **Don't use for:** The resting/default case — use `border-default`.
 **Pairs with:** `bg-surface`.
 
-#### `--color-focus-ring`
+#### `--theme-focus-ring`
 → `color.accent.500` (light) / `color.accent.400` (dark)
 **Purpose:** Focus-indicator color, paired with the primitive ring
 width/offset/style (`focus.ring-*`).
@@ -245,7 +286,7 @@ distinct from hover, or keyboard users can't tell them apart.
 **Pairs with:** `border-default`, `border-strong` — verified 3:1 against both.
 
 ### Interactive
-(`color.accent-role.*`, `color.secondary-role.*`, `color.tertiary-role.*`, `color.danger-role.*`)
+(`theme.accent-role.*`, `theme.secondary-role.*`, `theme.tertiary-role.*`, `theme.danger-role.*`)
 
 Two tokens that used to exist here — `accent-role.bg-hover`/`bg-active` and
 `danger-role.bg-hover`/`bg-active` — were removed this session. They modeled
@@ -255,21 +296,21 @@ component ever consumed them. Carrying an undocumented, unwired token is
 worse than not having one; if a belt-and-suspenders color cue is ever
 wanted alongside the opacity overlay, re-add them deliberately then.
 
-#### `--color-accent-role-bg`
+#### `--theme-accent-role-bg`
 → `color.accent.600` (light) / `color.accent.500` (dark)
 **Purpose:** Primary action fill.
 **Use when:** `.ds-button--primary` background.
 **Don't use for:** Secondary/tertiary actions — they have their own sets below.
 **Pairs with:** `fg-on-accent`.
 
-#### `--color-accent-role-fg`
+#### `--theme-accent-role-fg`
 → `color.accent.600` (light) / `color.accent.400` (dark)
 **Purpose:** Text/icon for a fill-less accent action.
 **Use when:** `.ds-button--tertiary` color.
 **Don't use for:** Text on a *filled* accent bg — use `fg-on-accent`.
 **Pairs with:** `bg-canvas`, `bg-surface` — unfilled backgrounds only.
 
-#### `--color-accent-role-subtle`
+#### `--theme-accent-role-subtle`
 → `color.accent.50` (light) / `color.accent.950` (dark)
 **Purpose:** Faint accent-tinted fill.
 **Use when:** Not consumed yet — candidate for a future selected-row or
@@ -278,7 +319,17 @@ active-nav-item background.
 ramp step directly, not the lightest tint.
 **Pairs with:** `accent-role.fg`.
 
-#### `--color-secondary-role-bg` / `-fg` / `-border`
+#### `--theme-accent-role-ring`
+→ `ring.accent` (both themes — Astryx's real value has no light/dark split
+for this one)
+**Purpose:** Selection indicator — a 2px inset ring, not a fill or border.
+**Use when:** Not consumed yet — candidate for a future selected/checked
+state on a Checkbox, Radio, or selectable list row/card.
+**Don't use for:** Focus — that's `focus-ring`, a deliberately distinct
+token so focus stays visually different from "this is selected."
+**Pairs with:** `bg-surface`.
+
+#### `--theme-secondary-role-bg` / `-fg` / `-border`
 → `color.white`/`neutral.900`/`neutral.300` (light) ·
 `neutral.900`/`neutral.50`/`neutral.700` (dark)
 **Purpose:** Secondary action's own semantic set — added this session so
@@ -288,7 +339,7 @@ ramp step directly, not the lightest tint.
 **Don't use for:** Primary or destructive actions.
 **Pairs with:** each other (`bg` with `fg` with `border`).
 
-#### `--color-tertiary-role-fg`
+#### `--theme-tertiary-role-fg`
 → `color.accent.600` (light) / `color.accent.400` (dark)
 **Purpose:** Fill-less tertiary action text — kept as its own token even
 though it's identical to `accent-role.fg` today, so it can diverge later
@@ -297,7 +348,7 @@ without touching accent.
 **Don't use for:** Anything with a fill.
 **Pairs with:** `bg-canvas`, `bg-surface`.
 
-#### `--color-danger-role-bg`
+#### `--theme-danger-role-bg`
 → `color.danger.600` (light) / `color.danger.500` (dark)
 **Purpose:** Fill for a destructive **action**.
 **Use when:** `.ds-button--destructive` background.
@@ -306,7 +357,7 @@ status-danger must not share a token long-term even though identical today;
 they have different jobs and will eventually need different treatments.
 **Pairs with:** `fg-on-accent`.
 
-#### `--color-danger-role-fg` / `-subtle`
+#### `--theme-danger-role-fg` / `-subtle`
 → `color.danger.700`/`color.danger.50` (light) · `color.danger.400`/`color.danger.950` (dark)
 **Purpose:** Text/fill for a subtle danger surface — same shape as
 success/warning's `fg`/`subtle`, kept symmetric even though nothing
@@ -315,10 +366,20 @@ consumes it yet (no tertiary-danger button or error banner exists).
 **Don't use for:** A solid danger surface — use `danger-role.bg`.
 **Pairs with:** each other.
 
-### Status
-(`color.success-role.*`, `color.warning-role.*`)
+#### `--theme-danger-role-ring`
+→ `ring.danger` (both themes)
+**Purpose:** Invalid/error indicator — a 2px inset ring, not a fill or border.
+**Use when:** Not consumed yet — candidate for a future text-field/form
+control's error state (`npm run ui -- props text-field` today says that
+component doesn't exist).
+**Don't use for:** The error *message* surface next to a field — that's
+`danger-role.subtle`/`fg`. This token is the input's own outline only.
+**Pairs with:** `bg-surface`.
 
-#### `--color-success-role-bg` / `-fg` / `-subtle`
+### Status
+(`theme.success-role.*`, `theme.warning-role.*`)
+
+#### `--theme-success-role-bg` / `-fg` / `-subtle`
 → `success.600`/`700`/`50` (light) · `success.500`/`400`/`950` (dark)
 **Purpose:** Positive/complete status signal. `fg` sits one ramp step darker
 (light) or lighter (dark) than `bg`/`subtle`, for adequate contrast when
@@ -329,11 +390,66 @@ unconsumed today — no filled-success surface exists yet.
 not `fg`.
 **Pairs with:** each other.
 
-#### `--color-warning-role-bg` / `-fg` / `-subtle`
+#### `--theme-warning-role-bg` / `-fg` / `-subtle`
 Same shape and rules as success, for `.pg-status--in-progress`.
+
+#### `--theme-success-role-ring` / `--theme-warning-role-ring`
+→ `ring.success` / `ring.warning` (both themes)
+**Purpose:** Valid/warning indicator — a 2px inset ring, not a fill or border.
+**Use when:** Not consumed yet — same future text-field-validation use case
+as `danger-role.ring`, the positive/cautionary ends of the same set.
+**Don't use for:** A standalone status badge — that's `success-role.subtle`/
+`fg` (this is specifically for an input's own outline).
+**Pairs with:** `bg-surface`.
 
 *(No `info` status family exists — nothing in this design system uses one
 yet. Add it when a real consumer appears, not speculatively.)*
+
+### Elevation
+(`src/semantics/theme/{light,dark}.json` → `theme.elevation.*`, alongside
+`theme.bg`/`fg`/`border`/`*-role` in the same two files — the second
+semantic group in this system that branches by theme, which is why the
+branching file/folder is named `theme` rather than `color`.)
+
+Named for the component each is reserved for, not for shadow size — matches
+how every other role-named group in this system works, and states directly
+what a future consumer should reach for. None are consumed by a real
+component yet (no Card/Popover/Dialog exists), same "added ahead of need,
+flagged as such" treatment already given to `space.padding.*`.
+
+#### `--theme-elevation-raised`
+→ `elevation.low` (light) / `elevation.low-strong` (dark)
+**Purpose:** Minimal lift for a surface sitting slightly above the page —
+the smallest step in the elevation scale.
+**Use when:** A card-like surface at rest (a future Card component); a row
+or panel that needs to read as "above" the canvas without competing for
+attention.
+**Don't use for:** Anything with a scrim, or that blocks interaction with
+the page behind it — that's `elevation-overlay` or `elevation-modal`.
+**Pairs with:** `bg-surface` as the surface it's applied to — not intended
+directly over `bg-canvas` (nothing to lift off of).
+
+#### `--theme-elevation-overlay`
+→ `elevation.med` (light) / `elevation.med-strong` (dark)
+**Purpose:** Mid-level lift for a transient, non-modal surface that floats
+above content without blocking it.
+**Use when:** A future Popover/dropdown-menu/tooltip/toast — the shape
+`npm run ui -- props dialog` today points at as unbuilt.
+**Don't use for:** A persistent at-rest surface (`elevation-raised`) or a
+page-blocking surface (`elevation-modal`).
+**Pairs with:** `bg-surface`; typically paired with a dismiss-on-outside-click
+behavior, since these tokens exist specifically for transient panels.
+
+#### `--theme-elevation-modal`
+→ `elevation.high` (light) / `elevation.high-strong` (dark)
+**Purpose:** Maximum lift for a surface that blocks interaction with
+everything behind it.
+**Use when:** A future Dialog/modal surface.
+**Don't use for:** Anything without an accompanying backdrop/scrim —
+modal-strength shadow with no backdrop reads as a rendering bug, not a
+hierarchy cue.
+**Pairs with:** A backdrop/scrim treatment — none exists yet in this system;
+flag as a gap alongside Dialog itself, not something this token solves alone.
 
 ### Border width
 (`src/semantics/border.json` → folds into `border.*` alongside the raw
@@ -348,7 +464,7 @@ in when those components are rebuilt.
 **Don't use for:** A focus ring — see `focus.ring-width`, which is a
 different role even though it happens to reference a different step of the
 same primitive scale.
-**Pairs with:** `color.border.default`, `color.border.strong`.
+**Pairs with:** `theme.border.default`, `theme.border.strong`.
 
 ### State
 (`src/semantics/state.json` → new `state.*` family — was primitive-only
@@ -377,8 +493,8 @@ State; flattened var names unchanged)
 **Use when:** `:focus-visible` on any focusable control (`.ds-button`).
 **Don't use for:** A resting border — see `border.default`, a different
 step of the same primitive scale.
-**Pairs with:** `color.focus-ring` (the color half of the same indicator,
-which stays in the color semantic layer since it's theme-dependent).
+**Pairs with:** `theme.focus-ring` (the color half of the same indicator,
+which stays in the theme semantic layer since it's theme-dependent).
 
 #### `focus.ring-style`
 → `"solid"` (literal, not `{primitive}`)
@@ -720,7 +836,7 @@ real enter-vs-exit distinction is needed, rather than guessing now.
 | Light `danger-role.fg` raised `danger.600`→`danger.700` | Matches `success-role`/`warning-role`'s pattern (`fg` one step darker than `bg`, for contrast on the `subtle` fill); dark's `danger-role.fg` was already consistent | Leaving the original asymmetric value |
 | No semantic wrapper for `size.control.*` | `sm`/`md`/`lg` already maps 1:1 to `Button`'s own `size` prop — an alias would add a name with zero disambiguation value | `size.role.button-sm` etc. |
 | Built `space.page.*` despite only one page existing | Explicit ask to extend semantics beyond color now, ahead of a second page | Waiting for a second page to justify a page-edge consistency rule |
-| Typography/spacing/radius/motion semantics fold into their primitive's existing flattened family (`space.*`, not a separate `space-role.*`) | Matches how color's `accent-role` already shares the `color.*` family with `color.accent`'s raw ramp — one convention, not two | A parallel `-role`/`-semantic` suffix convention for every family |
+| Typography/spacing/radius/motion semantics fold into their primitive's existing flattened family (`space.*`, not a separate `space-role.*`) | Matches how border's `border.default` already shares the `border.*` family with `border.1`/`2`/`3`'s raw scale — one convention, not two (color/theme is the one exception now — see below) | A parallel `-role`/`-semantic` suffix convention for every family |
 | Moved `state.*` and `focus.*` (minus color) from Primitives to Semantics | Each is a single already-made decision (how this system expresses feedback/focus), not a scale of raw options to choose from — the primitive/semantic test is "scale vs. decision," not just "shared across every consumer" | Leaving them primitive on the "shared, redesign-survivable value" reasoning alone |
 | `border` primitive expanded from one value (`width: 1px`) to a 3-step scale (`1`/`2`/`3`px) | `state`/`focus` moving to Semantics meant `border-width` and `ring-offset` needed something to reference; one shared scale covers both without losing Astryx's exact 3px offset value or reusing the unrelated `space` scale | Rounding `ring-offset` onto the nearest existing `space` step (2px or 4px, losing precision); adding a one-off 3px step to `space` itself |
 | New `opacity` primitive scale (`8`/`12`/`50`) | `state.*`'s three opacity values needed a primitive to reference once moved to Semantics | Leaving them as literals in the semantic layer (violates "semantics reference primitives only") |
@@ -744,6 +860,13 @@ real enter-vs-exit distinction is needed, rather than guessing now.
 | `overlay`/`modal` both use `easing.standard` for now, not split into enter/exit | Astryx published only one easing curve; the `enter`/`exit` primitives that exist are unrelated leftovers from the original scaffold, not sourced from Astryx — splitting onto them now would be guessing which curve fits which direction with no real component to check it against | Assigning `enter`/`exit` to `overlay`/`modal` speculatively |
 | Letter-spacing primitives re-keyed from eBay's role names (`display-1`, `signal-2`) to SGDS-style measure-tier names (`tightest`→`wider`) | Same primitive/semantic violation already caught and fixed once for `radius` — role names belong in Semantics, not Primitives; SGDS's real letter-spacing tokens use exactly this tier-naming convention, giving a credible pattern to follow rather than inventing one | Leaving eBay's role names on the primitive, inconsistent with how `radius` was already handled |
 | `motion.easing.enter`/`exit` replaced with Carbon's real `entrance.productive`/`exit.productive` curves | The prior values were unsourced scaffold placeholders, not from Astryx; Carbon publishes real, credible entrance/exit curves (with a productive/expressive split) — using a real source beats carrying an unverified guess indefinitely | Leaving the scaffold placeholders in place since nothing consumes them yet |
+| Renamed the `color` semantic group → `theme`, folding `color` (unchanged) and a new `elevation` group under one shared `theme` key | Elevation now branches light/dark too, so it isn't only color that varies by theme anymore; `theme` names the umbrella both groups actually share, where `color` implied the branching file was color-specific. Reverses an earlier decision recorded in [STRUCTURE.md](../../STRUCTURE.md) (`themes/` → `semantics/color/`) — that decision was correct when color was the only occupant; it stops being correct once there are two | Adding `elevation` as its own independently-branching `semantics/elevation/{light,dark}.json`, duplicating the light/dark plumbing `build.mjs` already special-cases for one group instead of sharing it |
+| `theme.elevation.raised`/`overlay`/`modal` named for their future component, not for shadow size (`sm`/`md`/`lg`) | Matches every other semantic group in this system being role-named; states directly what a future Card/Popover/Dialog should reach for, the same test already applied to `radius.control`/`radius.pill` etc. | Reusing the primitive step names (`sm`/`md`/`lg`) directly as the semantic names — that's a primitive alias, not a semantic |
+| Dark theme's elevation uses distinct, higher-opacity shadow values (`elevation.low-strong`/`med-strong`/`high-strong`, new primitive steps) rather than reusing the light-mode primitive as-is | A box-shadow authored at light-mode opacity barely registers against a dark canvas; extending the flat primitive scale with parallel higher-opacity steps lets `theme.elevation`'s light/dark semantics each pick a different step — same mechanism color already uses (light picks `accent.600`, dark picks `accent.500`) — so the "theme varies only in which primitive step semantics pick" rule holds for elevation too. Originally shipped as an invented 3–4x-opacity guess in the same session, then replaced below once a real source was fetched | Baking `{light, dark}` sub-keys directly into the elevation primitive — rejected, that moves the theme decision into the primitive layer, breaking the same primitive/semantic separation color relies on |
+| Elevation primitive rebuilt from Astryx's real `--shadow-low`/`-med`/`-high` (`sm`/`md`/`lg` renamed to `low`/`med`/`high`, both light and `-strong` dark values replaced with real fetched numbers) | The prior values were an unsourced scaffold, explicitly flagged as such (see the `-strong` decision above and the original Elevation primitive note); a real source was fetched this session (raw HTML of Astryx's docs page — the page only renders swatch previews, values are in inline `style="box-shadow:…"` attributes, not printed text) so the same "prefer real source over guessing" standard already applied to Font/Radius/Letter-spacing now applies here too | Keeping the scaffold values since nothing outside this system depended on their exact numbers yet — rejected, "nothing consumes it" was true for the *old* elevation too and is exactly why it stayed unsourced this long |
+| Added a new `ring` primitive (`neutral`/`neutral-strong`/`accent`/`success`/`warning`/`danger`, real Astryx `--shadow-inset-*` values) and wired `accent-role.ring`/`success-role.ring`/`warning-role.ring`/`danger-role.ring` into the existing role groups rather than a new top-level group | These are validation/selection *ring* colors for the same hues `accent-role`/`success-role`/`warning-role`/`danger-role` already model — extending each existing group with one more field matches how `secondary-role` already bundles `bg`/`fg`/`border` together, and avoids a parallel `ring-role.*` family that would just re-describe the same four hues | A standalone `theme.ring.*` group (`ring.accent`, `ring.success`, …) — rejected as a needless second naming scheme for hues that already have a home |
+| `ring` primitive keyed by hue family (`accent`/`success`/`warning`/`danger`), not Astryx's own names (`selected`/`success`/`warning`/`error`) | Astryx's naming mixes role into the primitive name (`selected` describes a UI role, not an appearance) — the same primitive/semantic mixup already caught and re-keyed once for `radius` and once for letter-spacing; `error`→`danger` also matches this system's existing term for the same status, used everywhere else (`danger-role`, `color.danger`) | Keeping Astryx's literal names on the primitive, inconsistent with how `radius`/letter-spacing were already handled |
+| `ring.neutral`/`neutral-strong` (Astryx's `shadow-inset-hover`) fetched and kept as a primitive, but **not** wired to any semantic token | Wiring it would model a hover *ring*, and this system has a standing, explicit decision (see `accent-role.bg-hover`/`bg-active` above) that hover feedback is opacity-only, via the state-layer overlay — adding a second, ring-based hover channel now would directly reintroduce the thing that decision removed | Wiring `theme.*-role.hover-ring` alongside the opacity overlay as a belt-and-suspenders cue — rejected without deliberately revisiting the opacity-only decision first, which is a separate call, not a token-naming one |
 
 ## Audit against Carbon and SGDS
 

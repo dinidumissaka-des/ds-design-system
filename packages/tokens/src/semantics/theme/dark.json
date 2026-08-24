@@ -1,5 +1,5 @@
 {
-  "color": {
+  "theme": {
     "bg": {
       "canvas": "{color.neutral.950}",
       "surface": "{color.neutral.900}",
@@ -19,7 +19,8 @@
     "accent-role": {
       "bg": "{color.accent.500}",
       "fg": "{color.accent.400}",
-      "subtle": "{color.accent.950}"
+      "subtle": "{color.accent.950}",
+      "ring": "{ring.accent}"
     },
     "secondary-role": {
       "bg": "{color.neutral.900}",
@@ -32,18 +33,26 @@
     "success-role": {
       "bg": "{color.success.500}",
       "fg": "{color.success.400}",
-      "subtle": "{color.success.950}"
+      "subtle": "{color.success.950}",
+      "ring": "{ring.success}"
     },
     "warning-role": {
       "bg": "{color.warning.500}",
       "fg": "{color.warning.400}",
-      "subtle": "{color.warning.950}"
+      "subtle": "{color.warning.950}",
+      "ring": "{ring.warning}"
     },
     "danger-role": {
       "bg": "{color.danger.500}",
       "fg": "{color.danger.400}",
-      "subtle": "{color.danger.950}"
+      "subtle": "{color.danger.950}",
+      "ring": "{ring.danger}"
     },
-    "focus-ring": "{color.accent.400}"
+    "focus-ring": "{color.accent.400}",
+    "elevation": {
+      "raised": "{elevation.low-strong}",
+      "overlay": "{elevation.med-strong}",
+      "modal": "{elevation.high-strong}"
+    }
   }
 }

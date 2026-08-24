@@ -70,8 +70,8 @@ function StatusPill({ artifact }: { artifact?: { state: string; version?: string
 
 // ---- Token preview helpers ---------------------------------------------
 // Everything below reads straight from the built `tokens` object (light-theme
-// values, static) except color semantics, which render via var(--ds-color-*)
-// so they stay theme-reactive when the toggle above is used.
+// values, static) except theme semantics (color + elevation), which render
+// via var(--ds-theme-*) so they stay theme-reactive when the toggle above is used.
 
 function ColorRamp({ title, ramp }: { title: string; ramp: Record<string, string> }) {
   return (
@@ -106,8 +106,49 @@ function SemanticSwatches({
       <div className="pg-swatches">
         {keys.map((key) => (
           <div key={key}>
-            <div className="pg-swatch" style={{ background: `var(--ds-color-${cssVarPrefix}-${key})` }} />
+            <div className="pg-swatch" style={{ background: `var(--ds-theme-${cssVarPrefix}-${key})` }} />
             <div className="pg-swatch-name">{key}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ElevationSwatches({ title, keys }: { title: string; keys: string[] }) {
+  return (
+    <div>
+      <div className="pg-ramp-title">{title}</div>
+      <div className="pg-swatches">
+        {keys.map((key) => (
+          <div key={key}>
+            <div
+              className="pg-swatch pg-swatch--elevation"
+              style={{ boxShadow: `var(--ds-theme-elevation-${key})` }}
+            />
+            <div className="pg-swatch-name">{key}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Reads each role's `ring` field (validation/selection state — inset shadow,
+// not a fill), which SemanticSwatches above deliberately skips since it
+// assumes every key is a background color.
+function RingSwatches({ title, roles }: { title: string; roles: string[] }) {
+  return (
+    <div>
+      <div className="pg-ramp-title">{title}</div>
+      <div className="pg-swatches">
+        {roles.map((role) => (
+          <div key={role}>
+            <div
+              className="pg-swatch pg-swatch--elevation"
+              style={{ boxShadow: `var(--ds-theme-${role}-ring)` }}
+            />
+            <div className="pg-swatch-name">{role}</div>
           </div>
         ))}
       </div>
@@ -327,52 +368,57 @@ export function App() {
                 <ColorRamp title="data.teal" ramp={tokens.color.data.teal} />
                 <ColorRamp title="data.yellow" ramp={tokens.color.data.yellow} />
                 <ColorRamp title="data.gray" ramp={tokens.color.data.gray} />
-                <SemanticSwatches title="bg" keys={Object.keys(tokens.color.bg)} cssVarPrefix="bg" />
-                <SemanticSwatches title="fg" keys={Object.keys(tokens.color.fg)} cssVarPrefix="fg" />
+                <SemanticSwatches title="bg" keys={Object.keys(tokens.theme.bg)} cssVarPrefix="bg" />
+                <SemanticSwatches title="fg" keys={Object.keys(tokens.theme.fg)} cssVarPrefix="fg" />
                 <SemanticSwatches
                   title="border"
-                  keys={Object.keys(tokens.color.border)}
+                  keys={Object.keys(tokens.theme.border)}
                   cssVarPrefix="border"
                 />
                 <SemanticSwatches
                   title="accent-role"
-                  keys={Object.keys(tokens.color["accent-role"])}
+                  keys={Object.keys(tokens.theme["accent-role"]).filter((k) => k !== "ring")}
                   cssVarPrefix="accent-role"
                 />
                 <SemanticSwatches
                   title="secondary-role"
-                  keys={Object.keys(tokens.color["secondary-role"])}
+                  keys={Object.keys(tokens.theme["secondary-role"])}
                   cssVarPrefix="secondary-role"
                 />
                 <SemanticSwatches
                   title="tertiary-role"
-                  keys={Object.keys(tokens.color["tertiary-role"])}
+                  keys={Object.keys(tokens.theme["tertiary-role"])}
                   cssVarPrefix="tertiary-role"
                 />
                 <SemanticSwatches
                   title="success-role"
-                  keys={Object.keys(tokens.color["success-role"])}
+                  keys={Object.keys(tokens.theme["success-role"]).filter((k) => k !== "ring")}
                   cssVarPrefix="success-role"
                 />
                 <SemanticSwatches
                   title="warning-role"
-                  keys={Object.keys(tokens.color["warning-role"])}
+                  keys={Object.keys(tokens.theme["warning-role"]).filter((k) => k !== "ring")}
                   cssVarPrefix="warning-role"
                 />
                 <SemanticSwatches
                   title="danger-role"
-                  keys={Object.keys(tokens.color["danger-role"])}
+                  keys={Object.keys(tokens.theme["danger-role"]).filter((k) => k !== "ring")}
                   cssVarPrefix="danger-role"
+                />
+                <RingSwatches
+                  title="ring (accent/success/warning/danger-role)"
+                  roles={["accent-role", "success-role", "warning-role", "danger-role"]}
                 />
                 <div>
                   <div className="pg-ramp-title">focus-ring</div>
                   <div className="pg-swatches">
                     <div>
-                      <div className="pg-swatch" style={{ background: "var(--ds-color-focus-ring)" }} />
+                      <div className="pg-swatch" style={{ background: "var(--ds-theme-focus-ring)" }} />
                       <div className="pg-swatch-name">focus-ring</div>
                     </div>
                   </div>
                 </div>
+                <ElevationSwatches title="elevation" keys={Object.keys(tokens.theme.elevation)} />
               </div>
               <p className="pg-note">theme-reactive semantics — try the toggle above</p>
             </section>

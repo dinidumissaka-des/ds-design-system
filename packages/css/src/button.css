@@ -19,7 +19,7 @@
 }
 
 .ds-button:focus-visible {
-  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
   outline-offset: var(--ds-focus-ring-offset);
 }
 
@@ -44,24 +44,24 @@
 
 /* Variants */
 .ds-button--primary {
-  background: var(--ds-color-accent-role-bg);
-  color: var(--ds-color-fg-on-accent);
+  background: var(--ds-theme-accent-role-bg);
+  color: var(--ds-theme-fg-on-accent);
 }
 
 .ds-button--secondary {
-  background: var(--ds-color-bg-surface);
-  color: var(--ds-color-fg-primary);
-  border-color: var(--ds-color-border-strong);
+  background: var(--ds-theme-bg-surface);
+  color: var(--ds-theme-fg-primary);
+  border-color: var(--ds-theme-border-strong);
 }
 
 .ds-button--tertiary {
   background: transparent;
-  color: var(--ds-color-accent-role-fg);
+  color: var(--ds-theme-accent-role-fg);
 }
 
 .ds-button--destructive {
-  background: var(--ds-color-danger-role-bg);
-  color: var(--ds-color-fg-on-accent);
+  background: var(--ds-theme-danger-role-bg);
+  color: var(--ds-theme-fg-on-accent);
 }
 
 /* States — aria-disabled keeps the control focusable/discoverable for AT */
@@ -98,7 +98,7 @@
   border: none;
   height: auto;
   padding: 0;
-  color: var(--ds-color-accent-role-fg);
+  color: var(--ds-theme-accent-role-fg);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
