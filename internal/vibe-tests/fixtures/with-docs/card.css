@@ -1,0 +1,19 @@
+/* Card — the card recipe. bg.surface plus a border, because surface and canvas
+   are the same value in the light theme. */
+.card {
+  background: var(--ds-color-bg-surface);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-space-4);
+  color: var(--ds-color-fg-primary);
+  box-shadow: var(--ds-elevation-sm);
+}
+
+.card__title {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.card__body {
+  color: var(--ds-color-fg-secondary);
+}

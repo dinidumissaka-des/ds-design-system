@@ -1,0 +1,23 @@
+/* Primary button — the button-primary recipe. Hover/press come from
+   .ds-state-layer, which the element composes. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  height: var(--ds-size-control-md);
+  padding-inline: var(--ds-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-accent-role-bg);
+  color: var(--ds-color-fg-on-accent);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  line-height: var(--ds-font-line-height-tight);
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}

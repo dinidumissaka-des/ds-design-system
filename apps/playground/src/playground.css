@@ -39,6 +39,8 @@ body {
   margin-bottom: var(--ds-space-3);
 }
 
+/* ds-allow: hardcoded-dimension — the label gutter is a playground layout
+   constant, not a step on the sizing scale */
 .pg-row-label {
   width: 96px;
   font-size: var(--ds-font-size-xs);
@@ -56,13 +58,13 @@ body {
 .pg-swatch {
   border-radius: var(--ds-radius-sm);
   border: 1px solid var(--ds-color-border-default);
-  height: 48px;
+  height: var(--ds-size-control-lg);
 }
 
 .pg-swatch-name {
-  font-size: 10px;
+  font-size: var(--ds-font-size-xs);
   color: var(--ds-color-fg-muted);
-  margin-top: 2px;
+  margin-top: var(--ds-space-1);
 }
 
 .pg-table {
@@ -87,7 +89,7 @@ body {
 
 .pg-status {
   display: inline-block;
-  padding: 2px 8px;
+  padding: var(--ds-space-1) var(--ds-space-2);
   border-radius: var(--ds-radius-full);
   font-size: var(--ds-font-size-xs);
   font-weight: var(--ds-font-weight-medium);

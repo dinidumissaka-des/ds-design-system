@@ -1,0 +1,89 @@
+{
+  "$comment": "Each prompt targets a decision where a model without the token docs reliably picks wrong. `mustUse` lists the tokens the documented answer requires; `targets` names the rule the prompt is probing, so a regression points at the guidance that stopped working.",
+  "prompts": [
+    {
+      "id": "warning-notice",
+      "targets": ["forbidden-pairing", "palette-token"],
+      "prompt": "Write the CSS for a warning notice: a banner with an icon, a title, and a line of body text, used to caution the user without blocking them.",
+      "trap": "The obvious move is a saturated amber background with white text. color.fg.on-accent on color.warning-role.bg measures 2.15:1 in both themes.",
+      "mustUse": ["color.warning-role.subtle", "color.warning-role.fg"]
+    },
+    {
+      "id": "success-toast",
+      "targets": ["forbidden-pairing"],
+      "prompt": "Write the CSS for a success toast that confirms a record was saved. It shows a checkmark and a short message.",
+      "trap": "White on color.success-role.bg is 3.30:1 light and 2.28:1 dark. The saturated fill is for non-text indicators only.",
+      "mustUse": ["color.success-role.subtle", "color.success-role.fg"]
+    },
+    {
+      "id": "primary-button",
+      "targets": ["palette-token", "hardcoded-dimension", "missing-focus-ring"],
+      "prompt": "Write the CSS for a primary button at the default size, including its focus state.",
+      "trap": "Models reach for a blue palette step and hardcode height and padding.",
+      "mustUse": ["color.accent-role.bg", "color.fg.on-accent", "size.control.md", "color.focus-ring"]
+    },
+    {
+      "id": "destructive-confirm",
+      "targets": ["forbidden-pairing", "palette-token"],
+      "prompt": "Write the CSS for the confirm button in a delete-confirmation dialog.",
+      "trap": "Reaching into the red palette ramp instead of the danger role.",
+      "mustUse": ["color.danger-role.bg", "color.fg.on-accent"]
+    },
+    {
+      "id": "card",
+      "targets": ["palette-token", "hardcoded-dimension"],
+      "prompt": "Write the CSS for a content card: a raised container with a title, body text, and a subtle outline.",
+      "trap": "A white background and a #e5e7eb border, both of which break in dark mode.",
+      "mustUse": ["color.bg.surface", "color.border.default", "color.fg.primary", "radius.lg"]
+    },
+    {
+      "id": "text-field-error",
+      "targets": ["palette-token", "missing-focus-ring"],
+      "prompt": "Write the CSS for a text input in its invalid state, with the error message shown beneath it.",
+      "trap": "A hardcoded red, and a focus ring removed to avoid clashing with the error border.",
+      "mustUse": ["color.danger-role.fg", "color.focus-ring"]
+    },
+    {
+      "id": "button-hover",
+      "targets": ["hand-rolled-hover"],
+      "prompt": "Add hover and pressed states to the primary button.",
+      "trap": "Swapping background to a darker accent instead of composing .ds-state-layer.",
+      "mustUse": []
+    },
+    {
+      "id": "disabled-button",
+      "targets": ["native-disabled-styling"],
+      "prompt": "Write the CSS for a button in its disabled state.",
+      "trap": "Styling :disabled, which makes the control unfocusable and invisible to screen readers.",
+      "mustUse": ["state.disabled-opacity"]
+    },
+    {
+      "id": "table-header",
+      "targets": ["palette-token", "hardcoded-dimension"],
+      "prompt": "Write the CSS for a data table's header row and its cell borders.",
+      "trap": "A grey from the neutral ramp for the header fill.",
+      "mustUse": ["color.bg.subtle", "color.border.default"]
+    },
+    {
+      "id": "status-dot",
+      "targets": ["palette-token"],
+      "prompt": "Write the CSS for a small round status dot with online, degraded, and offline variants.",
+      "trap": "Green/amber/red picked straight from the palette ramps.",
+      "mustUse": ["color.success-role.bg", "color.warning-role.bg", "color.danger-role.bg"]
+    },
+    {
+      "id": "dropdown-menu",
+      "targets": ["palette-token", "hardcoded-motion"],
+      "prompt": "Write the CSS for a dropdown menu panel with its items, including the open transition.",
+      "trap": "A hardcoded box-shadow and `transition: all 0.2s ease-in-out`.",
+      "mustUse": ["color.bg.surface", "elevation.md", "motion.duration.normal", "motion.easing.enter"]
+    },
+    {
+      "id": "info-banner",
+      "targets": ["palette-token", "forbidden-pairing"],
+      "prompt": "Write the CSS for an informational banner explaining a new feature.",
+      "trap": "A saturated accent fill behind body text, or a palette blue.",
+      "mustUse": ["color.accent-role.subtle", "color.accent-role.fg"]
+    }
+  ]
+}

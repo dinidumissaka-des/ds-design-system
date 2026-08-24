@@ -1,0 +1,14 @@
+/* Warning notice — the naive answer: saturated amber fill with white text. */
+.warning-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: var(--ds-color-warning-role-bg);
+  color: var(--ds-color-fg-on-accent);
+}
+
+.warning-notice__title {
+  font-weight: 600;
+}
