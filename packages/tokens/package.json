@@ -12,7 +12,9 @@
     },
     "./css": "./dist/css/tokens.css",
     "./tailwind": "./dist/tailwind/preset.cjs",
-    "./usage": "./dist/usage.json"
+    "./usage": "./dist/usage.json",
+    "./theme": "./src/theme/index.mjs",
+    "./theme/base": "./src/themes/base.mjs"
   },
   "files": [
     "dist",

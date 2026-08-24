@@ -17,6 +17,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run docs:check
+      - run: npm run themes:check
       - run: npm test
       - run: npm run vibe:test
       - run: npm run vibe
