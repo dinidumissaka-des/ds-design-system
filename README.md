@@ -6,7 +6,8 @@ A token-first, multi-layer design system for web apps and websites. Benchmark: [
 
 | Layer | Package | What it is | Distribution |
 |---|---|---|---|
-| Tokens | `@ds/tokens` | JSON source of truth → CSS variables, TypeScript, Tailwind preset, [usage docs](packages/tokens/TOKENS.md) | npm |
+| Tokens | `@ds/tokens` | Seed-driven token engine → CSS variables, TypeScript, Tailwind preset, [usage docs](packages/tokens/TOKENS.md) | npm |
+| Themes | `@ds/theme-*` | Brand themes: a few seeds + `extends`, built to scoped override CSS | npm (pro tier) |
 | CSS components | `@ds/css` | Framework-free, per-component versioned CSS (works with plain HTML) | npm |
 | Primitives | `@ds/primitives` | Headless, accessible behavior (pure functions — portable beyond React) | npm |
 | React components | `@ds/react` | Styled components: primitives behavior + CSS appearance | npm **and** CLI copy-paste |
@@ -21,7 +22,8 @@ Key decisions:
 - **State layer as its own primitive**: uniform hover/press feedback across all interactive components.
 - **Status matrix from registry metadata**: honest per-artifact lifecycle (latest / in-progress / future / deprecated / na), published on the docs site.
 - **Open core**: tokens + primitives + base components free (MIT); composed blocks/templates and multi-brand theming are the paid tier (`tier: "pro"` in registry manifests).
-- **Documented tokens are enforced tokens**: every token carries usage rules in `packages/tokens/src/usage.json`, and the build fails if a token is undocumented, if the docs name a token that does not exist, or if a documented contrast pairing stops holding.
+- **Documented tokens are enforced tokens**: every token carries usage rules in `packages/tokens/src/usage.json`, and the build fails if a token is undocumented, if the docs name a token that does not exist, if a documented scale step no longer exists, or if a documented contrast pairing stops holding.
+- **Generated, not enumerated**: colour, typography, radius and motion come from four seeds per theme, expanded by a generator ported from [Astryx](https://github.com/facebook/astryx). Because HCT tone fixes relative luminance independently of hue, the WCAG guarantees hold *for any brand colour a theme seeds* — and every brand re-measures them at build time. See [THEME-ENGINE.md](packages/tokens/THEME-ENGINE.md).
 
 ## Using the tokens
 
@@ -41,6 +43,7 @@ Whether that documentation actually changes what an agent writes is measured, no
 npm install
 npm run build       # tokens → css → primitives → react → ui:sync
 npm run docs:check  # fail if TOKENS.md is out of date with usage.json
+npm run themes:check # re-verify every brand theme's contrast promises
 npm run vibe        # score the token-guidance A/B fixtures
 npm test            # primitives unit tests
 npm run dev         # playground at http://localhost:5173
@@ -87,11 +90,13 @@ at `packages/cli/bin/`). See Open items below.
 ## Open items
 
 - Product name + npm scope (placeholder: `@ds`)
-- Own color palette (current scales are placeholders, not brand-differentiated)
 - Docs site with eBay-Playbook-grade guidance pages (Types / Anatomy / Placement / Behavior / A11y / Tokens / API)
 - Figma variables export + component library
 - Visual regression (Playwright) and axe a11y gates in CI
 - Hosted registry + license auth for the pro tier
+- Brand palette — the accent seed (`#2563EB`) is still a placeholder; changing
+  it is a one-line edit in `packages/tokens/src/themes/base.mjs` now, and the
+  build re-verifies contrast for whatever replaces it
 - Container components (`Card`, `Table`, `List`) — layout guidance in CLAUDE.md
   references these categories generically; none exist in the registry yet
 - CSS cascade layers (`@layer`) — component CSS currently relies on the

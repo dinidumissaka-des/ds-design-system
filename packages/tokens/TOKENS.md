@@ -8,13 +8,14 @@ Every token in this system, what it is for, and what it is *not* for. If you are
 ## Rules
 
 1. Never use a raw palette token (color.neutral.*, color.accent.*, color.success.*, color.warning.*, color.danger.*, color.white, color.black) in a component. They are identical in both themes, so a component using one is broken in the other. Use a theme.* semantic token instead. color.data.* is the one exception — it exists for direct use in data visualization.
-2. Every color decision has exactly one correct semantic token. If none of them fits, the component needs a new semantic token added to both semantics/theme/light.json and semantics/theme/dark.json via the design-tokens skill — do not reach into the palette.
+2. Every color decision has exactly one correct semantic token. If none fits, the theme needs a new semantic token — add it in packages/tokens/src/themes/base.mjs via the design-tokens skill, not by reaching into the palette.
 3. Backgrounds come from theme.bg.* or a role's bg/subtle. Text and icons come from theme.fg.* or a role's fg. Never put a role's bg behind text unless a pairing below allows it.
 4. Reference tokens as CSS variables (var(--ds-<path-with-dashes>)), not as literal values. theme.accent-role.bg is var(--ds-theme-accent-role-bg).
 5. Use the space scale for every margin, padding, and gap. Never write an arbitrary pixel value; pick the nearest step, or the rolled-up gap/stack/padding/page/control role that already names the situation.
 6. Interactive controls get their height from size.control.*, their hover/press feedback from the .ds-state-layer class (not from hand-written hover colors), their focus ring from focus.* plus theme.focus-ring, and validation/selection emphasis from a role's ring (an inset stroke, not the focus outline).
-7. theme.* is the only family whose value differs between light and dark. Everything under src/primitives/*.json is theme-independent, including color.data.*.
+7. theme.* is the only family whose value differs between light and dark. Primitives and the generated scales (font.size.*, type.*, radius.*, motion.duration.*) are scheme-independent, as is color.data.*.
 8. aria-disabled, not the disabled attribute, on interactive primitives — the control stays focusable and screen-reader discoverable, styled with state.disabled-opacity.
+9. Do not hand-write a value a seed already generates. Colour, type, radius and duration all come from the theme's seeds in packages/tokens/src/themes/base.mjs — change the seed, not the output.
 
 ## Layers
 
@@ -64,7 +65,7 @@ These are the only color and elevation tokens a component may use. Each one is t
 
 ### `theme.bg.canvas`
 
-`var(--ds-theme-bg-canvas)` · light `#ffffff` · dark `#020617`
+`var(--ds-theme-bg-canvas)` · light `#F0F0F9` · dark `#111018`
 
 The page's own background, behind every surface.
 
@@ -91,7 +92,7 @@ body { background: var(--ds-theme-bg-canvas); color: var(--ds-theme-fg-primary);
 
 ### `theme.bg.surface`
 
-`var(--ds-theme-bg-surface)` · light `#ffffff` · dark `#0f172a`
+`var(--ds-theme-bg-surface)` · light `#FCFCFF` · dark `#1B1B22`
 
 A raised surface sitting on top of the canvas — the default background for any container with an edge.
 
@@ -108,7 +109,7 @@ A raised surface sitting on top of the canvas — the default background for any
 
 ### `theme.bg.subtle`
 
-`var(--ds-theme-bg-subtle)` · light `#f8fafc` · dark `#0f172a`
+`var(--ds-theme-bg-subtle)` · light `#F0F0F9` · dark `#1B1B22`
 
 A quiet, faintly recessed or striped background — one step of emphasis below a surface, without reading as an interactive control.
 
@@ -125,7 +126,7 @@ A quiet, faintly recessed or striped background — one step of emphasis below a
 
 ### `theme.bg.muted`
 
-`var(--ds-theme-bg-muted)` · light `#f1f5f9` · dark `#1e293b`
+`var(--ds-theme-bg-muted)` · light `#E2E2EB` · dark `#303037`
 
 The most recessed background — an inset well, a track, or a skeleton-loading placeholder.
 
@@ -145,7 +146,7 @@ The most recessed background — an inset well, a track, or a skeleton-loading p
 
 ### `theme.fg.primary`
 
-`var(--ds-theme-fg-primary)` · light `#0f172a` · dark `#f8fafc`
+`var(--ds-theme-fg-primary)` · light `#1B1B22` · dark `#E2E2EB`
 
 The default, highest-emphasis text and icon color.
 
@@ -157,7 +158,7 @@ The default, highest-emphasis text and icon color.
 
 ### `theme.fg.secondary`
 
-`var(--ds-theme-fg-secondary)` · light `#475569` · dark `#cbd5e1`
+`var(--ds-theme-fg-secondary)` · light `#464652` · dark `#AAAAB8`
 
 Lower-emphasis text — supporting copy that should not compete with primary content.
 
@@ -169,7 +170,7 @@ Lower-emphasis text — supporting copy that should not compete with primary con
 
 ### `theme.fg.muted`
 
-`var(--ds-theme-fg-muted)` · light `#64748b` · dark `#94a3b8`
+`var(--ds-theme-fg-muted)` · light `#5E5D6A` · dark `#908F9D`
 
 The lowest-emphasis foreground — placeholders and decorative icons only.
 
@@ -186,7 +187,7 @@ The lowest-emphasis foreground — placeholders and decorative icons only.
 
 ### `theme.fg.on-accent`
 
-`var(--ds-theme-fg-on-accent)` · light `#ffffff` · dark `#ffffff`
+`var(--ds-theme-fg-on-accent)` · light `#FFFFFF` · dark `#002A87`
 
 White text/icon color for use on a filled, saturated role background.
 
@@ -203,7 +204,7 @@ White text/icon color for use on a filled, saturated role background.
 
 ### `theme.border.default`
 
-`var(--ds-theme-border-default)` · light `#e2e8f0` · dark `#1e293b`
+`var(--ds-theme-border-default)` · light `#1B1B221A` · dark `#F0F0F91A`
 
 The standard, low-contrast divider and card outline.
 
@@ -220,7 +221,7 @@ The standard, low-contrast divider and card outline.
 
 ### `theme.border.strong`
 
-`var(--ds-theme-border-strong)` · light `#cbd5e1` · dark `#334155`
+`var(--ds-theme-border-strong)` · light `#908F9D` · dark `#676774`
 
 A higher-contrast border for elements that need to read as interactive or as a boundary the eye should stop at.
 
@@ -237,7 +238,7 @@ A higher-contrast border for elements that need to read as interactive or as a b
 
 ### `theme.accent-role.bg`
 
-`var(--ds-theme-accent-role-bg)` · light `#2563eb` · dark `#2563eb`
+`var(--ds-theme-accent-role-bg)` · light `#0055D9` · dark `#C0C1FF`
 
 Filled accent background for the single highest-priority action in a view.
 
@@ -268,7 +269,7 @@ Filled accent background for the single highest-priority action in a view.
 
 ### `theme.accent-role.fg`
 
-`var(--ds-theme-accent-role-fg)` · light `#2563eb` · dark `#60a5fa`
+`var(--ds-theme-accent-role-fg)` · light `#0055D9` · dark `#C0C1FF`
 
 Accent-colored text for a link or a text-only action.
 
@@ -282,7 +283,7 @@ Accent-colored text for a link or a text-only action.
 
 ### `theme.accent-role.subtle`
 
-`var(--ds-theme-accent-role-subtle)` · light `#eff6ff` · dark `#172554`
+`var(--ds-theme-accent-role-subtle)` · light `#E1DFFF` · dark `#002A87`
 
 A tinted, low-saturation accent background that carries text safely.
 
@@ -295,28 +296,9 @@ A tinted, low-saturation accent background that carries text safely.
 
 - As a substitute for theme.accent-role.bg on a primary action — this is a tint, not a fill.
 
-### `theme.accent-role.ring`
-
-`var(--ds-theme-accent-role-ring)` · light `inset 0px 0px 0px 2px rgb(1 113 227 / 0.5)` · dark `inset 0px 0px 0px 2px rgb(1 113 227 / 0.5)`
-
-Inset accent stroke marking a selected or actively-validating control — distinct from the keyboard focus ring.
-
-**Use for**
-
-- A checked/selected input's inset outline, alongside its own background/border.
-- An in-progress validation state on a field (e.g. while checking availability).
-
-**Do not use for**
-
-- As a replacement for the :focus-visible outline (theme.focus-ring) — the two can coexist but answer different questions (keyboard focus vs. selection/validation state).
-
-```css
-.ds-input--selected { box-shadow: var(--ds-theme-accent-role-ring); }
-```
-
 ### `theme.secondary-role.bg`
 
-`var(--ds-theme-secondary-role-bg)` · light `#ffffff` · dark `#0f172a`
+`var(--ds-theme-secondary-role-bg)` · light `#FCFCFF` · dark `#1B1B22`
 
 Background for the secondary (outlined) button and similar lower-priority filled controls.
 
@@ -332,7 +314,7 @@ Background for the secondary (outlined) button and similar lower-priority filled
 
 ### `theme.secondary-role.fg`
 
-`var(--ds-theme-secondary-role-fg)` · light `#0f172a` · dark `#f8fafc`
+`var(--ds-theme-secondary-role-fg)` · light `#1B1B22` · dark `#E2E2EB`
 
 Text/icon color for content on theme.secondary-role.bg.
 
@@ -340,7 +322,7 @@ Text/icon color for content on theme.secondary-role.bg.
 
 ### `theme.secondary-role.border`
 
-`var(--ds-theme-secondary-role-border)` · light `#cbd5e1` · dark `#334155`
+`var(--ds-theme-secondary-role-border)` · light `#908F9D` · dark `#676774`
 
 Border for the secondary (outlined) button and similar controls.
 
@@ -350,7 +332,7 @@ Border for the secondary (outlined) button and similar controls.
 
 ### `theme.tertiary-role.fg`
 
-`var(--ds-theme-tertiary-role-fg)` · light `#2563eb` · dark `#60a5fa`
+`var(--ds-theme-tertiary-role-fg)` · light `#0055D9` · dark `#C0C1FF`
 
 Text color for the lowest-emphasis (tertiary/text) button variant — same hue as accent-role.fg, kept as its own role so a future rebrand can diverge them.
 
@@ -364,29 +346,9 @@ Text color for the lowest-emphasis (tertiary/text) button variant — same hue a
 |---|---|
 | An inline link inside body copy | `theme.accent-role.fg` |
 
-### `theme.success-role.bg`
-
-`var(--ds-theme-success-role-bg)` · light `#16a34a` · dark `#22c55e`
-
-Saturated success fill — a non-text indicator color, not a text background.
-
-**Use for**
-
-- A status dot, chip fill, or progress-bar segment indicating success.
-
-**Do not use for**
-
-- Behind any text, including theme.fg.on-accent — known contrast gap. Use theme.success-role.subtle with theme.success-role.fg for a success message instead.
-
-**Use instead**
-
-| Instead of reaching for this | Use |
-|---|---|
-| A success message with text | `theme.success-role.subtle background with theme.success-role.fg text` |
-
 ### `theme.success-role.fg`
 
-`var(--ds-theme-success-role-fg)` · light `#15803d` · dark `#4ade80`
+`var(--ds-theme-success-role-fg)` · light `#166534` · dark `#4ade80`
 
 Success-colored text for messages and icons.
 
@@ -407,39 +369,9 @@ Tinted success background that safely carries text.
 
 - Success banner/message background, paired with theme.success-role.fg.
 
-### `theme.success-role.ring`
-
-`var(--ds-theme-success-role-ring)` · light `inset 0px 0px 0px 2px rgb(38 167 86 / 0.3)` · dark `inset 0px 0px 0px 2px rgb(38 167 86 / 0.3)`
-
-Inset success stroke for a control that just passed validation.
-
-**Use for**
-
-- A field's inset outline after a successful validation check.
-
-### `theme.warning-role.bg`
-
-`var(--ds-theme-warning-role-bg)` · light `#f59e0b` · dark `#f59e0b`
-
-Saturated warning fill — a non-text indicator color, not a text background.
-
-**Use for**
-
-- A status dot, chip fill, or progress-bar segment indicating warning.
-
-**Do not use for**
-
-- Behind any text — known contrast gap even for large text. Use theme.warning-role.subtle with theme.warning-role.fg for a warning message.
-
-**Use instead**
-
-| Instead of reaching for this | Use |
-|---|---|
-| A warning message with text | `theme.warning-role.subtle background with theme.warning-role.fg text` |
-
 ### `theme.warning-role.fg`
 
-`var(--ds-theme-warning-role-fg)` · light `#b45309` · dark `#fbbf24`
+`var(--ds-theme-warning-role-fg)` · light `#92400e` · dark `#fbbf24`
 
 Warning-colored text for messages and icons.
 
@@ -454,35 +386,6 @@ Tinted warning background that safely carries text.
 **Use for**
 
 - Warning banner/message background, paired with theme.warning-role.fg.
-
-### `theme.warning-role.ring`
-
-`var(--ds-theme-warning-role-ring)` · light `inset 0px 0px 0px 2px rgb(226 164 0 / 0.3)` · dark `inset 0px 0px 0px 2px rgb(226 164 0 / 0.3)`
-
-Inset warning stroke for a control with an unresolved caution state.
-
-**Use for**
-
-- A field's inset outline when a value is valid but risky (e.g. approaching a limit).
-
-### `theme.danger-role.bg`
-
-`var(--ds-theme-danger-role-bg)` · light `#dc2626` · dark `#dc2626`
-
-Filled danger background for a destructive action.
-
-**Use for**
-
-- Destructive button background (paired with theme.fg.on-accent text).
-- A status dot or chip fill indicating an error state.
-
-**Use instead**
-
-| Instead of reaching for this | Use |
-|---|---|
-| An error message with text at any size | `theme.danger-role.subtle background with theme.danger-role.fg text (theme.danger-role.subtle with theme.fg.on-accent falls to AA-large in light — see Known gaps)` |
-
-**Pairs with** `theme.fg.on-accent`
 
 ### `theme.danger-role.fg`
 
@@ -507,19 +410,9 @@ Tinted danger background that carries text at large sizes; use theme.fg.primary 
 
 - Error banner/message background, paired with theme.danger-role.fg.
 
-### `theme.danger-role.ring`
-
-`var(--ds-theme-danger-role-ring)` · light `inset 0px 0px 0px 2px rgb(227 25 59 / 0.3)` · dark `inset 0px 0px 0px 2px rgb(227 25 59 / 0.3)`
-
-Inset danger stroke for a control that failed validation.
-
-**Use for**
-
-- A field's inset outline after a failed validation check.
-
 ### `theme.focus-ring`
 
-`var(--ds-theme-focus-ring)` · light `#3b82f6` · dark `#60a5fa`
+`var(--ds-theme-focus-ring)` · light `#3A6DF7` · dark `#9CA3FF`
 
 The keyboard focus indicator color, always used with focus.ring-width and focus.ring-offset.
 
@@ -581,17 +474,9 @@ Raw ramps. Except `color.data.*`, they do not change between themes, so a compon
 
 Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from the underlying design system. Theme-independent — do not use directly in a component.
 
-| Step | CSS variable | Value | Use for |
-|---|---|---|---|
-| `50-100` | — | — | Backgrounds in light theme. |
-| `200-300` | — | — | Borders in light theme. |
-| `400-500` | — | — | Low-emphasis text; the midpoint that reads acceptably on both light and dark backgrounds. |
-| `600-700` | — | — | Secondary text and role fills in light theme; borders in dark theme. |
-| `800-950` | — | — | Primary text in light theme; backgrounds and role subtles in dark theme. |
-
 **Use for**
 
-- Only as a reference target inside semantics/theme/light.json and semantics/theme/dark.json.
+- Only as a reference target inside a theme's `tokens` map (packages/tokens/src/themes/*.mjs).
 
 **Do not use for**
 
@@ -605,6 +490,8 @@ Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from t
 | Text | `theme.fg.primary, theme.fg.secondary, theme.fg.muted` |
 | Border or divider | `theme.border.default, theme.border.strong` |
 | Role fill, text, or tint | `theme.accent-role.bg, theme.success-role.bg, theme.warning-role.bg, or theme.danger-role.bg (and each role's .fg / .subtle)` |
+
+> Tonal ranges, for orientation only — these are not token names: 50-100 backgrounds (light), 200-300 borders (light), 400-500 low-emphasis text, 600-700 role fills and secondary text (light) / borders (dark), 800-950 primary text (light) / backgrounds and role subtles (dark).
 
 ## Base scales
 
@@ -818,116 +705,137 @@ The spacing scale, plus rolled-up roles (gap/stack/padding/control/page/section)
 
 ### `radius`
 
-Corner radius, plus rolled-up roles that name a specific surface's radius.
+Corner radius, generated from a base unit, a multiplier and a step table. Every name is a role: there is no raw sm/md/lg ramp underneath.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
-| `none` | `var(--ds-radius-none)` | `0px` | Square corners. |
-| `sm` | `var(--ds-radius-sm)` | `8px` | Smallest usable radius — a chip or tag. |
-| `md` | `var(--ds-radius-md)` | `12px` | The default control radius. |
-| `lg` | `var(--ds-radius-lg)` | `16px` | A card or panel's radius. |
-| `xl` | `var(--ds-radius-xl)` | `28px` | A large surface's radius, e.g. a bottom sheet. |
-| `2xl` | `var(--ds-radius-2xl)` | `32px` | The largest fixed radius, for full-page surfaces. |
-| `full` | `var(--ds-radius-full)` | `9999px` | A pill / fully rounded edge. |
-| `inner` | `var(--ds-radius-inner)` | `8px` | radius.sm — an element nested inside an already-rounded container. |
-| `element` | `var(--ds-radius-element)` | `12px` | radius.md — the default control radius, named for reuse in recipes. |
-| `container` | `var(--ds-radius-container)` | `16px` | radius.lg — a card or panel. |
-| `chat` | `var(--ds-radius-chat)` | `28px` | radius.xl — a chat bubble or similarly large rounded surface. |
-| `page` | `var(--ds-radius-page)` | `32px` | radius.2xl — a full-page or sheet-level surface. |
-| `pill` | `var(--ds-radius-pill)` | `9999px` | radius.full — a pill-shaped control or badge. |
+| `none` | `var(--ds-radius-none)` | `0px` | Square corners. A fixed anchor — the multiplier never touches it. |
+| `inner` | `var(--ds-radius-inner)` | `8px` | An element nested inside an already-rounded container. |
+| `element` | `var(--ds-radius-element)` | `12px` | The default control radius — buttons, inputs, chips. |
+| `container` | `var(--ds-radius-container)` | `16px` | A card or panel. |
+| `chat` | `var(--ds-radius-chat)` | `28px` | A chat bubble or similarly large rounded surface. |
+| `page` | `var(--ds-radius-page)` | `32px` | A full-page or sheet-level surface. |
+| `pill` | `var(--ds-radius-pill)` | `9999px` | A pill-shaped control or badge. A fixed anchor, like none. |
 
 **Use for**
 
-- border-radius — prefer the matching role (radius.element, radius.container, …) over a raw step when one names the situation.
+- border-radius, using the role that names the surface you are rounding.
+
+**Do not use for**
+
+- Hand-writing a px radius — change the theme's `radius` seed instead, which moves the whole scale together.
 
 ### `font`
 
-Raw typography primitives (family, size steps, weight steps, line-height steps, letter-spacing steps). Do not use directly — use the type.* semantic scale, which is built from these.
+Typography primitives. Sizes are generated from the theme's {base, ratio} seed; family, weight and letter-spacing are stated, because no ratio can produce them.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
 | `family.sans` | `var(--ds-font-family-sans)` | `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | The system's default UI typeface. |
 | `family.mono` | `var(--ds-font-family-mono)` | `'SF Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | Monospace, for code and tabular figures. |
-| `size.smallest` | `var(--ds-font-size-smallest)` | `0.625rem` | Smallest usable text size. |
-| `size.small` | `var(--ds-font-size-small)` | `0.75rem` | Small/caption text. |
-| `size.body` | `var(--ds-font-size-body)` | `0.875rem` | Default body text size. |
-| `size.medium` | `var(--ds-font-size-medium)` | `1rem` | A modest heading size. |
-| `size.large-1` | `var(--ds-font-size-large-1)` | `1.25rem` | A prominent heading size. |
-| `size.large-2` | `var(--ds-font-size-large-2)` | `1.5rem` | A larger heading size. |
-| `size.giant-1` | `var(--ds-font-size-giant-1)` | `1.875rem` | Display-scale text. |
-| `size.giant-2` | `var(--ds-font-size-giant-2)` | `2.25rem` | Larger display-scale text. |
-| `size.giant-3` | `var(--ds-font-size-giant-3)` | `2.875rem` | Larger still. |
-| `size.giant-4` | `var(--ds-font-size-giant-4)` | `4rem` | The largest display size. |
+| `family.heading` | `var(--ds-font-family-heading)` | `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | Heading typeface. Falls back to the body family when a theme names no separate one. |
 | `weight.regular` | `var(--ds-font-weight-regular)` | `400` | Default text weight. |
-| `weight.bold` | `var(--ds-font-weight-bold)` | `600` | Emphasis weight — headings, labels, and button text. |
-| `line-height.default` | `var(--ds-font-line-height-default)` | `1.4286` | The general-purpose unitless line-height. |
-| `line-height.150` | `var(--ds-font-line-height-150)` | `12px` | Tightest fixed line-height, matches type.label. |
-| `line-height.200` | `var(--ds-font-line-height-200)` | `16px` | A compact fixed line-height. |
-| `line-height.250` | `var(--ds-font-line-height-250)` | `20px` | Body-text fixed line-height. |
-| `line-height.300` | `var(--ds-font-line-height-300)` | `24px` | Heading fixed line-height. |
-| `line-height.350` | `var(--ds-font-line-height-350)` | `28px` | A looser fixed line-height, for a large control. |
-| `line-height.400` | `var(--ds-font-line-height-400)` | `32px` | Display-scale line-height. |
-| `line-height.500` | `var(--ds-font-line-height-500)` | `40px` | Larger display-scale line-height. |
-| `line-height.575` | `var(--ds-font-line-height-575)` | `46px` | Larger still. |
-| `line-height.600` | `var(--ds-font-line-height-600)` | `56px` | The largest fixed line-height. |
+| `weight.medium` | `var(--ds-font-weight-medium)` | `500` | One step up — the label role. |
+| `weight.semibold` | `var(--ds-font-weight-semibold)` | `600` | Emphasis weight — headings and control text. |
+| `weight.bold` | `var(--ds-font-weight-bold)` | `700` | The heaviest step. |
+| `size.4xs` | `var(--ds-font-size-4xs)` | `0.375rem` | Five steps below body. |
+| `size.3xs` | `var(--ds-font-size-3xs)` | `0.4375rem` | Four steps below body. |
+| `size.2xs` | `var(--ds-font-size-2xs)` | `0.5rem` | Three steps below body. |
+| `size.xs` | `var(--ds-font-size-xs)` | `0.625rem` | Two steps below body — h6. |
+| `size.sm` | `var(--ds-font-size-sm)` | `0.75rem` | One step below body — h5 and supporting text. |
+| `size.base` | `var(--ds-font-size-base)` | `0.875rem` | Body size — the seed. h4, body, label and code all sit here. |
+| `size.lg` | `var(--ds-font-size-lg)` | `1.0625rem` | One step above body — h3 and large text. |
+| `size.xl` | `var(--ds-font-size-xl)` | `1.25rem` | Two above — h2. |
+| `size.2xl` | `var(--ds-font-size-2xl)` | `1.5rem` | Three above — h1. |
+| `size.3xl` | `var(--ds-font-size-3xl)` | `1.8125rem` | Four above — display-3. |
+| `size.4xl` | `var(--ds-font-size-4xl)` | `2.1875rem` | Five above — display-2. |
+| `size.5xl` | `var(--ds-font-size-5xl)` | `2.625rem` | Six above — display-1. |
 | `letter-spacing.tightest` | `var(--ds-font-letter-spacing-tightest)` | `-0.92px` | Tightest tracking, for the largest display text. |
 | `letter-spacing.tighter` | `var(--ds-font-letter-spacing-tighter)` | `-0.72px` | Very tight tracking. |
 | `letter-spacing.tight` | `var(--ds-font-letter-spacing-tight)` | `-0.6px` | Slightly tight tracking. |
 | `letter-spacing.normal` | `var(--ds-font-letter-spacing-normal)` | `0px` | No adjustment. |
-| `letter-spacing.wide` | `var(--ds-font-letter-spacing-wide)` | `0.5px` | Slightly open tracking, used by type.label for its uppercase treatment. |
+| `letter-spacing.wide` | `var(--ds-font-letter-spacing-wide)` | `0.5px` | Slightly open tracking — the label role's uppercase treatment. |
 | `letter-spacing.wider` | `var(--ds-font-letter-spacing-wider)` | `0.7px` | More open tracking. |
+
+**Use for**
+
+- font.family.* and font.weight.* directly; font.size.* via a type.* role rather than on its own.
 
 **Do not use for**
 
-- Direct use of font.size.*, font.weight.*, or font.line-height.* in component CSS — use type.* instead, which names the role (body, heading, label, control) rather than a raw step.
+- Reaching for font.size.* in component CSS when a type.* role already names the situation.
 
 **Use instead**
 
 | Instead of reaching for this | Use |
 |---|---|
-| Any text sizing decision | `type.size.base, type.body.size, type.heading.size, type.label.size, or type.control.size.md` |
+| Any text sizing decision | `font.size.base, type.body.size, type.heading.size, type.label.size, or type.control.size.md` |
 
 ### `type`
 
-The usable typography scale — role-based (body, heading, label, control) and a raw size scale, both built from font.*.
+The usable typography scale. Each role carries a matched size, weight and line-height, generated together from the theme's {base, ratio} seed so they stay in proportion.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
+| `heading-1.size` | `var(--ds-type-heading-1-size)` | `1.5rem` | h1 size. |
+| `heading-1.weight` | `var(--ds-type-heading-1-weight)` | `600` | h1 weight. |
+| `heading-1.line-height` | `var(--ds-type-heading-1-line-height)` | `1.3333` | h1 line-height, snapped to the 4px grid. |
+| `heading-2.size` | `var(--ds-type-heading-2-size)` | `1.25rem` | h2 size. |
+| `heading-2.weight` | `var(--ds-type-heading-2-weight)` | `600` | h2 weight. |
+| `heading-2.line-height` | `var(--ds-type-heading-2-line-height)` | `1.4` | h2 line-height, snapped to the 4px grid. |
+| `heading-3.size` | `var(--ds-type-heading-3-size)` | `1.0625rem` | h3 size. |
+| `heading-3.weight` | `var(--ds-type-heading-3-weight)` | `600` | h3 weight. |
+| `heading-3.line-height` | `var(--ds-type-heading-3-line-height)` | `1.4118` | h3 line-height, snapped to the 4px grid. |
+| `heading-4.size` | `var(--ds-type-heading-4-size)` | `0.875rem` | h4 size. |
+| `heading-4.weight` | `var(--ds-type-heading-4-weight)` | `600` | h4 weight. |
+| `heading-4.line-height` | `var(--ds-type-heading-4-line-height)` | `1.4286` | h4 line-height, snapped to the 4px grid. |
+| `heading-5.size` | `var(--ds-type-heading-5-size)` | `0.75rem` | h5 size. |
+| `heading-5.weight` | `var(--ds-type-heading-5-weight)` | `600` | h5 weight. |
+| `heading-5.line-height` | `var(--ds-type-heading-5-line-height)` | `1.6667` | h5 line-height, snapped to the 4px grid. |
+| `heading-6.size` | `var(--ds-type-heading-6-size)` | `0.625rem` | h6 size. |
+| `heading-6.weight` | `var(--ds-type-heading-6-weight)` | `600` | h6 weight. |
+| `heading-6.line-height` | `var(--ds-type-heading-6-line-height)` | `1.6` | h6 line-height, snapped to the 4px grid. |
+| `heading.size` | `var(--ds-type-heading-size)` | `1.0625rem` | Alias for heading-3 — 'a heading' when the level does not matter. |
+| `heading.weight` | `var(--ds-type-heading-weight)` | `600` | Alias for heading-3. |
+| `heading.line-height` | `var(--ds-type-heading-line-height)` | `1.4118` | Alias for heading-3. |
 | `body.size` | `var(--ds-type-body-size)` | `0.875rem` | Default paragraph/UI text size. |
 | `body.weight` | `var(--ds-type-body-weight)` | `400` | Default paragraph/UI text weight. |
-| `body.line-height` | `var(--ds-type-body-line-height)` | `20px` | Default paragraph/UI text line-height. |
-| `heading.size` | `var(--ds-type-heading-size)` | `1rem` | Section/card heading size. |
-| `heading.weight` | `var(--ds-type-heading-weight)` | `600` | Section/card heading weight. |
-| `heading.line-height` | `var(--ds-type-heading-line-height)` | `24px` | Section/card heading line-height. |
-| `label.size` | `var(--ds-type-label-size)` | `0.625rem` | Uppercase eyebrow / form-field label size. |
-| `label.weight` | `var(--ds-type-label-weight)` | `600` | Uppercase eyebrow / form-field label weight. |
-| `label.line-height` | `var(--ds-type-label-line-height)` | `12px` | Uppercase eyebrow / form-field label line-height. |
+| `body.line-height` | `var(--ds-type-body-line-height)` | `1.4286` | Default paragraph/UI text line-height. |
+| `large.size` | `var(--ds-type-large-size)` | `1.0625rem` | One step above body, for lead paragraphs. |
+| `large.weight` | `var(--ds-type-large-weight)` | `600` | Lead paragraph weight. |
+| `large.line-height` | `var(--ds-type-large-line-height)` | `1.4118` | Lead paragraph line-height. |
+| `label.size` | `var(--ds-type-label-size)` | `0.875rem` | Form-field and eyebrow label size. |
+| `label.weight` | `var(--ds-type-label-weight)` | `500` | Label weight. |
+| `label.line-height` | `var(--ds-type-label-line-height)` | `1.4286` | Label line-height. |
 | `label.letter-spacing` | `var(--ds-type-label-letter-spacing)` | `0.5px` | Tracking for the label role's uppercase treatment. |
 | `label.text-transform` | `var(--ds-type-label-text-transform)` | `uppercase` | Always uppercase for the label role. |
-| `control.size.sm` | `var(--ds-type-control-size-sm)` | `0.875rem` | Text size inside a size.control.sm control. |
+| `code.size` | `var(--ds-type-code-size)` | `0.875rem` | Inline and block code size. |
+| `code.weight` | `var(--ds-type-code-weight)` | `400` | Code weight. |
+| `code.line-height` | `var(--ds-type-code-line-height)` | `1.4286` | Code line-height. |
+| `supporting.size` | `var(--ds-type-supporting-size)` | `0.75rem` | Helper and caption size. |
+| `supporting.weight` | `var(--ds-type-supporting-weight)` | `400` | Helper weight. |
+| `supporting.line-height` | `var(--ds-type-supporting-line-height)` | `1.6667` | Helper line-height. |
+| `display-1.size` | `var(--ds-type-display-1-size)` | `2.625rem` | Display 1 size — above h1. |
+| `display-1.weight` | `var(--ds-type-display-1-weight)` | `400` | Display 1 weight. |
+| `display-1.line-height` | `var(--ds-type-display-1-line-height)` | `1.2381` | Display 1 line-height. |
+| `display-2.size` | `var(--ds-type-display-2-size)` | `2.1875rem` | Display 2 size — above h1. |
+| `display-2.weight` | `var(--ds-type-display-2-weight)` | `400` | Display 2 weight. |
+| `display-2.line-height` | `var(--ds-type-display-2-line-height)` | `1.2571` | Display 2 line-height. |
+| `display-3.size` | `var(--ds-type-display-3-size)` | `1.8125rem` | Display 3 size — above h1. |
+| `display-3.weight` | `var(--ds-type-display-3-weight)` | `400` | Display 3 weight. |
+| `display-3.line-height` | `var(--ds-type-display-3-line-height)` | `1.3793` | Display 3 line-height. |
+| `control.size.sm` | `var(--ds-type-control-size-sm)` | `0.75rem` | Text size inside a size.control.sm control. |
 | `control.size.md` | `var(--ds-type-control-size-md)` | `0.875rem` | Text size inside a size.control.md control. |
-| `control.size.lg` | `var(--ds-type-control-size-lg)` | `1.25rem` | Text size inside a size.control.lg control. |
-| `control.line-height.sm` | `var(--ds-type-control-line-height-sm)` | `20px` | Line-height inside a size.control.sm control. |
-| `control.line-height.md` | `var(--ds-type-control-line-height-md)` | `20px` | Line-height inside a size.control.md control. |
-| `control.line-height.lg` | `var(--ds-type-control-line-height-lg)` | `28px` | Line-height inside a size.control.lg control. |
+| `control.size.lg` | `var(--ds-type-control-size-lg)` | `1.0625rem` | Text size inside a size.control.lg control. |
+| `control.line-height.sm` | `var(--ds-type-control-line-height-sm)` | `1.4286` | Line-height inside a size.control.sm control. |
+| `control.line-height.md` | `var(--ds-type-control-line-height-md)` | `1.4286` | Line-height inside a size.control.md control. |
+| `control.line-height.lg` | `var(--ds-type-control-line-height-lg)` | `1.3333` | Line-height inside a size.control.lg control. |
 | `control.weight` | `var(--ds-type-control-weight)` | `600` | Text weight inside any control. |
-| `tracking.display-1` | `var(--ds-type-tracking-display-1)` | `-0.92px` | Tightest tracking, for type.size.5xl-scale display text. |
-| `tracking.display-2` | `var(--ds-type-tracking-display-2)` | `-0.72px` | Very tight tracking, for large display text. |
-| `tracking.display-3` | `var(--ds-type-tracking-display-3)` | `-0.6px` | Slightly tight tracking, for headings. |
+| `tracking.display-1` | `var(--ds-type-tracking-display-1)` | `-0.92px` | Tightest tracking, for the largest display text. |
+| `tracking.display-2` | `var(--ds-type-tracking-display-2)` | `-0.72px` | Very tight tracking. |
+| `tracking.display-3` | `var(--ds-type-tracking-display-3)` | `-0.6px` | Slightly tight tracking. |
 | `tracking.signal-1` | `var(--ds-type-tracking-signal-1)` | `0.7px` | Open tracking, for small all-caps signal text. |
 | `tracking.signal-2` | `var(--ds-type-tracking-signal-2)` | `0.5px` | Slightly open tracking. |
-| `size.4xs` | `var(--ds-type-size-4xs)` | `0.625rem` | Smallest raw step. |
-| `size.3xs` | `var(--ds-type-size-3xs)` | `0.625rem` | Smallest raw step. |
-| `size.2xs` | `var(--ds-type-size-2xs)` | `0.625rem` | Smallest raw step. |
-| `size.xs` | `var(--ds-type-size-xs)` | `0.625rem` | Smallest raw step. |
-| `size.sm` | `var(--ds-type-size-sm)` | `0.75rem` | Small text. |
-| `size.base` | `var(--ds-type-size-base)` | `0.875rem` | Body text. |
-| `size.lg` | `var(--ds-type-size-lg)` | `1rem` | A modest heading. |
-| `size.xl` | `var(--ds-type-size-xl)` | `1.25rem` | A prominent heading. |
-| `size.2xl` | `var(--ds-type-size-2xl)` | `1.5rem` | A larger heading. |
-| `size.3xl` | `var(--ds-type-size-3xl)` | `1.875rem` | Display-scale text. |
-| `size.4xl` | `var(--ds-type-size-4xl)` | `2.25rem` | Larger display-scale text. |
-| `size.5xl` | `var(--ds-type-size-5xl)` | `2.875rem` | The largest display size. |
 
 **Use for**
 
@@ -943,30 +851,30 @@ The usable typography scale — role-based (body, heading, label, control) and a
 
 ### `motion`
 
-Duration and easing primitives, plus rolled-up roles that name a specific transition situation.
+Duration and easing. The duration bands are generated from the theme's {fast, medium, slow, ratio} seed; the roles below name which band a transition belongs to.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
-| `duration.fast-min` | `var(--ds-motion-duration-fast-min)` | `130ms` | Fastest usable duration. |
-| `duration.fast` | `var(--ds-motion-duration-fast)` | `175ms` | Backing value for motion.interactive — hover/press feedback, toggles. |
-| `duration.fast-max` | `var(--ds-motion-duration-fast-max)` | `230ms` | Upper bound of the fast band. |
-| `duration.medium-min` | `var(--ds-motion-duration-medium-min)` | `310ms` | Lower bound of the medium band. |
-| `duration.medium` | `var(--ds-motion-duration-medium)` | `410ms` | Backing value for motion.overlay — menus, popovers, tooltips entering/leaving. |
-| `duration.medium-max` | `var(--ds-motion-duration-medium-max)` | `550ms` | Upper bound of the medium band. |
-| `duration.slow-min` | `var(--ds-motion-duration-slow-min)` | `730ms` | Lower bound of the slow band. |
-| `duration.slow` | `var(--ds-motion-duration-slow)` | `975ms` | Backing value for motion.modal — dialogs, sheets, drawers. |
-| `duration.slow-max` | `var(--ds-motion-duration-slow-max)` | `1300ms` | Slowest usable duration. |
+| `duration.fast-min` | `var(--ds-motion-duration-fast-min)` | `130ms` | Fastest step of the fast band. |
+| `duration.fast` | `var(--ds-motion-duration-fast)` | `175ms` | Micro-interactions — hover, toggle. |
+| `duration.fast-max` | `var(--ds-motion-duration-fast-max)` | `235ms` | Slowest step of the fast band. |
+| `duration.medium-min` | `var(--ds-motion-duration-medium-min)` | `310ms` | Fastest step of the medium band. |
+| `duration.medium` | `var(--ds-motion-duration-medium)` | `410ms` | Entrance/exit — menus, popovers. |
+| `duration.medium-max` | `var(--ds-motion-duration-medium-max)` | `545ms` | Slowest step of the medium band. |
+| `duration.slow-min` | `var(--ds-motion-duration-slow-min)` | `730ms` | Fastest step of the slow band. |
+| `duration.slow` | `var(--ds-motion-duration-slow)` | `975ms` | Continuous animation. |
+| `duration.slow-max` | `var(--ds-motion-duration-slow-max)` | `1300ms` | Slowest step of the slow band. |
 | `duration.spin` | `var(--ds-motion-duration-spin)` | `800ms` | A full spinner rotation. |
 | `duration.spin-reduced` | `var(--ds-motion-duration-spin-reduced)` | `2000ms` | A slowed spinner rotation for prefers-reduced-motion. |
-| `easing.standard` | `var(--ds-motion-easing-standard)` | `cubic-bezier(0.24, 1, 0.4, 1)` | The default curve for most transitions. |
-| `easing.enter` | `var(--ds-motion-easing-enter)` | `cubic-bezier(0, 0, 0.38, 0.9)` | Curve for something appearing/entering. |
-| `easing.exit` | `var(--ds-motion-easing-exit)` | `cubic-bezier(0.2, 0, 1, 0.9)` | Curve for something disappearing/exiting. |
-| `interactive.duration` | `var(--ds-motion-interactive-duration)` | `175ms` | duration.fast — hover/press feedback, toggles. |
-| `interactive.easing` | `var(--ds-motion-interactive-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | easing.standard, for interactive transitions. |
-| `overlay.duration` | `var(--ds-motion-overlay-duration)` | `410ms` | duration.medium — menus, popovers, tooltips entering/leaving. |
-| `overlay.easing` | `var(--ds-motion-overlay-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | easing.standard, for overlay transitions. |
-| `modal.duration` | `var(--ds-motion-modal-duration)` | `975ms` | duration.slow — dialogs, sheets, drawers. |
-| `modal.easing` | `var(--ds-motion-modal-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | easing.standard, for modal transitions. |
+| `easing.standard` | `var(--ds-motion-easing-standard)` | `cubic-bezier(0.24, 1, 0.4, 1)` | The default curve. |
+| `easing.enter` | `var(--ds-motion-easing-enter)` | `cubic-bezier(0, 0, 0.38, 0.9)` | Something appearing. |
+| `easing.exit` | `var(--ds-motion-easing-exit)` | `cubic-bezier(0.2, 0, 1, 0.9)` | Something leaving. |
+| `interactive.duration` | `var(--ds-motion-interactive-duration)` | `175ms` | Hover/press feedback, toggles. |
+| `interactive.easing` | `var(--ds-motion-interactive-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for interactive transitions. |
+| `overlay.duration` | `var(--ds-motion-overlay-duration)` | `410ms` | Menus, popovers, tooltips. |
+| `overlay.easing` | `var(--ds-motion-overlay-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for overlay transitions. |
+| `modal.duration` | `var(--ds-motion-modal-duration)` | `975ms` | Dialogs, sheets, drawers. |
+| `modal.easing` | `var(--ds-motion-modal-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for modal transitions. |
 
 **Use for**
 
@@ -980,41 +888,42 @@ Ratios are measured from the resolved token values every build. A pairing listed
 
 | Foreground | Background | Level | Light | Dark |
 |---|---|---|---|---|
-| `theme.fg.primary` | `theme.bg.canvas` | AA-text | 17.85:1 | 19.28:1 |
-| `theme.fg.primary` | `theme.bg.surface` | AA-text | 17.85:1 | 17.06:1 |
-| `theme.fg.primary` | `theme.bg.subtle` | AA-text | 17.06:1 | 17.06:1 |
-| `theme.fg.primary` | `theme.bg.muted` | AA-text | 16.30:1 | 13.98:1 |
-| `theme.fg.primary` | `theme.accent-role.subtle` | AA-text | 16.40:1 | 14.04:1 |
-| `theme.fg.primary` | `theme.success-role.subtle` | AA-text | 17.05:1 | 14.25:1 |
-| `theme.fg.primary` | `theme.warning-role.subtle` | AA-text | 17.22:1 | 14.31:1 |
-| `theme.fg.primary` | `theme.danger-role.subtle` | AA-text | 16.32:1 | 15.43:1 |
-| `theme.fg.secondary` | `theme.bg.canvas` | AA-text | 7.58:1 | 13.59:1 |
-| `theme.fg.secondary` | `theme.bg.surface` | AA-text | 7.58:1 | 12.02:1 |
-| `theme.fg.secondary` | `theme.bg.subtle` | AA-text | 7.24:1 | 12.02:1 |
-| `theme.fg.secondary` | `theme.bg.muted` | AA-text | 6.92:1 | 9.85:1 |
-| `theme.fg.muted` | `theme.bg.canvas` | AA-text | 4.76:1 | 7.87:1 |
-| `theme.fg.muted` | `theme.bg.surface` | AA-text | 4.76:1 | 6.96:1 |
-| `theme.fg.muted` | `theme.bg.subtle` | AA-text | 4.55:1 | 6.96:1 |
-| `theme.fg.muted` | `theme.bg.muted` | AA-large | 4.34:1 | 5.71:1 |
-| `theme.accent-role.fg` | `theme.bg.canvas` | AA-text | 5.17:1 | 7.93:1 |
-| `theme.accent-role.fg` | `theme.bg.surface` | AA-text | 5.17:1 | 7.02:1 |
-| `theme.accent-role.fg` | `theme.accent-role.subtle` | AA-text | 4.75:1 | 5.78:1 |
-| `theme.tertiary-role.fg` | `theme.bg.canvas` | AA-text | 5.17:1 | 7.93:1 |
-| `theme.tertiary-role.fg` | `theme.bg.surface` | AA-text | 5.17:1 | 7.02:1 |
-| `theme.secondary-role.fg` | `theme.secondary-role.bg` | AA-text | 17.85:1 | 17.06:1 |
-| `theme.success-role.fg` | `theme.bg.canvas` | AA-text | 5.02:1 | 11.58:1 |
-| `theme.success-role.fg` | `theme.bg.surface` | AA-text | 5.02:1 | 10.25:1 |
-| `theme.success-role.fg` | `theme.success-role.subtle` | AA-text | 4.79:1 | 8.55:1 |
-| `theme.warning-role.fg` | `theme.bg.canvas` | AA-text | 5.02:1 | 12.08:1 |
-| `theme.warning-role.fg` | `theme.bg.surface` | AA-text | 5.02:1 | 10.69:1 |
-| `theme.warning-role.fg` | `theme.warning-role.subtle` | AA-text | 4.84:1 | 8.97:1 |
-| `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 6.47:1 | 7.29:1 |
-| `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.47:1 | 6.45:1 |
+| `theme.fg.primary` | `theme.bg.canvas` | AA-text | 15.11:1 | 14.68:1 |
+| `theme.fg.primary` | `theme.bg.surface` | AA-text | 16.72:1 | 13.30:1 |
+| `theme.fg.primary` | `theme.bg.subtle` | AA-text | 15.11:1 | 13.30:1 |
+| `theme.fg.primary` | `theme.bg.muted` | AA-text | 13.30:1 | 10.17:1 |
+| `theme.fg.primary` | `theme.accent-role.subtle` | AA-text | 13.21:1 | 9.70:1 |
+| `theme.fg.primary` | `theme.success-role.subtle` | AA-text | 16.36:1 | 11.58:1 |
+| `theme.fg.primary` | `theme.warning-role.subtle` | AA-text | 16.51:1 | 11.63:1 |
+| `theme.fg.primary` | `theme.danger-role.subtle` | AA-text | 15.65:1 | 12.54:1 |
+| `theme.fg.secondary` | `theme.bg.canvas` | AA-text | 8.21:1 | 8.24:1 |
+| `theme.fg.secondary` | `theme.bg.surface` | AA-text | 9.08:1 | 7.46:1 |
+| `theme.fg.secondary` | `theme.bg.subtle` | AA-text | 8.21:1 | 7.46:1 |
+| `theme.fg.secondary` | `theme.bg.muted` | AA-text | 7.22:1 | 5.71:1 |
+| `theme.fg.muted` | `theme.bg.canvas` | AA-text | 5.70:1 | 5.94:1 |
+| `theme.fg.muted` | `theme.bg.surface` | AA-text | 6.31:1 | 5.38:1 |
+| `theme.fg.muted` | `theme.bg.subtle` | AA-text | 5.70:1 | 5.38:1 |
+| `theme.fg.muted` | `theme.bg.muted` | AA-large | 5.02:1 | 4.12:1 |
+| `theme.accent-role.fg` | `theme.bg.canvas` | AA-text | 5.61:1 | 11.08:1 |
+| `theme.accent-role.fg` | `theme.bg.surface` | AA-text | 6.21:1 | 10.04:1 |
+| `theme.accent-role.fg` | `theme.accent-role.subtle` | AA-text | 4.91:1 | 7.32:1 |
+| `theme.tertiary-role.fg` | `theme.bg.canvas` | AA-text | 5.61:1 | 11.08:1 |
+| `theme.tertiary-role.fg` | `theme.bg.surface` | AA-text | 6.21:1 | 10.04:1 |
+| `theme.secondary-role.fg` | `theme.secondary-role.bg` | AA-text | 16.72:1 | 13.30:1 |
+| `theme.success-role.fg` | `theme.bg.canvas` | AA-text | 6.29:1 | 10.85:1 |
+| `theme.success-role.fg` | `theme.bg.surface` | AA-text | 6.96:1 | 9.83:1 |
+| `theme.success-role.fg` | `theme.success-role.subtle` | AA-text | 6.81:1 | 8.55:1 |
+| `theme.warning-role.fg` | `theme.bg.canvas` | AA-text | 6.26:1 | 11.32:1 |
+| `theme.warning-role.fg` | `theme.bg.surface` | AA-text | 6.92:1 | 10.26:1 |
+| `theme.warning-role.fg` | `theme.warning-role.subtle` | AA-text | 6.84:1 | 8.97:1 |
+| `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 5.71:1 | 6.83:1 |
+| `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.32:1 | 6.19:1 |
 | `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-large | 5.91:1 | 5.84:1 |
-| `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 5.17:1 | 5.17:1 |
-| `theme.fg.on-accent` | `theme.danger-role.bg` | AA-text | 4.83:1 | 4.83:1 |
-| `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.68:1 | 7.93:1 |
-| `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 3.68:1 | 7.02:1 |
+| `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 6.36:1 | 7.32:1 |
+| `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.94:1 | 8.19:1 |
+| `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 4.35:1 | 7.42:1 |
+| `theme.danger-role.on` | `theme.danger-role.bg` | AA-text | 4.83:1 | 4.83:1 |
+| `theme.warning-role.on` | `theme.warning-role.bg` | AA-text | 8.31:1 | 8.31:1 |
 
 ### Known gaps — do not use these combinations
 
@@ -1022,13 +931,11 @@ These combinations fall short of the stated level. They are verified every build
 
 | Foreground | Background | Falls short of | Light | Dark |
 |---|---|---|---|---|
-| `theme.fg.on-accent` | `theme.success-role.bg` | AA-text | 3.30:1 | 2.28:1 |
-| `theme.fg.on-accent` | `theme.warning-role.bg` | AA-large | 2.15:1 | 2.15:1 |
 | `theme.fg.on-accent` | `theme.danger-role.subtle` | AA-large | 1.09:1 | n/a |
+| `theme.success-role.on` | `theme.success-role.bg` | AA-text | 3.30:1 | 3.30:1 |
 
-- **`theme.fg.on-accent` on `theme.success-role.bg`** (light, dark) — theme.success-role.bg is a non-text indicator color in both themes. Put success text on theme.success-role.subtle using theme.success-role.fg.
-- **`theme.fg.on-accent` on `theme.warning-role.bg`** (light, dark) — theme.warning-role.bg is the lightest role fill and carries no text at any size. Put warning text on theme.warning-role.subtle using theme.warning-role.fg.
 - **`theme.fg.on-accent` on `theme.danger-role.subtle`** (light) — theme.fg.on-accent is white; theme.danger-role.subtle is a light tint in the light theme, so white text disappears on it. Use theme.danger-role.fg for text on theme.danger-role.subtle, or theme.fg.on-accent only on theme.danger-role.bg.
+- **`theme.success-role.on` on `theme.success-role.bg`** (light, dark) — theme.success-role.bg is a non-text indicator colour in both schemes; white on it lands in the low 3s. Put success text on theme.success-role.subtle using theme.success-role.fg.
 
 ## Component recipes
 

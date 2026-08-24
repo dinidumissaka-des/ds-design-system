@@ -5,7 +5,7 @@
   height: 1em;
   border: 2px solid currentColor;
   border-right-color: transparent;
-  border-radius: var(--ds-radius-full);
+  border-radius: var(--ds-radius-pill);
   animation: ds-spin var(--ds-motion-duration-spin) linear infinite;
 }
 

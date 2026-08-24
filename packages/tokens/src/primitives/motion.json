@@ -1,14 +1,5 @@
 {
   "duration": {
-    "fast-min": "130ms",
-    "fast": "175ms",
-    "fast-max": "230ms",
-    "medium-min": "310ms",
-    "medium": "410ms",
-    "medium-max": "550ms",
-    "slow-min": "730ms",
-    "slow": "975ms",
-    "slow-max": "1300ms",
     "spin": "800ms",
     "spin-reduced": "2000ms"
   },

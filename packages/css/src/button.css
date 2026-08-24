@@ -5,7 +5,7 @@
   justify-content: center;
   gap: var(--ds-space-2);
   border: 1px solid transparent;
-  border-radius: var(--ds-radius-md);
+  border-radius: var(--ds-radius-element);
   font-family: var(--ds-font-family-sans);
   font-weight: var(--ds-type-control-weight);
   cursor: pointer;

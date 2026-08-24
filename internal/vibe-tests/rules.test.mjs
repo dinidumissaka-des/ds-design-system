@@ -37,12 +37,27 @@ test("flags an unknown token separately from a palette one", () => {
 });
 
 test("a pairing that fails in every theme is an error", () => {
+  // The success fill is a non-text indicator in both schemes: its own label
+  // token is white, and white on it lands in the low 3s. Warning used to be
+  // the example here, but it now carries a dark label token that passes —
+  // the gap moved rather than disappearing.
   const v = find(
-    ".notice { background: var(--ds-theme-warning-role-bg); color: var(--ds-theme-fg-on-accent); }",
+    ".toast { background: var(--ds-theme-success-role-bg); color: var(--ds-theme-success-role-on); }",
     "forbidden-pairing"
   );
-  assert.ok(v, "expected the white-on-warning-fill pairing to be caught");
+  assert.ok(v, "expected the white-on-success-fill pairing to be caught");
   assert.equal(v.severity, "error");
+});
+
+test("each role's own label token clears AA on its fill", () => {
+  // Regression guard for the bug the theme engine surfaced: reusing
+  // theme.fg.on-accent for status fills put dark text on a dark red button
+  // in the dark scheme, because on-accent inverts with the accent and the
+  // status fills do not.
+  for (const role of ["danger", "warning"]) {
+    const css = `.b { background: var(--ds-theme-${role}-role-bg); color: var(--ds-theme-${role}-role-on); }`;
+    assert.equal(find(css, "forbidden-pairing"), undefined, `${role} label must clear AA`);
+  }
 });
 
 test("a pairing verified in one theme is a warning, not an error", () => {
