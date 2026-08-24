@@ -11,7 +11,7 @@ A token-first, multi-layer design system for web apps and websites. Benchmark: [
 | Primitives | `@ds/primitives` | Headless, accessible behavior (pure functions — portable beyond React) | npm |
 | React components | `@ds/react` | Styled components: primitives behavior + CSS appearance | npm **and** CLI copy-paste |
 | Registry | `registry/` | Per-component manifests: family, status matrix, files, tier (free/pro) | drives CLI + docs |
-| CLI | `@ds/cli` | `ds list`, `ds add <component>` — copies source into consumer repos | npm |
+| CLI | `@ds/cli` | `ds list`, `ds add <component>` — copies source into consumer repos; `ds props/tokens/pages` — agent lookup, read straight from source | npm |
 | Playground | `apps/playground` | Live component gallery + status matrix | internal (docs site later) |
 
 Key decisions:
@@ -33,27 +33,56 @@ The same content ships in three machine-readable forms, so an editor or a coding
 - `@ds/tokens` types — usage rules as JSDoc, shown on hover and in completions
 - `@ds/tokens/usage` — JSON with the rules, resolved values per theme, measured contrast ratios, and component recipes
 
-Contributors and agents working in this repo should start with [`CLAUDE.md`](CLAUDE.md).
-
 Whether that documentation actually changes what an agent writes is measured, not assumed: [`internal/vibe-tests`](internal/vibe-tests) scores generated component code against rules derived from the token build, and CI fails if the checker stops distinguishing documented answers from naive ones.
 
 ## Develop
 
 ```sh
 npm install
-npm run build      # tokens → css → primitives → react
-npm run docs:check # fail if TOKENS.md is out of date with usage.json
-npm run vibe       # score the token-guidance A/B fixtures
-npm test           # primitives unit tests
-npm run dev        # playground at http://localhost:5173
+npm run build       # tokens → css → primitives → react → ui:sync
+npm run docs:check  # fail if TOKENS.md is out of date with usage.json
+npm run vibe        # score the token-guidance A/B fixtures
+npm test            # primitives unit tests
+npm run dev         # playground at http://localhost:5173
 ```
 
-Try the CLI:
+Try the CLI (distribution):
 
 ```sh
-node packages/cli/bin/ds.mjs list
+npm run ui -- list
 node packages/cli/bin/ds.mjs add button --dir /tmp/demo
 ```
+
+## Agent-ready workflow
+
+This repo is built so an agent looks up its component API — and its token
+usage rules — instead of recalling either from memory. Start with
+[CLAUDE.md](CLAUDE.md) for the rules this repo enforces and
+[agent-workflow.md](agent-workflow.md) for the general workflow behind them.
+
+```sh
+npm run ui -- props button --example   # props, types, defaults + a real usage snippet
+npm run ui -- tokens color             # --ds-* custom properties, filtered
+npm run ui -- pages                    # existing page shells in this repo
+```
+
+`.claude/ui-context.md` is the same lookups as one generated file
+(`npm run ui:sync`, which `npm run build` also runs last) — read it when you
+want the whole surface at once instead of querying one component at a time.
+
+Adding a component follows a gated order — primitive behavior approved,
+then each token mapping approved state by state, only then CSS/React — see
+[STRUCTURE.md](STRUCTURE.md#how-a-component-becomes-real). Proposing a new
+token itself goes through the `design-tokens` skill
+(`.claude/skills/design-tokens/`), not an ad hoc edit to the theme JSON.
+
+**This context is monorepo-local, not distributed yet.** `npm install
+@ds/react` carries prop names/types/JSDoc via the `.d.ts` output (real, if
+partial, context — confirmed by checking `packages/react/dist/button.d.ts`).
+`ds add <name>` carries none of it: it copies raw source only, no manifest,
+no context file, and `ds props/tokens/pages` don't work once installed
+outside this monorepo (their path resolution assumes they're still sitting
+at `packages/cli/bin/`). See Open items below.
 
 ## Open items
 
@@ -63,3 +92,14 @@ node packages/cli/bin/ds.mjs add button --dir /tmp/demo
 - Figma variables export + component library
 - Visual regression (Playwright) and axe a11y gates in CI
 - Hosted registry + license auth for the pro tier
+- Container components (`Card`, `Table`, `List`) — layout guidance in CLAUDE.md
+  references these categories generically; none exist in the registry yet
+- CSS cascade layers (`@layer`) — component CSS currently relies on the
+  manual `ORDER` array in `packages/css/build.mjs` rather than a layer boundary
+- Agent-lookup context doesn't travel past this monorepo — `ds add` copies
+  raw source with no manifest/context, and `ds props/tokens/pages` don't
+  work from an installed `@ds/cli` (path resolution assumes it's still
+  inside `packages/cli/`). Two directions worth weighing later: teach
+  `ds add` to drop a per-component context file alongside the source, or
+  bundle the registry + a props snapshot into the published CLI so the
+  live commands work post-install too

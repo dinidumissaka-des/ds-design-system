@@ -154,14 +154,14 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
           add(
             "hardcoded-dimension",
             "error",
-            `\`${prop}: ${value}\` — use a scale token (space.*, size.control.*, radius.*, font.size.*).`,
+            `\`${prop}: ${value}\` — use a scale token (space.*, size.control.*, radius.*, type.size.*).`,
             block.index
           );
           break;
         }
       }
       if (prop === "font-weight" && /^\d+$/.test(value)) {
-        add("hardcoded-font-weight", "error", `\`font-weight: ${value}\` — use a font.weight.* token.`, block.index);
+        add("hardcoded-font-weight", "error", `\`font-weight: ${value}\` — use a type.*.weight token.`, block.index);
       }
       if (/^(transition|animation)(-(duration|timing-function))?$/.test(prop)) {
         if (/\b\d+m?s\b/.test(value) && !value.includes("var(--ds-motion-duration")) {
@@ -200,8 +200,12 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
 
     // --- state and focus handling ---------------------------------------
     if (/:hover\b/.test(block.selector) && !block.selector.includes(".ds-state-layer")) {
+      // Any token-backed background counts, palette or theme: theme.bg.* /
+      // theme.*-role.* live under the "theme" family here (not "color", as in
+      // a single-file token source), so a hand-rolled swap is just as likely
+      // to reach for a theme role as a raw palette step.
       const touchesBg = block.declarations.some(
-        (d) => (d.prop === "background" || d.prop === "background-color") && d.value.includes("var(--ds-color")
+        (d) => (d.prop === "background" || d.prop === "background-color") && d.value.includes("var(--ds-")
       );
       if (touchesBg) {
         add(
@@ -234,7 +238,7 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
     /cursor:\s*pointer|\bbutton\b|\binput\b|\bselect\b|\btextarea\b|role="(button|link|menuitem|tab)"/.test(
       source
     );
-  const hasFocusRing = source.includes("--ds-color-focus-ring");
+  const hasFocusRing = source.includes("--ds-theme-focus-ring");
   if (looksInteractive && !hasFocusRing) {
     add(
       "missing-focus-ring",

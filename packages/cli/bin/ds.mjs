@@ -2,38 +2,48 @@
 // ds CLI — v0: resolves components from the local monorepo registry.
 // Later: fetch manifests over HTTPS from the hosted registry, with license
 // auth (`ds login`) gating pro-tier components.
-import { mkdir, readFile, writeFile, readdir, copyFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+//
+// `list` / `add` are the copy-paste distribution tool for consumer repos.
+// `props` / `tokens` / `pages` are the agent-lookup surface described in
+// agent-workflow.md's Layer 1 — the thing that makes checking cheaper than
+// guessing, aliased at the repo root as `npm run ui -- <subcommand>`.
+import { mkdir, readFile, copyFile } from "node:fs/promises";
 import path from "node:path";
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(here, "../../..");
-const registryDir = path.join(repoRoot, "registry/components");
-
-async function loadRegistry() {
-  const entries = {};
-  for (const file of await readdir(registryDir)) {
-    if (!file.endsWith(".json")) continue;
-    const manifest = JSON.parse(await readFile(path.join(registryDir, file), "utf8"));
-    entries[manifest.name] = manifest;
-  }
-  return entries;
-}
+import {
+  repoRoot,
+  loadRegistry,
+  sortedEntries,
+  getComponentProps,
+  getTokens,
+  getPages,
+  getExamples,
+} from "../lib/index.mjs";
 
 function usage() {
   console.log(`ds — design system CLI
 
-Usage:
-  ds list                 List available components and their status
+Distribution:
+  ds list                 List every component and its status
   ds add <name...>        Copy component source (and dependencies) into ./ds
     --dir <path>          Target directory (default: ./ds)
+
+Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
+  ds props <name>          Props for one component, read straight from source
+    --example              Include a real usage snippet from apps/
+  ds tokens [filter]        Flat --ds-* token reference; filter is a substring match
+  ds pages                  Page shells already in this repo (find the precedent)
+
+  --dense                  Compact, token-efficient output for any of the above
 `);
 }
 
-async function list() {
+async function list(dense) {
   const registry = await loadRegistry();
-  const rows = Object.values(registry).sort((a, b) => a.name.localeCompare(b.name));
-  for (const entry of rows) {
+  for (const entry of sortedEntries(registry)) {
+    if (dense) {
+      console.log(entry.name);
+      continue;
+    }
     const css = entry.status?.css?.state ?? "tbd";
     const react = entry.status?.react?.state ?? "tbd";
     console.log(
@@ -81,12 +91,87 @@ async function add(names, targetDir) {
   console.log(`Remember to import @ds/tokens/css (or copy tokens.css) once at your app root.`);
 }
 
+async function props(name, { dense, example }) {
+  if (!name) {
+    console.error("Usage: ds props <name> [--example]");
+    process.exitCode = 1;
+    return;
+  }
+  const registry = await loadRegistry();
+  const result = await getComponentProps(name, registry);
+
+  if (result.error) {
+    console.error(result.error);
+    process.exitCode = 1;
+    return;
+  }
+  if (!result.implemented) {
+    console.log(dense ? `${name}: ${result.note}` : `${result.title ?? name}\n\n${result.note}`);
+    return;
+  }
+
+  if (dense) {
+    for (const prop of result.props) {
+      const def = prop.default !== undefined ? ` = ${prop.default}` : "";
+      console.log(`${prop.name}${prop.optional ? "?" : ""}: ${prop.type}${def}`);
+    }
+    if (example && result.example) console.log(result.example);
+    return;
+  }
+
+  console.log(`${result.title} (${result.importPath})`);
+  if (result.extends) console.log(`extends: ${result.extends}`);
+  console.log("");
+  for (const prop of result.props) {
+    const def = prop.default !== undefined ? `  default: ${prop.default}` : "";
+    console.log(`  ${prop.name}${prop.optional ? "?" : ""}: ${prop.type}${def}`);
+    if (prop.description) console.log(`    — ${prop.description}`);
+  }
+  if (example) {
+    console.log(`\nExample (real usage, from apps/):`);
+    console.log(result.example ? `  ${result.example.split("\n").join("\n  ")}` : "  (none found in apps/)");
+  }
+}
+
+async function tokensCmd(filter, dense) {
+  const tokens = await getTokens();
+  if (!tokens) {
+    console.error("Tokens haven't been built yet — run `npm run build -w @ds/tokens` (or `npm run build`) first.");
+    process.exitCode = 1;
+    return;
+  }
+  const keys = Object.keys(tokens)
+    .filter((key) => !filter || key.includes(filter))
+    .sort();
+  for (const key of keys) {
+    console.log(dense ? `--ds-${key}` : `--ds-${key}: ${tokens[key]}`);
+  }
+}
+
+async function pagesCmd(dense) {
+  const pages = await getPages();
+  if (!pages.length) {
+    console.log("No page entry-points found under apps/*/src.");
+    return;
+  }
+  for (const page of pages) {
+    console.log(dense ? page.path : `${page.path}\n  shell: ${page.shell}`);
+  }
+}
+
 const [, , command, ...rest] = process.argv;
+const dense = rest.includes("--dense");
+const example = rest.includes("--example");
 const dirFlag = rest.indexOf("--dir");
 const targetDir =
   dirFlag !== -1 ? path.resolve(rest[dirFlag + 1] ?? "ds") : path.resolve("ds");
-const names = rest.filter((a, i) => a !== "--dir" && i !== dirFlag + 1);
+const positional = rest.filter(
+  (arg, i) => !arg.startsWith("--") && (dirFlag === -1 || i !== dirFlag + 1)
+);
 
-if (command === "list") await list();
-else if (command === "add" && names.length) await add(names, targetDir);
+if (command === "list") await list(dense);
+else if (command === "add" && positional.length) await add(positional, targetDir);
+else if (command === "props") await props(positional[0], { dense, example });
+else if (command === "tokens") await tokensCmd(positional[0], dense);
+else if (command === "pages") await pagesCmd(dense);
 else usage();

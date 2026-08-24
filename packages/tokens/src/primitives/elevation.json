@@ -1,0 +1,8 @@
+{
+  "low": "0px 1px 1px rgb(0 0 0 / 0.1), 0px 2px 8px rgb(0 0 0 / 0.1)",
+  "med": "0px 1px 2px rgb(0 0 0 / 0.1), 0px 2px 12px rgb(0 0 0 / 0.1)",
+  "high": "0px 2px 2px rgb(0 0 0 / 0.1), 0px 8px 24px rgb(0 0 0 / 0.1)",
+  "low-strong": "0px 1px 1px rgb(0 0 0 / 0.2), 0px 2px 8px rgb(0 0 0 / 0.2)",
+  "med-strong": "0px 1px 2px rgb(0 0 0 / 0.2), 0px 2px 12px rgb(0 0 0 / 0.2)",
+  "high-strong": "0px 2px 2px rgb(0 0 0 / 0.2), 0px 8px 24px rgb(0 0 0 / 0.3)"
+}

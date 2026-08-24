@@ -1,5 +1,5 @@
 {
-  "color": {
+  "theme": {
     "bg": {
       "canvas": "{color.neutral.950}",
       "surface": "{color.neutral.900}",
@@ -18,28 +18,41 @@
     },
     "accent-role": {
       "bg": "{color.accent.600}",
-      "bg-hover": "{color.accent.700}",
-      "bg-active": "{color.accent.800}",
       "fg": "{color.accent.400}",
-      "subtle": "{color.accent.950}"
+      "subtle": "{color.accent.950}",
+      "ring": "{ring.accent}"
+    },
+    "secondary-role": {
+      "bg": "{color.neutral.900}",
+      "fg": "{color.neutral.50}",
+      "border": "{color.neutral.700}"
+    },
+    "tertiary-role": {
+      "fg": "{color.accent.400}"
     },
     "success-role": {
       "bg": "{color.success.500}",
       "fg": "{color.success.400}",
-      "subtle": "{color.success.950}"
+      "subtle": "{color.success.950}",
+      "ring": "{ring.success}"
     },
     "warning-role": {
       "bg": "{color.warning.500}",
       "fg": "{color.warning.400}",
-      "subtle": "{color.warning.950}"
+      "subtle": "{color.warning.950}",
+      "ring": "{ring.warning}"
     },
     "danger-role": {
       "bg": "{color.danger.600}",
-      "bg-hover": "{color.danger.700}",
-      "bg-active": "{color.danger.800}",
       "fg": "{color.danger.400}",
-      "subtle": "{color.danger.950}"
+      "subtle": "{color.danger.950}",
+      "ring": "{ring.danger}"
     },
-    "focus-ring": "{color.accent.400}"
+    "focus-ring": "{color.accent.400}",
+    "elevation": {
+      "raised": "{elevation.low-strong}",
+      "overlay": "{elevation.med-strong}",
+      "modal": "{elevation.high-strong}"
+    }
   }
 }

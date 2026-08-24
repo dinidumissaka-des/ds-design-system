@@ -1,0 +1,53 @@
+{
+  "control": {
+    "size": {
+      "sm": "{font.size.body}",
+      "md": "{font.size.body}",
+      "lg": "{font.size.large-1}"
+    },
+    "line-height": {
+      "sm": "{font.line-height.250}",
+      "md": "{font.line-height.250}",
+      "lg": "{font.line-height.350}"
+    },
+    "weight": "{font.weight.bold}"
+  },
+  "heading": {
+    "size": "{font.size.medium}",
+    "weight": "{font.weight.bold}",
+    "line-height": "{font.line-height.300}"
+  },
+  "body": {
+    "size": "{font.size.body}",
+    "weight": "{font.weight.regular}",
+    "line-height": "{font.line-height.250}"
+  },
+  "label": {
+    "size": "{font.size.smallest}",
+    "weight": "{font.weight.bold}",
+    "line-height": "{font.line-height.150}",
+    "letter-spacing": "{font.letter-spacing.wide}",
+    "text-transform": "uppercase"
+  },
+  "tracking": {
+    "display-1": "{font.letter-spacing.tightest}",
+    "display-2": "{font.letter-spacing.tighter}",
+    "display-3": "{font.letter-spacing.tight}",
+    "signal-1": "{font.letter-spacing.wider}",
+    "signal-2": "{font.letter-spacing.wide}"
+  },
+  "size": {
+    "4xs": "{font.size.smallest}",
+    "3xs": "{font.size.smallest}",
+    "2xs": "{font.size.smallest}",
+    "xs": "{font.size.smallest}",
+    "sm": "{font.size.small}",
+    "base": "{font.size.body}",
+    "lg": "{font.size.medium}",
+    "xl": "{font.size.large-1}",
+    "2xl": "{font.size.large-2}",
+    "3xl": "{font.size.giant-1}",
+    "4xl": "{font.size.giant-2}",
+    "5xl": "{font.size.giant-3}"
+  }
+}

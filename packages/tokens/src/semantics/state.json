@@ -1,0 +1,5 @@
+{
+  "hover-opacity": "{opacity.8}",
+  "press-opacity": "{opacity.12}",
+  "disabled-opacity": "{opacity.50}"
+}

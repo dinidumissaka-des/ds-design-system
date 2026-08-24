@@ -42,7 +42,7 @@ Each candidate is checked for:
 | `unknown-token` | error | The token does not exist — usually a plausible-looking invention |
 | `hardcoded-color` | error | Every color has a token |
 | `hardcoded-dimension` | error | A skipped step on the space / size / radius / type scale |
-| `hardcoded-font-weight` | error | `500` instead of `font.weight.medium` |
+| `hardcoded-font-weight` | error | `500` instead of `type.control.weight` (or another `type.*.weight`) |
 | `hardcoded-motion` | error | `0.2s ease-in-out` instead of the motion tokens |
 | `forbidden-pairing` | error / warn | A combination `TOKENS.md` records as a contrast gap |
 | `missing-required-token` | error | The prompt's documented answer was not used |
@@ -52,9 +52,10 @@ Each candidate is checked for:
 | `native-disabled-styling` | warn | `:disabled`, which drops the control from the tab order |
 
 `forbidden-pairing` is an error when the combination fails in every theme (white on
-`warning-role.bg`), and a warning when it is verified in one theme and a known gap in another
-(white on `accent-role.bg`, which is the sanctioned primary button — the dark ramp is what's
-at fault, not the component).
+`theme.warning-role.bg`), and a warning when it is verified in one theme and a known gap in
+another. The primary and destructive buttons (`theme.accent-role.bg` / `theme.danger-role.bg`
+with `theme.fg.on-accent`) are the sanctioned pattern in both themes — see
+[TOKENS.md](../../packages/tokens/TOKENS.md#verified-contrast) for what's actually verified.
 
 **No rule is written twice.** The palette list, the valid token names, and the forbidden
 pairings are all read from `packages/tokens/dist/usage.json`, which the token build generates.
@@ -67,7 +68,7 @@ holds the documented answers. `npm run vibe` scores both and **fails** unless th
 arm is clean and the naive arm is not — so a checker that stops discriminating is caught in CI.
 
 ```
-Without the token docs      0/6 clean · 52 errors
+Without the token docs      0/6 clean
 Following the token docs    6/6 clean ·  0 errors
 ```
 

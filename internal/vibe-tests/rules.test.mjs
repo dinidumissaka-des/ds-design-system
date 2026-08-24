@@ -12,15 +12,16 @@ test("flags a palette token used in a component", () => {
   assert.ok(rules(".a { color: var(--ds-color-neutral-900); }").includes("palette-token"));
 });
 
-test("does not mistake a role token for a palette token", () => {
-  // Regression: `color.warning` (palette) is a name prefix of
-  // `color.warning-role.subtle` (semantic), so prefix matching flagged both.
+test("does not mistake a theme role token for a palette token", () => {
+  // Regression: prefix matching under the old single "color" family could
+  // confuse a palette ramp with a same-named role. theme.* and color.* are
+  // now separate top-level families, but keep the guard.
   for (const token of [
-    "--ds-color-warning-role-subtle",
-    "--ds-color-warning-role-fg",
-    "--ds-color-accent-role-bg",
-    "--ds-color-danger-role-fg",
-    "--ds-color-success-role-subtle",
+    "--ds-theme-warning-role-subtle",
+    "--ds-theme-warning-role-fg",
+    "--ds-theme-accent-role-bg",
+    "--ds-theme-danger-role-fg",
+    "--ds-theme-success-role-subtle",
   ]) {
     assert.ok(
       !rules(`.a { color: var(${token}); }`).includes("palette-token"),
@@ -37,7 +38,7 @@ test("flags an unknown token separately from a palette one", () => {
 
 test("a pairing that fails in every theme is an error", () => {
   const v = find(
-    ".notice { background: var(--ds-color-warning-role-bg); color: var(--ds-color-fg-on-accent); }",
+    ".notice { background: var(--ds-theme-warning-role-bg); color: var(--ds-theme-fg-on-accent); }",
     "forbidden-pairing"
   );
   assert.ok(v, "expected the white-on-warning-fill pairing to be caught");
@@ -70,16 +71,17 @@ test("a pairing verified in one theme is a warning, not an error", () => {
 });
 
 test("the primary and destructive button pairings are clean in both themes", () => {
-  // The dark accent and danger fills were retuned to step 600 so white text
-  // clears AA in both themes; this guards against them drifting back.
+  // The dark accent-role.bg and danger-role.bg were retuned to step 600 (from
+  // 500) so white text clears AA in both themes; this guards against them
+  // drifting back.
   for (const bg of ["accent", "danger"]) {
-    const css = `.button { background: var(--ds-color-${bg}-role-bg); color: var(--ds-color-fg-on-accent); }`;
+    const css = `.button { background: var(--ds-theme-${bg}-role-bg); color: var(--ds-theme-fg-on-accent); }`;
     assert.equal(find(css, "forbidden-pairing"), undefined, `${bg} fill must clear AA in both themes`);
   }
 });
 
 test("accepts the documented success and warning notice recipe", () => {
-  const css = `.n { background: var(--ds-color-success-role-subtle); color: var(--ds-color-success-role-fg); }`;
+  const css = `.n { background: var(--ds-theme-success-role-subtle); color: var(--ds-theme-success-role-fg); }`;
   assert.deepEqual(rules(css), []);
 });
 
@@ -98,7 +100,7 @@ test("allows font-relative sizing", () => {
 test("accepts scale tokens in place of raw values", () => {
   const css = `.a {
     padding: var(--ds-space-4);
-    font-weight: var(--ds-font-weight-medium);
+    font-weight: var(--ds-font-weight-bold);
     transition: opacity var(--ds-motion-duration-fast) var(--ds-motion-easing-standard);
   }`;
   assert.deepEqual(rules(css), []);
@@ -107,7 +109,7 @@ test("accepts scale tokens in place of raw values", () => {
 test("requires a focus ring on a focusable control", () => {
   assert.ok(rules(".btn { cursor: pointer; }").includes("missing-focus-ring"));
   const ok = `.btn { cursor: pointer; }
-    .btn:focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus-ring); }`;
+    .btn:focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring); }`;
   assert.ok(!rules(ok).includes("missing-focus-ring"));
 });
 
@@ -125,7 +127,7 @@ test("flags a removed focus ring", () => {
 
 test("warns on hand-rolled hover and native disabled styling", () => {
   assert.ok(
-    rules(".btn:hover { background: var(--ds-color-accent-role-bg-hover); }").includes("hand-rolled-hover")
+    rules(".btn:hover { background: var(--ds-theme-accent-role-subtle); }").includes("hand-rolled-hover")
   );
   assert.ok(rules(".btn:disabled { opacity: 0.5; }").includes("native-disabled-styling"));
   assert.ok(
@@ -157,13 +159,13 @@ test("layout constraints are not scale violations", () => {
 });
 
 test("scoring reports a missing required token", () => {
-  const prompt = { id: "x", mustUse: ["color.warning-role.subtle"] };
-  const bad = scoreCandidate(".n { color: var(--ds-color-fg-primary); }", prompt, model);
+  const prompt = { id: "x", mustUse: ["theme.warning-role.subtle"] };
+  const bad = scoreCandidate(".n { color: var(--ds-theme-fg-primary); }", prompt, model);
   assert.equal(bad.pass, false);
   assert.ok(bad.violations.some((v) => v.rule === "missing-required-token"));
 
   const good = scoreCandidate(
-    ".n { background: var(--ds-color-warning-role-subtle); color: var(--ds-color-warning-role-fg); }",
+    ".n { background: var(--ds-theme-warning-role-subtle); color: var(--ds-theme-warning-role-fg); }",
     prompt,
     model
   );

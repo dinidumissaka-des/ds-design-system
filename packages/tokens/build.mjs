@@ -8,7 +8,7 @@
 //   TOKENS.md                — the human/agent-facing reference (committed to the repo)
 //
 // Run with --check to fail instead of rewriting TOKENS.md when it is out of date.
-import { mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -18,10 +18,57 @@ const CHECK_ONLY = process.argv.includes("--check");
 
 const readJson = async (p) => JSON.parse(await readFile(path.join(root, p), "utf8"));
 
-const base = await readJson("src/base.json");
-const light = await readJson("src/themes/light.json");
-const dark = await readJson("src/themes/dark.json");
+// One file per primitive scale (src/primitives/color.json, space.json, …) —
+// each file's basename becomes its top-level key, so `space.json` fills
+// `base.space` exactly as a "space" key inside a single base.json would.
+// Keeps a color-palette-sized diff from ever touching a one-line scale like
+// border.json, and matches the design-tokens skill's one-scale-at-a-time model.
+async function readBase() {
+  const dir = path.join(root, "src/primitives");
+  const base = {};
+  for (const file of (await readdir(dir)).sort()) {
+    if (!file.endsWith(".json")) continue;
+    base[file.replace(/\.json$/, "")] = await readJson(path.join("src/primitives", file));
+  }
+  return base;
+}
+
+const base = await readBase();
+const light = await readJson("src/semantics/theme/light.json");
+const dark = await readJson("src/semantics/theme/dark.json");
 const usage = await readJson("src/usage.json");
+
+// Non-theme semantic roles (src/semantics/*.json) — theme-invariant, so
+// unlike color/elevation they don't branch into light/dark. Those two live in
+// src/semantics/theme/{light,dark}.json instead, folded under one shared
+// "theme" key — same "one file per semantic group" layout, just the group
+// that needs two files because it's the thing that varies by theme; read
+// separately above, not by this loop (the "theme" subdirectory is skipped
+// here — it doesn't end in .json, only files directly under src/semantics/ do).
+// Each file's basename maps to the primitive category it extends
+// (spacing.json's roles fold into the "space" family alongside the raw
+// space.0..12 steps); typography.json has no primitive category of the same
+// name, so it becomes its own "type" family instead of colliding with
+// font.*. Theme is the one group that does NOT fold into a same-named
+// primitive family — there's no "theme" primitive scale to fold into, so
+// theme.* lands as its own top-level family in the JS/TS output, separate
+// from color.* (which stays the raw primitive ramp: color.accent, color.neutral, …).
+const SEMANTIC_TARGET = { spacing: "space", radius: "radius", typography: "type", motion: "motion" };
+
+async function readSemantics() {
+  const dir = path.join(root, "src/semantics");
+  const groups = {};
+  for (const file of (await readdir(dir)).sort()) {
+    if (!file.endsWith(".json")) continue;
+    const key = file.replace(/\.json$/, "");
+    const targetKey = SEMANTIC_TARGET[key] ?? key;
+    const parsed = await readJson(path.join("src/semantics", file));
+    groups[targetKey] = { ...(groups[targetKey] ?? {}), ...parsed };
+  }
+  return groups;
+}
+
+const semantics = await readSemantics();
 
 function getPath(obj, dotted) {
   return dotted.split(".").reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
@@ -62,6 +109,18 @@ function flatten(node, prefix = []) {
 const resolvedBase = resolve(base, base);
 const resolvedLight = resolve(light, base);
 const resolvedDark = resolve(dark, base);
+
+// Fold each resolved semantic group into the primitive family it extends —
+// e.g. spacing.json's "control"/"stack"/"section"/"page" land as new sibling
+// keys next to space's raw "0".."12" steps, same way border.json's
+// "border.default" sits alongside border's raw "1"/"2"/"3" steps. Theme
+// isn't part of this loop — it has no same-named primitive family to fold
+// into, so it's merged separately below instead (light values into the
+// JS/TS "merged" tree; light+dark both into the CSS custom properties).
+for (const [targetKey, group] of Object.entries(semantics)) {
+  const resolvedGroup = resolve(group, base);
+  resolvedBase[targetKey] = { ...(resolvedBase[targetKey] ?? {}), ...resolvedGroup };
+}
 
 const flatBase = flatten(resolvedBase);
 const flatLight = flatten(resolvedLight);
@@ -110,7 +169,29 @@ for (const token of flatBase) {
   if (!docFor(token.path)) errors.push(`Base token "${token.path}" is undocumented in usage.json.`);
 }
 
+// A literal "*/" anywhere in an entry's prose closes the JSDoc comment block
+// this text gets embedded in early (see jsdoc() below) — everything after it
+// gets parsed as TypeScript instead of skipped as a comment, which corrupts
+// dist/index.d.ts in a way this build cannot see (it doesn't typecheck its
+// own output) and a consumer only discovers via a baffling downstream tsc
+// error. Catch it here instead.
 for (const [name, entry] of Object.entries(usage.tokens)) {
+  for (const field of Object.keys(entry)) {
+    const value = entry[field];
+    const strings =
+      typeof value === "string"
+        ? [value]
+        : Array.isArray(value)
+          ? value
+          : typeof value === "object" && value !== null
+            ? Object.values(value).flatMap((v) => (typeof v === "string" ? [v] : Object.values(v ?? {})))
+            : [];
+    for (const s of strings) {
+      if (typeof s === "string" && s.includes("*/")) {
+        errors.push(`usage.json entry "${name}" field "${field}" contains a literal "*/", which breaks the generated JSDoc comment.`);
+      }
+    }
+  }
   for (const field of ["summary"]) {
     if (!entry[field]) errors.push(`usage.json entry "${name}" is missing "${field}".`);
   }
@@ -245,7 +326,6 @@ const tokenIndex = Object.fromEntries(
   ])
 );
 
-
 // One-line annotation for a token: its own summary if documented directly,
 // otherwise its group's description of that step on the scale. Tokens that
 // only inherit a group summary (the palette ramps) are annotated once for the
@@ -262,15 +342,20 @@ function inlineDoc(token, seenGroups) {
 }
 
 const GROUP_TITLES = {
-  color: "Color — palette primitives (do not use directly) then semantic roles",
+  color: "Color — palette primitives (do not use directly, except color.data) then theme roles",
+  theme: "Theme — semantic color + elevation roles, the only tokens that differ between light and dark",
   space: "Spacing — every margin, padding, and gap",
   radius: "Corner radius",
   size: "Interactive control sizing",
-  font: "Typography",
+  font: "Typography primitives (do not use directly — use type.*)",
+  type: "Typography — the usable text scale",
   motion: "Motion",
-  elevation: "Elevation",
+  elevation: "Elevation (box-shadow scale)",
+  ring: "Ring — inset validation/selection strokes",
+  opacity: "Opacity — raw values behind the state scale",
   state: "Interaction-state opacities",
   focus: "Focus-ring geometry",
+  border: "Border widths",
 };
 
 function cssBlock(selector, tokens, { groupHeaders }) {
@@ -295,20 +380,22 @@ function cssBlock(selector, tokens, { groupHeaders }) {
 const css = [
   [
     "/* Generated by @ds/tokens — do not edit by hand.",
-    " * Edit src/base.json, src/themes/*.json, or src/usage.json and rebuild.",
+    " * Edit src/primitives/*.json, src/semantics/*.json, src/semantics/theme/*.json,",
+    " * or src/usage.json and rebuild.",
     " *",
     " * Comments come from src/usage.json. Full guidance, contrast data, and",
     " * component recipes live in packages/tokens/TOKENS.md.",
     " *",
     " * Palette tokens (--ds-color-neutral-*, --ds-color-accent-*, and the other",
     " * numbered ramps) are identical in both themes. Never use them in a",
-    " * component — use the semantic tokens below them.",
+    " * component — use the theme.* semantic tokens below them instead",
+    " * (color.data.* is the one palette group meant for direct use, in charts).",
     " */",
   ].join("\n"),
   cssBlock(":root", [...flatBase, ...flatLight], { groupHeaders: true }),
   [
-    "/* Dark theme — only the semantic tokens change. Every token below has the",
-    " * same meaning as its :root counterpart; only the value differs. */",
+    "/* Dark theme — only the theme.* semantic tokens change. Every token below has",
+    " * the same meaning as its :root counterpart; only the value differs. */",
     cssBlock('[data-theme="dark"]', flatDark, { groupHeaders: false }),
   ].join("\n"),
 ].join("\n");
@@ -376,7 +463,7 @@ export declare const tokens: ${toType(merged)};
  * Returns the CSS variable reference for a dotted token path.
  *
  * \`\`\`ts
- * cssVar("color.accent-role.bg"); // "var(--ds-color-accent-role-bg)"
+ * cssVar("theme.accent-role.bg"); // "var(--ds-theme-accent-role-bg)"
  * \`\`\`
  */
 export declare const cssVar: (tokenPath: string) => string;
@@ -419,34 +506,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        canvas: v("color-bg-canvas"),
-        surface: v("color-bg-surface"),
-        subtle: v("color-bg-subtle"),
-        muted: v("color-bg-muted"),
-        foreground: v("color-fg-primary"),
-        secondary: v("color-fg-secondary"),
+        canvas: v("theme-bg-canvas"),
+        surface: v("theme-bg-surface"),
+        subtle: v("theme-bg-subtle"),
+        muted: v("theme-bg-muted"),
+        foreground: v("theme-fg-primary"),
+        secondary: v("theme-fg-secondary"),
         accent: {
-          DEFAULT: v("color-accent-role-bg"),
-          hover: v("color-accent-role-bg-hover"),
-          fg: v("color-accent-role-fg"),
-          subtle: v("color-accent-role-subtle"),
+          DEFAULT: v("theme-accent-role-bg"),
+          fg: v("theme-accent-role-fg"),
+          subtle: v("theme-accent-role-subtle"),
         },
         danger: {
-          DEFAULT: v("color-danger-role-bg"),
-          fg: v("color-danger-role-fg"),
-          subtle: v("color-danger-role-subtle"),
+          DEFAULT: v("theme-danger-role-bg"),
+          fg: v("theme-danger-role-fg"),
+          subtle: v("theme-danger-role-subtle"),
         },
         success: {
-          DEFAULT: v("color-success-role-bg"),
-          fg: v("color-success-role-fg"),
-          subtle: v("color-success-role-subtle"),
+          DEFAULT: v("theme-success-role-bg"),
+          fg: v("theme-success-role-fg"),
+          subtle: v("theme-success-role-subtle"),
         },
         warning: {
-          DEFAULT: v("color-warning-role-bg"),
-          fg: v("color-warning-role-fg"),
-          subtle: v("color-warning-role-subtle"),
+          DEFAULT: v("theme-warning-role-bg"),
+          fg: v("theme-warning-role-fg"),
+          subtle: v("theme-warning-role-subtle"),
         },
-        border: v("color-border-default"),
+        border: v("theme-border-default"),
+      },
+      boxShadow: {
+        raised: v("theme-elevation-raised"),
+        overlay: v("theme-elevation-overlay"),
+        modal: v("theme-elevation-modal"),
       },
       borderRadius: {
         sm: v("radius-sm"),
@@ -514,42 +605,49 @@ md.push("");
 md.push("| Layer | Tokens | Use in components? |");
 md.push("|---|---|---|");
 md.push("| Palette | `color.neutral.*`, `color.accent.*`, `color.success.*`, `color.warning.*`, `color.danger.*`, `color.white`, `color.black` | **No** — identical in both themes, so they break dark mode |");
-md.push("| Semantic | `color.bg.*`, `color.fg.*`, `color.border.*`, `color.*-role.*`, `color.focus-ring` | **Yes** — these are the only color tokens a component may use |");
-md.push("| Base scales | `space`, `radius`, `size`, `font`, `motion`, `elevation`, `state`, `focus` | **Yes** — theme-independent by design |");
+md.push("| Palette (direct-use) | `color.data.*` | **Yes, but only in data visualization** — series colors are picked directly, not routed through a role |");
+md.push("| Semantic | `theme.bg.*`, `theme.fg.*`, `theme.border.*`, `theme.*-role.*`, `theme.focus-ring`, `theme.elevation.*` | **Yes** — the only color (and elevation) tokens a component may use, and the only ones that differ by theme |");
+md.push("| Base scales | `space`, `radius`, `size`, `font`, `type`, `motion`, `elevation`, `ring`, `opacity`, `state`, `focus`, `border` | **Yes** — theme-independent by design |");
 md.push("");
 md.push("## Pick a token");
 md.push("");
 md.push("| I am styling… | Token |");
 md.push("|---|---|");
 for (const [what, token] of [
-  ["The page background", "`color.bg.canvas`"],
-  ["A card, dialog, menu, or popover background", "`color.bg.surface`"],
-  ["A table header, zebra stripe, or quiet band", "`color.bg.subtle`"],
-  ["A progress track, skeleton, or inset well", "`color.bg.muted`"],
-  ["Body text, headings, meaningful icons", "`color.fg.primary`"],
-  ["Helper text, captions, metadata", "`color.fg.secondary`"],
-  ["Placeholders and decorative icons", "`color.fg.muted`"],
-  ["The label on a filled accent or danger button", "`color.fg.on-accent`"],
-  ["A divider or card outline", "`color.border.default`"],
-  ["An input or outlined-button border", "`color.border.strong`"],
-  ["The primary button / selected state", "`color.accent-role.bg`"],
-  ["A link or text-only action", "`color.accent-role.fg`"],
-  ["An informational banner background", "`color.accent-role.subtle`"],
-  ["A destructive button", "`color.danger-role.bg`"],
-  ["A validation error message", "`color.danger-role.fg`"],
-  ["An error banner background", "`color.danger-role.subtle`"],
+  ["The page background", "`theme.bg.canvas`"],
+  ["A card, dialog, menu, or popover background", "`theme.bg.surface`"],
+  ["A table header, zebra stripe, or quiet band", "`theme.bg.subtle`"],
+  ["A progress track, skeleton, or inset well", "`theme.bg.muted`"],
+  ["Body text, headings, meaningful icons", "`theme.fg.primary`"],
+  ["Helper text, captions, metadata", "`theme.fg.secondary`"],
+  ["Placeholders and decorative icons", "`theme.fg.muted`"],
+  ["The label on a filled accent or danger control", "`theme.fg.on-accent`"],
+  ["A divider or card outline", "`theme.border.default`"],
+  ["An input or outlined-button border", "`theme.border.strong`"],
+  ["The primary button / selected state", "`theme.accent-role.bg`"],
+  ["A link or text-only action", "`theme.accent-role.fg`"],
+  ["An informational banner background", "`theme.accent-role.subtle`"],
+  ["A validation/selection outline on a control", "the role's `ring` — `theme.accent-role.ring`, etc."],
+  ["A destructive button", "`theme.danger-role.bg`"],
+  ["A validation error message", "`theme.danger-role.fg`"],
+  ["An error banner background", "`theme.danger-role.subtle`"],
   ["A success or warning message", "the role's `subtle` background with its `fg` text — never its `bg`"],
   ["A status dot or non-text indicator", "the role's `bg`"],
-  ["The keyboard focus ring", "`color.focus-ring` with `focus.ring-width` / `focus.ring-offset`"],
+  ["The keyboard focus ring", "`theme.focus-ring` with `focus.ring-width` / `focus.ring-offset`"],
   ["Hover or press feedback", "the `.ds-state-layer` class — not a color swap"],
+  ["A raised card's shadow", "`theme.elevation.raised`"],
+  ["A dropdown/menu/popover shadow", "`theme.elevation.overlay`"],
+  ["A dialog/sheet shadow", "`theme.elevation.modal`"],
   ["Any margin, padding, or gap", "a `space.*` step"],
   ["A control's height", "a `size.control.*` step"],
+  ["Body/heading/label text size and weight", "a `type.*` role"],
+  ["A data-visualization series color", "`color.data.categorical.*` or a `color.data.<hue>` ramp"],
 ]) {
   md.push(`| ${what} | ${token} |`);
 }
 md.push("");
 
-// Recipe values mix token paths with prose ("1px solid color.border.default").
+// Recipe values mix token paths with prose ("1px solid theme.border.default").
 // Backtick the token paths and leave the prose alone.
 function markTokens(text) {
   return String(text).replace(/\b[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+\b/g, (m) =>
@@ -631,21 +729,21 @@ const semanticEntries = Object.entries(usage.tokens).filter(([k]) => semanticPat
 const paletteEntries = Object.entries(usage.tokens).filter(([, e]) => e.layer === "palette");
 const baseEntries = Object.entries(usage.tokens).filter(([, e]) => e.layer === "base");
 
-md.push("## Semantic color tokens");
+md.push("## Semantic tokens");
 md.push("");
-md.push("These are the only color tokens a component may use. Each one is the correct answer to exactly one styling question.");
+md.push("These are the only color and elevation tokens a component may use. Each one is the correct answer to exactly one styling question, and each is the only thing that differs between the light and dark theme.");
 md.push("");
 for (const [k, e] of semanticEntries) md.push(renderToken(k, e));
 
 md.push("## Palette tokens (reference only)");
 md.push("");
-md.push("Raw ramps. They do not change between themes, so a component that uses one is broken in the other. They exist only as reference targets for the semantic tokens above.");
+md.push("Raw ramps. Except `color.data.*`, they do not change between themes, so a component that uses one is broken in the other. They exist mainly as reference targets for the semantic tokens above.");
 md.push("");
 for (const [k, e] of paletteEntries) md.push(renderToken(k, e));
 
 md.push("## Base scales");
 md.push("");
-md.push("Theme-independent scales for everything that is not a color.");
+md.push("Theme-independent scales for everything that is not a themed color.");
 md.push("");
 for (const [k, e] of baseEntries) md.push(renderToken(k, e));
 

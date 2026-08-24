@@ -1,0 +1,14 @@
+{
+  "interactive": {
+    "duration": "{motion.duration.fast}",
+    "easing": "{motion.easing.standard}"
+  },
+  "overlay": {
+    "duration": "{motion.duration.medium}",
+    "easing": "{motion.easing.standard}"
+  },
+  "modal": {
+    "duration": "{motion.duration.slow}",
+    "easing": "{motion.easing.standard}"
+  }
+}
