@@ -89,31 +89,79 @@ Every value comes from `@ds/tokens`, exposed as `--ds-<path>` custom
 properties (`npm run ui -- tokens` for the full list). Never a bare hex or
 pixel value in component CSS or inline styles.
 
+**Read [`packages/tokens/TOKENS.md`](packages/tokens/TOKENS.md) before styling
+anything.** It documents every token — what it is for, what it is *not* for,
+what to use instead, which foreground/background pairs are contrast-verified,
+and token-by-token recipes for common components (button, text field, notice,
+dialog, menu, …). It is generated from `packages/tokens/src/usage.json`, so
+it is never out of date with the token values. The same documentation ships
+in three other forms:
+
+| Where | What you get |
+|---|---|
+| `packages/tokens/dist/css/tokens.css` | Every CSS variable with its usage as a comment |
+| `packages/tokens/dist/index.d.ts` | Usage rules as JSDoc — visible on hover and in completions |
+| `packages/tokens/dist/usage.json` | The same data, machine-readable, with measured contrast ratios |
+
+The rules that matter most:
+
 - **Semantic first.** Reach for `--ds-theme-accent-role-bg` before
   `--ds-color-accent-600` — the `-role-*` tokens are the ones that survive a
   theme or brand change; the numbered scale under them is raw material.
   (`theme` is the semantic layer — colors *and* elevation, since both branch
   by light/dark; `color` on its own, with no `-role-*`/`bg`/`fg` suffix, is
-  always the raw primitive ramp.)
-- **New token needed → use the `design-tokens` skill**, not an ad hoc edit
-  to `packages/tokens/src/semantics/*.json`. It's the Gate 1/2/3 interview that
-  gets a new primitive or semantic token proposed, described (Purpose / Use
-  when / Don't use for / Pairs with), and approved before it's written —
-  see [STRUCTURE.md](STRUCTURE.md#the-design-tokens-skill-and-this-repos-actual-token-pipeline)
-  for how it maps onto this repo's actual JSON pipeline.
+  always the raw primitive ramp. `color.data.*` is the one palette group
+  meant for direct use, in data visualization.)
+- **Never hard-code a value.** No hex colors, no pixel spacing, no raw font
+  weights, no `ease-in-out`. Every one of those has a token — `space.*`,
+  `size.control.*`, `radius.*`, `type.*`, `motion.*`. If nothing fits, add a
+  token — don't inline a value.
+- **`theme.fg.on-accent` goes on `accent-role.bg` and `danger-role.bg`
+  only.** It's white in both themes and fails contrast on `success-role.bg`
+  and `warning-role.bg` — see TOKENS.md's Known gaps table.
+- **Success/warning/danger messages use the role's `subtle` background with
+  its `fg` text.** The saturated `bg` of those roles is for non-text
+  indicators (status dots, bars) only, never text.
 - **Compose the state layer, don't reinvent it.** Interactive components get
   hover/press feedback by adding the `ds-state-layer` class alongside their
   own (see `.ds-button` in `packages/react/src/button.tsx`), not by writing
   a new `:hover` background rule.
+- **Focus is `theme.focus-ring` with `focus.ring-width` and
+  `focus.ring-offset`, on `:focus-visible`.** Never remove the ring; never
+  set the offset to `0` on a filled accent control. A role's `ring`
+  (`theme.accent-role.ring`, etc.) is a *different* thing — an inset
+  selection/validation stroke, not the keyboard focus indicator.
 - **`aria-disabled`, not `disabled`.** Disabled controls in this system stay
   focusable and screen-reader-discoverable; activation is blocked in the
   primitive (`packages/primitives/src/button.ts`), not by the native
-  attribute. Follow this pattern for any new interactive primitive.
+  attribute. Style it with `state.disabled-opacity`. Follow this pattern for
+  any new interactive primitive.
 - **CSS load order is manual, not cascade-layered yet.** `packages/css/build.mjs`
   concatenates files via an explicit `ORDER` array (state-layer → spinner →
   button today) — there's no `@layer` boundary protecting overrides. Adding a
   component whose CSS must come before another's means adding it to `ORDER`,
   not relying on file listing order.
+- **New token needed → use the `design-tokens` skill**, not an ad hoc edit
+  to `packages/tokens/src/semantics/*.json`. It's the Gate 1/2/3 interview that
+  gets a new primitive or semantic token proposed, described (Purpose / Use
+  when / Don't use for / Pairs with), and approved before it's written —
+  see [STRUCTURE.md](STRUCTURE.md#the-design-tokens-skill-and-this-repos-actual-token-pipeline)
+  for how it maps onto this repo's actual JSON pipeline. Adding or renaming a
+  token also means adding its `usage.json` entry — the build fails on an
+  undocumented token, a `usage.json` entry naming a token that doesn't
+  exist, or a documented contrast pairing that stops holding.
+
+### Do the docs work?
+
+`internal/vibe-tests/` measures whether the guidance above actually changes
+what an agent writes, rather than only whether it's current. It scores
+generated component code against rules derived from
+`packages/tokens/dist/usage.json` — palette tokens, hardcoded values,
+forbidden contrast pairings, missing focus rings, hand-rolled hover.
+`npm run vibe` runs the committed A/B fixtures (`internal/vibe-tests/fixtures/`)
+and fails if the checker stops telling the two arms apart. Use
+`node internal/vibe-tests/run.mjs check <file>` to lint any component you
+write against the same rules — see [internal/vibe-tests/README.md](internal/vibe-tests/README.md).
 
 ## Anti-patterns
 
@@ -121,12 +169,15 @@ pixel value in component CSS or inline styles.
 |---|---|
 | Invent a prop | `npm run ui -- props <name>` first |
 | Hardcode a color or pixel value | The matching `--ds-*` token |
+| A palette token (`--ds-color-neutral-*`, `--ds-color-accent-*`, …) directly in a component | The matching `theme.*` semantic token — palette tokens are identical in both themes |
+| `theme.fg.on-accent` on `success-role.bg` or `warning-role.bg` | The role's `subtle` background with its own `fg` — see TOKENS.md's Known gaps |
 | `disabled` attribute on a new interactive primitive | `aria-disabled` + a click guard, like `getButtonProps` |
 | A new `:hover`/`:active` rule for feedback | Compose `.ds-state-layer` |
 | A `<div className="card">` wrapper | Plain `<section>` — there's no Card yet, don't invent one |
 | Wrap a component in a div just for spacing | A `--ds-space-*` token on the component or its parent |
 | Add new component CSS and assume load order | Add the file to `ORDER` in `packages/css/build.mjs` |
 | Write CSS/React for a new component before its primitive and token mapping are approved | Follow the gated order above — primitives approved, then semantics approved state by state, then component |
+| Add or rename a token without a `usage.json` entry | The build fails on it — document it in the same change |
 
 ## Knowledge check
 
@@ -149,4 +200,17 @@ these without looking — if you can't, run the lookup commands above first:
 |---|---|
 | Component added, renamed, or its props changed | `npm run ui:sync` (or just `npm run build`, which runs it last) |
 | A registry manifest changes (`registry/components/*.json`) | Same — `npm run build` |
+| A token is added, renamed, or its value changes | `npm run build -w @ds/tokens` regenerates `TOKENS.md`; `npm run docs:check` verifies it's committed current (CI runs both) |
+| You're not sure a token change is actually enforced | `npm run vibe` — the A/B self-test fails if the checker stops discriminating documented answers from naive ones |
 | You give the same correction twice in one session | It belongs in this file, not a chat message |
+
+## Commands
+
+```sh
+npm run build        # tokens → css → primitives → react → ui:sync
+npm run docs:check   # fail if TOKENS.md is out of date with usage.json
+npm run vibe         # score the token-guidance A/B fixtures
+npm run vibe:test    # unit-test the vibe-tests checker itself
+npm test             # primitives unit tests
+npm run dev          # playground at http://localhost:5173
+```

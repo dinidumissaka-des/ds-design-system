@@ -8,7 +8,9 @@
     "medium-max": "550ms",
     "slow-min": "730ms",
     "slow": "975ms",
-    "slow-max": "1300ms"
+    "slow-max": "1300ms",
+    "spin": "800ms",
+    "spin-reduced": "2000ms"
   },
   "easing": {
     "standard": "cubic-bezier(0.24, 1, 0.4, 1)",

@@ -6,7 +6,7 @@ A token-first, multi-layer design system for web apps and websites. Benchmark: [
 
 | Layer | Package | What it is | Distribution |
 |---|---|---|---|
-| Tokens | `@ds/tokens` | JSON source of truth → CSS variables, TypeScript, Tailwind preset | npm |
+| Tokens | `@ds/tokens` | JSON source of truth → CSS variables, TypeScript, Tailwind preset, [usage docs](packages/tokens/TOKENS.md) | npm |
 | CSS components | `@ds/css` | Framework-free, per-component versioned CSS (works with plain HTML) | npm |
 | Primitives | `@ds/primitives` | Headless, accessible behavior (pure functions — portable beyond React) | npm |
 | React components | `@ds/react` | Styled components: primitives behavior + CSS appearance | npm **and** CLI copy-paste |
@@ -21,14 +21,29 @@ Key decisions:
 - **State layer as its own primitive**: uniform hover/press feedback across all interactive components.
 - **Status matrix from registry metadata**: honest per-artifact lifecycle (latest / in-progress / future / deprecated / na), published on the docs site.
 - **Open core**: tokens + primitives + base components free (MIT); composed blocks/templates and multi-brand theming are the paid tier (`tier: "pro"` in registry manifests).
+- **Documented tokens are enforced tokens**: every token carries usage rules in `packages/tokens/src/usage.json`, and the build fails if a token is undocumented, if the docs name a token that does not exist, or if a documented contrast pairing stops holding.
+
+## Using the tokens
+
+[`packages/tokens/TOKENS.md`](packages/tokens/TOKENS.md) is the reference for every token — what it is for, what it is not for, what to use instead, verified contrast pairings, and token-by-token recipes for common components. It is generated, so it cannot drift from the values.
+
+The same content ships in three machine-readable forms, so an editor or a coding agent gets the rules without leaving the code:
+
+- `@ds/tokens/css` — each CSS variable annotated with its usage
+- `@ds/tokens` types — usage rules as JSDoc, shown on hover and in completions
+- `@ds/tokens/usage` — JSON with the rules, resolved values per theme, measured contrast ratios, and component recipes
+
+Whether that documentation actually changes what an agent writes is measured, not assumed: [`internal/vibe-tests`](internal/vibe-tests) scores generated component code against rules derived from the token build, and CI fails if the checker stops distinguishing documented answers from naive ones.
 
 ## Develop
 
 ```sh
 npm install
-npm run build      # tokens → css → primitives → react → ui:sync
-npm test           # primitives unit tests
-npm run dev        # playground at http://localhost:5173
+npm run build       # tokens → css → primitives → react → ui:sync
+npm run docs:check  # fail if TOKENS.md is out of date with usage.json
+npm run vibe        # score the token-guidance A/B fixtures
+npm test            # primitives unit tests
+npm run dev         # playground at http://localhost:5173
 ```
 
 Try the CLI (distribution):
@@ -40,8 +55,9 @@ node packages/cli/bin/ds.mjs add button --dir /tmp/demo
 
 ## Agent-ready workflow
 
-This repo is built so an agent looks up its component API instead of
-recalling it from memory — see [CLAUDE.md](CLAUDE.md) for the rules and
+This repo is built so an agent looks up its component API — and its token
+usage rules — instead of recalling either from memory. Start with
+[CLAUDE.md](CLAUDE.md) for the rules this repo enforces and
 [agent-workflow.md](agent-workflow.md) for the general workflow behind them.
 
 ```sh
@@ -80,16 +96,6 @@ at `packages/cli/bin/`). See Open items below.
   references these categories generically; none exist in the registry yet
 - CSS cascade layers (`@layer`) — component CSS currently relies on the
   manual `ORDER` array in `packages/css/build.mjs` rather than a layer boundary
-- Existing component CSS (`button.css`, `playground.css`) still reaches into
-  primitives directly rather than the semantic layer built out in
-  `packages/tokens/TOKENS.md` — intentionally left alone since these
-  components are getting rebuilt. **This is now a real visual regression in
-  the live playground, not just a style violation**: the font primitive
-  scale was rebuilt on eBay's real values, and `--ds-font-weight-medium`,
-  `--ds-font-line-height-tight`, `--ds-font-size-base/lg/sm` no longer
-  exist under those names — text in the running playground/button is
-  rendering at browser-default size/weight/line-height until this is
-  rebuilt against `type.*` semantics, not primitives
 - Agent-lookup context doesn't travel past this monorepo — `ds add` copies
   raw source with no manifest/context, and `ds props/tokens/pages` don't
   work from an installed `@ds/cli` (path resolution assumes it's still

@@ -53,11 +53,21 @@ body {
   background: var(--ds-theme-bg-surface);
 }
 
+/* The input's own outline is suppressed below (a pill-shaped container needs
+   the ring drawn on the container, not clipped to the input's own box) — the
+   ring still needs to land somewhere, so it lands here on :focus-within. */
+.pg-search:focus-within {
+  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
 .pg-search-icon {
   color: var(--ds-theme-fg-muted);
   font-size: var(--ds-type-body-size);
 }
 
+/* ds-allow: focus-removed — the ring moves to .pg-search:focus-within above,
+   not dropped: a pill-shaped container needs the ring on its own box. */
 .pg-search-input {
   flex: 1;
   min-width: 0;
@@ -129,8 +139,8 @@ body {
 .pg-nav-children {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 2px;
+  gap: var(--ds-space-0-5);
+  margin-top: var(--ds-space-0-5);
 }
 
 .pg-main {
@@ -159,6 +169,8 @@ body {
   margin-bottom: var(--ds-space-stack-sm);
 }
 
+/* ds-allow: hardcoded-dimension — the label gutter is a playground layout
+   constant, not a step on the sizing scale */
 .pg-row-label {
   width: 96px;
   font-size: var(--ds-type-label-size);
@@ -194,6 +206,8 @@ body {
   gap: var(--ds-space-gap-sm);
 }
 
+/* ds-allow: hardcoded-dimension — the swatch preview box is a playground
+   layout constant, not a step on the sizing scale */
 .pg-swatch {
   border-radius: var(--ds-radius-sm);
   border: var(--ds-border-1) solid var(--ds-theme-border-default);
@@ -206,9 +220,9 @@ body {
 }
 
 .pg-swatch-name {
-  font-size: 10px;
+  font-size: var(--ds-type-size-xs);
   color: var(--ds-theme-fg-muted);
-  margin-top: 2px;
+  margin-top: var(--ds-space-0-5);
 }
 
 /* Spacing bars */
@@ -367,7 +381,7 @@ body {
 
 .pg-status {
   display: inline-block;
-  padding: 2px 8px;
+  padding: var(--ds-space-0-5) var(--ds-space-2);
   border-radius: var(--ds-radius-pill);
   font-size: var(--ds-type-label-size);
   font-weight: var(--ds-type-label-weight);

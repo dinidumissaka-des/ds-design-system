@@ -1,0 +1,8 @@
+/* Hover and press — hand-rolled background swaps instead of .ds-state-layer. */
+.button:hover {
+  background: var(--ds-theme-accent-role-subtle);
+}
+
+.button:active {
+  background: var(--ds-theme-bg-muted);
+}

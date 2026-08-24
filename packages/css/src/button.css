@@ -7,8 +7,7 @@
   border: 1px solid transparent;
   border-radius: var(--ds-radius-md);
   font-family: var(--ds-font-family-sans);
-  font-weight: var(--ds-font-weight-medium);
-  line-height: var(--ds-font-line-height-tight);
+  font-weight: var(--ds-type-control-weight);
   cursor: pointer;
   user-select: none;
   text-decoration: none;
@@ -27,19 +26,22 @@
 .ds-button--sm {
   height: var(--ds-size-control-sm);
   padding-inline: var(--ds-space-3);
-  font-size: var(--ds-font-size-base);
+  font-size: var(--ds-type-control-size-sm);
+  line-height: var(--ds-type-control-line-height-sm);
 }
 
 .ds-button--md {
   height: var(--ds-size-control-md);
   padding-inline: var(--ds-space-4);
-  font-size: var(--ds-font-size-base);
+  font-size: var(--ds-type-control-size-md);
+  line-height: var(--ds-type-control-line-height-md);
 }
 
 .ds-button--lg {
   height: var(--ds-size-control-lg);
   padding-inline: var(--ds-space-5);
-  font-size: var(--ds-font-size-lg);
+  font-size: var(--ds-type-control-size-lg);
+  line-height: var(--ds-type-control-line-height-lg);
 }
 
 /* Variants */

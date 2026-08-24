@@ -1,0 +1,15 @@
+/* Warning notice — tinted subtle background with the role's fg, per TOKENS.md:
+   the saturated warning-role.bg carries no text at any size. */
+.warning-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-gap-xs);
+  padding: var(--ds-space-padding-sm) var(--ds-space-padding-md);
+  border-radius: var(--ds-radius-element);
+  background: var(--ds-theme-warning-role-subtle);
+  color: var(--ds-theme-warning-role-fg);
+}
+
+.warning-notice__title {
+  font-weight: var(--ds-type-heading-weight);
+}

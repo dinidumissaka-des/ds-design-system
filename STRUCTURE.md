@@ -130,7 +130,13 @@ reaching for the skill's `scripts/validate-tokens.mjs` directly:
 - **`packages/tokens/TOKENS.md`** is this repo's equivalent of the skill's
   `tokens/TOKENS.md` — every primitive scale's generation rule/range/not-for,
   and all four description fields for every semantic token, kept there
-  rather than at the skill's assumed path.
+  rather than at the skill's assumed path. Unlike the skill's version, it's
+  build-enforced, not just hand-maintained prose: it's generated from
+  `packages/tokens/src/usage.json` (rules, per-token descriptions, contrast
+  pairings, known gaps, component recipes), and the build fails if a token
+  is undocumented, if `usage.json` names a token that doesn't exist, or if a
+  documented contrast pairing stops holding when a palette value changes —
+  see the provenance entry below on how that layer was merged in.
 
 ## Primitive provenance
 
@@ -249,8 +255,40 @@ the marketing page — the page itself doesn't publish numeric values) —
 superseding the earlier Astryx-derived font scale entirely, not merging
 with it. `semantics/typography.json` was rebuilt alongside it to mirror
 eBay's own named composites (`title`/`body`/`signal`) where this repo has a
-real matching use. This is the one primitive/semantics update so far with
-real fallout in unretouched component CSS — see README's Open items.
+real matching use. This was the one primitive/semantics update with real
+fallout in unretouched component CSS: `packages/css/src/button.css` kept
+referencing `--ds-font-weight-medium`, `--ds-font-line-height-tight`, and
+`--ds-font-size-base/lg` — names that stopped existing under the rebuilt
+scale — until the `usage.json` merge below added a checker that caught it;
+`button.css` now goes through `type.control.*` like everything else.
+
+**A parallel documentation-and-enforcement layer was merged in from a
+separate line of work on this same token pipeline.** That work started from
+the pre-split, single-file `base.json` + `themes/{light,dark}.json` layout
+(the state this repo's tokens were in *before* the primitives/semantics
+split above) and added: `src/usage.json` (the hand-written source `TOKENS.md`
+now generates from — rules, one entry per token with Use for/Do not use
+for/Use instead/Pairs with, contrast pairings and known gaps verified from
+the *resolved* token values every build, and component recipes),
+`npm run docs:check` (fails CI if `TOKENS.md` is stale relative to
+`usage.json`), and `internal/vibe-tests/` (scores generated component code
+against rules derived from the token build's own output, and self-tests via
+a committed A/B fixture pair so the checker itself can't silently stop
+discriminating). Merging it onto the already-split `primitives/*.json` +
+`semantics/theme/*.json` layout — rather than adopting the other side's
+flat `base.json` — meant porting `build.mjs`'s coverage/contrast logic to
+read this repo's actual file layout and CSS-var-prefix scheme (`theme.*`,
+not `color.*`, for the semantic layer) rather than pulling in the other
+branch's stale, pre-real-values palette. Two real bugs surfaced by writing
+`usage.json` against the *actual* resolved values: dark-theme
+`accent-role.bg`/`danger-role.bg` were one step too light (`accent.500`/
+`danger.500`) for `theme.fg.on-accent` to clear AA contrast on them — fixed
+to `.600`, matching what the other branch's own equivalent fix had
+independently converged on — and a literal `*/` inside a `usage.json` prose
+string was silently corrupting the generated `.d.ts` (a JSDoc comment
+closing early, so the parser treated real code after it as more comment);
+`build.mjs` now rejects any usage entry containing `*/` before it writes
+anything.
 
 Full reasoning for every primitive and semantic token is in
 [TOKENS.md](packages/tokens/TOKENS.md).
