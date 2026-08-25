@@ -22,7 +22,7 @@ Key decisions:
 - **State layer as its own primitive**: uniform hover/press feedback across all interactive components.
 - **Status matrix from registry metadata**: honest per-artifact lifecycle (latest / in-progress / future / deprecated / na), published on the docs site.
 - **Open core**: tokens + primitives + base components free (MIT); composed blocks/templates and multi-brand theming are the paid tier (`tier: "pro"` in registry manifests).
-- **Documented tokens are enforced tokens**: every token carries usage rules in `packages/tokens/src/usage.json`, and the build fails if a token is undocumented, if the docs name a token that does not exist, if a documented scale step no longer exists, or if a documented contrast pairing stops holding.
+- **Documented tokens are enforced tokens**: every token carries a contract in `packages/tokens/src/contracts/` — one file per token family, plus each component's recipe in its own registry manifest — and the build fails if a token is undocumented, documented twice, named but nonexistent, if a documented scale step no longer exists, or if a documented contrast pairing stops holding.
 - **Generated, not enumerated**: colour, typography, radius and motion come from four seeds per theme, expanded by a generator ported from [Astryx](https://github.com/facebook/astryx). Because HCT tone fixes relative luminance independently of hue, the WCAG guarantees hold *for any brand colour a theme seeds* — and every brand re-measures them at build time. See [THEME-ENGINE.md](packages/tokens/THEME-ENGINE.md).
 
 ## Using the tokens

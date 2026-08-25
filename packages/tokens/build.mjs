@@ -1,5 +1,5 @@
 // Token build: resolves {references} in the JSON source, validates that every
-// token is documented in src/usage.json, verifies the documented contrast
+// token is documented in src/contracts/, verifies the documented contrast
 // pairings against the resolved values, and emits
 //   dist/css/tokens.css      — CSS custom properties (:root + [data-theme="dark"]), annotated
 //   dist/index.js|.d.ts      — typed token object + cssVar() helper, with usage in JSDoc
@@ -14,6 +14,7 @@ import path from "node:path";
 
 import { contrastRatio } from "./src/theme/color.mjs";
 import { resolveTheme } from "./src/theme/resolveTokens.mjs";
+import { readContracts } from "./src/theme/readContracts.mjs";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const PREFIX = "ds";
@@ -21,7 +22,21 @@ const CHECK_ONLY = process.argv.includes("--check");
 
 const readJson = async (p) => JSON.parse(await readFile(path.join(root, p), "utf8"));
 
-const usage = await readJson("src/usage.json");
+// Documentation is assembled from one contract per thing (src/contracts/*.json
+// plus each component's registry manifest), not one catalogue file.
+let usage;
+try {
+  usage = await readContracts({ root, repoRoot: path.resolve(root, "../..") });
+} catch (error) {
+  // A malformed contract set is an authoring mistake, not a crash — the
+  // message already names the files involved.
+  console.error("@ds/tokens: the token contracts do not load\n");
+  console.error(`  • ${error.message}`);
+  process.exit(1);
+}
+
+/** Name the contract an entry came from, so an error points at a file. */
+const contractOf = (key) => usage.sources.get(key) ?? "a contract";
 
 // The theme is code, not data: it declares a handful of seeds and the
 // expanders in src/theme/ generate the rest. Everything scheme-dependent
@@ -70,7 +85,7 @@ for (const key of Object.keys(usage.tokens)) {
   const existsAsLeaf = allPaths.has(key);
   const existsAsGroup = [...allPaths].some((p) => p.startsWith(`${key}.`));
   if (!existsAsLeaf && !existsAsGroup) {
-    errors.push(`usage.json documents "${key}", which is not a token or token group.`);
+    errors.push(`${contractOf(key)} documents "${key}", which is not a token or token group.`);
   }
 }
 
@@ -83,15 +98,15 @@ for (const token of flatLight) {
   const doc = docFor(token.path);
   if (variantPaths.has(token.path)) {
     if (!doc || !doc.exact) {
-      errors.push(`Scheme-dependent token "${token.path}" has no entry of its own in usage.json.`);
+      errors.push(`Scheme-dependent token "${token.path}" has no entry of its own in any contract under src/contracts/.`);
     }
   } else if (!doc) {
-    errors.push(`Generated token "${token.path}" is undocumented in usage.json.`);
+    errors.push(`Generated token "${token.path}" is undocumented in src/contracts/.`);
   }
 }
 
 for (const token of flatBase) {
-  if (!docFor(token.path)) errors.push(`Base token "${token.path}" is undocumented in usage.json.`);
+  if (!docFor(token.path)) errors.push(`Base token "${token.path}" is undocumented in src/contracts/.`);
 }
 
 // A literal "*/" anywhere in an entry's prose closes the JSDoc comment block
@@ -113,24 +128,24 @@ for (const [name, entry] of Object.entries(usage.tokens)) {
             : [];
     for (const s of strings) {
       if (typeof s === "string" && s.includes("*/")) {
-        errors.push(`usage.json entry "${name}" field "${field}" contains a literal "*/", which breaks the generated JSDoc comment.`);
+        errors.push(`${contractOf(name)}: entry "${name}" field "${field}" contains a literal "*/", which breaks the generated JSDoc comment.`);
       }
     }
   }
   for (const field of ["summary"]) {
-    if (!entry[field]) errors.push(`usage.json entry "${name}" is missing "${field}".`);
+    if (!entry[field]) errors.push(`${contractOf(name)}: entry "${name}" is missing "${field}".`);
   }
   for (const ref of Object.values(entry.instead ?? {})) {
     // "instead" values are prose that names one or more replacement tokens;
     // every dotted path mentioned must be real.
     for (const candidate of ref.match(/\b[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+\b/g) ?? []) {
       if (!allPaths.has(candidate) && !usage.tokens[candidate]) {
-        errors.push(`usage.json entry "${name}" points at unknown token "${candidate}".`);
+        errors.push(`${contractOf(name)}: entry "${name}" points at unknown token "${candidate}".`);
       }
     }
   }
   for (const ref of entry.pairsWith ?? []) {
-    if (!allPaths.has(ref)) errors.push(`usage.json entry "${name}" pairsWith unknown token "${ref}".`);
+    if (!allPaths.has(ref)) errors.push(`${contractOf(name)}: entry "${name}" pairsWith unknown token "${ref}".`);
   }
 
   // A `scale` block documents the steps of a real scale, so every key in it
@@ -141,7 +156,7 @@ for (const [name, entry] of Object.entries(usage.tokens)) {
   for (const step of Object.keys(entry.scale ?? {})) {
     if (!allPaths.has(`${name}.${step}`)) {
       errors.push(
-        `usage.json entry "${name}" documents step "${step}", which is not a token ` +
+        `${contractOf(name)}: entry "${name}" documents step "${step}", which is not a token ` +
           `("${name}.${step}" does not exist). If it is commentary rather than a step, move it to "notes".`,
       );
     }
@@ -312,9 +327,9 @@ const css = [
   [
     "/* Generated by @ds/tokens — do not edit by hand.",
     " * Edit src/primitives/*.json, src/semantics/*.json, src/semantics/theme/*.json,",
-    " * or src/usage.json and rebuild.",
+    " * or src/contracts/*.json and rebuild.",
     " *",
-    " * Comments come from src/usage.json. Full guidance, contrast data, and",
+    " * Comments come from src/contracts/*.json. Full guidance, contrast data, and",
     " * component recipes live in packages/tokens/TOKENS.md.",
     " *",
     " * Palette tokens (--ds-color-neutral-*, --ds-color-accent-*, and the other",
@@ -488,7 +503,7 @@ module.exports = {
 
 const usageJson = JSON.stringify(
   {
-    $comment: "Generated by @ds/tokens — do not edit by hand. Source: src/usage.json.",
+    $comment: "Generated by @ds/tokens — do not edit by hand. Source: src/contracts/*.json and registry/components/*.json.",
     rules: usage.rules,
     index: tokenIndex,
     tokens: Object.fromEntries(
@@ -517,7 +532,7 @@ const usageJson = JSON.stringify(
 const md = [];
 const bullets = (items) => items.map((i) => `- ${i}`).join("\n");
 
-md.push("<!-- Generated by @ds/tokens from src/usage.json — do not edit by hand. -->");
+md.push("<!-- Generated by @ds/tokens from src/contracts/*.json and registry/components/*.json — do not edit by hand. -->");
 md.push("<!-- Regenerate with `npm run build -w @ds/tokens`. -->");
 md.push("");
 md.push("# Token usage reference");
@@ -740,7 +755,7 @@ if (CHECK_ONLY) {
   const existing = await readFile(mdPath, "utf8").catch(() => null);
   if (existing !== markdown) {
     console.error(
-      "@ds/tokens: TOKENS.md is out of date with src/usage.json.\n" +
+      "@ds/tokens: TOKENS.md is out of date with the contracts in src/contracts/.\n" +
         "Run `npm run build -w @ds/tokens` and commit the result."
     );
     process.exit(1);

@@ -13,7 +13,10 @@ packages/
                     font family/weight/tracking)
     src/semantics/  *.json — theme-invariant roles a generator cannot produce
                     (spacing roles, border default, focus, state, motion roles)
-    src/usage.json  the hand-written doc source; TOKENS.md is generated from it
+    src/contracts/  the hand-written doc source, one file per token family
+                    (theme.bg.json, focus.json, …) plus system.json for the
+                    rules and contrast pairings that belong to no single
+                    token; TOKENS.md is generated from these
     → dist/css/tokens.css, dist/index.{js,d.ts}, dist/tailwind/preset.cjs,
       dist/usage.json, TOKENS.md
   themes/       @ds/theme-* — brand themes: a few seeds + `extends: baseTheme`,
@@ -147,8 +150,10 @@ reaching for the skill's `scripts/validate-tokens.mjs` directly:
   and all four description fields for every semantic token, kept there
   rather than at the skill's assumed path. Unlike the skill's version, it's
   build-enforced, not just hand-maintained prose: it's generated from
-  `packages/tokens/src/usage.json` (rules, per-token descriptions, contrast
-  pairings, known gaps, component recipes), and the build fails if a token
+  the contracts under `packages/tokens/src/contracts/` (per-token
+  descriptions, plus system.json's rules, contrast pairings and known gaps)
+  together with each component's recipe in `registry/components/*.json`,
+  and the build fails if a token
   is undocumented, if `usage.json` names a token that doesn't exist, or if a
   documented contrast pairing stops holding when a palette value changes —
   see the provenance entry below on how that layer was merged in.
@@ -281,68 +286,40 @@ scale — until the `usage.json` merge below added a checker that caught it;
 separate line of work on this same token pipeline.** That work started from
 the pre-split, single-file `base.json` + `themes/{light,dark}.json` layout
 (the state this repo's tokens were in *before* the primitives/semantics
-split above) and added: `src/usage.json` (the hand-written source `TOKENS.md`
-now generates from — rules, one entry per token with Use for/Do not use
-for/Use instead/Pairs with, contrast pairings and known gaps verified from
-the *resolved* token values every build, and component recipes),
-`npm run docs:check` (fails CI if `TOKENS.md` is stale relative to
-`usage.json`), and `internal/vibe-tests/` (scores generated component code
-against rules derived from the token build's own output, and self-tests via
-a committed A/B fixture pair so the checker itself can't silently stop
-discriminating). Merging it onto the already-split `primitives/*.json` +
-`semantics/theme/*.json` layout — rather than adopting the other side's
-flat `base.json` — meant porting `build.mjs`'s coverage/contrast logic to
-read this repo's actual file layout and CSS-var-prefix scheme (`theme.*`,
-not `color.*`, for the semantic layer) rather than pulling in the other
-branch's stale, pre-real-values palette. Two real bugs surfaced by writing
-`usage.json` against the *actual* resolved values: dark-theme
-`accent-role.bg`/`danger-role.bg` were one step too light (`accent.500`/
-`danger.500`) for `theme.fg.on-accent` to clear AA contrast on them — fixed
-to `.600`, matching what the other branch's own equivalent fix had
-independently converged on — and a literal `*/` inside a `usage.json` prose
-string was silently corrupting the generated `.d.ts` (a JSDoc comment
-closing early, so the parser treated real code after it as more comment);
-`build.mjs` now rejects any usage entry containing `*/` before it writes
-anything.
+split above) and added a hand-written documentation source that `TOKENS.md`
+is generated from — one entry per token with Use for / Do not use for / Use
+instead / Pairs with, plus system rules, contrast pairings and known gaps
+verified against the *resolved* values every build, and component recipes.
+It also added `npm run docs:check` (CI fails if `TOKENS.md` is stale) and
+`internal/vibe-tests/` (scores generated component code against rules
+derived from the token build, self-tested via a committed A/B fixture pair
+so the checker itself cannot silently stop discriminating).
 
-**The hand-listed scales were then replaced by a generator ported from
-[Astryx](https://github.com/facebook/astryx)** (Meta's open-source design
-system — MIT, and the same source the primitive values above were read off).
-Colour, typography, radius and duration are no longer enumerated anywhere:
-`packages/tokens/src/themes/base.mjs` states four seeds and the expanders in
-`src/theme/` produce 127 tokens from them.
+**That documentation source was later split into one contract per thing.**
+It had grown to 1134 hand-edited lines in a single `src/usage.json` — the
+one file in the repo that did not follow the one-file-per-thing pattern the
+primitives, the semantic roles and the component manifests all already used,
+and a standing merge-conflict hazard (a large auto-merged file had already
+been corrupted once, see the `.claude/ui-context.md` incident). It is now:
 
-The argument for doing this is in the repo's own history. The motion scale
-above was transcribed from Astryx's *published output* rather than derived
-from its formula, and two of the nine steps were wrong — `fast-max` read 230ms
-against a true 235ms (`175 ÷ 0.75`), `medium-max` 550ms against 545ms. Nothing
-caught it, because a list of values has nothing to be checked against. The
-colour generator carries the point further: HCT tone is CIE L*, which pins
-relative luminance independently of hue, so the tone assignments hold their
-WCAG guarantees *for any accent a brand seeds* — `theme.test.mjs` asserts that
-across five unrelated seeds.
+- `src/contracts/<family>.json` — one contract per token family, with the
+  `theme.*` roles split further by role group (`theme.bg`, `theme.fg`,
+  `theme.accent-role`, `theme.status-roles`, `theme.support-roles`,
+  `theme.border`, `theme.elevation`);
+- `src/contracts/system.json` — the system rules, contrast pairings and
+  known gaps. These stay central deliberately: a pairing names a foreground
+  *and* a background, so it belongs to a relationship rather than to either
+  token, and a rule names no token at all;
+- `registry/components/<name>.json` — each component's token recipe now sits
+  in its own manifest, beside its status, files and tier, so one file answers
+  everything about that component. This gave `menu` and `notice` their first
+  manifests, since both had recipes but no registry entry.
 
-Four real defects surfaced during the port, each caught by the enforcement
-layer rather than by review:
-
-- The build's private contrast helper read `#RRGGBBAA` by slicing off the
-  first six characters, so a translucent colour measured as if it were opaque
-  — a 12%-alpha tint scored identically to the solid hue behind it, and a 1:1
-  pairing passed as compliant. Contrast now comes from `src/theme/color.mjs`,
-  which composites a translucent foreground and refuses a translucent
-  background outright.
-- `theme.fg.on-accent` was doing duty as the label for every filled role. Once
-  the generator made the accent invert in the dark scheme (light fill, dark
-  label) while the status fills stayed dark, that put dark text on a dark red
-  destructive button. Each role owns its label now (`theme.danger-role.on`,
-  `-warning-role.on`, `-success-role.on`), matching Astryx's own
-  `--color-on-success` / `-warning` / `-error` split.
-- `usage.json`'s `radius`, `font` and `type` entries documented scale steps the
-  generator had replaced. The build now rejects a `scale` block whose keys are
-  not real tokens.
-- A theme that does not `extends` the base produced a bare stack trace when a
-  semantic role referenced a scale it had no seed for. The resolver names the
-  token and the reference it wanted.
+`src/theme/readContracts.mjs` assembles the same model the single file used
+to produce — `TOKENS.md` came out byte-identical apart from section order,
+which now follows the contracts and reads more coherently for it. The split
+also bought a new check: a token documented in two contracts fails the build,
+which a single catalogue could not express.
 
 `packages/themes/*` are brand themes: a few seeds plus `extends: baseTheme`,
 built by `build-theme.mjs` into scoped CSS containing only what differs from

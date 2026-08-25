@@ -1,0 +1,35 @@
+{
+  "name": "notice",
+  "title": "Notice",
+  "family": "feedback",
+  "description": "An inline banner carrying an informational, success, warning, or error message.",
+  "status": {
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
+  },
+  "dependencies": [],
+  "files": [],
+  "tier": "free",
+  "tokens": {
+    "base": {
+      "summary": "An inline banner. Only the tinted subtle backgrounds carry text; the saturated role fills do not.",
+      "tokens": {
+        "info background / text": "theme.accent-role.subtle / theme.accent-role.fg",
+        "success background / text": "theme.success-role.subtle / theme.success-role.fg",
+        "warning background / text": "theme.warning-role.subtle / theme.warning-role.fg",
+        "error background / text": "theme.danger-role.subtle / theme.danger-role.fg",
+        "padding": "space.padding.sm space.padding.md",
+        "border-radius": "radius.element",
+        "gap between icon and text": "space.gap.sm",
+        "leading accent bar (optional)": "the matching role bg — a non-text use"
+      }
+    }
+  }
+}

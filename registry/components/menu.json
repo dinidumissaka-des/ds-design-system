@@ -1,0 +1,41 @@
+{
+  "name": "menu",
+  "title": "Menu",
+  "family": "overlays",
+  "description": "A transient list of actions anchored to a trigger.",
+  "status": {
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
+  },
+  "dependencies": [
+    "state-layer"
+  ],
+  "files": [],
+  "tier": "free",
+  "tokens": {
+    "base": {
+      "summary": "A transient list of actions anchored to a trigger.",
+      "tokens": {
+        "background": "theme.bg.surface",
+        "border-radius": "radius.container",
+        "box-shadow": "theme.elevation.overlay",
+        "padding": "space.1",
+        "item height": "size.control.sm",
+        "item padding-inline": "space.control.padding-inline.sm",
+        "item color": "theme.fg.primary",
+        "destructive item color": "theme.danger-role.fg",
+        "selected item background": "theme.accent-role.subtle",
+        "item hover/press": "compose the .ds-state-layer class",
+        "separator": "border.default solid theme.border.default",
+        "enter transition": "motion.overlay.duration with motion.easing.enter"
+      }
+    }
+  }
+}

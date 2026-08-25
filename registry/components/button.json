@@ -4,15 +4,76 @@
   "family": "buttons",
   "description": "Primary, secondary, tertiary, and destructive actions in three sizes, with loading and icon-only modes.",
   "status": {
-    "css": { "state": "latest", "version": "0.1.0" },
-    "react": { "state": "latest", "version": "0.1.0" },
-    "figma": { "state": "future" }
+    "css": {
+      "state": "latest",
+      "version": "0.1.0"
+    },
+    "react": {
+      "state": "latest",
+      "version": "0.1.0"
+    },
+    "figma": {
+      "state": "future"
+    }
   },
-  "dependencies": ["state-layer", "spinner"],
-  "files": [
-    { "source": "packages/css/src/button.css", "target": "styles/button.css" },
-    { "source": "packages/react/src/button.tsx", "target": "components/button.tsx" },
-    { "source": "packages/react/src/cx.ts", "target": "lib/cx.ts" }
+  "dependencies": [
+    "state-layer",
+    "spinner"
   ],
-  "tier": "free"
+  "files": [
+    {
+      "source": "packages/css/src/button.css",
+      "target": "styles/button.css"
+    },
+    {
+      "source": "packages/react/src/button.tsx",
+      "target": "components/button.tsx"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
+  "tier": "free",
+  "tokens": {
+    "primary": {
+      "summary": "The single highest-priority action in a view.",
+      "tokens": {
+        "background": "theme.accent-role.bg",
+        "color": "theme.fg.on-accent",
+        "height": "size.control.md",
+        "padding-inline": "space.control.padding-inline.md",
+        "gap": "space.gap.xs",
+        "border-radius": "radius.element",
+        "font-size": "type.control.size.md",
+        "font-weight": "type.control.weight",
+        "line-height": "type.control.line-height.md",
+        "transition-duration": "motion.interactive.duration",
+        "transition-timing-function": "motion.interactive.easing",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "hover/press": "compose the .ds-state-layer class — do not swap the background"
+      }
+    },
+    "secondary": {
+      "summary": "A supporting action shown next to a primary one.",
+      "tokens": {
+        "background": "theme.secondary-role.bg",
+        "color": "theme.secondary-role.fg",
+        "border-color": "theme.secondary-role.border",
+        "height": "size.control.md",
+        "border-radius": "radius.element",
+        "hover/press": "compose the .ds-state-layer class"
+      }
+    },
+    "destructive": {
+      "summary": "An action that deletes or revokes something.",
+      "tokens": {
+        "background": "theme.danger-role.bg",
+        "color": "theme.fg.on-accent",
+        "height": "size.control.md",
+        "border-radius": "radius.element",
+        "hover/press": "compose the .ds-state-layer class"
+      }
+    }
+  }
 }

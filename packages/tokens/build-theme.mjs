@@ -25,6 +25,7 @@ import path from "node:path";
 import { contrastRatio } from "./src/theme/color.mjs";
 import { resolveTheme } from "./src/theme/resolveTokens.mjs";
 import { isDefinedTheme } from "./src/theme/defineTheme.mjs";
+import { readContracts } from "./src/theme/readContracts.mjs";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const PREFIX = "ds";
@@ -44,9 +45,8 @@ if (!entry) {
 const LEVELS = { "AA-text": 4.5, "AA-large": 3, "AA-nontext": 3 };
 const round = (n) => Math.round(n * 100) / 100;
 
-const usage = JSON.parse(
-  await readFile(path.join(root, "src/usage.json"), "utf8"),
-);
+// The promises a brand must hold live in src/contracts/system.json.
+const usage = await readContracts({ root, repoRoot: path.resolve(root, "../..") });
 
 // ── Load the brand theme and the base it is measured against ────────────────
 
