@@ -4,11 +4,41 @@
   "family": "inputs",
   "description": "Single-line text input with label, helper text, and validation states.",
   "status": {
-    "css": { "state": "future" },
-    "react": { "state": "future" },
-    "figma": { "state": "future" }
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
   },
   "dependencies": [],
   "files": [],
-  "tier": "free"
+  "tier": "free",
+  "tokens": {
+    "base": {
+      "summary": "A single-line input with a label, helper text, and validation states.",
+      "tokens": {
+        "label color": "theme.fg.primary",
+        "label font-size": "type.label.size",
+        "input background": "theme.bg.surface",
+        "input color": "theme.fg.primary",
+        "input border-color": "theme.border.strong",
+        "placeholder color": "theme.fg.muted",
+        "height": "size.control.md",
+        "padding-inline": "space.control.padding-inline.md",
+        "border-radius": "radius.element",
+        "helper text color": "theme.fg.secondary",
+        "error text color": "theme.danger-role.fg",
+        "error border-color": "theme.danger-role.fg",
+        "validating (in-progress) ring": "theme.accent-role.ring",
+        "valid ring": "theme.success-role.ring",
+        "invalid ring": "theme.danger-role.ring",
+        "focus outline": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "gap between label, input, and helper": "space.stack.xs"
+      }
+    }
+  }
 }

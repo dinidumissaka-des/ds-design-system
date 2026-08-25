@@ -4,11 +4,34 @@
   "family": "overlays",
   "description": "Modal dialog with focus trapping, scroll locking, and dismiss behavior.",
   "status": {
-    "css": { "state": "future" },
-    "react": { "state": "future" },
-    "figma": { "state": "future" }
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
   },
   "dependencies": [],
   "files": [],
-  "tier": "free"
+  "tier": "free",
+  "tokens": {
+    "base": {
+      "summary": "A modal surface that takes over the screen.",
+      "tokens": {
+        "background": "theme.bg.surface",
+        "color": "theme.fg.primary",
+        "border-radius": "radius.page",
+        "padding": "space.padding.lg",
+        "box-shadow": "theme.elevation.modal",
+        "title font-size": "type.heading.size",
+        "title font-weight": "type.heading.weight",
+        "gap between title, body, and footer": "space.stack.md",
+        "enter transition": "motion.modal.duration with motion.easing.enter",
+        "exit transition": "motion.modal.duration with motion.easing.exit"
+      }
+    }
+  }
 }

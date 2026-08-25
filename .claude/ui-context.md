@@ -15,6 +15,8 @@ this path is the honest answer to when it last actually moved.
 |---|---|---|---|---|
 | button | `@ds/react` | buttons | latest / latest / future | free |
 | dialog | `@ds/react` | overlays | future / future / future | free |
+| menu | `@ds/react` | overlays | future / future / future | free |
+| notice | `@ds/react` | feedback | future / future / future | free |
 | spinner | `@ds/react` | loading | latest / latest / future | free |
 | state-layer | `@ds/react` | foundations | latest / na / future | free |
 | text-field | `@ds/react` | inputs | future / future / future | free |
@@ -39,6 +41,14 @@ Real usage (from `apps/`):
 ```
 
 ### Dialog
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+### Menu
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+### Notice
 
 No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
 

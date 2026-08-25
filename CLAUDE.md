@@ -93,8 +93,8 @@ pixel value in component CSS or inline styles.
 anything.** It documents every token — what it is for, what it is *not* for,
 what to use instead, which foreground/background pairs are contrast-verified,
 and token-by-token recipes for common components (button, text field, notice,
-dialog, menu, …). It is generated from `packages/tokens/src/usage.json`, so
-it is never out of date with the token values. The same documentation ships
+dialog, menu, …). It is generated from the token contracts, so it is never
+out of date with the token values. The same documentation ships
 in three other forms:
 
 | Where | What you get |

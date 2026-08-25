@@ -1,0 +1,44 @@
+{
+  "$contract": "color",
+  "$summary": "The raw hue ramps and the data-visualization palette. Everything except color.data.* is a reference target for the theme, never used directly in a component.",
+  "tokens": {
+    "color": {
+      "layer": "palette",
+      "summary": "Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from the underlying design system. Theme-independent — do not use directly in a component.",
+      "use": [
+        "Only as a reference target inside a theme's `tokens` map (packages/tokens/src/themes/*.mjs)."
+      ],
+      "dont": [
+        "Direct use in components — these values are identical in both themes, so a component using them is unreadable in one of them."
+      ],
+      "instead": {
+        "Page/card background": "theme.bg.canvas, theme.bg.surface",
+        "Text": "theme.fg.primary, theme.fg.secondary, theme.fg.muted",
+        "Border or divider": "theme.border.default, theme.border.strong",
+        "Role fill, text, or tint": "theme.accent-role.bg, theme.success-role.bg, theme.warning-role.bg, or theme.danger-role.bg (and each role's .fg / .subtle)"
+      },
+      "notes": [
+        "Tonal ranges, for orientation only — these are not token names: 50-100 backgrounds (light), 200-300 borders (light), 400-500 low-emphasis text, 600-700 role fills and secondary text (light) / borders (dark), 800-950 primary text (light) / backgrounds and role subtles (dark)."
+      ]
+    },
+    "color.data": {
+      "layer": "base",
+      "summary": "Data-visualization palette — a categorical set for series identity, plus five-step sequential ramps per hue. The one palette group meant for direct use.",
+      "use": [
+        "Chart series colors: color.data.categorical.* for discrete series, in the listed order, cycling if you run out.",
+        "A single-hue sequential ramp (color.data.blue, .teal, .orange, …) for a magnitude scale within one series.",
+        "color.data.neutral for a de-emphasized or 'other' series."
+      ],
+      "dont": [
+        "UI chrome — buttons, backgrounds, text, borders. Use theme.* for all of that.",
+        "Assigning meaning by index alone across unrelated charts — keep a series-to-color mapping consistent within one view."
+      ],
+      "notes": [
+        "Unlike every other palette group, these values are picked directly, not routed through a theme role — a chart's legend is not the same design problem as a button's background."
+      ],
+      "example": {
+        "css": ".chart-series--1 { fill: var(--ds-color-data-categorical-blue); }"
+      }
+    }
+  }
+}
