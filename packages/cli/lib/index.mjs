@@ -100,6 +100,38 @@ function parseDefaults(source, componentName) {
   return defaults;
 }
 
+// `variant?: ButtonVariant` says what compiles but not what you may type, and
+// the union members are one line away in the same file. Resolving them is what
+// lets a UI offer the four real variants instead of a free-text box — and,
+// like every other field here, it is read from source rather than restated.
+function parseTypeAliases(source) {
+  const aliases = {};
+  for (const match of source.matchAll(/export type (\w+)\s*=\s*([^;]+);/g)) {
+    aliases[match[1]] = match[2].trim();
+  }
+  return aliases;
+}
+
+/**
+ * The string-literal members of a union type, or undefined when the type is
+ * not one. Handles both an inline union (`"idle" | "valid"`) and a one-hop
+ * alias to one (`ButtonVariant`); anything else — a generic, an object type, a
+ * union of non-literals — has no enumerable set of values and gets none.
+ */
+export function unionValues(type, aliases = {}) {
+  const resolved = aliases[type?.trim()] ?? type;
+  if (typeof resolved !== "string") return undefined;
+  const parts = resolved.split("|").map((part) => part.trim());
+  if (parts.length < 2) return undefined;
+  const values = [];
+  for (const part of parts) {
+    const literal = part.match(/^"([^"]*)"$/);
+    if (!literal) return undefined;
+    values.push(literal[1]);
+  }
+  return values;
+}
+
 async function walkFiles(dir, exts, out = []) {
   let entries;
   try {
@@ -167,9 +199,27 @@ export async function getComponentProps(name, registry) {
   const pascal = toPascalCase(name);
   const parsed = parsePropsInterface(source, `${pascal}Props`);
   const defaults = parseDefaults(source, pascal);
+
+  // A prop's union type may be declared in the primitive rather than beside the
+  // component — `orientation?: ButtonGroupOrientation` re-exported from
+  // @ds/primitives, say. Following that one hop is what keeps "look it up" true
+  // for types the component owns but does not declare; re-declaring them in the
+  // .tsx to keep the parser happy would be the second source of truth this
+  // whole module exists to prevent. Local declarations still win.
+  let aliases = parseTypeAliases(source);
+  try {
+    const primitiveSource = await readFile(
+      path.join(repoRoot, `packages/primitives/src/${name}.ts`),
+      "utf8"
+    );
+    aliases = { ...parseTypeAliases(primitiveSource), ...aliases };
+  } catch {
+    // No primitive for this component — nothing to resolve against.
+  }
   const props = (parsed?.props ?? []).map((prop) => ({
     ...prop,
     default: defaults[prop.name],
+    values: unionValues(prop.type, aliases),
   }));
   const [example] = await getExamples(pascal, 1);
 

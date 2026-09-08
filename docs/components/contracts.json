@@ -1,0 +1,1390 @@
+[
+  {
+    "name": "button",
+    "title": "Button",
+    "description": "Primary, secondary, tertiary, and destructive actions in three sizes, with loading and icon-only modes.",
+    "family": "buttons",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "react": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer",
+      "spinner"
+    ],
+    "importPath": "@ds/react",
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\">",
+    "props": [
+      {
+        "name": "variant",
+        "optional": true,
+        "type": "ButtonVariant",
+        "description": null,
+        "default": "\"primary\"",
+        "values": [
+          "primary",
+          "secondary",
+          "tertiary",
+          "destructive"
+        ],
+        "declared": true,
+        "summary": "Which action tier this button occupies, and therefore how loud it is.",
+        "use": [
+          "`primary` for the single highest-priority action in a view — one per view.",
+          "`secondary` for a supporting action shown beside a primary one.",
+          "`tertiary` for low-emphasis actions in dense areas, like a row action.",
+          "`destructive` for an action that deletes or revokes something."
+        ],
+        "dont": [
+          "Two `primary` buttons in one view — the tier is a claim about priority, and two claims cancel out.",
+          "`destructive` for merely irreversible actions like Submit; it means data is lost."
+        ],
+        "conflicts": [],
+        "a11y": "Variant is visual only. A destructive action still needs its own confirmation step — colour is not a warning."
+      },
+      {
+        "name": "size",
+        "optional": true,
+        "type": "ButtonSize",
+        "description": null,
+        "default": "\"md\"",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "declared": true,
+        "summary": "Control height and text size, from the `size.control.*` scale.",
+        "use": [
+          "`md` everywhere by default.",
+          "`sm` inside dense rows, toolbars, and table cells.",
+          "`lg` for a single prominent call to action on a marketing or empty-state surface."
+        ],
+        "dont": [
+          "Shrinking to `sm` to fit a cramped layout — fix the layout budget instead.",
+          "Setting font-size or height yourself; the size prop is the only supported way to change either."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "disabled",
+        "optional": true,
+        "type": "boolean",
+        "description": null,
+        "declared": true,
+        "summary": "Blocks activation while keeping the button focusable and announced.",
+        "use": [
+          "An action that is unavailable for a reason the surrounding UI already explains."
+        ],
+        "dont": [
+          "Hiding why an action is unavailable — pair it with visible helper text or a tooltip.",
+          "Form validation gating, where an inline error explains more than a dead button does."
+        ],
+        "conflicts": [
+          "loading"
+        ],
+        "a11y": "Emits `aria-disabled`, never the native `disabled` attribute: the control stays in the tab order and discoverable by screen readers, and activation is blocked in the primitive's click guard."
+      },
+      {
+        "name": "loading",
+        "optional": true,
+        "type": "boolean",
+        "description": "Shows a spinner and blocks activation while preserving focus.",
+        "declared": true,
+        "summary": "Shows a spinner and refuses activation while an operation is in flight.",
+        "use": [
+          "Async work started by this button, so the same control reports its own progress."
+        ],
+        "dont": [
+          "Page-level or unrelated loading — that belongs to the region that is actually loading.",
+          "Swapping the label to 'Loading…' as well; the spinner and `aria-busy` already say it, and a changing label loses the action's name."
+        ],
+        "conflicts": [
+          "disabled"
+        ],
+        "a11y": "Emits `aria-busy` alongside `aria-disabled`, so assistive technology hears both that the control is working and that it will not respond yet."
+      },
+      {
+        "name": "iconOnly",
+        "optional": true,
+        "type": "boolean",
+        "description": "Square icon-only button; pass the icon as children and set aria-label.",
+        "declared": true,
+        "summary": "Square button carrying an icon and no visible text.",
+        "use": [
+          "Dense toolbars and row actions where the icon is unambiguous and repeated.",
+          "Icon-only buttons in this system: there is no separate `IconButton` component, and one would be a second way to do what this prop already does."
+        ],
+        "dont": [
+          "Any action whose icon is not already conventional — an unlabelled novel icon is unreadable.",
+          "Passing text children as well; the square sizing assumes a single glyph."
+        ],
+        "conflicts": [],
+        "a11y": "You MUST pass `aria-label`. Nothing in the component supplies an accessible name when there is no visible text."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Primary action with async work",
+        "when": "The most common pairing: one primary button that owns its own progress.",
+        "example": "<Button loading={saving} onClick={save}>Save changes</Button>",
+        "notes": "`loading` blocks repeat activation on its own — don't also guard with `disabled`."
+      },
+      {
+        "case": "Destructive action in a confirmation",
+        "when": "Deleting something, with the safe action given equal visual weight beside it.",
+        "example": "<Button variant=\"destructive\" onClick={remove}>Delete project</Button>"
+      },
+      {
+        "case": "Icon-only row action",
+        "when": "A dense table row where a labelled button would not fit.",
+        "example": "<Button variant=\"tertiary\" size=\"sm\" iconOnly aria-label=\"Remove row\">×</Button>",
+        "notes": "Without `aria-label` this button has no accessible name at all."
+      }
+    ],
+    "behavior": {
+      "primitive": "getButtonProps",
+      "summary": "Activation guarding and disabled/busy semantics, independent of React and of any styling.",
+      "decisions": [
+        {
+          "decision": "`aria-disabled` instead of the native `disabled` attribute",
+          "why": "A natively disabled button leaves the tab order and stops being announced, so users navigating by keyboard or screen reader cannot discover that the action exists. Activation is blocked in the click guard instead."
+        },
+        {
+          "decision": "`loading` implies inert",
+          "why": "One flag covers both halves of what callers actually want — show progress, and refuse a second click — so the two cannot be set inconsistently."
+        }
+      ]
+    },
+    "tokens": {
+      "primary": {
+        "summary": "The single highest-priority action in a view.",
+        "tokens": {
+          "background": "theme.accent-role.bg",
+          "color": "theme.fg.on-accent",
+          "height": "size.control.md",
+          "padding-inline": "space.control.padding-inline.md",
+          "gap": "space.gap.xs",
+          "border-radius": "radius.element",
+          "font-size": "type.control.size.md",
+          "font-weight": "type.control.weight",
+          "line-height": "type.control.line-height.md",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "hover/press": "compose the .ds-state-layer class — do not swap the background"
+        }
+      },
+      "secondary": {
+        "summary": "A supporting action shown next to a primary one.",
+        "tokens": {
+          "background": "theme.secondary-role.bg",
+          "color": "theme.secondary-role.fg",
+          "border-color": "theme.secondary-role.border",
+          "height": "size.control.md",
+          "border-radius": "radius.element",
+          "hover/press": "compose the .ds-state-layer class"
+        }
+      },
+      "destructive": {
+        "summary": "An action that deletes or revokes something.",
+        "tokens": {
+          "background": "theme.danger-role.bg",
+          "color": "theme.fg.on-accent",
+          "height": "size.control.md",
+          "border-radius": "radius.element",
+          "hover/press": "compose the .ds-state-layer class"
+        }
+      }
+    },
+    "example": "<Button>Publish</Button>"
+  },
+  {
+    "name": "button-group",
+    "title": "Button Group",
+    "description": "A named set of related buttons, spaced or attached into one bar, horizontal or vertical.",
+    "family": "buttons",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "react": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "button"
+    ],
+    "importPath": "@ds/react",
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\">",
+    "props": [
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible name for the group. Required unless `labelledBy` names an existing element.",
+        "declared": true,
+        "summary": "Accessible name for the group — what these buttons have in common.",
+        "use": [
+          "Always, unless `labelledBy` points at a visible heading that already says it.",
+          "Naming the group by its subject rather than its shape: \"Row actions\", not \"Button group\"."
+        ],
+        "dont": [
+          "Restating the buttons' own labels — \"Save and Cancel\" tells a screen reader what it is about to read anyway.",
+          "Leaving it off because the group looks obvious on screen; an unnamed group adds a level to navigate and says nothing about what is inside it."
+        ],
+        "conflicts": [
+          "labelledBy"
+        ],
+        "a11y": "Becomes the group's `aria-label`. Every group MUST have a name from this or from `labelledBy` — the component cannot supply one, because only the caller knows what the buttons have in common."
+      },
+      {
+        "name": "labelledBy",
+        "optional": true,
+        "type": "string",
+        "description": "Id of an element that already names this group — a heading above it, typically.",
+        "declared": true,
+        "summary": "Id of an element that already names this group, used instead of a written label.",
+        "use": [
+          "A visible heading sits directly above the group and says the same thing a label would."
+        ],
+        "dont": [
+          "Pointing at an element that is conditionally rendered — a dangling `aria-labelledby` leaves the group unnamed with no visible sign of it."
+        ],
+        "conflicts": [
+          "label"
+        ],
+        "a11y": "Wins over `label` when both are passed, because it points at text the user can see: when the visible heading changes, the name changes with it."
+      },
+      {
+        "name": "orientation",
+        "optional": true,
+        "type": "ButtonGroupOrientation",
+        "description": null,
+        "default": "\"horizontal\"",
+        "values": [
+          "horizontal",
+          "vertical"
+        ],
+        "declared": true,
+        "summary": "Which way the buttons stack.",
+        "use": [
+          "`vertical` in a narrow rail or a menu-like column where a row would wrap."
+        ],
+        "dont": [
+          "`vertical` as a substitute for a menu — a list of navigation choices is a menu, not a stack of buttons.",
+          "Switching orientation per breakpoint by swapping the prop mid-interaction; pick one per layout and let the group wrap if it must."
+        ],
+        "conflicts": [],
+        "a11y": "Presentational only. It sets a data attribute for styling and deliberately does not set `aria-orientation`, which would promise arrow-key navigation this group does not implement."
+      },
+      {
+        "name": "attached",
+        "optional": true,
+        "type": "boolean",
+        "description": "Joins the buttons into one continuous bar, with only the outer corners rounded.",
+        "declared": true,
+        "summary": "Joins the buttons into one continuous bar, with shared borders and only the outer corners rounded.",
+        "use": [
+          "Actions that are variations of one thing and are read as a unit — a pager's Previous/Next, a split of one action into its two directions."
+        ],
+        "dont": [
+          "Actions of different weight. Attaching a primary to a destructive makes them look like one control with two halves, which is exactly the moment a mis-click costs the most.",
+          "Expressing a choice. Attached buttons that hold a selected state are a `toggle-button-group`, and it says so to assistive technology; this one does not."
+        ],
+        "conflicts": [],
+        "a11y": "Visual only — nothing about the attached form changes what is announced. The buttons stay separately focusable either way."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Two actions at the end of a form",
+        "when": "The default case: a primary action and its escape hatch, spaced rather than joined.",
+        "example": "<ButtonGroup label=\"Form actions\">\n  <Button variant=\"secondary\">Cancel</Button>\n  <Button>Save changes</Button>\n</ButtonGroup>",
+        "notes": "Spaced, not attached — these are two different decisions, and joining them makes them read as one control."
+      },
+      {
+        "case": "Attached pager",
+        "when": "Two halves of the same action, which is what `attached` is for.",
+        "example": "<ButtonGroup label=\"Pagination\" attached>\n  <Button variant=\"secondary\" iconOnly aria-label=\"Previous page\">‹</Button>\n  <Button variant=\"secondary\" iconOnly aria-label=\"Next page\">›</Button>\n</ButtonGroup>",
+        "notes": "`iconOnly` still requires its own `aria-label` on each button — the group's name says what the pair is, not what each half does."
+      },
+      {
+        "case": "Named by a heading that is already on screen",
+        "when": "The group sits under a heading that says exactly what the label would have said.",
+        "example": "<h3 id=\"export-actions\">Export</h3>\n<ButtonGroup labelledBy=\"export-actions\">\n  <Button variant=\"secondary\">CSV</Button>\n  <Button variant=\"secondary\">JSON</Button>\n</ButtonGroup>",
+        "notes": "Prefer this to a written `label` whenever the heading exists: one string, visible, and it cannot drift from what the group actually contains."
+      },
+      {
+        "case": "Vertical rail",
+        "when": "A narrow column where a horizontal row would wrap into an unreadable grid.",
+        "example": "<ButtonGroup label=\"Layer actions\" orientation=\"vertical\">\n  <Button variant=\"tertiary\">Bring forward</Button>\n  <Button variant=\"tertiary\">Send backward</Button>\n</ButtonGroup>",
+        "notes": "Still tab-navigated, not arrow-navigated. If the column is long enough that tabbing through it is tedious, it wants to be a menu."
+      }
+    ],
+    "behavior": {
+      "primitive": "getButtonGroupProps",
+      "summary": "The group's accessible name and its grouping role — the two things the buttons inside cannot own between them. No selection state and no value: a button group runs actions, it does not hold an answer.",
+      "decisions": [
+        {
+          "decision": "`role=\"group\"` with a required accessible name, not `role=\"toolbar\"`",
+          "why": "A toolbar is a single tab stop with arrow-key navigation between its controls. That is right for a dense, persistent bar of many actions and wrong for the common case here — two or three buttons in a card footer — where collapsing them into one tab stop makes them harder to reach, not easier. Groups that genuinely want toolbar semantics should say so explicitly rather than getting them by accident from a layout wrapper."
+        },
+        {
+          "decision": "Each button keeps its own tab stop",
+          "why": "Follows from the role decision above. It also keeps the group composable: a `Button` inside a group behaves exactly like a `Button` outside one, so nothing about focus or activation has to be re-learned."
+        },
+        {
+          "decision": "Orientation is a data attribute, not `aria-orientation`",
+          "why": "Orientation here changes how the group stacks and nothing else. `aria-orientation` announces a navigation direction, which would promise arrow-key movement this group deliberately does not implement."
+        },
+        {
+          "decision": "No per-item position data — corner joining is `:first-child`/`:last-child` in CSS",
+          "why": "The DOM already knows which button is first and last. Emitting `data-position` would be a second copy of that fact, and a copy that goes stale the moment a button is conditionally rendered."
+        },
+        {
+          "decision": "Not a selection control",
+          "why": "A group whose items hold a pressed state is `toggle-button-group`: it needs a value, a selection mode, and roving focus, none of which belong in a container for plain actions. Keeping them separate is what stops this component growing a `value` prop that only makes sense half the time."
+        }
+      ]
+    },
+    "tokens": {
+      "spaced": {
+        "summary": "The default: buttons that belong together but read as separate controls.",
+        "tokens": {
+          "gap": "space.gap.sm",
+          "item border-radius": "radius.element — each button keeps the corners it sets for itself"
+        }
+      },
+      "attached": {
+        "summary": "Buttons joined into one continuous bar.",
+        "tokens": {
+          "gap": "space.0",
+          "inner corner border-radius": "radius.none",
+          "outer corner border-radius": "radius.element, as logical corners so the bar flips in RTL",
+          "collapsed shared border": "negative margin of border.1, so adjacent borders read as one",
+          "focused item stacking": "raised above its neighbours so the focus ring is not clipped — a stacking fix, not a token"
+        }
+      }
+    },
+    "example": "<ButtonGroup label=\"Form actions\">\n          <Button variant=\"secondary\">Cancel</Button>\n          <Button>Save changes</Button>\n        </ButtonGroup>"
+  },
+  {
+    "name": "dialog",
+    "title": "Dialog",
+    "description": "Modal dialog with focus trapping, scroll locking, and dismiss behavior.",
+    "family": "overlays",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [],
+    "usage": [],
+    "behavior": null,
+    "tokens": {
+      "base": {
+        "summary": "A modal surface that takes over the screen.",
+        "tokens": {
+          "background": "theme.bg.surface",
+          "color": "theme.fg.primary",
+          "border-radius": "radius.page",
+          "padding": "space.padding.lg",
+          "box-shadow": "theme.elevation.modal",
+          "title font-size": "type.heading.size",
+          "title font-weight": "type.heading.weight",
+          "gap between title, body, and footer": "space.stack.md",
+          "enter transition": "motion.modal.duration with motion.easing.enter",
+          "exit transition": "motion.modal.duration with motion.easing.exit"
+        }
+      }
+    },
+    "example": null
+  },
+  {
+    "name": "menu",
+    "title": "Menu",
+    "description": "A transient list of actions anchored to a trigger.",
+    "family": "overlays",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [],
+    "usage": [],
+    "behavior": null,
+    "tokens": {
+      "base": {
+        "summary": "A transient list of actions anchored to a trigger.",
+        "tokens": {
+          "background": "theme.bg.surface",
+          "border-radius": "radius.container",
+          "box-shadow": "theme.elevation.overlay",
+          "padding": "space.1",
+          "item height": "size.control.sm",
+          "item padding-inline": "space.control.padding-inline.sm",
+          "item color": "theme.fg.primary",
+          "destructive item color": "theme.danger-role.fg",
+          "selected item background": "theme.accent-role.subtle",
+          "item hover/press": "compose the .ds-state-layer class",
+          "separator": "border.default solid theme.border.default",
+          "enter transition": "motion.overlay.duration with motion.easing.enter"
+        }
+      }
+    },
+    "example": null
+  },
+  {
+    "name": "notice",
+    "title": "Notice",
+    "description": "An inline banner carrying an informational, success, warning, or error message.",
+    "family": "feedback",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [],
+    "usage": [],
+    "behavior": null,
+    "tokens": {
+      "base": {
+        "summary": "An inline banner. Only the tinted subtle backgrounds carry text; the saturated role fills do not.",
+        "tokens": {
+          "info background / text": "theme.accent-role.subtle / theme.accent-role.fg",
+          "success background / text": "theme.success-role.subtle / theme.success-role.fg",
+          "warning background / text": "theme.warning-role.subtle / theme.warning-role.fg",
+          "error background / text": "theme.danger-role.subtle / theme.danger-role.fg",
+          "padding": "space.padding.sm space.padding.md",
+          "border-radius": "radius.element",
+          "gap between icon and text": "space.gap.sm",
+          "leading accent bar (optional)": "the matching role bg — a non-text use"
+        }
+      }
+    },
+    "example": null
+  },
+  {
+    "name": "spinner",
+    "title": "Loading: Spinner",
+    "description": "Inline loading indicator that scales with font size.",
+    "family": "loading",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "react": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "documented",
+    "note": null,
+    "extends": null,
+    "props": [
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible label; omit when a parent already conveys the loading state.",
+        "declared": true,
+        "summary": "Accessible name for the loading state.",
+        "use": [
+          "A standalone spinner, where nothing else announces that something is loading."
+        ],
+        "dont": [
+          "A spinner inside a Button — the button already carries `aria-busy` and its own label, so a second announcement is noise."
+        ],
+        "conflicts": [],
+        "a11y": "Omitting this is correct only when a parent already conveys the loading state."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Standalone region loading",
+        "when": "A panel or list fetching its first page.",
+        "example": "<Spinner label=\"Loading results\" />"
+      },
+      {
+        "case": "Inside a button",
+        "when": "Composed automatically by Button's `loading` prop — you rarely write this yourself.",
+        "example": "<Spinner />",
+        "notes": "No label: Button's `aria-busy` already reports the state."
+      }
+    ],
+    "behavior": null,
+    "tokens": {},
+    "example": "<Spinner label=\"Loading\" />"
+  },
+  {
+    "name": "state-layer",
+    "title": "State layer",
+    "description": "Composable hover/press overlay that gives every interactive component identical state feedback.",
+    "family": "foundations",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "react": {
+        "state": "na"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "css-only",
+    "note": "No standalone React component — \"State layer\" is CSS-only (see registry description), composed onto other components' className.",
+    "extends": null,
+    "props": [],
+    "usage": [
+      {
+        "case": "Giving a new interactive component hover and press feedback",
+        "when": "Always — this is the only supported way to express interaction feedback in this system.",
+        "example": "<button className=\"ds-thing ds-state-layer\">…</button>",
+        "notes": "Add the class alongside the component's own; never write a competing `:hover` background rule. Feedback here is opacity-only by standing decision, which is why the role tokens carry no `bg-hover`/`bg-active` and why `ring.neutral` is deliberately unwired."
+      }
+    ],
+    "behavior": null,
+    "tokens": {},
+    "example": null
+  },
+  {
+    "name": "text-field",
+    "title": "Input: Text field",
+    "description": "Single-line text input with label, helper text, and validation states.",
+    "family": "inputs",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The field's visible label. Required — there is no unlabelled mode.",
+        "use": [
+          "Always. Every field gets a visible label."
+        ],
+        "dont": [
+          "Placeholder-as-label — the placeholder disappears on first keystroke, taking the field's name with it.",
+          "Passing an empty string to hide it; if the label is visually redundant, the layout is wrong, not the label."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered as a real `<label for>` bound to the input's id, so clicking it focuses the field."
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Stable id for the input. Defaults to a generated one.",
+        "use": [
+          "Linking an external `<label>` or an outside `aria-describedby` to this field.",
+          "Deep-linking or scroll-to-error, where the id has to be predictable across renders."
+        ],
+        "dont": [
+          "Reusing one id across two fields — the derived description and message ids would collide too."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "status",
+        "type": "\"idle\" | \"validating\" | \"valid\" | \"invalid\"",
+        "values": [
+          "idle",
+          "validating",
+          "valid",
+          "invalid"
+        ],
+        "optional": true,
+        "default": "\"idle\"",
+        "description": null,
+        "declared": false,
+        "summary": "Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token the field wears.",
+        "use": [
+          "`validating` for an in-flight async check, such as a uniqueness lookup.",
+          "`invalid` once a check has actually failed, paired with a `message` saying how to fix it.",
+          "`valid` only where confirmation carries information — a passing async check, not every filled field."
+        ],
+        "dont": [
+          "Deriving it from whether `message` is non-empty — `idle` and `valid` are different states and must stay distinguishable.",
+          "`invalid` while the user is still typing their first attempt; validate on blur or submit."
+        ],
+        "conflicts": [],
+        "a11y": "`invalid` sets `aria-invalid`; `validating` sets `aria-busy`. Neither is conveyed by the ring colour alone, which is why the `message` is not optional in those states."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Persistent helper text under the input — format hints, constraints, why the field is asked for.",
+        "use": [
+          "Stating a constraint before it is violated, which is cheaper than an error after."
+        ],
+        "dont": [
+          "Error text — that is `message`, which is announced and cleared with the status.",
+          "Text that only matters once, which belongs in the surrounding form copy."
+        ],
+        "conflicts": [],
+        "a11y": "Always in `aria-describedby`, in front of the message, so the constraint is heard before the failure."
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Status-dependent message under the input: the error, the confirmation, or the in-flight note.",
+        "use": [
+          "Saying how to fix an `invalid` field, in the user's terms rather than the validator's."
+        ],
+        "dont": [
+          "Leaving a stale message when the status returns to `idle` — it stays rendered but drops out of the description chain, which reads as a live region emptying.",
+          "Restating the label ('Email is invalid') where the fix ('Use the format name@example.com') would help."
+        ],
+        "conflicts": [],
+        "a11y": "Announced politely, and joins `aria-describedby` only while the status is not `idle`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks editing while keeping the field focusable, readable, and announced.",
+        "use": [
+          "A field temporarily unavailable but still meaningful to read — awaiting a prior answer, say."
+        ],
+        "dont": [
+          "Fields you need excluded from form submission: this emits `readOnly`, and a readOnly field still submits.",
+          "Permanently uneditable values, which should be text rather than a dead input."
+        ],
+        "conflicts": [],
+        "a11y": "Emits `aria-disabled` plus `readOnly`, never the native `disabled` attribute."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Marks the field as required to assistive technology and in the label.",
+        "use": [
+          "Fields the form genuinely cannot be submitted without."
+        ],
+        "dont": [
+          "Marking every field required, which makes the marker carry no information.",
+          "Relying on it for validation — it announces the requirement, it does not enforce it."
+        ],
+        "conflicts": [],
+        "a11y": "Emits `aria-required`. The visible required marker is the label's job, not the attribute's."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Plain labelled field with a format hint",
+        "when": "The default case. Helper text states the constraint before it can be violated.",
+        "example": "<TextField label=\"Email\" description=\"We'll only use this for receipts.\" />"
+      },
+      {
+        "case": "Failed validation after blur",
+        "when": "A check has run and failed. The message says how to fix it, not merely that it is wrong.",
+        "example": "<TextField\n  label=\"Email\"\n  status=\"invalid\"\n  message=\"Use the format name@example.com\"\n/>",
+        "notes": "`aria-invalid` is set and the message joins the description chain; the danger ring is the visual half of the same signal, never the whole of it."
+      },
+      {
+        "case": "Async uniqueness check in flight",
+        "when": "A server-side check is running against what the user typed.",
+        "example": "<TextField\n  label=\"Workspace URL\"\n  status=\"validating\"\n  message=\"Checking availability…\"\n/>",
+        "notes": "`validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`."
+      },
+      {
+        "case": "Unavailable but readable",
+        "when": "The field depends on an answer the user has not given yet.",
+        "example": "<TextField\n  label=\"State\"\n  disabled\n  description=\"Choose a country first.\"\n/>",
+        "notes": "Stays focusable and announced. Remember it still submits its value — clear it yourself if that matters."
+      }
+    ],
+    "behavior": {
+      "primitive": "getTextFieldProps",
+      "summary": "Label/description/message association, validation semantics, and the disabled contract — independent of React and of any styling. The caller owns the `id`; the description and message ids are derived from it, so association cannot be hand-wired wrong.",
+      "decisions": [
+        {
+          "decision": "`readOnly` is the disabled mechanism, not the native `disabled` attribute",
+          "why": "Consistent with the system-wide rule that disabled controls stay focusable and screen-reader discoverable. A button blocks activation in its click guard; an input has no activation to guard, so `readOnly` is the analogue. Consequence to know: a readOnly field still submits its value, where a disabled one does not."
+        },
+        {
+          "decision": "One four-state `status` enum rather than separate booleans",
+          "why": "`idle | validating | valid | invalid` maps one-to-one onto the four ring mappings in the token recipe, and drives `aria-invalid` and `aria-busy`. Separate `invalid`/`validating` booleans would make contradictory combinations expressible."
+        },
+        {
+          "decision": "The message is `aria-live=\"polite\"`, not `role=\"alert\"`",
+          "why": "The message is already in `aria-describedby` whenever the status is not idle, so an assertive live region would announce it twice — once on change, once when focus lands. The tradeoff accepted: an error appearing while focus is elsewhere is announced at the next pause rather than immediately."
+        },
+        {
+          "decision": "The message joins `aria-describedby` only once the status leaves `idle`",
+          "why": "An empty or stale message element in the description chain makes every field announce trailing silence, and `idle` is a real state distinct from `valid` — not merely 'no error yet'."
+        }
+      ]
+    },
+    "tokens": {
+      "base": {
+        "summary": "A single-line input with a label, helper text, and validation states.",
+        "tokens": {
+          "label color": "theme.fg.primary",
+          "label font-size": "type.label.size",
+          "input background": "theme.bg.surface",
+          "input color": "theme.fg.primary",
+          "input border-color": "theme.border.strong",
+          "placeholder color": "theme.fg.muted",
+          "height": "size.control.md",
+          "padding-inline": "space.control.padding-inline.md",
+          "border-radius": "radius.element",
+          "helper text color": "theme.fg.secondary",
+          "error text color": "theme.danger-role.fg",
+          "error border-color": "theme.danger-role.fg",
+          "validating (in-progress) ring": "theme.accent-role.ring",
+          "valid ring": "theme.success-role.ring",
+          "invalid ring": "theme.danger-role.ring",
+          "focus outline": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "gap between label, input, and helper": "space.stack.xs"
+        }
+      }
+    },
+    "example": null
+  },
+  {
+    "name": "toggle-button",
+    "title": "Toggle Button",
+    "description": "A button that stays on: an on/off state the user sets directly, announced with aria-pressed.",
+    "family": "buttons",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "button",
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Whether the toggle is currently on. Makes the component controlled.",
+        "use": [
+          "Whenever the state lives outside the component — which is nearly always, since a toggle usually reflects something a document or a preference already knows."
+        ],
+        "dont": [
+          "Passing it without `onPressedChange`; the toggle would render its state and then refuse to ever change it.",
+          "Deriving it from the last click rather than from the thing being toggled — if the underlying change fails, the button is left lying about it."
+        ],
+        "conflicts": [
+          "defaultPressed"
+        ],
+        "a11y": "Becomes `aria-pressed`, emitted in both states. This is the only thing that tells assistive technology the control is a toggle at all."
+      },
+      {
+        "name": "defaultPressed",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Starting state for an uncontrolled toggle that owns its own value.",
+        "use": [
+          "Genuinely local state nothing else reads — a disclosure of extra columns in one table, say."
+        ],
+        "dont": [
+          "Anything the rest of the page reacts to. The moment two places need the value, uncontrolled means they disagree.",
+          "Resetting the toggle by changing this later — it is read once, at mount."
+        ],
+        "conflicts": [
+          "pressed"
+        ],
+        "a11y": "No difference in what is announced: `aria-pressed` is emitted either way."
+      },
+      {
+        "name": "onPressedChange",
+        "type": "(pressed: boolean, event: MouseEvent) => void",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Called with the state the toggle should move to — not the one it is leaving.",
+        "use": [
+          "Applying the change, then letting the new state flow back in through `pressed`."
+        ],
+        "dont": [
+          "Reading the current value off the event target; the argument already says where it is going.",
+          "Treating it as a plain click handler — it does not fire when the toggle is disabled or loading."
+        ],
+        "conflicts": [],
+        "a11y": "Fires for keyboard activation too, since it hangs off the same click guard the button uses. Space and Enter behave as they do on any native button."
+      },
+      {
+        "name": "variant",
+        "type": "\"secondary\" | \"tertiary\"",
+        "values": [
+          "secondary",
+          "tertiary"
+        ],
+        "optional": true,
+        "default": "\"secondary\"",
+        "description": null,
+        "declared": false,
+        "summary": "How loud the toggle is in its off state.",
+        "use": [
+          "`tertiary` for a toolbar of many toggles, where a border each would be visual noise.",
+          "`secondary` for one or two toggles that need to read as controls on their own."
+        ],
+        "dont": [
+          "Expecting a `primary` or `destructive` toggle. A filled accent control reads as \"the action to take\", which fights with \"a state you are in\", and a destructive thing you can leave switched on is a bug waiting to happen."
+        ],
+        "conflicts": [],
+        "a11y": "Visual only. The pressed state must never be carried by colour alone — the on state changes fill *and* is announced through `aria-pressed`."
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "optional": true,
+        "default": "\"md\"",
+        "description": null,
+        "declared": false,
+        "summary": "Control height and text size, from the `size.control.*` scale.",
+        "use": [
+          "Matching the density of the surrounding controls, exactly as `Button` does."
+        ],
+        "dont": [
+          "Mixing sizes within one group of toggles — they read as a set, so they measure as a set."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks activation while keeping the toggle focusable, announced, and readable in its current state.",
+        "use": [
+          "A toggle that cannot change yet but whose current state still matters to see."
+        ],
+        "dont": [
+          "Expressing \"off\". Disabled and unpressed are different facts, and a disabled toggle can be either."
+        ],
+        "conflicts": [
+          "loading"
+        ],
+        "a11y": "Emits `aria-disabled`, never the native `disabled` attribute: the control stays in the tab order and keeps announcing its pressed state."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Shows a spinner and refuses activation while the change this toggle asked for is still in flight.",
+        "use": [
+          "A toggle whose effect is a server round trip — starring, subscribing, publishing — where the state should not settle until the change lands."
+        ],
+        "dont": [
+          "Flipping `pressed` optimistically *and* setting `loading`; pick one story about what the button currently means.",
+          "Pairing it with `disabled` — `loading` already blocks activation, and the two together say the same thing twice."
+        ],
+        "conflicts": [
+          "disabled"
+        ],
+        "a11y": "Emits `aria-busy` alongside `aria-disabled`, so the control is heard as busy rather than as broken. `aria-pressed` keeps reporting the state it is still in."
+      },
+      {
+        "name": "iconOnly",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Square toggle carrying an icon and no visible text.",
+        "use": [
+          "Toolbars where the icons are conventional and the row would otherwise be unreadably wide — bold, italic, alignment."
+        ],
+        "dont": [
+          "Icons whose meaning is not already settled. An unlabelled toggle with an ambiguous glyph is a control nobody can describe to a colleague.",
+          "Relying on the icon alone to show the pressed state — the fill must change too."
+        ],
+        "conflicts": [],
+        "a11y": "You MUST pass `aria-label`. Nothing supplies an accessible name when there is no visible text, and the name must stay constant across states — the state is `aria-pressed`'s job, not the label's."
+      }
+    ],
+    "usage": [
+      {
+        "case": "A formatting toggle in a toolbar",
+        "when": "The canonical case: the state belongs to the document, so the toggle is controlled.",
+        "example": "<ToggleButton\n  variant=\"tertiary\"\n  iconOnly\n  aria-label=\"Bold\"\n  pressed={isBold}\n  onPressedChange={setBold}\n>\n  B\n</ToggleButton>",
+        "notes": "The label stays \"Bold\" in both states. `aria-pressed` says which state it is in — renaming it to \"Unbold\" would make the announcement contradict itself."
+      },
+      {
+        "case": "A toggle whose change has to reach a server",
+        "when": "Starring, subscribing, publishing — anything where the state should not settle until the write lands.",
+        "example": "<ToggleButton pressed={starred} loading={saving} onPressedChange={star}>\n  Star\n</ToggleButton>",
+        "notes": "`loading` blocks repeat activation on its own — don't also pass `disabled`. If the write fails, leave `pressed` where it was rather than flipping it back, which reads as the user having done something."
+      },
+      {
+        "case": "Local-only state nothing else reads",
+        "when": "The rare uncontrolled case: one view's own disclosure of extra detail.",
+        "example": "<ToggleButton defaultPressed onPressedChange={setShowDetail}>\n  Show detail\n</ToggleButton>",
+        "notes": "The moment a second place needs to know whether detail is showing, this becomes `pressed` — uncontrolled state that two components read is state that will disagree."
+      },
+      {
+        "case": "Reaching for the wrong component",
+        "when": "The control is a setting in a form, applied immediately, and reads as a thing with a state.",
+        "example": "<ToggleButton pressed={notifications} onPressedChange={setNotifications}>\n  Notifications\n</ToggleButton>",
+        "notes": "Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. This system has no Switch yet — say so and flag the gap rather than dressing a toggle button up as one."
+      }
+    ],
+    "behavior": {
+      "primitive": "getToggleButtonProps",
+      "summary": "Pressed-state semantics over the button's own activation contract. State is not held here: the caller owns `pressed` and is told what it should become, which is what lets a toggle inside a group and a toggle on its own be the same primitive.",
+      "decisions": [
+        {
+          "decision": "Composes `getButtonProps` instead of reimplementing activation",
+          "why": "A toggle is a button that carries a state. Implementing the disabled and loading guards a second time is how the two drift apart — one gains a fix the other doesn't, and the difference only shows up in whichever one nobody tested."
+        },
+        {
+          "decision": "`aria-pressed` is emitted in both states, never omitted when false",
+          "why": "Unlike `aria-disabled`, which is absent when it doesn't apply, a missing `aria-pressed` makes the control announce as an ordinary button — precisely when the user most needs to know it is a toggle that is currently off."
+        },
+        {
+          "decision": "`aria-pressed`, not `role=\"switch\"`",
+          "why": "A switch is an on/off setting that takes effect immediately and reads as a thing with a state (\"Notifications, on\"). A toggle button is an action you leave engaged — bold, mute, pin — and reads as a verb. When the control is a setting in a form, the answer is a switch, and this component is the wrong one."
+        },
+        {
+          "decision": "The label does not change with the state",
+          "why": "`aria-pressed` already says whether it is on. Swapping the label to \"Unmute\" as well means the name and the state contradict each other — a screen reader announces \"Unmute, pressed\", which is a double negative the user has to unpick. The visual treatment carries the state; the word stays put."
+        },
+        {
+          "decision": "No `data-pressed` attribute",
+          "why": "`[aria-pressed=\"true\"]` is already a CSS selector. A parallel data attribute would be a second copy of the same fact, free to go stale."
+        },
+        {
+          "decision": "Controlled by default, with an uncontrolled escape hatch",
+          "why": "A toggle almost always reflects state that lives somewhere else — a document's formatting, a saved preference — so the controlled form is the honest default. `defaultPressed` exists for the genuinely local case, and passing both is a conflict rather than a precedence rule to memorize."
+        }
+      ]
+    },
+    "tokens": {},
+    "example": null
+  },
+  {
+    "name": "toggle-button-group",
+    "title": "Toggle Button Group",
+    "description": "A set of toggle buttons that holds a value: one choice out of several, or any number of independent states.",
+    "family": "buttons",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "toggle-button",
+      "button",
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "value",
+        "type": "string | string[] | null",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "The current selection: a value in single mode, a list in multiple mode, `null` or `[]` for none.",
+        "use": [
+          "Whenever the selection is state the rest of the page reads — which is most of the time, since a toggle group usually is the setting rather than a view of it."
+        ],
+        "dont": [
+          "Passing a bare string in multiple mode, or an array in single mode; the shape follows `selectionMode` and mixing them makes the selected state silently wrong.",
+          "Passing it without `onValueChange` — the group would render a selection and then refuse to change it."
+        ],
+        "conflicts": [
+          "defaultValue"
+        ],
+        "a11y": "Drives `aria-checked` in single mode and `aria-pressed` in multiple mode. It is also what places the group's single tab stop in single mode."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | string[] | null",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Starting selection for an uncontrolled group that owns its own value.",
+        "use": [
+          "A local view preference nothing else on the page reacts to."
+        ],
+        "dont": [
+          "Anything persisted or shared. Two readers of an uncontrolled value are two readers that will disagree.",
+          "Changing it later to reset the group — it is read once, at mount."
+        ],
+        "conflicts": [
+          "value"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string | string[] | null) => void",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Called with the selection the group should move to — a value, a list in DOM order, or `null`.",
+        "use": [
+          "Applying the change and letting it flow back in through `value`."
+        ],
+        "dont": [
+          "Assuming it only fires on click; in single mode the arrow keys select as they move, which is the radio pattern working correctly.",
+          "Re-sorting the array it hands you — it is already in the order the user sees."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "selectionMode",
+        "type": "\"single\" | \"multiple\"",
+        "values": [
+          "single",
+          "multiple"
+        ],
+        "optional": true,
+        "default": "\"single\"",
+        "description": null,
+        "declared": false,
+        "summary": "Whether this group holds one answer or any number of independent states — which also decides its ARIA pattern.",
+        "use": [
+          "`single` for a choice: alignment, a date range preset, a view mode.",
+          "`multiple` for independent states that happen to sit together: bold, italic, underline."
+        ],
+        "dont": [
+          "`single` for navigation between views — that is a tab list, which announces itself as one and manages its own panels.",
+          "Switching it at runtime. The role, the focus model and the shape of `value` all change with it, so a mid-life switch is a different control appearing in place of the old one."
+        ],
+        "conflicts": [],
+        "a11y": "`single` renders a `radiogroup` of `radio`s with one tab stop and arrow-key navigation; `multiple` renders a `group` of `aria-pressed` toggles, each its own tab stop."
+      },
+      {
+        "name": "deselectable",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Single mode only: whether clicking the selected option clears the selection.",
+        "use": [
+          "Filters, where \"none of these\" is a real answer the user should be able to get back to."
+        ],
+        "dont": [
+          "Settings that must always have a value — a text alignment with nothing selected is a state the document cannot actually be in.",
+          "Multiple mode, where it means nothing: every item already deselects itself."
+        ],
+        "conflicts": [],
+        "a11y": "Only clicking clears the selection. Arrow keys always move to an option and select it, because an arrow key that could empty a radio group would make the group impossible to navigate through."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Accessible name for the group — the question these options answer.",
+        "use": [
+          "Always, unless `labelledBy` points at a visible label that already asks it.",
+          "Naming the question, not the widget: \"Text alignment\", not \"Alignment toggle group\"."
+        ],
+        "dont": [
+          "Leaving it off. An unnamed radiogroup is announced as a group of options with nothing to say what they choose between."
+        ],
+        "conflicts": [
+          "labelledBy"
+        ],
+        "a11y": "Becomes the group's `aria-label`. In single mode this is the name a screen reader reads before \"1 of 3\", so without it the count is meaningless."
+      },
+      {
+        "name": "labelledBy",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Id of a visible element that already names this group.",
+        "use": [
+          "A field label or heading sits above the group and says exactly what the name would."
+        ],
+        "dont": [
+          "Pointing at an element that may not render — a dangling reference leaves the group unnamed with nothing on screen to show it."
+        ],
+        "conflicts": [
+          "label"
+        ],
+        "a11y": "Wins over `label` when both are passed: it names the group with text the user can see."
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "values": [
+          "horizontal",
+          "vertical"
+        ],
+        "optional": true,
+        "default": "\"horizontal\"",
+        "description": null,
+        "declared": false,
+        "summary": "Which way the options stack, and — in single mode — which arrows move between them.",
+        "use": [
+          "`vertical` in a narrow rail where a row of options would wrap."
+        ],
+        "dont": [
+          "Assuming it constrains the keys: both axes' arrow keys move in single mode regardless, because a user who reaches for Down in a horizontal group should not hit a dead end."
+        ],
+        "conflicts": [],
+        "a11y": "Announced as `aria-orientation` in single mode only, where arrow-key navigation actually exists to back the promise up."
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "optional": true,
+        "default": "\"md\"",
+        "description": null,
+        "declared": false,
+        "summary": "Control height and text size for every option, from the `size.control.*` scale.",
+        "use": [
+          "Matching the density of the surrounding controls — set once here rather than on each option."
+        ],
+        "dont": [
+          "Setting it per option. A set of options that measure differently is a ragged bar, which is why this prop lives on the group and not on the items."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "attached",
+        "type": "boolean",
+        "optional": true,
+        "default": "true",
+        "description": null,
+        "declared": false,
+        "summary": "Joins the options into one continuous bar, with shared borders and only the outer corners rounded.",
+        "use": [
+          "The default, and the right one for a segmented control: the options are one question, so they read as one control."
+        ],
+        "dont": [
+          "Keeping it attached when the options wrap onto a second line — a broken bar reads as two controls."
+        ],
+        "conflicts": [],
+        "a11y": "Visual only. The role, the selection and the focus model are the same either way."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks activation for every option while keeping them focusable, announced, and readable in their current state.",
+        "use": [
+          "The whole question is unavailable — a filter over data that hasn't loaded, say."
+        ],
+        "dont": [
+          "Disabling one option; that belongs on the option itself, which stays reachable and just refuses to become the answer.",
+          "Expressing \"nothing selected\" — an empty group and a disabled group are different facts."
+        ],
+        "conflicts": [],
+        "a11y": "Emits `aria-disabled` on each option, never the native `disabled` attribute. Arrow keys still move focus through the group so its options remain discoverable."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Single choice — a segmented control",
+        "when": "The default: one answer out of a few, all visible at once.",
+        "example": "<ToggleButtonGroup\n  label=\"Text alignment\"\n  value={align}\n  onValueChange={setAlign}\n>\n  <ToggleButton value=\"left\" iconOnly aria-label=\"Align left\">⇤</ToggleButton>\n  <ToggleButton value=\"center\" iconOnly aria-label=\"Align center\">↔</ToggleButton>\n  <ToggleButton value=\"right\" iconOnly aria-label=\"Align right\">⇥</ToggleButton>\n</ToggleButtonGroup>",
+        "notes": "A radiogroup: one tab stop, arrows move and select. Each icon-only option still needs its own `aria-label` — the group's name is the question, not the answers."
+      },
+      {
+        "case": "Independent states that sit together",
+        "when": "Several on/off states that are not alternatives to each other.",
+        "example": "<ToggleButtonGroup\n  label=\"Text style\"\n  selectionMode=\"multiple\"\n  value={styles}\n  onValueChange={setStyles}\n>\n  <ToggleButton value=\"bold\">Bold</ToggleButton>\n  <ToggleButton value=\"italic\">Italic</ToggleButton>\n</ToggleButtonGroup>",
+        "notes": "Each option keeps its own tab stop here, and the value comes back in DOM order however the user clicked into it."
+      },
+      {
+        "case": "A filter that can be cleared",
+        "when": "\"None of these\" is a real answer, so re-clicking the selected option should get back to it.",
+        "example": "<ToggleButtonGroup\n  label=\"Status filter\"\n  deselectable\n  value={status}\n  onValueChange={setStatus}\n>\n  <ToggleButton value=\"open\">Open</ToggleButton>\n  <ToggleButton value=\"closed\">Closed</ToggleButton>\n</ToggleButtonGroup>",
+        "notes": "Only clicking clears it. Arrow keys always land on an option and select it — an arrow that could empty the group would make it impossible to move through."
+      },
+      {
+        "case": "Reaching for the wrong component",
+        "when": "The options switch between views rather than setting a value.",
+        "example": "<ToggleButtonGroup label=\"Section\" value={section} onValueChange={setSection}>\n  <ToggleButton value=\"overview\">Overview</ToggleButton>\n  <ToggleButton value=\"activity\">Activity</ToggleButton>\n</ToggleButtonGroup>",
+        "notes": "Don't. Navigation between panels is a tab list: it announces itself as one, owns the relationship to the panels, and moves focus into them. This system has no Tabs yet — flag the gap rather than dressing a toggle group up as one."
+      }
+    ],
+    "behavior": {
+      "primitive": "getToggleButtonGroupProps",
+      "summary": "Selection state, the ARIA pattern that state implies, and — in single mode — roving focus with arrow-key navigation. Nothing here touches the DOM: where the radio pattern requires focus to move, the primitive reports which value should receive it and the wrapper does the focusing.",
+      "decisions": [
+        {
+          "decision": "The selection mode picks the ARIA pattern: `single` is a radiogroup, `multiple` is a group of pressed toggles",
+          "why": "They are different controls wearing the same clothes. \"One of these\" is a radio group, and announcing it as one is what tells a screen-reader user how many options there are and which is chosen. \"Any of these\" is a set of independent toggles, and forcing it into radio semantics would claim the options are mutually exclusive when they are not."
+        },
+        {
+          "decision": "Focus behaviour differs between the two modes, deliberately",
+          "why": "Single mode is one tab stop with arrow keys between options, because that is the radio pattern and users of radio groups expect it. Multiple mode gives every item its own tab stop, consistent with `button-group` and with every other button in this system. The inconsistency is the ARIA patterns', not ours — matching them is what makes each mode behave the way its users already know."
+        },
+        {
+          "decision": "Roving tabindex is derived from the value, never stored",
+          "why": "In a radio group the selected option is the tab stop, and an empty group is entered at its first option. Deriving it means focus position and value cannot disagree, because there is no second piece of state to fall out of step."
+        },
+        {
+          "decision": "Arrow keys select as they move, but a disabled option only takes focus",
+          "why": "Selecting on arrow is the radio pattern. This system's disabled controls stay focusable and announced, so a disabled option must still be reachable — it just must not become the answer. Skipping it entirely would hide from a keyboard user that the option exists at all."
+        },
+        {
+          "decision": "The selection is always reported in DOM order",
+          "why": "Multiple mode rebuilds the array from the item order rather than appending to it, so what the caller stores matches what the user sees. Click order is an implementation detail of how someone got there, and persisting it produces values that shuffle between sessions for no reason."
+        },
+        {
+          "decision": "Values are strings",
+          "why": "They end up in `data-` attributes, form fields, query params and saved preferences, all of which are strings. A generic value type would push the stringification into every call site instead of settling it once here."
+        },
+        {
+          "decision": "`aria-orientation` is announced in single mode only",
+          "why": "It is a promise that arrow keys move along that axis. Single mode keeps that promise; multiple mode deliberately does not implement arrow navigation, so announcing an orientation there would advertise a behaviour that isn't present."
+        },
+        {
+          "decision": "`size` belongs to the group; `variant` stays on the item",
+          "why": "Mixed sizes break the shape — a segmented bar with items of two heights is ragged — so the group owns the decision that has to be uniform. Variant is a per-item emphasis choice that stays legible when it varies, and moving it to the group would mean two places could set it."
+        }
+      ]
+    },
+    "tokens": {},
+    "example": null
+  }
+]

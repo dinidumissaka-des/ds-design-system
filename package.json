@@ -9,8 +9,9 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @ds/tokens && npm run build:themes && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run ui:sync",
-    "docs:check": "npm run docs:check -w @ds/tokens",
+    "build": "npm run build -w @ds/tokens && npm run build:themes && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run docs:components && npm run ui:sync",
+    "docs:check": "npm run docs:check -w @ds/tokens && node scripts/generate-component-docs.mjs --check",
+    "docs:components": "node scripts/generate-component-docs.mjs",
     "vibe": "node internal/vibe-tests/run.mjs fixtures",
     "vibe:tasks": "node internal/vibe-tests/run.mjs tasks",
     "vibe:test": "node --test internal/vibe-tests/rules.test.mjs",

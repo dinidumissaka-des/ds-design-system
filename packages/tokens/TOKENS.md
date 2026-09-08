@@ -941,6 +941,27 @@ These combinations fall short of the stated level. They are verified every build
 
 The exact token for every property of a common component. Build from these rather than choosing tokens one at a time.
 
+### button-group-spaced
+
+The default: buttons that belong together but read as separate controls.
+
+| Property | Token |
+|---|---|
+| gap | `space.gap.sm` |
+| item border-radius | `radius.element` — each button keeps the corners it sets for itself |
+
+### button-group-attached
+
+Buttons joined into one continuous bar.
+
+| Property | Token |
+|---|---|
+| gap | `space.0` |
+| inner corner border-radius | `radius.none` |
+| outer corner border-radius | `radius.element`, as logical corners so the bar flips in RTL |
+| collapsed shared border | negative margin of `border.1`, so adjacent borders read as one |
+| focused item stacking | raised above its neighbours so the focus ring is not clipped — a stacking fix, not a token |
+
 ### button-primary
 
 The single highest-priority action in a view.

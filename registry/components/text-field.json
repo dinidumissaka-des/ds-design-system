@@ -17,6 +17,142 @@
   "dependencies": [],
   "files": [],
   "tier": "free",
+  "behavior": {
+    "primitive": "getTextFieldProps",
+    "summary": "Label/description/message association, validation semantics, and the disabled contract — independent of React and of any styling. The caller owns the `id`; the description and message ids are derived from it, so association cannot be hand-wired wrong.",
+    "decisions": [
+      {
+        "decision": "`readOnly` is the disabled mechanism, not the native `disabled` attribute",
+        "why": "Consistent with the system-wide rule that disabled controls stay focusable and screen-reader discoverable. A button blocks activation in its click guard; an input has no activation to guard, so `readOnly` is the analogue. Consequence to know: a readOnly field still submits its value, where a disabled one does not."
+      },
+      {
+        "decision": "One four-state `status` enum rather than separate booleans",
+        "why": "`idle | validating | valid | invalid` maps one-to-one onto the four ring mappings in the token recipe, and drives `aria-invalid` and `aria-busy`. Separate `invalid`/`validating` booleans would make contradictory combinations expressible."
+      },
+      {
+        "decision": "The message is `aria-live=\"polite\"`, not `role=\"alert\"`",
+        "why": "The message is already in `aria-describedby` whenever the status is not idle, so an assertive live region would announce it twice — once on change, once when focus lands. The tradeoff accepted: an error appearing while focus is elsewhere is announced at the next pause rather than immediately."
+      },
+      {
+        "decision": "The message joins `aria-describedby` only once the status leaves `idle`",
+        "why": "An empty or stale message element in the description chain makes every field announce trailing silence, and `idle` is a real state distinct from `valid` — not merely 'no error yet'."
+      }
+    ]
+  },
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "summary": "The field's visible label. Required — there is no unlabelled mode.",
+      "use": [
+        "Always. Every field gets a visible label."
+      ],
+      "dont": [
+        "Placeholder-as-label — the placeholder disappears on first keystroke, taking the field's name with it.",
+        "Passing an empty string to hide it; if the label is visually redundant, the layout is wrong, not the label."
+      ],
+      "a11y": "Rendered as a real `<label for>` bound to the input's id, so clicking it focuses the field."
+    },
+    "id": {
+      "type": "string",
+      "summary": "Stable id for the input. Defaults to a generated one.",
+      "use": [
+        "Linking an external `<label>` or an outside `aria-describedby` to this field.",
+        "Deep-linking or scroll-to-error, where the id has to be predictable across renders."
+      ],
+      "dont": [
+        "Reusing one id across two fields — the derived description and message ids would collide too."
+      ]
+    },
+    "status": {
+      "type": "\"idle\" | \"validating\" | \"valid\" | \"invalid\"",
+      "default": "\"idle\"",
+      "summary": "Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token the field wears.",
+      "use": [
+        "`validating` for an in-flight async check, such as a uniqueness lookup.",
+        "`invalid` once a check has actually failed, paired with a `message` saying how to fix it.",
+        "`valid` only where confirmation carries information — a passing async check, not every filled field."
+      ],
+      "dont": [
+        "Deriving it from whether `message` is non-empty — `idle` and `valid` are different states and must stay distinguishable.",
+        "`invalid` while the user is still typing their first attempt; validate on blur or submit."
+      ],
+      "a11y": "`invalid` sets `aria-invalid`; `validating` sets `aria-busy`. Neither is conveyed by the ring colour alone, which is why the `message` is not optional in those states."
+    },
+    "description": {
+      "type": "string",
+      "summary": "Persistent helper text under the input — format hints, constraints, why the field is asked for.",
+      "use": [
+        "Stating a constraint before it is violated, which is cheaper than an error after."
+      ],
+      "dont": [
+        "Error text — that is `message`, which is announced and cleared with the status.",
+        "Text that only matters once, which belongs in the surrounding form copy."
+      ],
+      "a11y": "Always in `aria-describedby`, in front of the message, so the constraint is heard before the failure."
+    },
+    "message": {
+      "type": "string",
+      "summary": "Status-dependent message under the input: the error, the confirmation, or the in-flight note.",
+      "use": [
+        "Saying how to fix an `invalid` field, in the user's terms rather than the validator's."
+      ],
+      "dont": [
+        "Leaving a stale message when the status returns to `idle` — it stays rendered but drops out of the description chain, which reads as a live region emptying.",
+        "Restating the label ('Email is invalid') where the fix ('Use the format name@example.com') would help."
+      ],
+      "a11y": "Announced politely, and joins `aria-describedby` only while the status is not `idle`."
+    },
+    "disabled": {
+      "type": "boolean",
+      "summary": "Blocks editing while keeping the field focusable, readable, and announced.",
+      "use": [
+        "A field temporarily unavailable but still meaningful to read — awaiting a prior answer, say."
+      ],
+      "dont": [
+        "Fields you need excluded from form submission: this emits `readOnly`, and a readOnly field still submits.",
+        "Permanently uneditable values, which should be text rather than a dead input."
+      ],
+      "a11y": "Emits `aria-disabled` plus `readOnly`, never the native `disabled` attribute."
+    },
+    "required": {
+      "type": "boolean",
+      "summary": "Marks the field as required to assistive technology and in the label.",
+      "use": [
+        "Fields the form genuinely cannot be submitted without."
+      ],
+      "dont": [
+        "Marking every field required, which makes the marker carry no information.",
+        "Relying on it for validation — it announces the requirement, it does not enforce it."
+      ],
+      "a11y": "Emits `aria-required`. The visible required marker is the label's job, not the attribute's."
+    }
+  },
+  "usage": [
+    {
+      "case": "Plain labelled field with a format hint",
+      "when": "The default case. Helper text states the constraint before it can be violated.",
+      "example": "<TextField label=\"Email\" description=\"We'll only use this for receipts.\" />"
+    },
+    {
+      "case": "Failed validation after blur",
+      "when": "A check has run and failed. The message says how to fix it, not merely that it is wrong.",
+      "example": "<TextField\n  label=\"Email\"\n  status=\"invalid\"\n  message=\"Use the format name@example.com\"\n/>",
+      "notes": "`aria-invalid` is set and the message joins the description chain; the danger ring is the visual half of the same signal, never the whole of it."
+    },
+    {
+      "case": "Async uniqueness check in flight",
+      "when": "A server-side check is running against what the user typed.",
+      "example": "<TextField\n  label=\"Workspace URL\"\n  status=\"validating\"\n  message=\"Checking availability…\"\n/>",
+      "notes": "`validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`."
+    },
+    {
+      "case": "Unavailable but readable",
+      "when": "The field depends on an answer the user has not given yet.",
+      "example": "<TextField\n  label=\"State\"\n  disabled\n  description=\"Choose a country first.\"\n/>",
+      "notes": "Stays focusable and announced. Remember it still submits its value — clear it yourself if that matters."
+    }
+  ],
   "tokens": {
     "base": {
       "summary": "A single-line input with a label, helper text, and validation states.",

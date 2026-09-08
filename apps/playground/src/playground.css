@@ -12,6 +12,14 @@ body {
   line-height: var(--ds-type-body-line-height);
 }
 
+/* Browsers default `code` to their own monospace family at a smaller size than
+   the surrounding text; this is the system's mono face at the body size, so
+   inline code sits on the same line rhythm as the prose around it. */
+code {
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-type-body-size);
+}
+
 .pg-app {
   min-height: 100vh;
 }
@@ -406,4 +414,577 @@ body {
 .pg-status--deprecated {
   background: var(--ds-theme-bg-muted);
   color: var(--ds-theme-fg-muted);
+}
+
+/* ds-allow: hardcoded-dimension — prose measure for the doc columns below is a
+   playground layout constant; this system has no measure/max-width token */
+
+/* ---- Token documentation ------------------------------------------------
+   The contract for a token, rendered beside the swatch it belongs to.
+   Everything here reads from @ds/tokens/usage — see src/token-docs.tsx. */
+
+.pg-swatch-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--ds-radius-inner);
+}
+
+.pg-swatch-button:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* ds-allow: hardcoded-dimension — the inspector rail is a playground layout
+   constant, the same kind as .pg-sidebar's width, not a step on the scale */
+.pg-inspector {
+  width: 340px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: var(--ds-space-4);
+  border-left: var(--ds-border-1) solid var(--ds-theme-border-default);
+  background: var(--ds-theme-bg-surface);
+}
+
+.pg-inspector-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ds-space-gap-sm);
+  margin-bottom: var(--ds-space-stack-sm);
+}
+
+.pg-inspector-path {
+  font-size: var(--ds-type-label-size);
+  color: var(--ds-theme-fg-primary);
+  word-break: break-all;
+}
+
+.pg-inspector-close {
+  border: none;
+  background: none;
+  color: var(--ds-theme-fg-muted);
+  cursor: pointer;
+  font-size: var(--ds-type-heading-size);
+  line-height: 1;
+  padding: 0;
+  border-radius: var(--ds-radius-inner);
+}
+
+.pg-inspector-close:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.pg-inspector-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-gap-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--ds-space-stack-sm);
+}
+
+.pg-inspector-var {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-theme-fg-secondary);
+  word-break: break-all;
+}
+
+.pg-layer {
+  font-size: var(--ds-font-size-xs);
+  padding: var(--ds-space-0-5) var(--ds-space-1);
+  border-radius: var(--ds-radius-inner);
+  background: var(--ds-theme-bg-muted);
+  color: var(--ds-theme-fg-secondary);
+}
+
+.pg-layer--semantic {
+  background: var(--ds-theme-accent-role-subtle);
+  color: var(--ds-theme-accent-role-fg);
+}
+
+.pg-doc-block {
+  margin-bottom: var(--ds-space-stack-md);
+}
+
+.pg-doc-block h4 {
+  margin: 0 0 var(--ds-space-1);
+  font-size: var(--ds-type-label-size);
+  font-weight: var(--ds-type-label-weight);
+  color: var(--ds-theme-fg-secondary);
+  text-transform: uppercase;
+}
+
+.pg-doc-block p {
+  margin: 0 0 var(--ds-space-1);
+  font-size: var(--ds-type-body-size);
+  color: var(--ds-theme-fg-primary);
+}
+
+.pg-doc-block ul,
+.pg-doc-block ol {
+  margin: 0;
+  padding-left: var(--ds-space-4);
+  font-size: var(--ds-type-body-size);
+}
+
+.pg-doc-block li {
+  margin-bottom: var(--ds-space-0-5);
+}
+
+/* The role's subtle tint with its own fg — never the saturated bg, which is
+   for non-text indicators only. */
+.pg-doc-block--dont {
+  background: var(--ds-theme-danger-role-subtle);
+  color: var(--ds-theme-danger-role-fg);
+  padding: var(--ds-space-2);
+  border-radius: var(--ds-radius-element);
+}
+
+.pg-doc-block--dont h4,
+.pg-doc-block--dont p {
+  color: var(--ds-theme-danger-role-fg);
+}
+
+.pg-instead {
+  margin: 0;
+  font-size: var(--ds-type-body-size);
+}
+
+.pg-instead dt {
+  color: var(--ds-theme-fg-secondary);
+}
+
+.pg-instead dd {
+  margin: 0 0 var(--ds-space-1);
+}
+
+.pg-ratio {
+  display: inline-block;
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-theme-fg-secondary);
+  margin-left: var(--ds-space-1);
+  white-space: nowrap;
+}
+
+.pg-requires {
+  display: inline-block;
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-theme-fg-muted);
+  margin-left: var(--ds-space-1);
+}
+
+.pg-pairing-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--ds-type-body-size);
+}
+
+.pg-pairing-list li {
+  margin-bottom: var(--ds-space-stack-xs);
+}
+
+.pg-pairing-list--gaps li {
+  background: var(--ds-theme-danger-role-subtle);
+  color: var(--ds-theme-danger-role-fg);
+  padding: var(--ds-space-2);
+  border-radius: var(--ds-radius-element);
+  margin-bottom: var(--ds-space-stack-sm);
+}
+
+.pg-code {
+  margin: 0;
+  padding: var(--ds-space-2);
+  background: var(--ds-theme-bg-muted);
+  border-radius: var(--ds-radius-element);
+  font-size: var(--ds-font-size-xs);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pg-family-doc {
+  margin-bottom: var(--ds-space-stack-md);
+  max-width: 68ch;
+}
+
+.pg-family-summary {
+  margin: 0 0 var(--ds-space-1);
+  color: var(--ds-theme-fg-primary);
+}
+
+.pg-family-dont {
+  margin: 0;
+  font-size: var(--ds-type-label-size);
+  color: var(--ds-theme-fg-secondary);
+}
+
+.pg-rules {
+  max-width: 68ch;
+  padding-left: var(--ds-space-4);
+}
+
+.pg-rules li {
+  margin-bottom: var(--ds-space-stack-xs);
+}
+
+.pg-recipe {
+  margin-bottom: var(--ds-space-stack-lg);
+}
+
+/* ---- Component pages ----------------------------------------------------
+   One page per component: demo, props table, per-prop contract, use cases and
+   token recipe. Rendered from docs/components/contracts.json — see
+   src/component-page.tsx. */
+
+.pg-section h3 {
+  font-size: var(--ds-type-heading-3-size);
+  font-weight: var(--ds-type-heading-3-weight);
+  line-height: var(--ds-type-heading-3-line-height);
+  margin: 0 0 var(--ds-space-3);
+}
+
+.pg-component-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ds-space-gap-md);
+  flex-wrap: wrap;
+}
+
+.pg-component-status {
+  display: flex;
+  gap: var(--ds-space-gap-xs);
+  flex-wrap: wrap;
+}
+
+.pg-component-description {
+  margin: 0 0 var(--ds-space-1);
+  max-width: 68ch;
+}
+
+.pg-callout {
+  max-width: 68ch;
+  margin: var(--ds-space-stack-sm) 0 0;
+  padding: var(--ds-space-padding-xs);
+  border-radius: var(--ds-radius-element);
+  background: var(--ds-theme-bg-muted);
+  color: var(--ds-theme-fg-secondary);
+  font-size: var(--ds-type-label-size);
+}
+
+/* A spec page is an approved intent with no code behind it — the warning
+   role's subtle tint with its own fg, never the saturated bg, which is for
+   non-text indicators only. */
+.pg-callout--spec {
+  background: var(--ds-theme-warning-role-subtle);
+  color: var(--ds-theme-warning-role-fg);
+}
+
+.pg-prop-list {
+  margin-top: var(--ds-space-stack-lg);
+}
+
+.pg-prop {
+  padding: var(--ds-space-padding-sm);
+  margin-bottom: var(--ds-space-stack-sm);
+  border: var(--ds-border-1) solid var(--ds-theme-border-default);
+  border-radius: var(--ds-radius-container);
+  background: var(--ds-theme-bg-surface);
+  max-width: 68ch;
+}
+
+.pg-prop-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ds-space-gap-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--ds-space-1);
+}
+
+.pg-prop-head h4 {
+  margin: 0;
+  font-size: var(--ds-type-heading-4-size);
+  font-weight: var(--ds-type-heading-4-weight);
+  line-height: var(--ds-type-heading-4-line-height);
+}
+
+.pg-prop-signature {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-theme-fg-muted);
+}
+
+.pg-prop-summary {
+  margin: 0 0 var(--ds-space-2);
+}
+
+.pg-usage {
+  margin-bottom: var(--ds-space-stack-lg);
+  max-width: 68ch;
+}
+
+.pg-usage p {
+  margin: 0 0 var(--ds-space-1);
+}
+
+/* Host element for the state-layer demo: a neutral surface whose only job is
+   to have the class composed onto it. */
+.pg-demo-surface {
+  border: var(--ds-border-1) solid var(--ds-theme-border-default);
+  border-radius: var(--ds-radius-element);
+  background: var(--ds-theme-bg-surface);
+  color: var(--ds-theme-fg-primary);
+  font: inherit;
+  padding: var(--ds-space-padding-xs) var(--ds-space-padding-sm);
+  cursor: pointer;
+}
+
+.pg-demo-surface:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.pg-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--ds-theme-accent-role-fg);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.pg-link:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* ---- Props as controls ---------------------------------------------------
+   The preview stage, then one row per prop: name, type and guidance, and the
+   control that sets it on the preview. See PropertiesTab in
+   src/component-page.tsx. */
+
+.pg-stage {
+  margin-bottom: var(--ds-space-stack-lg);
+}
+
+.pg-stage-canvas {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-gap-md);
+  /* ds-allow: hardcoded-dimension — the stage is a viewport for the component,
+     sized to be roomy on this page rather than to a step on the sizing scale */
+  min-height: 220px;
+  padding: var(--ds-space-padding-lg);
+  background: var(--ds-theme-bg-surface);
+  border: var(--ds-border-1) solid var(--ds-theme-border-default);
+  border-radius: var(--ds-radius-page);
+}
+
+.pg-stage-code-toggle {
+  position: absolute;
+  top: var(--ds-space-3);
+  right: var(--ds-space-3);
+  height: var(--ds-size-control-sm);
+  padding: 0 var(--ds-space-2);
+  border: 0;
+  border-radius: var(--ds-radius-inner);
+  background: transparent;
+  color: var(--ds-theme-fg-muted);
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-type-control-size-sm);
+  cursor: pointer;
+}
+
+.pg-stage-code-toggle:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.pg-stage-code {
+  margin-top: var(--ds-space-stack-xs);
+}
+
+.pg-props {
+  border-top: var(--ds-border-1) solid var(--ds-theme-border-default);
+}
+
+.pg-props-group {
+  padding: var(--ds-space-3) 0 var(--ds-space-1);
+  font-size: var(--ds-type-label-size);
+  font-weight: var(--ds-type-label-weight);
+  color: var(--ds-theme-fg-muted);
+}
+
+.pg-prop-row {
+  display: grid;
+  /* ds-allow: hardcoded-dimension — a three-column reading grid: a name column,
+     a control column, and everything left over for the prose between them */
+  grid-template-columns: 160px minmax(0, 1fr) 220px;
+  gap: var(--ds-space-gap-lg);
+  align-items: start;
+  padding: var(--ds-space-4) 0;
+  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+}
+
+.pg-props--static .pg-prop-row {
+  /* ds-allow: hardcoded-dimension — same name column as above, without the
+     control column there is nothing to drive */
+  grid-template-columns: 160px minmax(0, 1fr);
+}
+
+.pg-props--static .pg-prop-control {
+  display: none;
+}
+
+.pg-prop-name code {
+  font-weight: var(--ds-type-control-weight);
+  color: var(--ds-theme-fg-primary);
+}
+
+.pg-prop-type {
+  display: block;
+  color: var(--ds-theme-fg-primary);
+  margin-bottom: var(--ds-space-1);
+}
+
+.pg-prop-type-line {
+  display: block;
+}
+
+.pg-prop-default {
+  color: var(--ds-theme-fg-muted);
+}
+
+.pg-prop-summary {
+  margin: 0 0 var(--ds-space-1);
+  color: var(--ds-theme-fg-secondary);
+}
+
+.pg-prop-guidance {
+  margin-top: var(--ds-space-2);
+}
+
+.pg-prop-guidance summary {
+  font-size: var(--ds-type-label-size);
+  color: var(--ds-theme-fg-muted);
+  cursor: pointer;
+}
+
+.pg-prop-guidance summary:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+  border-radius: var(--ds-radius-inner);
+}
+
+.pg-prop-guidance[open] summary {
+  margin-bottom: var(--ds-space-2);
+}
+
+.pg-prop-control {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pg-control-input {
+  width: 100%;
+  height: var(--ds-size-control-md);
+  padding: 0 var(--ds-space-3);
+  font: inherit;
+  font-size: var(--ds-type-control-size-sm);
+  color: var(--ds-theme-fg-primary);
+  background: var(--ds-theme-bg-surface);
+  border: var(--ds-border-1) solid var(--ds-theme-border-strong);
+  border-radius: var(--ds-radius-pill);
+}
+
+.pg-control-checkbox {
+  width: var(--ds-space-5);
+  height: var(--ds-space-5);
+  margin: 0;
+  accent-color: var(--ds-theme-accent-role-bg);
+}
+
+.pg-control-input:focus-visible,
+.pg-control-checkbox:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* A conflict is a rule the compiler won't enforce, so it reads as a warning,
+   not an error: the role's subtle tint with its own fg. */
+.pg-callout--conflict {
+  max-width: none;
+  background: var(--ds-theme-warning-role-subtle);
+  color: var(--ds-theme-warning-role-fg);
+}
+
+/* One column below the reading width: the control belongs under the prose it
+   belongs to, not squeezed beside it. */
+@media (max-width: 900px) {
+  .pg-prop-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ds-space-gap-sm);
+  }
+
+  .pg-prop-control {
+    justify-content: flex-start;
+  }
+
+  .pg-control-input {
+    width: auto;
+  }
+}
+
+/* ---- Component tabs ------------------------------------------------------
+   Overview / Properties / Accessibility. Anchors, not an ARIA tablist: each
+   one is a real URL, so they behave like the links they are. */
+
+.pg-section--head {
+  margin-bottom: var(--ds-space-stack-lg);
+}
+
+.pg-tabs {
+  display: flex;
+  gap: var(--ds-space-gap-lg);
+  margin-top: var(--ds-space-stack-md);
+  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+}
+
+.pg-tab {
+  padding: var(--ds-space-2) var(--ds-space-1);
+  color: var(--ds-theme-fg-secondary);
+  text-decoration: none;
+  font-size: var(--ds-type-control-size-md);
+  font-weight: var(--ds-type-control-weight);
+  border-bottom: var(--ds-border-2) solid transparent;
+  /* Sits on the container's own 1px rule, so the active underline replaces it
+     rather than stacking two lines of different weights. */
+  margin-bottom: calc(-1 * var(--ds-border-1));
+  transition-duration: var(--ds-motion-interactive-duration);
+  transition-timing-function: var(--ds-motion-interactive-easing);
+  transition-property: color, border-color;
+}
+
+.pg-tab.is-active {
+  color: var(--ds-theme-fg-primary);
+  border-bottom-color: var(--ds-theme-accent-role-bg);
+}
+
+.pg-tab:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+  border-radius: var(--ds-radius-inner);
 }

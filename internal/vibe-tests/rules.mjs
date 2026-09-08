@@ -243,7 +243,7 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
     add(
       "missing-focus-ring",
       "error",
-      "Interactive component with no :focus-visible ring using --ds-color-focus-ring.",
+      "Interactive component with no :focus-visible ring using --ds-theme-focus-ring.",
       0
     );
   } else if (hasFocusRing && !/:focus-visible/.test(source)) {

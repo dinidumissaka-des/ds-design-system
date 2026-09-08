@@ -1,34 +1,22 @@
 import { useEffect, useState } from "react";
 import { Button } from "@ds/react";
 import { tokens } from "@ds/tokens";
-
-interface RegistryEntry {
-  name: string;
-  title: string;
-  family: string;
-  status: Record<string, { state: string; version?: string } | undefined>;
-  tier?: string;
-}
-
-const registry = Object.values(
-  import.meta.glob<{ default: RegistryEntry }>("../../../registry/components/*.json", {
-    eager: true,
-  })
-)
-  .map((m) => m.default)
-  .sort((a, b) => a.family.localeCompare(b.family) || a.name.localeCompare(b.name));
-
-const variants = ["primary", "secondary", "tertiary", "destructive"] as const;
-const sizes = ["sm", "md", "lg"] as const;
+import { TokenDoc, FamilyDoc, ContrastPage, RecipeList } from "./token-docs.js";
+import { ComponentIndex, ComponentPage, contracts, contractsByName } from "./component-page.js";
+import { componentName, componentPage, hrefFor, parseLocation } from "./routing.js";
+import type { ComponentTab, Page } from "./routing.js";
 
 // One page per category, primitives and semantics merged into one flowing
 // view (no sub-split). All token categories nest under one "Foundation"
-// group; "Components" is the one non-token page, kept as a flat sibling.
+// group; components nest under a second group, one page per component rather
+// than one long scroll — a component's demo, props, contract and token recipe
+// belong together and nowhere near another component's.
 // The old standalone "Foundations" category (elevation/border/opacity/
 // size.control/state/focus — the miscellaneous primitives with no family of
 // their own) is renamed "Misc" here specifically to avoid colliding with
 // the new parent group's name.
-type Page = "color" | "spacing" | "radius" | "typography" | "motion" | "misc" | "components";
+//
+// `Page`, and the URL each one has, live in ./routing.ts.
 
 interface NavLeaf {
   id: Page;
@@ -53,38 +41,75 @@ const NAV: NavItem[] = [
       { id: "typography", label: "Typography" },
       { id: "motion", label: "Motion" },
       { id: "misc", label: "Misc" },
+      { id: "contrast", label: "Rules & contrast" },
     ],
   },
-  { id: "components", label: "Components", page: "components" },
+  {
+    id: "components",
+    label: "Components",
+    children: [
+      { id: "components", label: "All components" },
+      ...contracts.map((contract) => ({
+        id: componentPage(contract.name),
+        label: contract.title,
+      })),
+    ],
+  },
+  { id: "recipes", label: "Token recipes", page: "recipes" },
 ];
-
-function StatusPill({ artifact }: { artifact?: { state: string; version?: string } }) {
-  const state = artifact?.state ?? "tbd";
-  return (
-    <span className={`pg-status pg-status--${state}`}>
-      {state}
-      {artifact?.version ? ` · ${artifact.version}` : ""}
-    </span>
-  );
-}
 
 // ---- Token preview helpers ---------------------------------------------
 // Everything below reads straight from the built `tokens` object (light-theme
 // values, static) except theme semantics (color + elevation), which render
 // via var(--ds-theme-*) so they stay theme-reactive when the toggle above is used.
 
-function ColorRamp({ title, ramp }: { title: string; ramp: Record<string, string> }) {
+// Every swatch is a button that opens its contract in the inspector rail.
+// A swatch shows what a token looks like; the contract is the only place that
+// says what it is for — so the two belong one click apart, not one document
+// apart.
+function SwatchButton({
+  path,
+  onInspect,
+  children,
+}: {
+  path: string;
+  onInspect: (path: string) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className="pg-swatch-button ds-state-layer"
+      onClick={() => onInspect(path)}
+      aria-label={`Documentation for ${path}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ColorRamp({
+  title,
+  ramp,
+  basePath,
+  onInspect,
+}: {
+  title: string;
+  ramp: Record<string, string>;
+  basePath: string;
+  onInspect: (path: string) => void;
+}) {
   return (
     <div>
       <div className="pg-ramp-title">{title}</div>
       <div className="pg-swatches">
         {Object.entries(ramp).map(([step, hex]) => (
-          <div key={step}>
+          <SwatchButton key={step} path={`${basePath}.${step}`} onInspect={onInspect}>
             <div className="pg-swatch" style={{ background: hex }} />
             <div className="pg-swatch-name">
               {step} · {hex}
             </div>
-          </div>
+          </SwatchButton>
         ))}
       </div>
     </div>
@@ -95,39 +120,49 @@ function SemanticSwatches({
   title,
   keys,
   cssVarPrefix,
+  onInspect,
 }: {
   title: string;
   keys: string[];
   cssVarPrefix: string;
+  onInspect: (path: string) => void;
 }) {
   return (
     <div>
       <div className="pg-ramp-title">{title}</div>
       <div className="pg-swatches">
         {keys.map((key) => (
-          <div key={key}>
+          <SwatchButton key={key} path={`theme.${cssVarPrefix}.${key}`} onInspect={onInspect}>
             <div className="pg-swatch" style={{ background: `var(--ds-theme-${cssVarPrefix}-${key})` }} />
             <div className="pg-swatch-name">{key}</div>
-          </div>
+          </SwatchButton>
         ))}
       </div>
     </div>
   );
 }
 
-function ElevationSwatches({ title, keys }: { title: string; keys: string[] }) {
+function ElevationSwatches({
+  title,
+  keys,
+  onInspect,
+}: {
+  title: string;
+  keys: string[];
+  onInspect: (path: string) => void;
+}) {
   return (
     <div>
       <div className="pg-ramp-title">{title}</div>
       <div className="pg-swatches">
         {keys.map((key) => (
-          <div key={key}>
+          <SwatchButton key={key} path={`theme.elevation.${key}`} onInspect={onInspect}>
             <div
               className="pg-swatch pg-swatch--elevation"
               style={{ boxShadow: `var(--ds-theme-elevation-${key})` }}
             />
             <div className="pg-swatch-name">{key}</div>
-          </div>
+          </SwatchButton>
         ))}
       </div>
     </div>
@@ -137,19 +172,27 @@ function ElevationSwatches({ title, keys }: { title: string; keys: string[] }) {
 // Reads each role's `ring` field (validation/selection state — inset shadow,
 // not a fill), which SemanticSwatches above deliberately skips since it
 // assumes every key is a background color.
-function RingSwatches({ title, roles }: { title: string; roles: string[] }) {
+function RingSwatches({
+  title,
+  roles,
+  onInspect,
+}: {
+  title: string;
+  roles: string[];
+  onInspect: (path: string) => void;
+}) {
   return (
     <div>
       <div className="pg-ramp-title">{title}</div>
       <div className="pg-swatches">
         {roles.map((role) => (
-          <div key={role}>
+          <SwatchButton key={role} path={`theme.${role}.ring`} onInspect={onInspect}>
             <div
               className="pg-swatch pg-swatch--elevation"
               style={{ boxShadow: `var(--ds-theme-${role}-ring)` }}
             />
             <div className="pg-swatch-name">{role}</div>
-          </div>
+          </SwatchButton>
         ))}
       </div>
     </div>
@@ -256,13 +299,45 @@ const radiusNames = ["none", "inner", "element", "container", "chat", "page", "p
 
 export function App() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [page, setPage] = useState<Page>("color");
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(["foundation"]));
+  const [route, setRoute] = useState(() =>
+    parseLocation(window.location.pathname, window.location.search)
+  );
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(["foundation", "components"]));
   const [search, setSearch] = useState("");
+  const [inspecting, setInspecting] = useState<string | null>(null);
+
+  const { page, tab } = route;
+
+  // Every page has an address, so the back button and a pasted link both work.
+  // pushState rather than a router dependency: there are three URL shapes and
+  // no nested layouts, so a router would be more code than the thing it routes.
+  function navigate(nextPage: Page, nextTab: ComponentTab = "overview") {
+    window.history.pushState(null, "", hrefFor(nextPage, nextTab));
+    setRoute({ page: nextPage, tab: nextTab });
+    setInspecting(null);
+    window.scrollTo({ top: 0 });
+  }
+
+  useEffect(() => {
+    const onPopState = () =>
+      setRoute(parseLocation(window.location.pathname, window.location.search));
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  // The URL the app booted on may not be the one it landed on (an unknown path
+  // falls back to the default page), so make the address bar agree with what is
+  // actually rendered rather than leaving a link that lies.
+  useEffect(() => {
+    const canonical = hrefFor(page, tab);
+    if (window.location.pathname + window.location.search !== canonical) {
+      window.history.replaceState(null, "", canonical);
+    }
+  }, [page, tab]);
 
   function toggleGroup(id: string) {
     setExpanded((prev) => {
@@ -272,6 +347,9 @@ export function App() {
       return next;
     });
   }
+
+  const activeName = componentName(page);
+  const activeComponent = activeName ? contractsByName.get(activeName) ?? null : null;
 
   const query = search.trim().toLowerCase();
   const filteredNav = query
@@ -322,7 +400,7 @@ export function App() {
                 <div key={item.id}>
                   <button
                     className={`pg-nav-item${!hasChildren && page === item.page ? " is-active" : ""}`}
-                    onClick={() => (hasChildren ? toggleGroup(item.id) : setPage(item.page!))}
+                    onClick={() => (hasChildren ? toggleGroup(item.id) : navigate(item.page!))}
                   >
                     <span>{item.label}</span>
                     {hasChildren && (
@@ -337,7 +415,7 @@ export function App() {
                         <button
                           key={leaf.id}
                           className={`pg-nav-item pg-nav-item--child${page === leaf.id ? " is-active" : ""}`}
-                          onClick={() => setPage(leaf.id)}
+                          onClick={() => navigate(leaf.id)}
                         >
                           {leaf.label}
                         </button>
@@ -355,81 +433,78 @@ export function App() {
           {page === "color" && (
             <section className="pg-section">
               <h2>Color</h2>
+              <FamilyDoc path="color" />
               <div className="pg-ramp-group">
-                <ColorRamp title="neutral" ramp={tokens.color.neutral} />
-                <ColorRamp title="accent" ramp={tokens.color.accent} />
-                <ColorRamp title="success" ramp={tokens.color.success} />
-                <ColorRamp title="warning" ramp={tokens.color.warning} />
-                <ColorRamp title="danger" ramp={tokens.color.danger} />
-                <ColorRamp title="data.categorical" ramp={tokens.color.data.categorical} />
-                <ColorRamp title="data.blue" ramp={tokens.color.data.blue} />
-                <ColorRamp title="data.shamrock" ramp={tokens.color.data.shamrock} />
-                <ColorRamp title="data.orange" ramp={tokens.color.data.orange} />
-                <ColorRamp title="data.pink" ramp={tokens.color.data.pink} />
-                <ColorRamp title="data.purple" ramp={tokens.color.data.purple} />
-                <ColorRamp title="data.red" ramp={tokens.color.data.red} />
-                <ColorRamp title="data.teal" ramp={tokens.color.data.teal} />
-                <ColorRamp title="data.yellow" ramp={tokens.color.data.yellow} />
-                <ColorRamp title="data.gray" ramp={tokens.color.data.gray} />
-                <SemanticSwatches title="bg" keys={Object.keys(tokens.theme.bg)} cssVarPrefix="bg" />
-                <SemanticSwatches title="fg" keys={Object.keys(tokens.theme.fg)} cssVarPrefix="fg" />
+                <ColorRamp title="neutral" ramp={tokens.color.neutral} basePath="color.neutral" onInspect={setInspecting} />
+                <ColorRamp title="accent" ramp={tokens.color.accent} basePath="color.accent" onInspect={setInspecting} />
+                <ColorRamp title="success" ramp={tokens.color.success} basePath="color.success" onInspect={setInspecting} />
+                <ColorRamp title="warning" ramp={tokens.color.warning} basePath="color.warning" onInspect={setInspecting} />
+                <ColorRamp title="danger" ramp={tokens.color.danger} basePath="color.danger" onInspect={setInspecting} />
+                <ColorRamp title="data.categorical" ramp={tokens.color.data.categorical} basePath="color.data.categorical" onInspect={setInspecting} />
+                <ColorRamp title="data.blue" ramp={tokens.color.data.blue} basePath="color.data.blue" onInspect={setInspecting} />
+                <ColorRamp title="data.shamrock" ramp={tokens.color.data.shamrock} basePath="color.data.shamrock" onInspect={setInspecting} />
+                <ColorRamp title="data.orange" ramp={tokens.color.data.orange} basePath="color.data.orange" onInspect={setInspecting} />
+                <ColorRamp title="data.pink" ramp={tokens.color.data.pink} basePath="color.data.pink" onInspect={setInspecting} />
+                <ColorRamp title="data.purple" ramp={tokens.color.data.purple} basePath="color.data.purple" onInspect={setInspecting} />
+                <ColorRamp title="data.red" ramp={tokens.color.data.red} basePath="color.data.red" onInspect={setInspecting} />
+                <ColorRamp title="data.teal" ramp={tokens.color.data.teal} basePath="color.data.teal" onInspect={setInspecting} />
+                <ColorRamp title="data.yellow" ramp={tokens.color.data.yellow} basePath="color.data.yellow" onInspect={setInspecting} />
+                <ColorRamp title="data.gray" ramp={tokens.color.data.gray} basePath="color.data.gray" onInspect={setInspecting} />
+                <SemanticSwatches title="bg" keys={Object.keys(tokens.theme.bg)} cssVarPrefix="bg" onInspect={setInspecting} />
+                <SemanticSwatches title="fg" keys={Object.keys(tokens.theme.fg)} cssVarPrefix="fg" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="border"
                   keys={Object.keys(tokens.theme.border)}
-                  cssVarPrefix="border"
-                />
+                  cssVarPrefix="border" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="accent-role"
                   keys={Object.keys(tokens.theme["accent-role"]).filter((k) => k !== "ring")}
-                  cssVarPrefix="accent-role"
-                />
+                  cssVarPrefix="accent-role" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="secondary-role"
                   keys={Object.keys(tokens.theme["secondary-role"])}
-                  cssVarPrefix="secondary-role"
-                />
+                  cssVarPrefix="secondary-role" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="tertiary-role"
                   keys={Object.keys(tokens.theme["tertiary-role"])}
-                  cssVarPrefix="tertiary-role"
-                />
+                  cssVarPrefix="tertiary-role" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="success-role"
                   keys={Object.keys(tokens.theme["success-role"]).filter((k) => k !== "ring")}
-                  cssVarPrefix="success-role"
-                />
+                  cssVarPrefix="success-role" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="warning-role"
                   keys={Object.keys(tokens.theme["warning-role"]).filter((k) => k !== "ring")}
-                  cssVarPrefix="warning-role"
-                />
+                  cssVarPrefix="warning-role" onInspect={setInspecting} />
                 <SemanticSwatches
                   title="danger-role"
                   keys={Object.keys(tokens.theme["danger-role"]).filter((k) => k !== "ring")}
-                  cssVarPrefix="danger-role"
-                />
+                  cssVarPrefix="danger-role" onInspect={setInspecting} />
                 <RingSwatches
                   title="ring (accent/success/warning/danger-role)"
-                  roles={["accent-role", "success-role", "warning-role", "danger-role"]}
-                />
+                  roles={["accent-role", "success-role", "warning-role", "danger-role"]} onInspect={setInspecting} />
                 <div>
                   <div className="pg-ramp-title">focus-ring</div>
                   <div className="pg-swatches">
-                    <div>
+                    <SwatchButton path="theme.focus-ring" onInspect={setInspecting}>
                       <div className="pg-swatch" style={{ background: "var(--ds-theme-focus-ring)" }} />
                       <div className="pg-swatch-name">focus-ring</div>
-                    </div>
+                    </SwatchButton>
                   </div>
                 </div>
-                <ElevationSwatches title="elevation" keys={Object.keys(tokens.theme.elevation)} />
+                <ElevationSwatches title="elevation" keys={Object.keys(tokens.theme.elevation)} onInspect={setInspecting} />
               </div>
-              <p className="pg-note">theme-reactive semantics — try the toggle above</p>
+              <p className="pg-note">
+                theme-reactive semantics — try the toggle above. Click any swatch for its full
+                contract: what it is for, what it is not for, and its measured contrast.
+              </p>
             </section>
           )}
 
           {page === "spacing" && (
             <section className="pg-section">
               <h2>Spacing</h2>
+              <FamilyDoc path="space" />
               <div className="pg-bars-group">
                 <SpaceBars title="space" items={spacePrimitives} />
                 <SpaceBars title="space.gap" items={Object.entries(tokens.space.gap)} />
@@ -448,6 +523,7 @@ export function App() {
           {page === "radius" && (
             <section className="pg-section">
               <h2>Radius</h2>
+              <FamilyDoc path="radius" />
               <RadiusPreviews title="radius" items={radiusNames.map((name) => [name, tokens.radius[name]])} />
             </section>
           )}
@@ -455,6 +531,7 @@ export function App() {
           {page === "typography" && (
             <section className="pg-section">
               <h2>Typography</h2>
+              <FamilyDoc path="type" />
               {/* One geometric ramp now — font.size.* is generated from
                   {base, ratio}, so there is no second hand-listed scale
                   sitting beside it to show. */}
@@ -544,6 +621,7 @@ export function App() {
           {page === "motion" && (
             <section className="pg-section">
               <h2>Motion</h2>
+              <FamilyDoc path="motion" />
               <div className="pg-motion-group">
                 {Object.entries(tokens.motion.duration).map(([name, value]) => (
                   <MotionTrack
@@ -633,64 +711,36 @@ export function App() {
             </section>
           )}
 
-          {page === "components" && (
-            <>
-              <section className="pg-section">
-                <h2>Button — variants × sizes</h2>
-                {sizes.map((size) => (
-                  <div className="pg-row" key={size}>
-                    <span className="pg-row-label">{size}</span>
-                    {variants.map((variant) => (
-                      <Button key={variant} variant={variant} size={size}>
-                        {variant.charAt(0).toUpperCase() + variant.slice(1)}
-                      </Button>
-                    ))}
-                  </div>
-                ))}
-                <div className="pg-row">
-                  <span className="pg-row-label">states</span>
-                  <Button disabled>Disabled</Button>
-                  <Button loading>Saving…</Button>
-                  <Button variant="secondary" iconOnly aria-label="Settings">
-                    ⚙
-                  </Button>
-                </div>
-              </section>
+          {page === "contrast" && <ContrastPage />}
 
-              <section className="pg-section">
-                <h2>Component status</h2>
-                <table className="pg-table">
-                  <thead>
-                    <tr>
-                      <th>Component</th>
-                      <th>Family</th>
-                      <th>CSS</th>
-                      <th>React</th>
-                      <th>Figma</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {registry.map((entry) => (
-                      <tr key={entry.name}>
-                        <td>{entry.title}</td>
-                        <td>{entry.family}</td>
-                        <td>
-                          <StatusPill artifact={entry.status.css} />
-                        </td>
-                        <td>
-                          <StatusPill artifact={entry.status.react} />
-                        </td>
-                        <td>
-                          <StatusPill artifact={entry.status.figma} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </section>
-            </>
+          {page === "recipes" && (
+            <section className="pg-section">
+              <h2>Token recipes</h2>
+              <p className="pg-note">
+                The exact token for every property of every component, from each component&rsquo;s
+                registry manifest — including the ones not built yet, where the recipe is the spec.
+              </p>
+              <RecipeList />
+            </section>
+          )}
+
+          {page === "components" && <ComponentIndex onOpen={(name) => navigate(componentPage(name))} />}
+
+          {activeComponent && (
+            <ComponentPage contract={activeComponent} tab={tab} onNavigate={navigate} />
+          )}
+
+          {activeName && !activeComponent && (
+            <section className="pg-section">
+              <h2>Unknown component</h2>
+              <p className="pg-note">
+                Nothing in the registry is called <code>{activeName}</code>. Run{" "}
+                <code>npm run ui -- list</code> for the real names.
+              </p>
+            </section>
           )}
         </main>
+        {inspecting && <TokenDoc path={inspecting} onClose={() => setInspecting(null)} />}
       </div>
     </div>
   );

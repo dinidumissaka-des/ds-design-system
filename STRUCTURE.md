@@ -28,13 +28,23 @@ packages/
   react/        @ds/react — styled components: primitives behavior + css appearance
                 (source of truth the CLI copies from)
   cli/          @ds/cli — the `ds` binary
-    bin/ds.mjs    entry point: list/add (distribution) + props/tokens/pages (agent lookup)
+    bin/ds.mjs    entry point: list/add (distribution) + props/contract/tokens/pages
+                  (agent lookup)
     lib/index.mjs shared logic behind both — reads registry + @ds/react src + tokens dist
+    lib/contract.mjs  merges each component's WRITTEN contract (its manifest) with its
+                  DERIVED props (parsed from @ds/react source) and fails on any
+                  disagreement between them
 
 registry/
-  schema.json           the manifest shape (status states, files, tier)
+  schema.json           the manifest shape (status states, files, tier, contract blocks)
   components/*.json     one manifest per component — name, family, status matrix,
-                         dependencies, which files `ds add` copies where
+                         dependencies, which files `ds add` copies where, its token
+                         recipe, and its written contract (behavior/props/usage)
+
+docs/
+  components/*.md       GENERATED — one contract page per component, plus an index.
+                         Regenerate with `npm run docs:components`; `npm run
+                         docs:check` fails if stale
 
 apps/
   playground/           the one page in this repo today (Vite + React)
@@ -42,6 +52,8 @@ apps/
 
 scripts/
   generate-ui-context.mjs   writes .claude/ui-context.md from packages/cli/lib
+  generate-component-docs.mjs  writes docs/components/*.md from the manifests +
+                         @ds/react source; --check fails instead of writing
 
 .claude/
   ui-context.md         GENERATED — regenerate with `npm run ui:sync`
@@ -72,6 +84,13 @@ looks at them.
    states, keyboard/ARIA handling, the props API shape. Pure function, no
    DOM, no styling, no token references. This is the contract everything
    else builds on.
+
+   Write the manifest's `behavior` and `props` blocks in the same step — the
+   contract in *spec* mode (see "Component contracts" below). It records the
+   props API and the decisions behind it while they are still being argued
+   about, which is exactly when they are cheap to change, and it is the thing
+   you are asking approval *for*. `npm run docs:components` renders it to
+   `docs/components/<name>.md` so the approval has something to point at.
    → **Stop. Get this approved** — the behavior and the props API — before
    writing a line of CSS or React. Changing the primitive after the
    component is styled is expensive; changing it before is free.
@@ -107,12 +126,66 @@ looks at them.
 
 4. Flip the manifest's `status.css`/`status.react` to `latest`, add `files`
    entries so `ds add <name>` can copy it, run `npm run build` (regenerates
-   `.claude/ui-context.md` as its last step).
+   `docs/components/` and `.claude/ui-context.md` as its last steps).
+
+   Flipping the status is what switches the contract from *spec* to
+   *documented*, and the build now cross-checks the React you just wrote
+   against the props API approved back at step 1: a prop you added along the
+   way and never documented fails, and so does a documented prop you quietly
+   renamed. Delete the hand-written `type`/`default`/`required` fields from
+   the manifest in the same change — from here they are parsed from source,
+   and the build rejects a second copy. This is the one place the build order
+   above stops being purely a process rule.
+
+## Component contracts
+
+`registry/components/<name>.json` carries three blocks beyond distribution
+metadata — `behavior`, `props` and `usage` — that `scripts/generate-component-docs.mjs`
+renders into one page per component under `docs/components/`.
+
+This is the same machine as the token contracts one layer up: hand-written
+JSON in, generated Markdown out, and a build that fails rather than emit a
+page it cannot verify. The split that makes it work is by **provenance**, not
+by topic:
+
+- **Derived** — prop name, type, optionality, default, `extends` — is parsed
+  from `packages/react/src/<name>.tsx` and never written by hand, so it cannot
+  drift from the component it describes.
+- **Written** — what a prop is for, when not to reach for it, what it
+  conflicts with, the obligation it puts on the caller, worked use cases — is
+  judgment no parser can recover, so it lives in the manifest beside the
+  component's status, files, tier and token recipe. One file answers
+  everything about that component, which is the same reason the token recipes
+  moved here rather than staying in a central catalogue.
+
+The cross-check is the load-bearing part. A contract entry naming a prop that
+does not exist fails the build; a declared prop with no contract entry fails
+the build; and once a component is implemented, writing `type`, `default` or
+`required` by hand fails the build too, because those are derived and a
+hand-written copy is precisely the drift the whole arrangement exists to
+prevent. Prose that nothing verifies is prose that rots, and a rotted contract
+is worse than none — it is the file agents are told to trust.
+
+Three modes, decided by `status.react`:
+
+| Mode | When | What the page means |
+|---|---|---|
+| `spec` | `future` | The approved intent — the props API signed off at gate 1, with no code behind it. `type`/`default`/`required` are written by hand because there is nothing to parse. |
+| `documented` | `latest` | Both halves exist and both directions of the cross-check are enforced. |
+| `css-only` | `na` | No props API by design (`state-layer`). A `props` block here is itself an error; use `usage`. |
+
+Because a contract can be written before its component, gate 1's approval
+becomes something gate 4 verifies rather than something everyone remembers.
+Worked `usage[].example` snippets are additionally linted through
+`internal/vibe-tests/rules.mjs`, restricted to presence-based rules — a
+fragment cannot be judged for what it lacks, only for what it contains.
 
 ## What doesn't exist yet
 
-Per `registry/components/`: `dialog` and `text-field` have manifests but no
-files. There is no `card`, `table`, or `list` component — CLAUDE.md's layout
+Per `registry/components/`: `dialog`, `menu`, `notice` and `text-field` have
+manifests but no files. `text-field` additionally has an approved primitive
+(`packages/primitives/src/text-field.ts`) and a spec-mode contract; the other
+three have a token recipe and nothing else. There is no `card`, `table`, or `list` component — CLAUDE.md's layout
 guidance references these categories generically; until they're built here,
 compose plain `<section>`s rather than inventing one.
 

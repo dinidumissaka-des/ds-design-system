@@ -4,13 +4,31 @@
   "family": "foundations",
   "description": "Composable hover/press overlay that gives every interactive component identical state feedback.",
   "status": {
-    "css": { "state": "latest", "version": "0.1.0" },
-    "react": { "state": "na" },
-    "figma": { "state": "future" }
+    "css": {
+      "state": "latest",
+      "version": "0.1.0"
+    },
+    "react": {
+      "state": "na"
+    },
+    "figma": {
+      "state": "future"
+    }
   },
   "dependencies": [],
   "files": [
-    { "source": "packages/css/src/state-layer.css", "target": "styles/state-layer.css" }
+    {
+      "source": "packages/css/src/state-layer.css",
+      "target": "styles/state-layer.css"
+    }
   ],
-  "tier": "free"
+  "tier": "free",
+  "usage": [
+    {
+      "case": "Giving a new interactive component hover and press feedback",
+      "when": "Always — this is the only supported way to express interaction feedback in this system.",
+      "example": "<button className=\"ds-thing ds-state-layer\">…</button>",
+      "notes": "Add the class alongside the component's own; never write a competing `:hover` background rule. Feedback here is opacity-only by standing decision, which is why the role tokens carry no `bg-hover`/`bg-active` and why `ring.neutral` is deliberately unwired."
+    }
+  ]
 }

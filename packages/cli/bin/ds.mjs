@@ -18,6 +18,7 @@ import {
   getPages,
   getExamples,
 } from "../lib/index.mjs";
+import { getComponentContract } from "../lib/contract.mjs";
 
 function usage() {
   console.log(`ds — design system CLI
@@ -30,6 +31,9 @@ Distribution:
 Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
   ds props <name>          Props for one component, read straight from source
     --example              Include a real usage snippet from apps/
+  ds contract <name>        Full contract: what each prop is FOR, when not to
+                            reach for it, and the use cases — the written half,
+                            cross-checked against source every build
   ds tokens [filter]        Flat --ds-* token reference; filter is a substring match
   ds pages                  Page shells already in this repo (find the precedent)
 
@@ -39,7 +43,13 @@ Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
 
 async function list(dense) {
   const registry = await loadRegistry();
-  for (const entry of sortedEntries(registry)) {
+  const entries = sortedEntries(registry);
+  // Measured, not a constant: `toggle-button-group` is 19 characters and a
+  // fixed 16-wide column shunts every row after it out of alignment. The
+  // registry decides how wide the name column is.
+  const nameWidth = Math.max(...entries.map((entry) => entry.name.length), 16);
+
+  for (const entry of entries) {
     if (dense) {
       console.log(entry.name);
       continue;
@@ -47,7 +57,7 @@ async function list(dense) {
     const css = entry.status?.css?.state ?? "tbd";
     const react = entry.status?.react?.state ?? "tbd";
     console.log(
-      `${entry.name.padEnd(16)} ${entry.family.padEnd(12)} css:${css.padEnd(12)} react:${react.padEnd(12)} [${entry.tier ?? "free"}]`
+      `${entry.name.padEnd(nameWidth)} ${entry.family.padEnd(12)} css:${css.padEnd(12)} react:${react.padEnd(12)} [${entry.tier ?? "free"}]`
     );
   }
 }
@@ -133,6 +143,67 @@ async function props(name, { dense, example }) {
   }
 }
 
+async function contractCmd(name, dense) {
+  if (!name) {
+    console.error("Usage: ds contract <name>");
+    process.exitCode = 1;
+    return;
+  }
+  const registry = await loadRegistry();
+  const contract = await getComponentContract(name, registry);
+
+  if (contract.issues?.length && !contract.title) {
+    console.error(contract.issues.join("\n"));
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log(`${contract.title} (${contract.name}) — ${contract.mode}`);
+  if (contract.mode === "spec") {
+    console.log("Not implemented yet. This is the approved intent, not something you can import.");
+  }
+  if (contract.mode === "css-only") {
+    console.log("CSS-only — a class composed onto other components, with no props API.");
+  }
+  console.log("");
+
+  if (contract.behavior && !dense) {
+    if (contract.behavior.summary) console.log(`Behavior: ${contract.behavior.summary}\n`);
+    for (const d of contract.behavior.decisions ?? []) console.log(`  · ${d.decision}\n      ${d.why}`);
+    if (contract.behavior.decisions?.length) console.log("");
+  }
+
+  for (const prop of contract.props) {
+    const def = prop.default !== undefined && prop.default !== null ? ` = ${prop.default}` : "";
+    console.log(`  ${prop.name}${prop.optional ? "?" : ""}: ${prop.type}${def}`);
+    if (prop.summary) console.log(`    ${prop.summary}`);
+    if (dense) continue;
+    for (const item of prop.use) console.log(`    use    ${item}`);
+    for (const item of prop.dont) console.log(`    don't  ${item}`);
+    if (prop.conflicts.length) console.log(`    with   conflicts with ${prop.conflicts.join(", ")}`);
+    if (prop.a11y) console.log(`    a11y   ${prop.a11y}`);
+    console.log("");
+  }
+
+  if (contract.usage.length && !dense) {
+    console.log("Use cases:");
+    for (const item of contract.usage) {
+      console.log(`  ${item.case}${item.when ? ` — ${item.when}` : ""}`);
+      if (item.example) console.log(item.example.split("\n").map((l) => `      ${l}`).join("\n"));
+      if (item.notes) console.log(`      note: ${item.notes}`);
+      console.log("");
+    }
+  }
+
+  if (contract.issues.length) {
+    console.error("Contract disagrees with source:");
+    for (const issue of contract.issues) console.error(`  ✗ ${issue}`);
+    process.exitCode = 1;
+  }
+
+  console.log(`Full page: docs/components/${contract.name}.md`);
+}
+
 async function tokensCmd(filter, dense) {
   const tokens = await getTokens();
   if (!tokens) {
@@ -172,6 +243,7 @@ const positional = rest.filter(
 if (command === "list") await list(dense);
 else if (command === "add" && positional.length) await add(positional, targetDir);
 else if (command === "props") await props(positional[0], { dense, example });
+else if (command === "contract") await contractCmd(positional[0], dense);
 else if (command === "tokens") await tokensCmd(positional[0], dense);
 else if (command === "pages") await pagesCmd(dense);
 else usage();
