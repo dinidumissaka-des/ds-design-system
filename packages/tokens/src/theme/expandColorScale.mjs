@@ -47,6 +47,88 @@ const DEFAULT_ACCENT_SEED = "#0064E0";
 const NON_TEXT_MIN_CONTRAST = 3;
 
 /**
+ * The raw accent ramp's shape, read off the ramp this repo shipped by hand
+ * (Tailwind's blue) and kept as the rule rather than the output: tone falls
+ * 96.6 → 16.2 across the eleven steps, while chroma rises to a peak just past
+ * the middle and drops again at both ends. That curve is what makes a ramp
+ * read as one family instead of eleven tints, and it holds for any hue.
+ *
+ * Chroma is scaled by `seed chroma / 80.1` — 80.1 being step 600's chroma in
+ * the reference ramp, the step the seed itself anchors. Scaling rather than
+ * clamping is what keeps the curve's *shape*: a `min()` against each step
+ * flattens the peak at 700 and quietly turns the ramp into a different ramp,
+ * which is exactly what it did before this was changed. A muted brand gets a
+ * proportionally muted ramp; a more saturated one is pushed past sRGB and
+ * gamut-mapped by hctToHex, which is the right failure mode.
+ *
+ * `hueShift` is the third part of the curve and the easy one to miss: the
+ * hand-tuned ramp does not hold one hue, it drifts about 30 degrees cooler at
+ * the light end and a few degrees warmer at 700. Pinning every step to the
+ * seed's hue instead produced light tints visibly off from the ramp it
+ * replaced, so the drift is reproduced as a per-step offset. The seed's hue is
+ * step 600's, which is why that step's offset is zero — the ramp is anchored
+ * on the colour the brand actually named.
+ *
+ * WHY GENERATE THIS AT ALL: a ramp named `accent` that ignores the accent is
+ * indefensible — it made the Colors page show blue under a red brand. Tone is
+ * CIE L*, so a generated ramp keeps each step's lightness regardless of hue,
+ * which is the same argument the semantic layer rests on.
+ */
+/**
+ * The chroma floor the accent palette is built at. A seed below it does not
+ * carry enough colour to derive a scale from, so it is lifted to this before
+ * either the roles or the ramp are generated — which is why a near-black seed
+ * yields a saturated accent at its hue rather than a near-black one.
+ */
+const PALETTE_MIN_CHROMA = 48;
+
+/** Step 600's chroma in the reference ramp — the seed's own anchor point. */
+const ACCENT_RAMP_REFERENCE_CHROMA = 80.1;
+
+const ACCENT_RAMP_SHAPE = [
+  { step: "50", tone: 96.6, chroma: 5.2, hueShift: -30.1 },
+  { step: "100", tone: 92.2, chroma: 11.4, hueShift: -28.1 },
+  { step: "200", tone: 86.5, chroma: 20.2, hueShift: -27.8 },
+  { step: "300", tone: 78.0, chroma: 32.8, hueShift: -26.9 },
+  { step: "400", tone: 66.7, chroma: 48.9, hueShift: -18.7 },
+  { step: "500", tone: 55.6, chroma: 66.8, hueShift: -7.6 },
+  { step: "600", tone: 46.1, chroma: 80.1, hueShift: 0 },
+  { step: "700", tone: 39.0, chroma: 83.1, hueShift: 3.4 },
+  { step: "800", tone: 31.9, chroma: 69.3, hueShift: 3.2 },
+  { step: "900", tone: 27.1, chroma: 51.6, hueShift: 0 },
+  { step: "950", tone: 16.2, chroma: 32.7, hueShift: -1.3 },
+];
+
+/**
+ * The raw `color.accent.*` ramp for a seed.
+ *
+ * Chroma is floored at PALETTE_MIN_CHROMA first, for the same reason the
+ * accent roles floor it: below that a seed carries too little colour to build
+ * a ramp from, and the two layers have to agree. Without the floor a near-black
+ * seed (#15151B, chroma 4.5) produced a grey ramp sitting beside a blue-violet
+ * role fill — same seed, same hue, two different answers.
+ *
+ * Scheme-independent by design: one ramp per brand, identical in light and
+ * dark, which is what the palette layer promises and what lets a component
+ * that (wrongly) reaches for a palette token at least stay consistent. With a
+ * per-scheme accent pair the light seed wins — the raw ramp is the brand's
+ * palette, and a brand has one.
+ */
+function accentRamp(seedHue, seedChroma) {
+  const effective = Math.max(seedChroma, PALETTE_MIN_CHROMA);
+  const ramp = {};
+  for (const { step, tone, chroma, hueShift } of ACCENT_RAMP_SHAPE) {
+    ramp[`color.accent.${step}`] = hctToHex({
+      // Hue is circular, so the offset is taken modulo 360 rather than clamped.
+      hue: ((seedHue + hueShift) % 360 + 360) % 360,
+      chroma: chroma * (effective / ACCENT_RAMP_REFERENCE_CHROMA),
+      tone,
+    });
+  }
+  return ramp;
+}
+
+/**
  * Walk tone in `step` increments from `startTone` until the colour reaches
  * `minRatio` against `background`.
  *
@@ -110,12 +192,12 @@ export function expandColorScale(config) {
 
   // *L palettes feed the light half of each pair, *D the dark half. With a
   // single seed the D palettes alias the L ones.
-  const PL = tonalPalette(lightSeed.hue, Math.max(lightSeed.chroma, 48));
+  const PL = tonalPalette(lightSeed.hue, Math.max(lightSeed.chroma, PALETTE_MIN_CHROMA));
   const NL = tonalPalette(lightSeed.hue, nc);
   const NVL = tonalPalette(lightSeed.hue, nvc);
   const PD = sameSeed
     ? PL
-    : tonalPalette(darkSeed.hue, Math.max(darkSeed.chroma, 48));
+    : tonalPalette(darkSeed.hue, Math.max(darkSeed.chroma, PALETTE_MIN_CHROMA));
   const ND = sameSeed ? NL : tonalPalette(darkSeed.hue, nc);
   const NVD = sameSeed ? NVL : tonalPalette(darkSeed.hue, nvc);
 
@@ -161,6 +243,7 @@ export function expandColorScale(config) {
     // silently re-accent every neutral-only brand.
     ...(accent != null
       ? {
+          ...accentRamp(lightSeed.hue, lightSeed.chroma),
           "theme.accent-role.bg": accentRoleBg,
           "theme.accent-role.fg": accentRoleFg,
           // A tint, not a fill — and opaque, deliberately. Astryx makes the

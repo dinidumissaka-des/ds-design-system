@@ -7,6 +7,7 @@
 // .tsx files, @ds/tokens' build output) rather than a hand-maintained
 // description. If it's wrong, the source is wrong — not a doc that drifted.
 import { readFile, readdir } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
@@ -177,11 +178,36 @@ export async function getExamples(tagName, limit = 1) {
   return usages.slice(0, limit);
 }
 
+/**
+ * The published package name for a source path under packages/*.
+ *
+ * Read from that package's own package.json rather than guessed from the
+ * directory: `packages/icons` publishes as `@ds/icons`, and the two only
+ * happen to look alike. A component's documented import has to be the one a
+ * consumer would actually write.
+ */
+function packageNameFor(sourcePath) {
+  const dir = sourcePath.split("/")[1];
+  if (!dir) return "@ds/react";
+  try {
+    const manifest = JSON.parse(
+      readFileSync(path.join(repoRoot, "packages", dir, "package.json"), "utf8")
+    );
+    return manifest.name ?? "@ds/react";
+  } catch {
+    return "@ds/react";
+  }
+}
+
 export async function getComponentProps(name, registry) {
   const entry = registry[name];
   if (!entry) return { error: `Unknown component: "${name}". Run \`ds list\` — don't guess.` };
 
-  const reactFile = entry.files?.find((f) => f.source.startsWith("packages/react/src/"));
+  // The manifest declares where a component's React source lives, so this
+  // trusts it rather than assuming one package. @ds/icons holds its own
+  // component, and hardcoding packages/react/src/ made the docs build treat it
+  // as having no source at all — i.e. as an unimplemented spec.
+  const reactFile = entry.files?.find((f) => /^packages\/[^/]+\/src\/.+\.tsx$/.test(f.source));
   if (!reactFile) {
     const state = entry.status?.react?.state ?? "tbd";
     return {
@@ -226,7 +252,9 @@ export async function getComponentProps(name, registry) {
   return {
     name,
     title: entry.title,
-    importPath: "@ds/react",
+    // Derived from where the source actually lives, so a component in its own
+    // package documents the import a consumer would really write.
+    importPath: packageNameFor(reactFile.source),
     implemented: true,
     extends: parsed?.extends ?? null,
     props,

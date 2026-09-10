@@ -5,14 +5,16 @@
 
 A set of toggle buttons that holds a value: one choice out of several, or any number of independent states.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { ToggleButtonGroup } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `toggle-button-group` |
 | Family | buttons |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | `toggle-button`, `button`, `state-layer` |
 
 ## Behavior
@@ -32,27 +34,31 @@ Headless contract: `getToggleButtonGroupProps` in `packages/primitives/src/toggl
 
 ## Props
 
+Extends `Omit<HTMLAttributes<HTMLDivElement>, "role" | "onChange" | "defaultValue">`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
-| `value?` | `string \| string[] \| null` | — | The current selection: a value in single mode, a list in multiple mode, `null` or `[]` for none. |
-| `defaultValue?` | `string \| string[] \| null` | — | Starting selection for an uncontrolled group that owns its own value. |
-| `onValueChange?` | `(value: string \| string[] \| null) => void` | — | Called with the selection the group should move to — a value, a list in DOM order, or `null`. |
-| `selectionMode?` | `"single" \| "multiple"` | `"single"` | Whether this group holds one answer or any number of independent states — which also decides its ARIA pattern. |
+| `value?` | `ToggleButtonGroupValue` | — | The current selection: a value in single mode, a list in multiple mode, `null` or `[]` for none. |
+| `defaultValue?` | `ToggleButtonGroupValue` | — | Starting selection for an uncontrolled group that owns its own value. |
+| `onValueChange?` | `(value: ToggleButtonGroupValue) => void` | — | Called with the selection the group should move to — a value, a list in DOM order, or `null`. |
+| `selectionMode?` | `ToggleButtonGroupSelectionMode` | `"single"` | Whether this group holds one answer or any number of independent states — which also decides its ARIA pattern. |
 | `deselectable?` | `boolean` | — | Single mode only: whether clicking the selected option clears the selection. |
 | `label?` | `string` | — | Accessible name for the group — the question these options answer. |
 | `labelledBy?` | `string` | — | Id of a visible element that already names this group. |
-| `orientation?` | `"horizontal" \| "vertical"` | `"horizontal"` | Which way the options stack, and — in single mode — which arrows move between them. |
-| `size?` | `"sm" \| "md" \| "lg"` | `"md"` | Control height and text size for every option, from the `size.control.*` scale. |
+| `orientation?` | `ButtonGroupOrientation` | `"horizontal"` | Which way the options stack, and — in single mode — which arrows move between them. |
+| `size?` | `ToggleButtonSize` | `"md"` | Control height and text size for every option, from the `size.control.*` scale. |
 | `attached?` | `boolean` | `true` | Joins the options into one continuous bar, with shared borders and only the outer corners rounded. |
 | `disabled?` | `boolean` | — | Blocks activation for every option while keeping them focusable, announced, and readable in their current state. |
 
 ### `value`
 
 ```ts
-value?: string | string[] | null
+value?: ToggleButtonGroupValue
 ```
 
 The current selection: a value in single mode, a list in multiple mode, `null` or `[]` for none.
+
+Source doc: The current selection: a value in single mode, a list in multiple mode.
 
 **Use when**
 
@@ -70,10 +76,12 @@ The current selection: a value in single mode, a list in multiple mode, `null` o
 ### `defaultValue`
 
 ```ts
-defaultValue?: string | string[] | null
+defaultValue?: ToggleButtonGroupValue
 ```
 
 Starting selection for an uncontrolled group that owns its own value.
+
+Source doc: Starting selection for an uncontrolled group. Conflicts with `value`.
 
 **Use when**
 
@@ -89,10 +97,12 @@ Starting selection for an uncontrolled group that owns its own value.
 ### `onValueChange`
 
 ```ts
-onValueChange?: (value: string | string[] | null) => void
+onValueChange?: (value: ToggleButtonGroupValue) => void
 ```
 
 Called with the selection the group should move to — a value, a list in DOM order, or `null`.
+
+Source doc: Called with the selection the group should move to.
 
 **Use when**
 
@@ -106,10 +116,12 @@ Called with the selection the group should move to — a value, a list in DOM or
 ### `selectionMode`
 
 ```ts
-selectionMode?: "single" | "multiple" = "single"
+selectionMode?: ToggleButtonGroupSelectionMode = "single"
 ```
 
 Whether this group holds one answer or any number of independent states — which also decides its ARIA pattern.
+
+Source doc: Whether this group holds one answer or any number of independent states.
 
 **Use when**
 
@@ -150,6 +162,8 @@ label?: string
 
 Accessible name for the group — the question these options answer.
 
+Source doc: Accessible name for the group. Required unless `labelledBy` names an existing element.
+
 **Use when**
 
 - Always, unless `labelledBy` points at a visible label that already asks it.
@@ -186,7 +200,7 @@ Id of a visible element that already names this group.
 ### `orientation`
 
 ```ts
-orientation?: "horizontal" | "vertical" = "horizontal"
+orientation?: ButtonGroupOrientation = "horizontal"
 ```
 
 Which way the options stack, and — in single mode — which arrows move between them.
@@ -204,10 +218,12 @@ Which way the options stack, and — in single mode — which arrows move betwee
 ### `size`
 
 ```ts
-size?: "sm" | "md" | "lg" = "md"
+size?: ToggleButtonSize = "md"
 ```
 
 Control height and text size for every option, from the `size.control.*` scale.
+
+Source doc: Control height for every option. Set here, never per option.
 
 **Use when**
 
@@ -224,6 +240,8 @@ attached?: boolean = true
 ```
 
 Joins the options into one continuous bar, with shared borders and only the outer corners rounded.
+
+Source doc: Joins the options into one continuous bar. Defaults to true.
 
 **Use when**
 
@@ -242,6 +260,8 @@ disabled?: boolean
 ```
 
 Blocks activation for every option while keeping them focusable, announced, and readable in their current state.
+
+Source doc: Blocks activation for every option while keeping them focusable.
 
 **Use when**
 
@@ -322,3 +342,48 @@ The options switch between views rather than setting a value.
 ```
 
 Don't. Navigation between panels is a tab list: it announces itself as one, owns the relationship to the panels, and moves focus into them. This system has no Tabs yet — flag the gap rather than dressing a toggle group up as one.
+
+## Real usage in this repo
+
+```tsx
+<ToggleButtonGroup
+      label="Status filter"
+      deselectable
+      value={status}
+      onValueChange={(next) => setStatus(next as string | null)}
+    >
+      <ToggleButton value="open">Open</ToggleButton>
+      <ToggleButton value="closed">Closed</ToggleButton>
+    </ToggleButtonGroup>
+```
+
+## Token recipe
+
+### attached
+
+The default, and what a segmented control is: the options are one question, so they close up into one bar and only the outer corners round.
+
+| Property | Token |
+|---|---|
+| gap | `space.0` |
+| inner corner border-radius | `radius.none` |
+| outer corner border-radius | `radius.element, as logical corners so the bar flips in RTL` |
+| collapsed shared border | `negative margin of border.1, so two adjacent borders read as one stroke` |
+| focused item stacking | `raised above its neighbours so the focus ring is not clipped by the overlapping border — a stacking fix, not a token` |
+| item height | `size.control.md — set once on the group and pushed to every option, because a bar of options at two heights is ragged` |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — owned by the option, never drawn around the group` |
+
+### spaced
+
+Options that belong together but read as separate controls — the right shape when they can wrap, since a broken bar reads as two controls.
+
+| Property | Token |
+|---|---|
+| gap | `space.gap.sm` |
+| item border-radius | `radius.element — each option keeps the corners it sets for itself` |
+| item height | `size.control.md — set once on the group and pushed to every option, because a bar of options at two heights is ragged` |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — owned by the option, never drawn around the group` |

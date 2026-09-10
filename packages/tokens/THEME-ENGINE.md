@@ -44,7 +44,7 @@ promise in `usage.json` against each brand before it will emit a stylesheet.
 |---|---|
 | `src/theme/color.mjs` | Hex parsing, formatting, WCAG contrast |
 | `src/theme/hct.mjs` | HCT colour space and tonal palettes |
-| `src/theme/expandColorScale.mjs` | Accent seed → the semantic colour layer |
+| `src/theme/expandColorScale.mjs` | Accent seed → the semantic colour layer, plus the `color.accent.*` ramp |
 | `src/theme/expandTypeScale.mjs` | `{base, ratio}` → `font.size.*` and `type.*` |
 | `src/theme/expandRadiusScale.mjs` | `{base, multiplier, steps}` → `radius.*` |
 | `src/theme/expandMotionScale.mjs` | `{fast, medium, slow, ratio}` → `motion.duration.*` |
@@ -73,7 +73,20 @@ asked for.
 
 Generated: `theme.bg.*`, `theme.fg.*`, `theme.border.*`, `theme.accent-role.*`,
 `theme.secondary-role.*`, `theme.tertiary-role.fg`, `theme.focus-ring`,
-`font.size.*`, `type.*`, `radius.*`, `motion.duration.*`.
+`color.accent.*`, `font.size.*`, `type.*`, `radius.*`, `motion.duration.*`.
+
+`color.accent.*` is the one *palette* ramp that is generated. The other ramps
+(`color.neutral.*`, the status hues, `color.data.*`) are stated, because they
+are reference material rather than brand expression. The accent ramp is not:
+a ramp named `accent` that ignored the accent showed a blue scale under a red
+brand, which is the drift this whole file argues against. It is built from the
+seed's hue at a fixed tone / chroma / hue-drift curve — `ACCENT_RAMP_SHAPE` in
+`expandColorScale.mjs`, read off the hand-tuned ramp it replaced, so the base
+theme reproduces eight of its eleven steps exactly and the other three to
+within one unit of a channel. Step 600 *is* the seed. Unlike the `theme.*`
+roles it is one value per step rather than a `[light, dark]` pair: the palette
+layer promises a step looks the same in both schemes, and that promise is why
+components are told never to reach for one.
 
 Stated outright, and deliberately so:
 

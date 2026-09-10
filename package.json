@@ -9,7 +9,7 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @ds/tokens && npm run build:themes && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run docs:components && npm run ui:sync",
+    "build": "npm run build -w @ds/tokens && npm run build:themes && npm run build -w @ds/css && npm run build -w @ds/primitives && npm run build -w @ds/react && npm run build -w @ds/icons && npm run docs:components && npm run ui:sync",
     "docs:check": "npm run docs:check -w @ds/tokens && node scripts/generate-component-docs.mjs --check",
     "docs:components": "node scripts/generate-component-docs.mjs",
     "vibe": "node internal/vibe-tests/run.mjs fixtures",
@@ -20,8 +20,8 @@
     "build:playground": "npm run build && npm run build -w playground",
     "ui": "node packages/cli/bin/ds.mjs",
     "ui:sync": "node scripts/generate-ui-context.mjs",
-    "build:themes": "npm run build -w @ds/theme-ember -w @ds/theme-slate",
-    "themes:check": "npm run check -w @ds/theme-ember -w @ds/theme-slate",
+    "build:themes": "npm run build -w @ds/theme-ember -w @ds/theme-slate -w @ds/theme-pine -w @ds/theme-lime -w @ds/theme-rust -w @ds/theme-ink -w @ds/theme-cobalt",
+    "themes:check": "npm run check -w @ds/theme-ember -w @ds/theme-slate -w @ds/theme-pine -w @ds/theme-lime -w @ds/theme-rust -w @ds/theme-ink -w @ds/theme-cobalt",
     "test:theme": "node --test packages/tokens/src/theme/theme.test.mjs"
   },
   "devDependencies": {

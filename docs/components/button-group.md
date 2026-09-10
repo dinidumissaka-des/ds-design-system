@@ -185,9 +185,9 @@ Still tab-navigated, not arrow-navigated. If the column is long enough that tabb
 
 ```tsx
 <ButtonGroup label="Form actions">
-          <Button variant="secondary">Cancel</Button>
-          <Button>Save changes</Button>
-        </ButtonGroup>
+        <Button variant="secondary">Cancel</Button>
+        <Button>Save changes</Button>
+      </ButtonGroup>
 ```
 
 ## Token recipe

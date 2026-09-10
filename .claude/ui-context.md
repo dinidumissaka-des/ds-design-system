@@ -21,13 +21,14 @@ this path is the honest answer to when it last actually moved.
 | [button](../docs/components/button.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [button-group](../docs/components/button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [dialog](../docs/components/dialog.md) | `@ds/react` | overlays | future / future / future | free |
+| [icon](../docs/components/icon.md) | `@ds/react` | content | latest / latest / future | free |
 | [menu](../docs/components/menu.md) | `@ds/react` | overlays | future / future / future | free |
 | [notice](../docs/components/notice.md) | `@ds/react` | feedback | future / future / future | free |
 | [spinner](../docs/components/spinner.md) | `@ds/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@ds/react` | foundations | latest / na / future | free |
 | [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | future / future / future | free |
-| [toggle-button](../docs/components/toggle-button.md) | `@ds/react` | buttons | future / future / future | free |
-| [toggle-button-group](../docs/components/toggle-button-group.md) | `@ds/react` | buttons | future / future / future | free |
+| [toggle-button](../docs/components/toggle-button.md) | `@ds/react` | buttons | latest / latest / future | free |
+| [toggle-button-group](../docs/components/toggle-button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
 
 ## Props
 
@@ -65,9 +66,9 @@ Extends: `Omit<HTMLAttributes<HTMLDivElement>, "role">`
 Real usage (from `apps/`):
 ```tsx
 <ButtonGroup label="Form actions">
-          <Button variant="secondary">Cancel</Button>
-          <Button>Save changes</Button>
-        </ButtonGroup>
+        <Button variant="secondary">Cancel</Button>
+        <Button>Save changes</Button>
+      </ButtonGroup>
 ```
 
 Contract: [docs/components/button-group.md](../docs/components/button-group.md)
@@ -77,6 +78,23 @@ Contract: [docs/components/button-group.md](../docs/components/button-group.md)
 No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
 
 Contract: [docs/components/dialog.md](../docs/components/dialog.md)
+
+### Icon (`@ds/icons`)
+
+- `icon: LucideIcon`
+  The Lucide component to render, passed as a value so the set stays tree-shakeable.
+- `size?: IconSize` — default: `"text"`
+  Which step of the `size.icon.*` scale to draw at. Defaults to following the surrounding text.
+- `label?: string`
+  Accessible name, for an icon that carries meaning nothing else conveys.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Icon icon={Bold} />
+```
+
+Contract: [docs/components/icon.md](../docs/components/icon.md)
 
 ### Menu
 
@@ -97,7 +115,7 @@ Contract: [docs/components/notice.md](../docs/components/notice.md)
 
 Real usage (from `apps/`):
 ```tsx
-<Spinner label="Loading" />
+<Spinner label="Loading results" />
 ```
 
 Contract: [docs/components/spinner.md](../docs/components/spinner.md)
@@ -114,15 +132,70 @@ No React implementation yet (status: future). There is nothing to look up — do
 
 Contract: [docs/components/text-field.md](../docs/components/text-field.md)
 
-### Toggle Button
+### Toggle Button (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "onChange">`
+
+- `pressed?: boolean`
+  Whether the toggle is currently on. Makes the component controlled.
+- `defaultPressed?: boolean`
+  Starting state for an uncontrolled toggle. Conflicts with `pressed`.
+- `onPressedChange?: (pressed: boolean, event: MouseEvent<HTMLButtonElement>) => void`
+  Called with the state the toggle should move to, not the one it is in.
+- `variant?: ToggleButtonVariant` — default: `"secondary"`
+  How loud the toggle is in its off state.
+- `size?: ToggleButtonSize` — default: `"md"`
+- `disabled?: boolean`
+- `loading?: boolean`
+  Shows a spinner and blocks activation while preserving focus.
+- `iconOnly?: boolean`
+  Square icon-only toggle; pass the icon as children and set aria-label.
+
+Real usage (from `apps/`):
+```tsx
+<ToggleButton value="bold">Bold</ToggleButton>
+```
 
 Contract: [docs/components/toggle-button.md](../docs/components/toggle-button.md)
 
-### Toggle Button Group
+### Toggle Button Group (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<HTMLAttributes<HTMLDivElement>, "role" | "onChange" | "defaultValue">`
+
+- `value?: ToggleButtonGroupValue`
+  The current selection: a value in single mode, a list in multiple mode.
+- `defaultValue?: ToggleButtonGroupValue`
+  Starting selection for an uncontrolled group. Conflicts with `value`.
+- `onValueChange?: (value: ToggleButtonGroupValue) => void`
+  Called with the selection the group should move to.
+- `selectionMode?: ToggleButtonGroupSelectionMode` — default: `"single"`
+  Whether this group holds one answer or any number of independent states.
+- `deselectable?: boolean`
+  Single mode only: whether clicking the selected option clears the selection.
+- `label?: string`
+  Accessible name for the group. Required unless `labelledBy` names an existing element.
+- `labelledBy?: string`
+  Id of a visible element that already names this group.
+- `orientation?: ButtonGroupOrientation` — default: `"horizontal"`
+- `size?: ToggleButtonSize` — default: `"md"`
+  Control height for every option. Set here, never per option.
+- `attached?: boolean` — default: `true`
+  Joins the options into one continuous bar. Defaults to true.
+- `disabled?: boolean`
+  Blocks activation for every option while keeping them focusable.
+
+Real usage (from `apps/`):
+```tsx
+<ToggleButtonGroup
+      label="Status filter"
+      deselectable
+      value={status}
+      onValueChange={(next) => setStatus(next as string | null)}
+    >
+      <ToggleButton value="open">Open</ToggleButton>
+      <ToggleButton value="closed">Closed</ToggleButton>
+    </ToggleButtonGroup>
+```
 
 Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-button-group.md)
 
@@ -132,17 +205,17 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-border-2`: `2px`
 - `--ds-border-3`: `3px`
 - `--ds-border-default`: `1px`
-- `--ds-color-accent-100`: `#dbeafe`
-- `--ds-color-accent-200`: `#bfdbfe`
-- `--ds-color-accent-300`: `#93c5fd`
-- `--ds-color-accent-400`: `#60a5fa`
-- `--ds-color-accent-50`: `#eff6ff`
-- `--ds-color-accent-500`: `#3b82f6`
-- `--ds-color-accent-600`: `#2563eb`
-- `--ds-color-accent-700`: `#1d4ed8`
-- `--ds-color-accent-800`: `#1e40af`
-- `--ds-color-accent-900`: `#1e3a8a`
-- `--ds-color-accent-950`: `#172554`
+- `--ds-color-accent-100`: `#E3EBDF`
+- `--ds-color-accent-200`: `#CEDDC9`
+- `--ds-color-accent-300`: `#AFC8A8`
+- `--ds-color-accent-400`: `#7FAE84`
+- `--ds-color-accent-50`: `#F3F6F1`
+- `--ds-color-accent-500`: `#3E9569`
+- `--ds-color-accent-600`: `#007F57`
+- `--ds-color-accent-700`: `#006B4C`
+- `--ds-color-accent-800`: `#00593D`
+- `--ds-color-accent-900`: `#004B33`
+- `--ds-color-accent-950`: `#042F20`
 - `--ds-color-black`: `#000000`
 - `--ds-color-danger-100`: `#fee2e2`
 - `--ds-color-danger-200`: `#fecaca`
@@ -254,9 +327,9 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-focus-ring-offset`: `3px`
 - `--ds-focus-ring-style`: `solid`
 - `--ds-focus-ring-width`: `2px`
-- `--ds-font-family-heading`: `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
-- `--ds-font-family-mono`: `'SF Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`
-- `--ds-font-family-sans`: `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
+- `--ds-font-family-heading`: `'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
+- `--ds-font-family-mono`: `'Google Sans Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`
+- `--ds-font-family-sans`: `'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
 - `--ds-font-letter-spacing-normal`: `0px`
 - `--ds-font-letter-spacing-tight`: `-0.6px`
 - `--ds-font-letter-spacing-tighter`: `-0.72px`
@@ -318,6 +391,11 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-size-control-lg`: `36px`
 - `--ds-size-control-md`: `32px`
 - `--ds-size-control-sm`: `28px`
+- `--ds-size-icon-lg`: `24px`
+- `--ds-size-icon-md`: `20px`
+- `--ds-size-icon-sm`: `16px`
+- `--ds-size-icon-text`: `1.15em`
+- `--ds-size-icon-xs`: `12px`
 - `--ds-space-0`: `0px`
 - `--ds-space-0-5`: `2px`
 - `--ds-space-1`: `4px`
@@ -370,16 +448,16 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-state-disabled-opacity`: `0.5`
 - `--ds-state-hover-opacity`: `0.08`
 - `--ds-state-press-opacity`: `0.12`
-- `--ds-theme-accent-role-bg`: `#0055D9`
-- `--ds-theme-accent-role-fg`: `#0055D9`
+- `--ds-theme-accent-role-bg`: `#006E4A`
+- `--ds-theme-accent-role-fg`: `#006E4A`
 - `--ds-theme-accent-role-ring`: `inset 0px 0px 0px 2px rgb(1 113 227 / 0.5)`
-- `--ds-theme-accent-role-subtle`: `#E1DFFF`
-- `--ds-theme-bg-canvas`: `#F0F0F9`
-- `--ds-theme-bg-muted`: `#E2E2EB`
-- `--ds-theme-bg-subtle`: `#F0F0F9`
-- `--ds-theme-bg-surface`: `#FCFCFF`
-- `--ds-theme-border-default`: `#1B1B221A`
-- `--ds-theme-border-strong`: `#908F9D`
+- `--ds-theme-accent-role-subtle`: `#7CF9C8`
+- `--ds-theme-bg-canvas`: `#E8F3EE`
+- `--ds-theme-bg-muted`: `#DAE5E0`
+- `--ds-theme-bg-subtle`: `#E8F3EE`
+- `--ds-theme-bg-surface`: `#F3FFF9`
+- `--ds-theme-border-default`: `#151D1A1A`
+- `--ds-theme-border-strong`: `#84958D`
 - `--ds-theme-danger-role-bg`: `#dc2626`
 - `--ds-theme-danger-role-fg`: `#b91c1c`
 - `--ds-theme-danger-role-on`: `#ffffff`
@@ -388,20 +466,20 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-theme-elevation-modal`: `0px 2px 2px rgb(0 0 0 / 0.1), 0px 8px 24px rgb(0 0 0 / 0.1)`
 - `--ds-theme-elevation-overlay`: `0px 1px 2px rgb(0 0 0 / 0.1), 0px 2px 12px rgb(0 0 0 / 0.1)`
 - `--ds-theme-elevation-raised`: `0px 1px 1px rgb(0 0 0 / 0.1), 0px 2px 8px rgb(0 0 0 / 0.1)`
-- `--ds-theme-fg-muted`: `#5E5D6A`
+- `--ds-theme-fg-muted`: `#52625B`
 - `--ds-theme-fg-on-accent`: `#FFFFFF`
-- `--ds-theme-fg-primary`: `#1B1B22`
-- `--ds-theme-fg-secondary`: `#464652`
-- `--ds-theme-focus-ring`: `#3A6DF7`
-- `--ds-theme-secondary-role-bg`: `#FCFCFF`
-- `--ds-theme-secondary-role-border`: `#908F9D`
-- `--ds-theme-secondary-role-fg`: `#1B1B22`
+- `--ds-theme-fg-primary`: `#151D1A`
+- `--ds-theme-fg-secondary`: `#3B4A43`
+- `--ds-theme-focus-ring`: `#008960`
+- `--ds-theme-secondary-role-bg`: `#F3FFF9`
+- `--ds-theme-secondary-role-border`: `#84958D`
+- `--ds-theme-secondary-role-fg`: `#151D1A`
 - `--ds-theme-success-role-bg`: `#16a34a`
 - `--ds-theme-success-role-fg`: `#166534`
 - `--ds-theme-success-role-on`: `#ffffff`
 - `--ds-theme-success-role-ring`: `inset 0px 0px 0px 2px rgb(38 167 86 / 0.3)`
 - `--ds-theme-success-role-subtle`: `#f0fdf4`
-- `--ds-theme-tertiary-role-fg`: `#0055D9`
+- `--ds-theme-tertiary-role-fg`: `#006E4A`
 - `--ds-theme-warning-role-bg`: `#f59e0b`
 - `--ds-theme-warning-role-fg`: `#92400e`
 - `--ds-theme-warning-role-on`: `#0f172a`
@@ -469,4 +547,4 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 
 ## Pages
 
-- `apps/playground/src/app.tsx` — shell: header → nav → main → section×8
+- `apps/playground/src/app.tsx` — shell: header → nav → main → section×13

@@ -65,7 +65,7 @@
       "a11y": "Variant is visual only. A destructive action still needs its own confirmation step — colour is not a warning."
     },
     "size": {
-      "summary": "Control height and text size, from the `size.control.*` scale.",
+      "summary": "Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.",
       "use": [
         "`md` everywhere by default.",
         "`sm` inside dense rows, toolbars, and table cells.",
@@ -73,7 +73,8 @@
       ],
       "dont": [
         "Shrinking to `sm` to fit a cramped layout — fix the layout budget instead.",
-        "Setting font-size or height yourself; the size prop is the only supported way to change either."
+        "Expecting the label to grow with it. All three sizes set the same text size, so `size` buys a bigger target for the same action rather than a louder one — and an icon inside, being sized from that text, does not change either.",
+        "Setting height or padding yourself; the size prop is the only supported way to change either."
       ]
     },
     "disabled": {
@@ -142,13 +143,13 @@
       "tokens": {
         "background": "theme.accent-role.bg",
         "color": "theme.fg.on-accent",
-        "height": "size.control.md",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
         "padding-inline": "space.control.padding-inline.md",
         "gap": "space.gap.xs",
         "border-radius": "radius.element",
-        "font-size": "type.control.size.md",
+        "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
         "font-weight": "type.control.weight",
-        "line-height": "type.control.line-height.md",
+        "line-height": "type.control.line-height.md — constant, as with font-size",
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
@@ -156,12 +157,12 @@
       }
     },
     "secondary": {
-      "summary": "A supporting action shown next to a primary one.",
+      "summary": "A supporting action shown next to a primary one. Its label is accent-toned rather than neutral, so the outlined button still reads as an action and not as a disabled box — the border alone carries very little at this fill.",
       "tokens": {
         "background": "theme.secondary-role.bg",
-        "color": "theme.secondary-role.fg",
+        "color": "theme.accent-role.fg",
         "border-color": "theme.secondary-role.border",
-        "height": "size.control.md",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
         "border-radius": "radius.element",
         "hover/press": "compose the .ds-state-layer class"
       }
@@ -171,7 +172,7 @@
       "tokens": {
         "background": "theme.danger-role.bg",
         "color": "theme.fg.on-accent",
-        "height": "size.control.md",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
         "border-radius": "radius.element",
         "hover/press": "compose the .ds-state-layer class"
       }

@@ -1,0 +1,22 @@
+{
+  "name": "@ds/theme-lime",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Lime accent option for the DS design system \u2014 one seed; every token is generated.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/limeTheme.mjs",
+    "./theme.css": "./dist/theme.css"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "node ../../tokens/build-theme.mjs src/limeTheme.mjs -o dist/theme.css",
+    "check": "node ../../tokens/build-theme.mjs src/limeTheme.mjs --check"
+  },
+  "peerDependencies": {
+    "@ds/tokens": "0.1.0"
+  }
+}

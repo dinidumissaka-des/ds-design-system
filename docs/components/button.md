@@ -33,7 +33,7 @@ Extends `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled">`.
 | Prop | Type | Default | Summary |
 |---|---|---|---|
 | `variant?` | `ButtonVariant` | `"primary"` | Which action tier this button occupies, and therefore how loud it is. |
-| `size?` | `ButtonSize` | `"md"` | Control height and text size, from the `size.control.*` scale. |
+| `size?` | `ButtonSize` | `"md"` | Control height and inline padding, from the `size.control.*` scale. Text size does not change with it. |
 | `disabled?` | `boolean` | — | Blocks activation while keeping the button focusable and announced. |
 | `loading?` | `boolean` | — | Shows a spinner and refuses activation while an operation is in flight. |
 | `iconOnly?` | `boolean` | — | Square button carrying an icon and no visible text. |
@@ -66,7 +66,7 @@ Which action tier this button occupies, and therefore how loud it is.
 size?: ButtonSize = "md"
 ```
 
-Control height and text size, from the `size.control.*` scale.
+Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.
 
 **Use when**
 
@@ -77,7 +77,8 @@ Control height and text size, from the `size.control.*` scale.
 **Don't use for**
 
 - Shrinking to `sm` to fit a cramped layout — fix the layout budget instead.
-- Setting font-size or height yourself; the size prop is the only supported way to change either.
+- Expecting the label to grow with it. All three sizes set the same text size, so `size` buys a bigger target for the same action rather than a louder one — and an icon inside, being sized from that text, does not change either.
+- Setting height or padding yourself; the size prop is the only supported way to change either.
 
 ### `disabled`
 
@@ -191,13 +192,13 @@ The single highest-priority action in a view.
 |---|---|
 | background | `theme.accent-role.bg` |
 | color | `theme.fg.on-accent` |
-| height | `size.control.md` |
+| height | `size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes` |
 | padding-inline | `space.control.padding-inline.md` |
 | gap | `space.gap.xs` |
 | border-radius | `radius.element` |
-| font-size | `type.control.size.md` |
+| font-size | `type.control.size.md — constant across all three sizes, so `size` changes the box and not the label` |
 | font-weight | `type.control.weight` |
-| line-height | `type.control.line-height.md` |
+| line-height | `type.control.line-height.md — constant, as with font-size` |
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
@@ -205,14 +206,14 @@ The single highest-priority action in a view.
 
 ### secondary
 
-A supporting action shown next to a primary one.
+A supporting action shown next to a primary one. Its label is accent-toned rather than neutral, so the outlined button still reads as an action and not as a disabled box — the border alone carries very little at this fill.
 
 | Property | Token |
 |---|---|
 | background | `theme.secondary-role.bg` |
-| color | `theme.secondary-role.fg` |
+| color | `theme.accent-role.fg` |
 | border-color | `theme.secondary-role.border` |
-| height | `size.control.md` |
+| height | `size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes` |
 | border-radius | `radius.element` |
 | hover/press | `compose the .ds-state-layer class` |
 
@@ -224,6 +225,6 @@ An action that deletes or revokes something.
 |---|---|
 | background | `theme.danger-role.bg` |
 | color | `theme.fg.on-accent` |
-| height | `size.control.md` |
+| height | `size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes` |
 | border-radius | `radius.element` |
 | hover/press | `compose the .ds-state-layer class` |

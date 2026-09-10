@@ -9,7 +9,16 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
 // Order matters: primitives (state-layer) before components that compose them.
-const ORDER = ["state-layer.css", "spinner.css", "button.css", "button-group.css"];
+const ORDER = [
+  "state-layer.css",
+  "spinner.css",
+  "button.css",
+  "button-group.css",
+  "toggle-button.css",
+  // After toggle-button: the attached bar overrides the radius each option sets.
+  "toggle-button-group.css",
+  "icon.css",
+];
 
 const srcFiles = await readdir(path.join(root, "src"));
 const unordered = srcFiles.filter((f) => f.endsWith(".css") && !ORDER.includes(f));
