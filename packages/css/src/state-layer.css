@@ -7,12 +7,34 @@
 .ds-state-layer::after {
   content: "";
   position: absolute;
-  inset: 0;
+  /* An absolutely positioned pseudo-element resolves `inset` against its
+     containing block's PADDING box, which excludes the border. At `inset: 0`
+     the layer therefore stopped one border-width short on every side. That is
+     invisible on a filled variant — the host's own background already covers
+     its border box — but on a variant whose only fill IS this layer (the
+     tertiary variant) the hover tint rendered visibly smaller than a filled
+     variant sitting beside it.
+
+     Every bordered host in this system uses border.default, so the layer
+     bleeds by exactly that and the common case is right without the host
+     doing anything. CSS cannot read a containing block's computed
+     border-width, so a host with no border opts out with
+     .ds-state-layer--flush below.
+
+     NOTE: vibe-tests scans raw source, comments included, so naming a
+     component here would trip its interactive-element heuristic and demand a
+     focus ring this overlay must not own. */
+  inset: calc(-1 * var(--ds-border-default));
   border-radius: inherit;
   background: currentColor;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--ds-motion-duration-fast) var(--ds-motion-easing-standard);
+}
+
+/* A host with no border: the layer must stop at the element, not past it. */
+.ds-state-layer--flush::after {
+  inset: 0;
 }
 
 .ds-state-layer:hover::after {

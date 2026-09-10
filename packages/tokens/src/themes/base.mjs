@@ -9,7 +9,8 @@
  *
  * WHAT IS GENERATED (do not hand-write these — see THEME-ENGINE.md):
  *   color      → theme.bg.*, theme.fg.*, theme.border.*, theme.accent-role.*,
- *                theme.secondary-role.*, theme.tertiary-role.fg, theme.focus-ring
+ *                theme.secondary-role.*, theme.tertiary-role.fg, theme.focus-ring,
+ *                color.accent.* (the raw ramp too — step 600 is the seed)
  *   typography → font.size.*, type.<role>.{size,weight,line-height}
  *   radius     → radius.*
  *   motion     → motion.duration.*
@@ -35,7 +36,7 @@ export const baseTheme = defineTheme({
    * WCAG guarantees intact, which is the point of seeding rather than
    * picking. `cool` keeps a slight blue cast in the greys.
    */
-  color: { accent: "#2563EB", neutralStyle: "cool", contrast: "standard" },
+  color: { accent: "#1F7A5B", neutralStyle: "cool", contrast: "standard" },
 
   /**
    * base 14 / ratio 1.2 — the dense end of the range, which suits the
@@ -44,12 +45,12 @@ export const baseTheme = defineTheme({
   typography: {
     scale: { base: 14, ratio: 1.2 },
     body: {
-      family: "Market Sans",
+      family: "Google Sans",
       fallbacks:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     },
     code: {
-      family: "SF Mono",
+      family: "Google Sans Code",
       fallbacks: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
     },
   },

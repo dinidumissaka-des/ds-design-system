@@ -4,6 +4,7 @@ import { tokens } from "@ds/tokens";
 import { TokenDoc, FamilyDoc, ContrastPage, RecipeList } from "./token-docs.js";
 import { ComponentIndex, ComponentPage, contracts, contractsByName } from "./component-page.js";
 import { componentName, componentPage, hrefFor, parseLocation } from "./routing.js";
+import { AccentSwitcher, DEFAULT_ACCENT } from "./accent-switcher.js";
 import type { ComponentTab, Page } from "./routing.js";
 
 // One page per category, primitives and semantics merged into one flowing
@@ -79,7 +80,7 @@ function SwatchButton({
   return (
     <button
       type="button"
-      className="pg-swatch-button ds-state-layer"
+      className="pg-swatch-button ds-state-layer ds-state-layer--flush"
       onClick={() => onInspect(path)}
       aria-label={`Documentation for ${path}`}
     >
@@ -88,29 +89,80 @@ function SwatchButton({
   );
 }
 
+/**
+ * Read CSS custom properties off the document as they are *currently*
+ * resolved.
+ *
+ * The imported token object is the base theme's build output, so painting a
+ * swatch from it shows base's value no matter which brand is applied — which
+ * is how the Colors page came to show a blue accent ramp under a red brand.
+ * `color.accent.*` is generated from the accent seed, so its value depends on
+ * the theme in the DOM, and the only source that knows the applied value is
+ * the DOM itself.
+ *
+ * `revision` is what makes this re-read: the accent and the scheme both live
+ * in attributes on <html>, and changing an attribute fires no React update, so
+ * the caller passes the pair it just set.
+ */
+function useComputedVars(varNames: string[], revision: string): Record<string, string> {
+  const key = varNames.join(",");
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const computed = getComputedStyle(document.documentElement);
+    const next: Record<string, string> = {};
+    for (const name of varNames) {
+      const value = computed.getPropertyValue(name).trim();
+      if (value) next[name] = value.toLowerCase();
+    }
+    setValues(next);
+    // varNames is rebuilt each render, so the joined key stands in for it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, revision]);
+
+  return values;
+}
+
 function ColorRamp({
   title,
   ramp,
   basePath,
+  revision,
   onInspect,
 }: {
   title: string;
   ramp: Record<string, string>;
   basePath: string;
+  /** Changes whenever the applied accent or scheme does, to force a re-read. */
+  revision: string;
   onInspect: (path: string) => void;
 }) {
+  const steps = Object.keys(ramp);
+  const varFor = (step: string) => `--ds-${basePath.replaceAll(".", "-")}-${step}`;
+  const applied = useComputedVars(
+    steps.map(varFor),
+    revision
+  );
+
   return (
     <div>
       <div className="pg-ramp-title">{title}</div>
       <div className="pg-swatches">
-        {Object.entries(ramp).map(([step, hex]) => (
-          <SwatchButton key={step} path={`${basePath}.${step}`} onInspect={onInspect}>
-            <div className="pg-swatch" style={{ background: hex }} />
-            <div className="pg-swatch-name">
-              {step} · {hex}
-            </div>
-          </SwatchButton>
-        ))}
+        {steps.map((step) => {
+          const name = varFor(step);
+          // The built value is the fallback for the first paint, before the
+          // effect has read the applied one — never the thing displayed once
+          // the real value is known.
+          const shown = applied[name] ?? ramp[step] ?? "";
+          return (
+            <SwatchButton key={step} path={`${basePath}.${step}`} onInspect={onInspect}>
+              <div className="pg-swatch" style={{ background: `var(${name})` }} />
+              <div className="pg-swatch-name">
+                {step} · {shown}
+              </div>
+            </SwatchButton>
+          );
+        })}
       </div>
     </div>
   );
@@ -299,6 +351,9 @@ const radiusNames = ["none", "inner", "element", "container", "chat", "page", "p
 
 export function App() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  // Which of the five accent options is applied. The value is a theme slug,
+  // and setting it on the document is the entire switch — see accent-switcher.
+  const [accent, setAccent] = useState(DEFAULT_ACCENT);
   const [route, setRoute] = useState(() =>
     parseLocation(window.location.pathname, window.location.search)
   );
@@ -328,6 +383,15 @@ export function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.dataset.dsTheme = accent;
+  }, [accent]);
+
+  // Both the accent and the scheme are applied as attributes on <html>, which
+  // React does not observe. Anything that reads a *resolved* token value off
+  // the document re-reads when this changes.
+  const paintRevision = `${accent}:${theme}`;
 
   // The URL the app booted on may not be the one it landed on (an unknown path
   // falls back to the default page), so make the address bar agree with what is
@@ -368,13 +432,19 @@ export function App() {
     <div className="pg-app">
       <header className="pg-header">
         <h1>DS Playground</h1>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        >
-          {theme === "light" ? "Dark theme" : "Light theme"}
-        </Button>
+        <div className="pg-header-tools">
+          {/* The accent seed drives every generated colour token, so it sits
+              next to the scheme toggle: both re-theme the whole page, and
+              neither belongs to any one page's content. */}
+          <AccentSwitcher value={accent} scheme={theme} onChange={setAccent} />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            {theme === "light" ? "Dark theme" : "Light theme"}
+          </Button>
+        </div>
       </header>
 
       <div className="pg-layout">
@@ -431,25 +501,48 @@ export function App() {
 
         <main className="pg-main">
           {page === "color" && (
-            <section className="pg-section">
-              <h2>Color</h2>
-              <FamilyDoc path="color" />
-              <div className="pg-ramp-group">
-                <ColorRamp title="neutral" ramp={tokens.color.neutral} basePath="color.neutral" onInspect={setInspecting} />
-                <ColorRamp title="accent" ramp={tokens.color.accent} basePath="color.accent" onInspect={setInspecting} />
-                <ColorRamp title="success" ramp={tokens.color.success} basePath="color.success" onInspect={setInspecting} />
-                <ColorRamp title="warning" ramp={tokens.color.warning} basePath="color.warning" onInspect={setInspecting} />
-                <ColorRamp title="danger" ramp={tokens.color.danger} basePath="color.danger" onInspect={setInspecting} />
-                <ColorRamp title="data.categorical" ramp={tokens.color.data.categorical} basePath="color.data.categorical" onInspect={setInspecting} />
-                <ColorRamp title="data.blue" ramp={tokens.color.data.blue} basePath="color.data.blue" onInspect={setInspecting} />
-                <ColorRamp title="data.shamrock" ramp={tokens.color.data.shamrock} basePath="color.data.shamrock" onInspect={setInspecting} />
-                <ColorRamp title="data.orange" ramp={tokens.color.data.orange} basePath="color.data.orange" onInspect={setInspecting} />
-                <ColorRamp title="data.pink" ramp={tokens.color.data.pink} basePath="color.data.pink" onInspect={setInspecting} />
-                <ColorRamp title="data.purple" ramp={tokens.color.data.purple} basePath="color.data.purple" onInspect={setInspecting} />
-                <ColorRamp title="data.red" ramp={tokens.color.data.red} basePath="color.data.red" onInspect={setInspecting} />
-                <ColorRamp title="data.teal" ramp={tokens.color.data.teal} basePath="color.data.teal" onInspect={setInspecting} />
-                <ColorRamp title="data.yellow" ramp={tokens.color.data.yellow} basePath="color.data.yellow" onInspect={setInspecting} />
-                <ColorRamp title="data.gray" ramp={tokens.color.data.gray} basePath="color.data.gray" onInspect={setInspecting} />
+            <>
+              <section className="pg-section">
+                <h2>Color</h2>
+                <p className="pg-section-lede">
+                  Two layers, and the boundary between them is the point. Primitives are raw
+                  material — the same value in light and dark, so a component that reaches for one
+                  is broken in whichever scheme it was not designed in. Semantics are what
+                  components actually use, and the only family whose value changes with the theme.
+                  The data palette is the single documented exception.
+                </p>
+              </section>
+
+              <section className="pg-section">
+                <div className="pg-layer-head">
+                  <h3>Primitives</h3>
+                  <span className="pg-layer-tag">palette layer</span>
+                </div>
+                <FamilyDoc path="color" />
+                <div className="pg-ramp-group">
+                <ColorRamp title="neutral" ramp={tokens.color.neutral} basePath="color.neutral" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="accent" ramp={tokens.color.accent} basePath="color.accent" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="success" ramp={tokens.color.success} basePath="color.success" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="warning" ramp={tokens.color.warning} basePath="color.warning" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="danger" ramp={tokens.color.danger} basePath="color.danger" revision={paintRevision} onInspect={setInspecting} />
+                </div>
+                <p className="pg-note">
+                  <code>color.accent.*</code> is the one ramp generated from the theme's accent
+                  seed, so it moves with the brand; the rest are stated outright. Switch the accent
+                  above and watch which of these change.
+                </p>
+              </section>
+
+              <section className="pg-section">
+                <div className="pg-layer-head">
+                  <h3>Semantics</h3>
+                  <span className="pg-layer-tag pg-layer-tag--semantic">theme.* — use these</span>
+                </div>
+                <p className="pg-section-lede">
+                  One correct token per colour decision. If none of these fits, the theme needs a
+                  new semantic token rather than a reach into the palette above.
+                </p>
+                <div className="pg-ramp-group">
                 <SemanticSwatches title="bg" keys={Object.keys(tokens.theme.bg)} cssVarPrefix="bg" onInspect={setInspecting} />
                 <SemanticSwatches title="fg" keys={Object.keys(tokens.theme.fg)} cssVarPrefix="fg" onInspect={setInspecting} />
                 <SemanticSwatches
@@ -493,31 +586,88 @@ export function App() {
                   </div>
                 </div>
                 <ElevationSwatches title="elevation" keys={Object.keys(tokens.theme.elevation)} onInspect={setInspecting} />
-              </div>
-              <p className="pg-note">
-                theme-reactive semantics — try the toggle above. Click any swatch for its full
-                contract: what it is for, what it is not for, and its measured contrast.
-              </p>
-            </section>
+                </div>
+                <p className="pg-note">
+                  Theme-reactive — try the light/dark toggle and the accent options above. Click any
+                  swatch for its full contract: what it is for, what it is not for, and its measured
+                  contrast.
+                </p>
+              </section>
+
+              <section className="pg-section">
+                <div className="pg-layer-head">
+                  <h3>Data visualization</h3>
+                  <span className="pg-layer-tag pg-layer-tag--semantic">base layer</span>
+                </div>
+                <FamilyDoc path="color.data" />
+                <div className="pg-ramp-group">
+                <ColorRamp title="data.categorical" ramp={tokens.color.data.categorical} basePath="color.data.categorical" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.blue" ramp={tokens.color.data.blue} basePath="color.data.blue" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.shamrock" ramp={tokens.color.data.shamrock} basePath="color.data.shamrock" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.orange" ramp={tokens.color.data.orange} basePath="color.data.orange" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.pink" ramp={tokens.color.data.pink} basePath="color.data.pink" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.purple" ramp={tokens.color.data.purple} basePath="color.data.purple" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.red" ramp={tokens.color.data.red} basePath="color.data.red" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.teal" ramp={tokens.color.data.teal} basePath="color.data.teal" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.yellow" ramp={tokens.color.data.yellow} basePath="color.data.yellow" revision={paintRevision} onInspect={setInspecting} />
+                <ColorRamp title="data.gray" ramp={tokens.color.data.gray} basePath="color.data.gray" revision={paintRevision} onInspect={setInspecting} />
+                </div>
+                <p className="pg-note">
+                  Scheme-independent like the primitives, but unlike them these are meant to be used
+                  directly — a series colour is series identity, not a theme decision.
+                </p>
+              </section>
+            </>
           )}
 
           {page === "spacing" && (
-            <section className="pg-section">
-              <h2>Spacing</h2>
-              <FamilyDoc path="space" />
-              <div className="pg-bars-group">
-                <SpaceBars title="space" items={spacePrimitives} />
-                <SpaceBars title="space.gap" items={Object.entries(tokens.space.gap)} />
-                <SpaceBars title="space.stack" items={Object.entries(tokens.space.stack)} />
-                <SpaceBars title="space.padding" items={Object.entries(tokens.space.padding)} />
-                <SpaceBars
-                  title="space.control.padding-inline"
-                  items={Object.entries(tokens.space.control["padding-inline"])}
-                />
-                <SpaceBars title="space.page" items={Object.entries(tokens.space.page)} />
-              </div>
-              <p className="pg-note">space.section (single value) = {tokens.space.section}</p>
-            </section>
+            <>
+              <section className="pg-section">
+                <h2>Spacing</h2>
+                <FamilyDoc path="space" />
+                <p className="pg-section-lede">
+                  One family, two ways in. Unlike colour — where reaching into the palette is a
+                  bug — a raw step is a legitimate choice here. The roles are simply the better one
+                  when a role names the situation you are in.
+                </p>
+              </section>
+
+              <section className="pg-section">
+                <div className="pg-layer-head">
+                  <h3>Scale</h3>
+                  <span className="pg-layer-tag pg-layer-tag--neutral">raw steps</span>
+                </div>
+                <p className="pg-section-lede">
+                  The base-4 scale every role below is built from. Use a step directly when no role
+                  names what you are spacing.
+                </p>
+                <div className="pg-bars-group">
+                  <SpaceBars title="space" items={spacePrimitives} />
+                </div>
+              </section>
+
+              <section className="pg-section">
+                <div className="pg-layer-head">
+                  <h3>Named roles</h3>
+                  <span className="pg-layer-tag pg-layer-tag--semantic">prefer these</span>
+                </div>
+                <p className="pg-section-lede">
+                  Each of these names a spacing situation, so it survives a change to the scale
+                  underneath it.
+                </p>
+                <div className="pg-bars-group">
+                  <SpaceBars title="space.gap" items={Object.entries(tokens.space.gap)} />
+                  <SpaceBars title="space.stack" items={Object.entries(tokens.space.stack)} />
+                  <SpaceBars title="space.padding" items={Object.entries(tokens.space.padding)} />
+                  <SpaceBars
+                    title="space.control.padding-inline"
+                    items={Object.entries(tokens.space.control["padding-inline"])}
+                  />
+                  <SpaceBars title="space.page" items={Object.entries(tokens.space.page)} />
+                </div>
+                <p className="pg-note">space.section (single value) = {tokens.space.section}</p>
+              </section>
+            </>
           )}
 
           {page === "radius" && (

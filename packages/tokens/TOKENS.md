@@ -65,7 +65,7 @@ These are the only color and elevation tokens a component may use. Each one is t
 
 ### `theme.accent-role.bg`
 
-`var(--ds-theme-accent-role-bg)` · light `#0055D9` · dark `#C0C1FF`
+`var(--ds-theme-accent-role-bg)` · light `#006E4A` · dark `#5EDCAD`
 
 Filled accent background for the single highest-priority action in a view.
 
@@ -96,7 +96,7 @@ Filled accent background for the single highest-priority action in a view.
 
 ### `theme.accent-role.fg`
 
-`var(--ds-theme-accent-role-fg)` · light `#0055D9` · dark `#C0C1FF`
+`var(--ds-theme-accent-role-fg)` · light `#006E4A` · dark `#5EDCAD`
 
 Accent-colored text for a link or a text-only action.
 
@@ -110,7 +110,7 @@ Accent-colored text for a link or a text-only action.
 
 ### `theme.accent-role.subtle`
 
-`var(--ds-theme-accent-role-subtle)` · light `#E1DFFF` · dark `#002A87`
+`var(--ds-theme-accent-role-subtle)` · light `#7CF9C8` · dark `#003D1D`
 
 A tinted, low-saturation accent background that carries text safely.
 
@@ -125,7 +125,7 @@ A tinted, low-saturation accent background that carries text safely.
 
 ### `theme.bg.canvas`
 
-`var(--ds-theme-bg-canvas)` · light `#F0F0F9` · dark `#111018`
+`var(--ds-theme-bg-canvas)` · light `#E8F3EE` · dark `#07130E`
 
 The page's own background, behind every surface.
 
@@ -152,7 +152,7 @@ body { background: var(--ds-theme-bg-canvas); color: var(--ds-theme-fg-primary);
 
 ### `theme.bg.surface`
 
-`var(--ds-theme-bg-surface)` · light `#FCFCFF` · dark `#1B1B22`
+`var(--ds-theme-bg-surface)` · light `#F3FFF9` · dark `#151D1A`
 
 A raised surface sitting on top of the canvas — the default background for any container with an edge.
 
@@ -169,7 +169,7 @@ A raised surface sitting on top of the canvas — the default background for any
 
 ### `theme.bg.subtle`
 
-`var(--ds-theme-bg-subtle)` · light `#F0F0F9` · dark `#1B1B22`
+`var(--ds-theme-bg-subtle)` · light `#E8F3EE` · dark `#151D1A`
 
 A quiet, faintly recessed or striped background — one step of emphasis below a surface, without reading as an interactive control.
 
@@ -186,7 +186,7 @@ A quiet, faintly recessed or striped background — one step of emphasis below a
 
 ### `theme.bg.muted`
 
-`var(--ds-theme-bg-muted)` · light `#E2E2EB` · dark `#303037`
+`var(--ds-theme-bg-muted)` · light `#DAE5E0` · dark `#29322E`
 
 The most recessed background — an inset well, a track, or a skeleton-loading placeholder.
 
@@ -206,7 +206,7 @@ The most recessed background — an inset well, a track, or a skeleton-loading p
 
 ### `theme.border.default`
 
-`var(--ds-theme-border-default)` · light `#1B1B221A` · dark `#F0F0F91A`
+`var(--ds-theme-border-default)` · light `#151D1A1A` · dark `#E8F3EE1A`
 
 The standard, low-contrast divider and card outline.
 
@@ -223,7 +223,7 @@ The standard, low-contrast divider and card outline.
 
 ### `theme.border.strong`
 
-`var(--ds-theme-border-strong)` · light `#908F9D` · dark `#676774`
+`var(--ds-theme-border-strong)` · light `#84958D` · dark `#5C6C64`
 
 A higher-contrast border for elements that need to read as interactive or as a boundary the eye should stop at.
 
@@ -276,7 +276,7 @@ Shadow for a surface that takes over the screen.
 
 ### `theme.fg.primary`
 
-`var(--ds-theme-fg-primary)` · light `#1B1B22` · dark `#E2E2EB`
+`var(--ds-theme-fg-primary)` · light `#151D1A` · dark `#DAE5E0`
 
 The default, highest-emphasis text and icon color.
 
@@ -288,7 +288,7 @@ The default, highest-emphasis text and icon color.
 
 ### `theme.fg.secondary`
 
-`var(--ds-theme-fg-secondary)` · light `#464652` · dark `#AAAAB8`
+`var(--ds-theme-fg-secondary)` · light `#3B4A43` · dark `#9EAFA7`
 
 Lower-emphasis text — supporting copy that should not compete with primary content.
 
@@ -300,7 +300,7 @@ Lower-emphasis text — supporting copy that should not compete with primary con
 
 ### `theme.fg.muted`
 
-`var(--ds-theme-fg-muted)` · light `#5E5D6A` · dark `#908F9D`
+`var(--ds-theme-fg-muted)` · light `#52625B` · dark `#84958D`
 
 The lowest-emphasis foreground — placeholders and decorative icons only.
 
@@ -317,7 +317,7 @@ The lowest-emphasis foreground — placeholders and decorative icons only.
 
 ### `theme.fg.on-accent`
 
-`var(--ds-theme-fg-on-accent)` · light `#FFFFFF` · dark `#002A87`
+`var(--ds-theme-fg-on-accent)` · light `#FFFFFF` · dark `#003D1D`
 
 White text/icon color for use on a filled, saturated role background.
 
@@ -398,7 +398,7 @@ Tinted danger background that carries text at large sizes; use theme.fg.primary 
 
 ### `theme.secondary-role.bg`
 
-`var(--ds-theme-secondary-role-bg)` · light `#FCFCFF` · dark `#1B1B22`
+`var(--ds-theme-secondary-role-bg)` · light `#F3FFF9` · dark `#151D1A`
 
 Background for the secondary (outlined) button and similar lower-priority filled controls.
 
@@ -414,7 +414,7 @@ Background for the secondary (outlined) button and similar lower-priority filled
 
 ### `theme.secondary-role.fg`
 
-`var(--ds-theme-secondary-role-fg)` · light `#1B1B22` · dark `#E2E2EB`
+`var(--ds-theme-secondary-role-fg)` · light `#151D1A` · dark `#DAE5E0`
 
 Text/icon color for content on theme.secondary-role.bg.
 
@@ -422,7 +422,7 @@ Text/icon color for content on theme.secondary-role.bg.
 
 ### `theme.secondary-role.border`
 
-`var(--ds-theme-secondary-role-border)` · light `#908F9D` · dark `#676774`
+`var(--ds-theme-secondary-role-border)` · light `#84958D` · dark `#5C6C64`
 
 Border for the secondary (outlined) button and similar controls.
 
@@ -432,7 +432,7 @@ Border for the secondary (outlined) button and similar controls.
 
 ### `theme.tertiary-role.fg`
 
-`var(--ds-theme-tertiary-role-fg)` · light `#0055D9` · dark `#C0C1FF`
+`var(--ds-theme-tertiary-role-fg)` · light `#006E4A` · dark `#5EDCAD`
 
 Text color for the lowest-emphasis (tertiary/text) button variant — same hue as accent-role.fg, kept as its own role so a future rebrand can diverge them.
 
@@ -448,7 +448,7 @@ Text color for the lowest-emphasis (tertiary/text) button variant — same hue a
 
 ### `theme.focus-ring`
 
-`var(--ds-theme-focus-ring)` · light `#3A6DF7` · dark `#9CA3FF`
+`var(--ds-theme-focus-ring)` · light `#008960` · dark `#3DC092`
 
 The keyboard focus indicator color, always used with focus.ring-width and focus.ring-offset.
 
@@ -472,7 +472,7 @@ Raw ramps. Except `color.data.*`, they do not change between themes, so a compon
 
 ### `color`
 
-Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from the underlying design system. Theme-independent — do not use directly in a component.
+Raw hue ramps, 50 → 950. `color.accent.*` is generated from the theme's accent seed, so it re-tones per brand; neutral/success/warning/danger are stated outright and do not. Every ramp is identical in light and dark — do not use any of them directly in a component.
 
 **Use for**
 
@@ -480,7 +480,8 @@ Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from t
 
 **Do not use for**
 
-- Direct use in components — these values are identical in both themes, so a component using them is unreadable in one of them.
+- Direct use in components — a ramp step is the same value in both schemes, so a component using one is unreadable in one of them.
+- Treating color.accent.* as a fixed palette — it follows the brand's accent seed, so its value depends on which theme is applied.
 
 **Use instead**
 
@@ -492,6 +493,7 @@ Raw hue ramps (neutral/accent/success/warning/danger, 50 → 950) sourced from t
 | Role fill, text, or tint | `theme.accent-role.bg, theme.success-role.bg, theme.warning-role.bg, or theme.danger-role.bg (and each role's .fg / .subtle)` |
 
 > Tonal ranges, for orientation only — these are not token names: 50-100 backgrounds (light), 200-300 borders (light), 400-500 low-emphasis text, 600-700 role fills and secondary text (light) / borders (dark), 800-950 primary text (light) / backgrounds and role subtles (dark).
+> color.accent.* is generated by expandColorScale from the seed's hue, with the ramp's tone, chroma and hue-drift curve held fixed — step 600 is the seed itself. A theme that states no accent keeps the ramp declared in src/primitives/color.json instead.
 
 ## Base scales
 
@@ -579,13 +581,13 @@ Focus-ring geometry. Always used together with theme.focus-ring.
 
 ### `font`
 
-Typography primitives. Sizes are generated from the theme's {base, ratio} seed; family, weight and letter-spacing are stated, because no ratio can produce them.
+Typography primitives. Sizes are generated from the theme's {base, ratio} seed; weight and letter-spacing are stated, because no ratio can produce them. The families here are the system fallback — a theme's typography seed supplies the actual typeface and overrides them.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
-| `family.sans` | `var(--ds-font-family-sans)` | `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | The system's default UI typeface. |
-| `family.mono` | `var(--ds-font-family-mono)` | `'SF Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | Monospace, for code and tabular figures. |
-| `family.heading` | `var(--ds-font-family-heading)` | `'Market Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | Heading typeface. Falls back to the body family when a theme names no separate one. |
+| `family.sans` | `var(--ds-font-family-sans)` | `'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | The UI typeface, supplied by the theme's typography.body seed. The primitives layer underneath holds only a brand-neutral system stack, for a theme that names no family — a brand font is never restated there. |
+| `family.mono` | `var(--ds-font-family-mono)` | `'Google Sans Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | The monospace typeface, supplied by the theme's typography.code seed. As with family.sans, the primitive underneath is a brand-neutral fallback stack. |
+| `family.heading` | `var(--ds-font-family-heading)` | `'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | Heading typeface, from the theme's typography.heading seed. Falls back to the body family when a theme names no separate one. |
 | `weight.regular` | `var(--ds-font-weight-regular)` | `400` | Default text weight. |
 | `weight.medium` | `var(--ds-font-weight-medium)` | `500` | One step up — the label role. |
 | `weight.semibold` | `var(--ds-font-weight-semibold)` | `600` | Emphasis weight — headings and control text. |
@@ -722,17 +724,34 @@ Inset box-shadow scale for validation/selection strokes, one per role plus a neu
 
 ### `size`
 
-Interactive control sizing.
+Control heights, and icon sizes — one relative step that follows text, plus fixed steps for standalone glyphs.
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
 | `control.sm` | `var(--ds-size-control-sm)` | `28px` | Compact control height, e.g. a dense table's inline actions. |
 | `control.md` | `var(--ds-size-control-md)` | `32px` | The default control height for buttons and inputs. |
 | `control.lg` | `var(--ds-size-control-lg)` | `36px` | A prominent, standalone control. |
+| `icon.text` | `var(--ds-size-icon-text)` | `1.15em` | An icon sized from the text it sits with — 1.15x the inherited font-size. The default for any icon next to a label. |
+| `icon.xs` | `var(--ds-size-icon-xs)` | `12px` | Fixed 12px, for a glyph in a table cell or badge where no text sets the scale. |
+| `icon.sm` | `var(--ds-size-icon-sm)` | `16px` | Fixed 16px — what icon.text resolves to at the default control text. |
+| `icon.md` | `var(--ds-size-icon-md)` | `20px` | Fixed 20px, for a standalone icon-only control. |
+| `icon.lg` | `var(--ds-size-icon-lg)` | `24px` | Fixed 24px. Lucide's native size, so it renders unscaled. |
 
 **Use for**
 
 - height (and usually min-width) of buttons, inputs, and other controls, via size.control.*.
+- width and height of an icon that sits with text, via size.icon.text — it follows whatever font-size it lands in, so it needs no per-control choice.
+- width and height of a standalone glyph with no text to size from, via size.icon.xs / .sm / .md / .lg.
+
+**Do not use for**
+
+- Container, avatar or media dimensions — the fixed icon steps stop at 24px because that is the largest an icon gets; past it a graphic is illustration, not iconography.
+- Spacing of any kind. Distance between things is space.*; this scale is the size of the things.
+- A fixed step for an icon that has text beside it — it will stop matching the moment that text changes size. That is what size.icon.text is for.
+
+> size.icon.text is 1.15em: an icon reads at the same visual weight as the text beside it at about 1.15x its font-size, because a glyph fills less of its box than a letterform does. At this system's control text (14px) it computes to 16.1px, effectively the size.icon.sm step — so the relative and fixed scales agree at the default and diverge only where the text does.
+> Control size and text size are independent here: size.control.* changes the box, while a control's text stays at type.control.size.md across all three. So an icon inside a control does not change size with the control either — it follows the text, which did not move.
+> The fixed steps are a 4px arithmetic scale, 12 through 24, for a glyph with no text context to inherit from: a status dot in a table cell, an icon-only control whose label is an aria-label rather than text.
 
 ### `space`
 
@@ -855,12 +874,12 @@ The usable typography scale. Each role carries a matched size, weight and line-h
 | `display-3.size` | `var(--ds-type-display-3-size)` | `1.8125rem` | Display 3 size — above h1. |
 | `display-3.weight` | `var(--ds-type-display-3-weight)` | `400` | Display 3 weight. |
 | `display-3.line-height` | `var(--ds-type-display-3-line-height)` | `1.3793` | Display 3 line-height. |
-| `control.size.sm` | `var(--ds-type-control-size-sm)` | `0.75rem` | Text size inside a size.control.sm control. |
-| `control.size.md` | `var(--ds-type-control-size-md)` | `0.875rem` | Text size inside a size.control.md control. |
-| `control.size.lg` | `var(--ds-type-control-size-lg)` | `1.0625rem` | Text size inside a size.control.lg control. |
-| `control.line-height.sm` | `var(--ds-type-control-line-height-sm)` | `1.4286` | Line-height inside a size.control.sm control. |
-| `control.line-height.md` | `var(--ds-type-control-line-height-md)` | `1.4286` | Line-height inside a size.control.md control. |
-| `control.line-height.lg` | `var(--ds-type-control-line-height-lg)` | `1.3333` | Line-height inside a size.control.lg control. |
+| `control.size.sm` | `var(--ds-type-control-size-sm)` | `0.75rem` | Text size for a control that scales its text with its box. Note the button family deliberately does not — it sets control.size.md at every size — so this step has no consumer there. |
+| `control.size.md` | `var(--ds-type-control-size-md)` | `0.875rem` | Text size inside a control, and the button family's text size at all three control sizes: `size` changes the box, not the label. |
+| `control.size.lg` | `var(--ds-type-control-size-lg)` | `1.0625rem` | Text size for a control that scales its text with its box. As with control.size.sm, the button family does not use it. |
+| `control.line-height.sm` | `var(--ds-type-control-line-height-sm)` | `1.4286` | Line-height paired with control.size.sm, for a control that scales its text. |
+| `control.line-height.md` | `var(--ds-type-control-line-height-md)` | `1.4286` | Line-height inside a control, and the button family's line-height at all three sizes. |
+| `control.line-height.lg` | `var(--ds-type-control-line-height-lg)` | `1.3333` | Line-height paired with control.size.lg, for a control that scales its text. |
 | `control.weight` | `var(--ds-type-control-weight)` | `600` | Text weight inside any control. |
 | `tracking.display-1` | `var(--ds-type-tracking-display-1)` | `-0.92px` | Tightest tracking, for the largest display text. |
 | `tracking.display-2` | `var(--ds-type-tracking-display-2)` | `-0.72px` | Very tight tracking. |
@@ -873,7 +892,7 @@ The usable typography scale. Each role carries a matched size, weight and line-h
 - type.body.* for paragraph and default UI text.
 - type.heading.* for section/card headings.
 - type.label.* for uppercase eyebrow labels and form field labels.
-- type.control.size/.line-height/.weight for text inside a size.control.* sized control.
+- type.control.size/.line-height/.weight for text inside a control. Whether a component scales that text with its `size` prop is the component's decision, not something these steps impose — the button family holds text constant and varies only the box.
 - type.size.* when you need a raw size off the T-shirt scale without the rest of a role's styling.
 
 **Do not use for**
@@ -888,40 +907,41 @@ Ratios are measured from the resolved token values every build. A pairing listed
 
 | Foreground | Background | Level | Light | Dark |
 |---|---|---|---|---|
-| `theme.fg.primary` | `theme.bg.canvas` | AA-text | 15.11:1 | 14.68:1 |
-| `theme.fg.primary` | `theme.bg.surface` | AA-text | 16.72:1 | 13.30:1 |
-| `theme.fg.primary` | `theme.bg.subtle` | AA-text | 15.11:1 | 13.30:1 |
-| `theme.fg.primary` | `theme.bg.muted` | AA-text | 13.30:1 | 10.17:1 |
-| `theme.fg.primary` | `theme.accent-role.subtle` | AA-text | 13.21:1 | 9.70:1 |
-| `theme.fg.primary` | `theme.success-role.subtle` | AA-text | 16.36:1 | 11.58:1 |
-| `theme.fg.primary` | `theme.warning-role.subtle` | AA-text | 16.51:1 | 11.63:1 |
-| `theme.fg.primary` | `theme.danger-role.subtle` | AA-text | 15.65:1 | 12.54:1 |
-| `theme.fg.secondary` | `theme.bg.canvas` | AA-text | 8.21:1 | 8.24:1 |
-| `theme.fg.secondary` | `theme.bg.surface` | AA-text | 9.08:1 | 7.46:1 |
-| `theme.fg.secondary` | `theme.bg.subtle` | AA-text | 8.21:1 | 7.46:1 |
-| `theme.fg.secondary` | `theme.bg.muted` | AA-text | 7.22:1 | 5.71:1 |
-| `theme.fg.muted` | `theme.bg.canvas` | AA-text | 5.70:1 | 5.94:1 |
-| `theme.fg.muted` | `theme.bg.surface` | AA-text | 6.31:1 | 5.38:1 |
-| `theme.fg.muted` | `theme.bg.subtle` | AA-text | 5.70:1 | 5.38:1 |
-| `theme.fg.muted` | `theme.bg.muted` | AA-large | 5.02:1 | 4.12:1 |
-| `theme.accent-role.fg` | `theme.bg.canvas` | AA-text | 5.61:1 | 11.08:1 |
-| `theme.accent-role.fg` | `theme.bg.surface` | AA-text | 6.21:1 | 10.04:1 |
-| `theme.accent-role.fg` | `theme.accent-role.subtle` | AA-text | 4.91:1 | 7.32:1 |
-| `theme.tertiary-role.fg` | `theme.bg.canvas` | AA-text | 5.61:1 | 11.08:1 |
-| `theme.tertiary-role.fg` | `theme.bg.surface` | AA-text | 6.21:1 | 10.04:1 |
-| `theme.secondary-role.fg` | `theme.secondary-role.bg` | AA-text | 16.72:1 | 13.30:1 |
-| `theme.success-role.fg` | `theme.bg.canvas` | AA-text | 6.29:1 | 10.85:1 |
-| `theme.success-role.fg` | `theme.bg.surface` | AA-text | 6.96:1 | 9.83:1 |
+| `theme.fg.primary` | `theme.bg.canvas` | AA-text | 15.12:1 | 14.67:1 |
+| `theme.fg.primary` | `theme.bg.surface` | AA-text | 16.75:1 | 13.30:1 |
+| `theme.fg.primary` | `theme.bg.subtle` | AA-text | 15.12:1 | 13.30:1 |
+| `theme.fg.primary` | `theme.bg.muted` | AA-text | 13.30:1 | 10.23:1 |
+| `theme.fg.primary` | `theme.accent-role.subtle` | AA-text | 13.28:1 | 9.65:1 |
+| `theme.fg.primary` | `theme.success-role.subtle` | AA-text | 16.41:1 | 11.55:1 |
+| `theme.fg.primary` | `theme.warning-role.subtle` | AA-text | 16.56:1 | 11.60:1 |
+| `theme.fg.primary` | `theme.danger-role.subtle` | AA-text | 15.70:1 | 12.50:1 |
+| `theme.fg.secondary` | `theme.bg.canvas` | AA-text | 8.23:1 | 8.25:1 |
+| `theme.fg.secondary` | `theme.bg.surface` | AA-text | 9.12:1 | 7.48:1 |
+| `theme.fg.secondary` | `theme.bg.subtle` | AA-text | 8.23:1 | 7.48:1 |
+| `theme.fg.secondary` | `theme.bg.muted` | AA-text | 7.24:1 | 5.75:1 |
+| `theme.fg.muted` | `theme.bg.canvas` | AA-text | 5.68:1 | 6.01:1 |
+| `theme.fg.muted` | `theme.bg.surface` | AA-text | 6.29:1 | 5.45:1 |
+| `theme.fg.muted` | `theme.bg.subtle` | AA-text | 5.68:1 | 5.45:1 |
+| `theme.fg.muted` | `theme.bg.muted` | AA-large | 4.99:1 | 4.19:1 |
+| `theme.accent-role.fg` | `theme.bg.canvas` | AA-text | 5.55:1 | 11.11:1 |
+| `theme.accent-role.fg` | `theme.bg.surface` | AA-text | 6.15:1 | 10.07:1 |
+| `theme.accent-role.fg` | `theme.accent-role.subtle` | AA-text | 4.88:1 | 7.31:1 |
+| `theme.tertiary-role.fg` | `theme.bg.canvas` | AA-text | 5.55:1 | 11.11:1 |
+| `theme.tertiary-role.fg` | `theme.bg.surface` | AA-text | 6.15:1 | 10.07:1 |
+| `theme.secondary-role.fg` | `theme.secondary-role.bg` | AA-text | 16.75:1 | 13.30:1 |
+| `theme.accent-role.fg` | `theme.secondary-role.bg` | AA-text | 6.15:1 | 10.07:1 |
+| `theme.success-role.fg` | `theme.bg.canvas` | AA-text | 6.28:1 | 10.87:1 |
+| `theme.success-role.fg` | `theme.bg.surface` | AA-text | 6.95:1 | 9.86:1 |
 | `theme.success-role.fg` | `theme.success-role.subtle` | AA-text | 6.81:1 | 8.55:1 |
-| `theme.warning-role.fg` | `theme.bg.canvas` | AA-text | 6.26:1 | 11.32:1 |
-| `theme.warning-role.fg` | `theme.bg.surface` | AA-text | 6.92:1 | 10.26:1 |
+| `theme.warning-role.fg` | `theme.bg.canvas` | AA-text | 6.24:1 | 11.35:1 |
+| `theme.warning-role.fg` | `theme.bg.surface` | AA-text | 6.92:1 | 10.29:1 |
 | `theme.warning-role.fg` | `theme.warning-role.subtle` | AA-text | 6.84:1 | 8.97:1 |
-| `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 5.71:1 | 6.83:1 |
-| `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.32:1 | 6.19:1 |
+| `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 5.70:1 | 6.85:1 |
+| `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.31:1 | 6.21:1 |
 | `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-large | 5.91:1 | 5.84:1 |
-| `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 6.36:1 | 7.32:1 |
-| `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.94:1 | 8.19:1 |
-| `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 4.35:1 | 7.42:1 |
+| `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 6.31:1 | 7.31:1 |
+| `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.89:1 | 8.26:1 |
+| `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 4.31:1 | 7.49:1 |
 | `theme.danger-role.on` | `theme.danger-role.bg` | AA-text | 4.83:1 | 4.83:1 |
 | `theme.warning-role.on` | `theme.warning-role.bg` | AA-text | 8.31:1 | 8.31:1 |
 
@@ -970,13 +990,13 @@ The single highest-priority action in a view.
 |---|---|
 | background | `theme.accent-role.bg` |
 | color | `theme.fg.on-accent` |
-| height | `size.control.md` |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
 | padding-inline | `space.control.padding-inline.md` |
 | gap | `space.gap.xs` |
 | border-radius | `radius.element` |
-| font-size | `type.control.size.md` |
+| font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the label |
 | font-weight | `type.control.weight` |
-| line-height | `type.control.line-height.md` |
+| line-height | `type.control.line-height.md` — constant, as with font-size |
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
@@ -984,14 +1004,14 @@ The single highest-priority action in a view.
 
 ### button-secondary
 
-A supporting action shown next to a primary one.
+A supporting action shown next to a primary one. Its label is accent-toned rather than neutral, so the outlined button still reads as an action and not as a disabled box — the border alone carries very little at this fill.
 
 | Property | Token |
 |---|---|
 | background | `theme.secondary-role.bg` |
-| color | `theme.secondary-role.fg` |
+| color | `theme.accent-role.fg` |
 | border-color | `theme.secondary-role.border` |
-| height | `size.control.md` |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
 | border-radius | `radius.element` |
 | hover/press | compose the .ds-state-layer class |
 
@@ -1003,7 +1023,7 @@ An action that deletes or revokes something.
 |---|---|
 | background | `theme.danger-role.bg` |
 | color | `theme.fg.on-accent` |
-| height | `size.control.md` |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
 | border-radius | `radius.element` |
 | hover/press | compose the .ds-state-layer class |
 
@@ -1023,6 +1043,17 @@ A modal surface that takes over the screen.
 | gap between title, body, and footer | `space.stack.md` |
 | enter transition | `motion.modal.duration` with `motion.easing.enter` |
 | exit transition | `motion.modal.duration` with `motion.easing.exit` |
+
+### icon
+
+A glyph sized from the text around it, taking its colour from that text too.
+
+| Property | Token |
+|---|---|
+| width | `size.icon.text` — 1.15em, so it follows the inherited font-size. `size.icon.xs` / .sm / .md / .lg for a standalone glyph. |
+| height | same step as width; the scale is one number and the glyph is square |
+| stroke | currentColor — the icon inherits the colour of the text it sits in, so it needs no colour token of its own and cannot contradict its label |
+| flex-shrink | 0 — a glyph beside text must not be squeezed by it, which is a layout fact rather than a token |
 
 ### menu
 
@@ -1081,3 +1112,120 @@ A single-line input with a label, helper text, and validation states.
 | invalid ring | `theme.danger-role.ring` |
 | focus outline | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
 | gap between label, input, and helper | `space.stack.xs` |
+
+### toggle-button-group-attached
+
+The default, and what a segmented control is: the options are one question, so they close up into one bar and only the outer corners round.
+
+| Property | Token |
+|---|---|
+| gap | `space.0` |
+| inner corner border-radius | `radius.none` |
+| outer corner border-radius | `radius.element`, as logical corners so the bar flips in RTL |
+| collapsed shared border | negative margin of `border.1`, so two adjacent borders read as one stroke |
+| focused item stacking | raised above its neighbours so the focus ring is not clipped by the overlapping border — a stacking fix, not a token |
+| item height | `size.control.md` — set once on the group and pushed to every option, because a bar of options at two heights is ragged |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` — owned by the option, never drawn around the group |
+
+### toggle-button-group-spaced
+
+Options that belong together but read as separate controls — the right shape when they can wrap, since a broken bar reads as two controls.
+
+| Property | Token |
+|---|---|
+| gap | `space.gap.sm` |
+| item border-radius | `radius.element` — each option keeps the corners it sets for itself |
+| item height | `size.control.md` — set once on the group and pushed to every option, because a bar of options at two heights is ragged |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` — owned by the option, never drawn around the group |
+
+### toggle-button-secondary
+
+The off state of a toggle that has to read as a control on its own — identical to the secondary button, because an unpressed toggle is one.
+
+| Property | Token |
+|---|---|
+| background | `theme.secondary-role.bg` |
+| color | `theme.secondary-role.fg` |
+| border-color | `theme.secondary-role.border` |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
+| padding-inline | `space.control.padding-inline.md` |
+| gap | `space.gap.xs` |
+| border-radius | `radius.element` |
+| font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the label |
+| font-weight | `type.control.weight` |
+| line-height | `type.control.line-height.md` — constant, as with font-size |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
+| hover/press | compose the .ds-state-layer class — do not swap the background |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+
+### toggle-button-secondary-pressed
+
+The on state: a tint, not a fill. A saturated accent background reads as "the action to take", which is the wrong sentence for "a state you are in" — the same reason this component has no primary variant.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.accent-role.fg` |
+| border-color | `theme.accent-role.fg` — the border moves with the fill, so the pressed state is not carried by background alone |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
+| padding-inline | `space.control.padding-inline.md` |
+| gap | `space.gap.xs` |
+| border-radius | `radius.element` |
+| font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the label |
+| font-weight | `type.control.weight` |
+| line-height | `type.control.line-height.md` — constant, as with font-size |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
+| hover/press | compose the .ds-state-layer class — do not swap the background |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+
+### toggle-button-tertiary
+
+The off state for a toolbar of many toggles, where a border each would be visual noise.
+
+| Property | Token |
+|---|---|
+| background | none — no fill in the off state, so a row of toggles reads as one surface |
+| color | `theme.tertiary-role.fg` |
+| border-color | transparent — held so the box does not resize when the pressed state paints its border |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
+| padding-inline | `space.control.padding-inline.md` |
+| gap | `space.gap.xs` |
+| border-radius | `radius.element` |
+| font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the label |
+| font-weight | `type.control.weight` |
+| line-height | `type.control.line-height.md` — constant, as with font-size |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
+| hover/press | compose the .ds-state-layer class — do not swap the background |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+
+### toggle-button-tertiary-pressed
+
+The on state of a borderless toggle: the tint alone separates it from its unpressed neighbours.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.accent-role.fg` |
+| border-color | transparent — the tint is the cue; a border here would out-shout the secondary variant's pressed state |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes; this is the only thing `size` changes |
+| padding-inline | `space.control.padding-inline.md` |
+| gap | `space.gap.xs` |
+| border-radius | `radius.element` |
+| font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the label |
+| font-weight | `type.control.weight` |
+| line-height | `type.control.line-height.md` — constant, as with font-size |
+| transition-duration | `motion.interactive.duration` |
+| transition-timing-function | `motion.interactive.easing` |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
+| hover/press | compose the .ds-state-layer class — do not swap the background |
+| opacity (aria-disabled) | `state.disabled-opacity` |

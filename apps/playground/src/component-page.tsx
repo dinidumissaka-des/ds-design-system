@@ -11,8 +11,30 @@
 // refuses clicks, but only a real button can be clicked.
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Spinner } from "@ds/react";
-import type { ButtonGroupOrientation, ButtonSize, ButtonVariant } from "@ds/react";
+import { Button, ButtonGroup, Spinner, ToggleButton, ToggleButtonGroup } from "@ds/react";
+import type {
+  ButtonGroupOrientation,
+  ToggleButtonGroupSelectionMode,
+  ButtonSize,
+  ButtonVariant,
+  ToggleButtonSize,
+  ToggleButtonVariant,
+} from "@ds/react";
+import type { IconSize } from "@ds/icons";
+import {
+  Icon,
+  Settings,
+  X,
+  Trash2,
+  Download,
+  CircleAlert,
+  ChevronLeft,
+  ChevronRight,
+  Bold,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+} from "@ds/icons";
 import { COMPONENT_TABS, componentPage, hrefFor } from "./routing.js";
 import type { ComponentTab, Page } from "./routing.js";
 import contractsJson from "../../../docs/components/contracts.json";
@@ -73,80 +95,14 @@ export function StatusPill({ artifact }: { artifact?: { state: string; version?:
   );
 }
 
-// ---- Live demos ----------------------------------------------------------
-// Keyed by registry name, and only for components that actually exist. A
-// component with no entry here renders its contract without a preview rather
-// than a mocked-up one — a fake <Dialog> on this page would be exactly the
-// invented API the registry exists to prevent.
-
-const variants = ["primary", "secondary", "tertiary", "destructive"] as const;
-const sizes = ["sm", "md", "lg"] as const;
+// ---- Live demo -----------------------------------------------------------
+// Only for a component with no interactive spec of its own. Everything else
+// is shown by the showcase panel at the top of the Overview and by the
+// example cards below it, both driven by the contract — so the hand-written
+// grids that used to live here for Button, ButtonGroup, Spinner and
+// ToggleButton were unreachable duplicates of that, and are gone.
 
 const DEMOS: Record<string, () => ReactNode> = {
-  button: () => (
-    <>
-      {sizes.map((size) => (
-        <div className="pg-row" key={size}>
-          <span className="pg-row-label">{size}</span>
-          {variants.map((variant) => (
-            <Button key={variant} variant={variant} size={size}>
-              {variant.charAt(0).toUpperCase() + variant.slice(1)}
-            </Button>
-          ))}
-        </div>
-      ))}
-      <div className="pg-row">
-        <span className="pg-row-label">states</span>
-        <Button disabled>Disabled</Button>
-        <Button loading>Saving…</Button>
-        <Button variant="secondary" iconOnly aria-label="Settings">
-          ⚙
-        </Button>
-      </div>
-    </>
-  ),
-  spinner: () => (
-    <>
-      <div className="pg-row">
-        <span className="pg-row-label">alone</span>
-        <Spinner label="Loading" />
-      </div>
-      <div className="pg-row">
-        <span className="pg-row-label">in a button</span>
-        <Button loading>Saving…</Button>
-      </div>
-    </>
-  ),
-  "button-group": () => (
-    <>
-      <div className="pg-row">
-        <span className="pg-row-label">spaced</span>
-        <ButtonGroup label="Form actions">
-          <Button variant="secondary">Cancel</Button>
-          <Button>Save changes</Button>
-        </ButtonGroup>
-      </div>
-      <div className="pg-row">
-        <span className="pg-row-label">attached</span>
-        <ButtonGroup label="Pagination" attached>
-          <Button variant="secondary" iconOnly aria-label="Previous page">
-            ‹
-          </Button>
-          <Button variant="secondary" iconOnly aria-label="Next page">
-            ›
-          </Button>
-        </ButtonGroup>
-      </div>
-      <div className="pg-row">
-        <span className="pg-row-label">vertical</span>
-        <ButtonGroup label="Layer actions" orientation="vertical" attached>
-          <Button variant="secondary">Bring forward</Button>
-          <Button variant="secondary">Send backward</Button>
-        </ButtonGroup>
-      </div>
-    </>
-  ),
-  // CSS-only: the class composed onto a host element, which is the whole API.
   "state-layer": () => (
     <div className="pg-row">
       <span className="pg-row-label">hover / press</span>
@@ -156,6 +112,298 @@ const DEMOS: Record<string, () => ReactNode> = {
     </div>
   ),
 };
+
+// ---- Examples -------------------------------------------------------------
+// One card per entry in the contract's `usage` array. The title, the caption,
+// the description and the code all come from the contract — the only thing
+// written here is the live render, because a JSX string in a JSON file cannot
+// be executed and this app ships no runtime compiler.
+//
+// Keyed by component name, then by the contract's `case` text verbatim. A case
+// with no entry still gets a card; it just shows the code without a specimen,
+// which is the honest outcome rather than a mocked-up one.
+
+const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
+  button: {
+    "Primary action with async work": () => <SaveExample />,
+    "Destructive action in a confirmation": () => (
+      <>
+        <Button variant="secondary">Keep project</Button>
+        <Button variant="destructive">Delete project</Button>
+      </>
+    ),
+    "Icon-only row action": () => (
+      <Button variant="tertiary" size="sm" iconOnly aria-label="Remove row">
+        <Icon icon={X} size="sm" />
+      </Button>
+    ),
+  },
+
+  "button-group": {
+    "Two actions at the end of a form": () => (
+      <ButtonGroup label="Form actions">
+        <Button variant="secondary">Cancel</Button>
+        <Button>Save changes</Button>
+      </ButtonGroup>
+    ),
+    "Attached pager": () => (
+      <ButtonGroup label="Pagination" attached>
+        <Button variant="secondary" iconOnly aria-label="Previous page">
+          <Icon icon={ChevronLeft} />
+        </Button>
+        <Button variant="secondary" iconOnly aria-label="Next page">
+          <Icon icon={ChevronRight} />
+        </Button>
+      </ButtonGroup>
+    ),
+    "Named by a heading that is already on screen": () => (
+      <div>
+        <h4 id="example-export-actions" className="pg-example-heading">
+          Export
+        </h4>
+        <ButtonGroup labelledBy="example-export-actions">
+          <Button variant="secondary">CSV</Button>
+          <Button variant="secondary">JSON</Button>
+        </ButtonGroup>
+      </div>
+    ),
+    "Vertical rail": () => (
+      <ButtonGroup label="Layer actions" orientation="vertical" attached>
+        <Button variant="secondary">Bring forward</Button>
+        <Button variant="secondary">Send backward</Button>
+      </ButtonGroup>
+    ),
+  },
+
+  icon: {
+    "Inside an icon-only button": () => (
+      <Button iconOnly aria-label="Delete row">
+        <Icon icon={Trash2} />
+      </Button>
+    ),
+    "Beside a text label": () => (
+      <Button>
+        <Icon icon={Download} />
+        Export CSV
+      </Button>
+    ),
+    "Carrying meaning on its own": () => (
+      <Icon icon={CircleAlert} size="xs" label="Needs review" />
+    ),
+  },
+
+  spinner: {
+    "Standalone region loading": () => <Spinner label="Loading results" />,
+    "Inside a button": () => <Button loading>Saving…</Button>,
+  },
+
+  "toggle-button-group": {
+    "Single choice — a segmented control": () => <AlignGroupExample />,
+    "Independent states that sit together": () => <StyleGroupExample />,
+    "A filter that can be cleared": () => <FilterGroupExample />,
+  },
+
+  "toggle-button": {
+    "A formatting toggle in a toolbar": () => <BoldToggleExample />,
+    "A toggle whose change has to reach a server": () => <StarToggleExample />,
+    "Local-only state nothing else reads": () => (
+      <ToggleButton defaultPressed>Show detail</ToggleButton>
+    ),
+  },
+};
+
+/**
+ * `loading` is the whole point of this example, and a button frozen in the
+ * loading state demonstrates the spinner but not the contract — that
+ * activation is refused while the write is in flight. Clicking it actually
+ * runs a fake save.
+ */
+function SaveExample() {
+  const [saving, setSaving] = useState(false);
+  return (
+    <Button
+      loading={saving}
+      onClick={() => {
+        setSaving(true);
+        window.setTimeout(() => setSaving(false), 1400);
+      }}
+    >
+      Save changes
+    </Button>
+  );
+}
+
+function BoldToggleExample() {
+  const [bold, setBold] = useState(true);
+  return (
+    <ToggleButton
+      variant="tertiary"
+      iconOnly
+      aria-label="Bold"
+      pressed={bold}
+      onPressedChange={setBold}
+    >
+      <Icon icon={Bold} />
+    </ToggleButton>
+  );
+}
+
+/** Held in `loading` deliberately: the contract says the state must not settle until the write lands. */
+function StarToggleExample() {
+  return (
+    <ToggleButton pressed={false} loading>
+      Star
+    </ToggleButton>
+  );
+}
+
+/** Single mode: a radiogroup — one tab stop, arrows move and select. */
+function AlignGroupExample() {
+  const [align, setAlign] = useState<string | null>("left");
+  return (
+    <ToggleButtonGroup
+      label="Text alignment"
+      value={align}
+      onValueChange={(next) => setAlign(next as string | null)}
+    >
+      <ToggleButton value="left" iconOnly aria-label="Align left">
+        <Icon icon={AlignLeft} />
+      </ToggleButton>
+      <ToggleButton value="center" iconOnly aria-label="Align center">
+        <Icon icon={AlignCenter} />
+      </ToggleButton>
+      <ToggleButton value="right" iconOnly aria-label="Align right">
+        <Icon icon={AlignRight} />
+      </ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+
+/** Multiple mode: independent toggles, each keeping its own tab stop. */
+function StyleGroupExample() {
+  const [styles, setStyles] = useState<string[]>(["bold"]);
+  return (
+    <ToggleButtonGroup
+      label="Text style"
+      selectionMode="multiple"
+      value={styles}
+      onValueChange={(next) => setStyles(next as string[])}
+    >
+      <ToggleButton value="bold">Bold</ToggleButton>
+      <ToggleButton value="italic">Italic</ToggleButton>
+      <ToggleButton value="underline">Underline</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+
+/** Single mode plus `deselectable`: clicking the selected option clears it. */
+function FilterGroupExample() {
+  const [status, setStatus] = useState<string | null>("open");
+  return (
+    <ToggleButtonGroup
+      label="Status filter"
+      deselectable
+      value={status}
+      onValueChange={(next) => setStatus(next as string | null)}
+    >
+      <ToggleButton value="open">Open</ToggleButton>
+      <ToggleButton value="closed">Closed</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+
+/** A case the contract includes to say "don't" — its notes open with exactly that. */
+const isCounterExample = (item: Contract["usage"][number]) =>
+  (item.notes ?? "").trimStart().toLowerCase().startsWith("don't");
+
+/**
+ * Inline code spans in contract prose.
+ *
+ * The contracts are written in markdown-ish text — 15 of the 25 usage entries
+ * put prop names in backticks — so rendering the string raw leaked the source
+ * format onto the page as literal ` characters.
+ */
+function Prose({ text }: { text: string }) {
+  // split() with a capture group alternates literal, captured, literal…
+  const parts = text.split(/`([^`]+)`/g);
+  return (
+    <>
+      {parts.map((part, i) => (i % 2 === 1 ? <code key={i}>{part}</code> : part))}
+    </>
+  );
+}
+
+function ExampleCard({
+  contract,
+  item,
+  onNavigate,
+}: {
+  contract: Contract;
+  item: Contract["usage"][number];
+  onNavigate?: (page: Page, tab: ComponentTab) => void;
+}) {
+  const counter = isCounterExample(item);
+  const render = counter ? undefined : EXAMPLES[contract.name]?.[item.case];
+
+  return (
+    <article className={`pg-example${counter ? " pg-example--counter" : ""}`}>
+      <div className="pg-example-head">
+        <div className="pg-example-titleblock">
+          <div className="pg-example-titleline">
+            <span className="pg-example-title">
+              {contract.title} — {item.case}
+            </span>
+            {counter && <span className="pg-example-flag">don&rsquo;t</span>}
+          </div>
+
+          {/* Both halves of the contract's prose, directly under the title:
+              `when` is the situation that selects this pattern and `notes` is
+              what to watch out for in it. They used to be split between a
+              caption inside the stage and a tab panel below it, which put two
+              sentences about one example in two different places. */}
+          {item.when && (
+            <p className="pg-example-desc">
+              <Prose text={item.when} />
+            </p>
+          )}
+          {item.notes && (
+            <p className="pg-example-desc">
+              <Prose text={item.notes} />
+            </p>
+          )}
+        </div>
+
+        {/* Only for patterns worth trying. Sending someone to the playground to
+            reproduce a counter-example would be an odd invitation. */}
+        {!counter && onNavigate && (
+          <button
+            type="button"
+            className="pg-example-open"
+            onClick={() => onNavigate(componentPage(contract.name), "properties")}
+          >
+            Open in Playground
+          </button>
+        )}
+      </div>
+
+      <div className="pg-example-stage">
+        {render ? (
+          <div className="pg-example-render">{render()}</div>
+        ) : (
+          <p className="pg-note">
+            {counter
+              ? "Not rendered on purpose — showing it working would be the argument against it."
+              : contract.mode === "spec"
+                ? "Nothing to render yet — this is the approved API, with no code behind it."
+                : contract.mode === "css-only"
+                  ? "A class composed onto another component, so there is nothing standalone to show."
+                  : "No live specimen for this case."}
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
 
 // ---- Interactive props ---------------------------------------------------
 // The controls below are generated from the contract, not listed here: a union
@@ -174,7 +422,14 @@ interface Interactive {
   controls: string[];
   /** Editable children, for components that take them. Not a prop, so not in the contract. */
   slot?: { label: string; initial: string };
-  render: (state: DemoState) => ReactNode;
+  /**
+   * How the component renders for a bag of props. `set` is handed in for
+   * components that own state the user is supposed to change by using them —
+   * a toggle whose demo cannot be toggled is the mocked-up control this file
+   * exists to avoid, so the demo writes back to the same state the controls
+   * read.
+   */
+  render: (state: DemoState, set: (patch: DemoState) => void) => ReactNode;
   /**
    * Props the snippet must show that no control drives — the obligations a
    * contract puts on the caller, like the `aria-label` `iconOnly` requires.
@@ -185,6 +440,25 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  "toggle-button-group": {
+    controls: ["label", "selectionMode", "orientation", "size", "attached", "deselectable", "disabled"],
+    render: (state) => (
+      <ToggleButtonGroup
+        label={String(state.label || "Text alignment")}
+        selectionMode={state.selectionMode as ToggleButtonGroupSelectionMode}
+        orientation={state.orientation as ButtonGroupOrientation}
+        size={state.size as ToggleButtonSize}
+        attached={state.attached !== false}
+        deselectable={Boolean(state.deselectable)}
+        disabled={Boolean(state.disabled)}
+        defaultValue={state.selectionMode === "multiple" ? ["left"] : "left"}
+      >
+        <ToggleButton value="left">Left</ToggleButton>
+        <ToggleButton value="center">Center</ToggleButton>
+        <ToggleButton value="right">Right</ToggleButton>
+      </ToggleButtonGroup>
+    ),
+  },
   button: {
     controls: ["variant", "size", "disabled", "loading", "iconOnly"],
     slot: { label: "Children", initial: "Save changes" },
@@ -199,7 +473,7 @@ const INTERACTIVE: Record<string, Interactive> = {
         iconOnly={Boolean(state.iconOnly)}
         aria-label={state.iconOnly ? iconLabel(state) : undefined}
       >
-        {state.iconOnly ? "⚙" : String(state.children)}
+        {state.iconOnly ? <Icon icon={Settings} /> : String(state.children)}
       </Button>
     ),
   },
@@ -215,6 +489,40 @@ const INTERACTIVE: Record<string, Interactive> = {
         <Button variant="secondary">Save draft</Button>
         <Button>Publish</Button>
       </ButtonGroup>
+    ),
+  },
+  "toggle-button": {
+    controls: ["variant", "size", "pressed", "disabled", "loading", "iconOnly"],
+    slot: { label: "Children", initial: "Bold" },
+    implied: (state): Record<string, string> =>
+      state.iconOnly ? { "aria-label": iconLabel(state) } : {},
+    render: (state, set) => (
+      <ToggleButton
+        variant={state.variant as ToggleButtonVariant}
+        size={state.size as ToggleButtonSize}
+        pressed={Boolean(state.pressed)}
+        disabled={Boolean(state.disabled)}
+        loading={Boolean(state.loading)}
+        iconOnly={Boolean(state.iconOnly)}
+        aria-label={state.iconOnly ? iconLabel(state) : undefined}
+        // Writes back to the state the `pressed` checkbox reads, so using the
+        // demo and driving it from the controls stay in agreement.
+        onPressedChange={(next) => set({ pressed: next })}
+      >
+        {state.iconOnly ? <Icon icon={Bold} /> : String(state.children)}
+      </ToggleButton>
+    ),
+  },
+  icon: {
+    // `icon` itself is not a control: the value is a component, not something a
+    // select can offer. Settings stands in so the size steps are comparable.
+    controls: ["size", "label"],
+    render: (state) => (
+      <Icon
+        icon={Settings}
+        size={(state.size as IconSize) || "md"}
+        label={state.label ? String(state.label) : undefined}
+      />
     ),
   },
   spinner: {
@@ -265,7 +573,7 @@ function snippet(contract: Contract, spec: Interactive, state: DemoState): strin
 
   const open = `<${tag}${attrs.length ? " " + attrs.join(" ") : ""}`;
   if (!spec.slot) return `${open} />`;
-  const children = state.iconOnly ? "⚙" : String(state.children);
+  const children = state.iconOnly ? "<Icon icon={Settings} />" : String(state.children);
   return `${open}>${children}</${tag}>`;
 }
 
@@ -350,10 +658,12 @@ function PropsStage({
   contract,
   spec,
   state,
+  set,
 }: {
   contract: Contract;
   spec: Interactive;
   state: DemoState;
+  set: (patch: DemoState) => void;
 }) {
   const [showCode, setShowCode] = useState(false);
   const conflicts = activeConflicts(contract, state);
@@ -363,14 +673,14 @@ function PropsStage({
       <div className="pg-stage-canvas">
         <button
           type="button"
-          className="pg-stage-code-toggle ds-state-layer"
+          className="pg-stage-code-toggle ds-state-layer ds-state-layer--flush"
           aria-expanded={showCode}
           aria-label={showCode ? "Hide JSX" : "Show JSX"}
           onClick={() => setShowCode((open) => !open)}
         >
           &lt;/&gt;
         </button>
-        {spec.render(state)}
+        {spec.render(state, set)}
       </div>
 
       {showCode && <pre className="pg-code pg-stage-code">{snippet(contract, spec, state)}</pre>}
@@ -573,8 +883,40 @@ function ComponentTabs({
   );
 }
 
-function OverviewTab({ contract }: { contract: Contract }) {
+/**
+ * One live specimen. It owns its own state rather than taking a frozen bag of
+ * props, so a toggle in the variants grid is still a toggle you can press —
+ * the same reason the interactive stage is handed a setter.
+ */
+function Specimen({ spec, initial }: { spec: Interactive; initial: DemoState }) {
+  const [state, setState] = useState<DemoState>(initial);
+  return (
+    <div className="pg-showcase-item">
+      {spec.render(state, (patch) => setState((prev) => ({ ...prev, ...patch })))}
+    </div>
+  );
+}
+
+function OverviewTab({
+  contract,
+  onNavigate,
+}: {
+  contract: Contract;
+  onNavigate?: (page: Page, tab: ComponentTab) => void;
+}) {
   const demo = DEMOS[contract.name];
+  const spec = INTERACTIVE[contract.name];
+  const base = spec ? initialState(contract, spec) : null;
+
+  // The showcase's axis: `variant` when the component has one, otherwise its
+  // first union prop, taken from the contract in its own order. Per-prop
+  // breakdowns used to live on this tab too and were dropped — the Properties
+  // tab already lists every prop against its contract, so repeating variant,
+  // size and the boolean states here was three views of one thing.
+  const driven = (prop: ContractProp) => spec?.controls.includes(prop.name) ?? false;
+  const unionProps = contract.props.filter((p) => driven(p) && (p.values?.length ?? 0) > 1);
+  const showcaseProp = unionProps.find((p) => p.name === "variant") ?? unionProps[0];
+  const showcaseValues = showcaseProp?.values ?? [];
 
   return (
     <>
@@ -582,14 +924,38 @@ function OverviewTab({ contract }: { contract: Contract }) {
         <ModeNote contract={contract} />
       </section>
 
-      {demo && (
+      {spec && base && (
         <section className="pg-section">
-          <h3>Examples</h3>
+          {/* The showcase: one panel, the whole set of the component's headline
+              variants side by side at their default size. It answers "what is
+              this" in one look, before any of the guidance below breaks it
+              down. The component's description and status already sit in the
+              page head, so nothing is repeated here — the panel is only the
+              specimens. */}
+          <div className="pg-showcase">
+            {showcaseValues.length > 1 ? (
+              showcaseValues.map((value) => (
+                <Specimen
+                  key={value}
+                  spec={spec}
+                  initial={{ ...base, [showcaseProp!.name]: value }}
+                />
+              ))
+            ) : (
+              <Specimen spec={spec} initial={base} />
+            )}
+          </div>
+        </section>
+      )}
+
+      {!spec && demo && (
+        <section className="pg-section">
+          <h3>Live</h3>
           {demo()}
         </section>
       )}
 
-      {!demo && contract.mode === "spec" && (
+      {!demo && !spec && contract.mode === "spec" && (
         <section className="pg-section">
           <h3>Live</h3>
           <p className="pg-note">
@@ -600,15 +966,18 @@ function OverviewTab({ contract }: { contract: Contract }) {
 
       {contract.usage.length > 0 && (
         <section className="pg-section">
-          <h3>Use cases</h3>
-          {contract.usage.map((item) => (
-            <div className="pg-usage" key={item.case}>
-              <div className="pg-ramp-title">{item.case}</div>
-              {item.when && <p>{item.when}</p>}
-              {item.example && <pre className="pg-code">{item.example}</pre>}
-              {item.notes && <p className="pg-note">{item.notes}</p>}
-            </div>
-          ))}
+          <h3>Examples</h3>
+          <p className="pg-section-lede">Common configurations, variations, and states.</p>
+          <div className="pg-examples">
+            {contract.usage.map((item) => (
+              <ExampleCard
+                key={item.case}
+                contract={contract}
+                item={item}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
         </section>
       )}
 
@@ -710,7 +1079,12 @@ function PropertiesTab({ contract }: { contract: Contract }) {
     <>
       {spec && (
         <section className="pg-section">
-          <PropsStage contract={contract} spec={spec} state={state} />
+          <PropsStage
+            contract={contract}
+            spec={spec}
+            state={state}
+            set={(patch) => setState((prev) => ({ ...prev, ...patch }))}
+          />
         </section>
       )}
 
@@ -891,7 +1265,7 @@ export function ComponentPage({
         <ComponentTabs contract={contract} tab={tab} onNavigate={onNavigate} />
       </section>
 
-      {tab === "overview" && <OverviewTab contract={contract} />}
+      {tab === "overview" && <OverviewTab contract={contract} onNavigate={onNavigate} />}
       {tab === "properties" && <PropertiesTab contract={contract} />}
       {tab === "accessibility" && <AccessibilityTab contract={contract} />}
     </>

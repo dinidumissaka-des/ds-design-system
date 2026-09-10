@@ -26,3 +26,13 @@ Always — this is the only supported way to express interaction feedback in thi
 ```
 
 Add the class alongside the component's own; never write a competing `:hover` background rule. Feedback here is opacity-only by standing decision, which is why the role tokens carry no `bg-hover`/`bg-active` and why `ring.neutral` is deliberately unwired.
+
+### A host with no border
+
+The layer's default bleeds outward by border.default, so an unbordered host needs the opt-out or its tint sits a hairline proud of the element.
+
+```tsx
+<button className="ds-thing ds-state-layer ds-state-layer--flush">…</button>
+```
+
+The layer is an absolutely positioned pseudo-element, and `inset` on one resolves against the containing block's padding box — which excludes the border. At `inset: 0` the tint stopped a border-width short on every side, invisible under a filled background but plainly smaller on a host whose only fill is the layer itself. It now bleeds by border.default, since every bordered host in this system uses that width, and CSS gives no way to read a containing block's computed border-width. `--flush` restores `inset: 0` for hosts with none.

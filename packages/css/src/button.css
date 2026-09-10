@@ -4,9 +4,15 @@
   align-items: center;
   justify-content: center;
   gap: var(--ds-space-2);
-  border: 1px solid transparent;
+  border: var(--ds-border-default) solid transparent;
   border-radius: var(--ds-radius-element);
   font-family: var(--ds-font-family-sans);
+  /* One text size across all three control sizes. `size` changes the box the
+     label sits in, not the label — a large button is a bigger target for the
+     same action, not a louder sentence. It also means an icon inside, which is
+     sized from this font-size, does not move when the control does. */
+  font-size: var(--ds-type-control-size-md);
+  line-height: var(--ds-type-control-line-height-md);
   font-weight: var(--ds-type-control-weight);
   cursor: pointer;
   user-select: none;
@@ -26,22 +32,16 @@
 .ds-button--sm {
   height: var(--ds-size-control-sm);
   padding-inline: var(--ds-space-3);
-  font-size: var(--ds-type-control-size-sm);
-  line-height: var(--ds-type-control-line-height-sm);
 }
 
 .ds-button--md {
   height: var(--ds-size-control-md);
   padding-inline: var(--ds-space-4);
-  font-size: var(--ds-type-control-size-md);
-  line-height: var(--ds-type-control-line-height-md);
 }
 
 .ds-button--lg {
   height: var(--ds-size-control-lg);
   padding-inline: var(--ds-space-5);
-  font-size: var(--ds-type-control-size-lg);
-  line-height: var(--ds-type-control-line-height-lg);
 }
 
 /* Variants */
@@ -51,9 +51,11 @@
 }
 
 .ds-button--secondary {
-  background: var(--ds-theme-bg-surface);
-  color: var(--ds-theme-fg-primary);
-  border-color: var(--ds-theme-border-strong);
+  background: var(--ds-theme-secondary-role-bg);
+  /* Accent-toned, not neutral: at this fill the border carries almost nothing,
+     so a neutral label leaves the control reading as an inert box. */
+  color: var(--ds-theme-accent-role-fg);
+  border-color: var(--ds-theme-secondary-role-border);
 }
 
 .ds-button--tertiary {
@@ -95,6 +97,11 @@
 }
 
 /* Link button — button semantics, link appearance */
+.ds-link-button.ds-state-layer::after {
+  /* No border to bleed over, so the layer must stop at the element. */
+  inset: 0;
+}
+
 .ds-link-button {
   background: none;
   border: none;

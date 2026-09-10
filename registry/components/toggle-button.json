@@ -5,17 +5,36 @@
   "description": "A button that stays on: an on/off state the user sets directly, announced with aria-pressed.",
   "status": {
     "css": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "react": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "figma": {
       "state": "future"
     }
   },
-  "dependencies": ["button", "state-layer"],
-  "files": [],
+  "dependencies": [
+    "button",
+    "state-layer",
+    "spinner"
+  ],
+  "files": [
+    {
+      "source": "packages/css/src/toggle-button.css",
+      "target": "styles/toggle-button.css"
+    },
+    {
+      "source": "packages/react/src/toggle-button.tsx",
+      "target": "components/toggle-button.tsx"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
   "tier": "free",
   "behavior": {
     "primitive": "getToggleButtonProps",
@@ -49,7 +68,6 @@
   },
   "props": {
     "pressed": {
-      "type": "boolean",
       "summary": "Whether the toggle is currently on. Makes the component controlled.",
       "use": [
         "Whenever the state lives outside the component — which is nearly always, since a toggle usually reflects something a document or a preference already knows."
@@ -58,11 +76,12 @@
         "Passing it without `onPressedChange`; the toggle would render its state and then refuse to ever change it.",
         "Deriving it from the last click rather than from the thing being toggled — if the underlying change fails, the button is left lying about it."
       ],
-      "conflicts": ["defaultPressed"],
+      "conflicts": [
+        "defaultPressed"
+      ],
       "a11y": "Becomes `aria-pressed`, emitted in both states. This is the only thing that tells assistive technology the control is a toggle at all."
     },
     "defaultPressed": {
-      "type": "boolean",
       "summary": "Starting state for an uncontrolled toggle that owns its own value.",
       "use": [
         "Genuinely local state nothing else reads — a disclosure of extra columns in one table, say."
@@ -71,11 +90,12 @@
         "Anything the rest of the page reacts to. The moment two places need the value, uncontrolled means they disagree.",
         "Resetting the toggle by changing this later — it is read once, at mount."
       ],
-      "conflicts": ["pressed"],
+      "conflicts": [
+        "pressed"
+      ],
       "a11y": "No difference in what is announced: `aria-pressed` is emitted either way."
     },
     "onPressedChange": {
-      "type": "(pressed: boolean, event: MouseEvent) => void",
       "summary": "Called with the state the toggle should move to — not the one it is leaving.",
       "use": [
         "Applying the change, then letting the new state flow back in through `pressed`."
@@ -87,8 +107,6 @@
       "a11y": "Fires for keyboard activation too, since it hangs off the same click guard the button uses. Space and Enter behave as they do on any native button."
     },
     "variant": {
-      "type": "\"secondary\" | \"tertiary\"",
-      "default": "\"secondary\"",
       "summary": "How loud the toggle is in its off state.",
       "use": [
         "`tertiary` for a toolbar of many toggles, where a border each would be visual noise.",
@@ -100,18 +118,16 @@
       "a11y": "Visual only. The pressed state must never be carried by colour alone — the on state changes fill *and* is announced through `aria-pressed`."
     },
     "size": {
-      "type": "\"sm\" | \"md\" | \"lg\"",
-      "default": "\"md\"",
-      "summary": "Control height and text size, from the `size.control.*` scale.",
+      "summary": "Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.",
       "use": [
-        "Matching the density of the surrounding controls, exactly as `Button` does."
+        "Matching the density of the surrounding controls, exactly as `Button` does — including that the label stays one size across all three."
       ],
       "dont": [
-        "Mixing sizes within one group of toggles — they read as a set, so they measure as a set."
+        "Mixing sizes within one group of toggles — they read as a set, so they measure as a set.",
+        "Expecting an icon-only toggle's glyph to grow with it. The glyph follows the text size, which is constant, so only the box changes."
       ]
     },
     "disabled": {
-      "type": "boolean",
       "summary": "Blocks activation while keeping the toggle focusable, announced, and readable in its current state.",
       "use": [
         "A toggle that cannot change yet but whose current state still matters to see."
@@ -119,11 +135,12 @@
       "dont": [
         "Expressing \"off\". Disabled and unpressed are different facts, and a disabled toggle can be either."
       ],
-      "conflicts": ["loading"],
+      "conflicts": [
+        "loading"
+      ],
       "a11y": "Emits `aria-disabled`, never the native `disabled` attribute: the control stays in the tab order and keeps announcing its pressed state."
     },
     "loading": {
-      "type": "boolean",
       "summary": "Shows a spinner and refuses activation while the change this toggle asked for is still in flight.",
       "use": [
         "A toggle whose effect is a server round trip — starring, subscribing, publishing — where the state should not settle until the change lands."
@@ -132,11 +149,12 @@
         "Flipping `pressed` optimistically *and* setting `loading`; pick one story about what the button currently means.",
         "Pairing it with `disabled` — `loading` already blocks activation, and the two together say the same thing twice."
       ],
-      "conflicts": ["disabled"],
+      "conflicts": [
+        "disabled"
+      ],
       "a11y": "Emits `aria-busy` alongside `aria-disabled`, so the control is heard as busy rather than as broken. `aria-pressed` keeps reporting the state it is still in."
     },
     "iconOnly": {
-      "type": "boolean",
       "summary": "Square toggle carrying an icon and no visible text.",
       "use": [
         "Toolbars where the icons are conventional and the row would otherwise be unreadably wide — bold, italic, alignment."
@@ -173,5 +191,87 @@
       "example": "<ToggleButton pressed={notifications} onPressedChange={setNotifications}>\n  Notifications\n</ToggleButton>",
       "notes": "Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. This system has no Switch yet — say so and flag the gap rather than dressing a toggle button up as one."
     }
-  ]
+  ],
+  "tokens": {
+    "secondary": {
+      "summary": "The off state of a toggle that has to read as a control on its own — identical to the secondary button, because an unpressed toggle is one.",
+      "tokens": {
+        "background": "theme.secondary-role.bg",
+        "color": "theme.secondary-role.fg",
+        "border-color": "theme.secondary-role.border",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+        "padding-inline": "space.control.padding-inline.md",
+        "gap": "space.gap.xs",
+        "border-radius": "radius.element",
+        "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+        "font-weight": "type.control.weight",
+        "line-height": "type.control.line-height.md — constant, as with font-size",
+        "transition-duration": "motion.interactive.duration",
+        "transition-timing-function": "motion.interactive.easing",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "opacity (aria-disabled)": "state.disabled-opacity"
+      }
+    },
+    "secondary-pressed": {
+      "summary": "The on state: a tint, not a fill. A saturated accent background reads as \"the action to take\", which is the wrong sentence for \"a state you are in\" — the same reason this component has no primary variant.",
+      "tokens": {
+        "background": "theme.accent-role.subtle",
+        "color": "theme.accent-role.fg",
+        "border-color": "theme.accent-role.fg — the border moves with the fill, so the pressed state is not carried by background alone",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+        "padding-inline": "space.control.padding-inline.md",
+        "gap": "space.gap.xs",
+        "border-radius": "radius.element",
+        "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+        "font-weight": "type.control.weight",
+        "line-height": "type.control.line-height.md — constant, as with font-size",
+        "transition-duration": "motion.interactive.duration",
+        "transition-timing-function": "motion.interactive.easing",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "opacity (aria-disabled)": "state.disabled-opacity"
+      }
+    },
+    "tertiary": {
+      "summary": "The off state for a toolbar of many toggles, where a border each would be visual noise.",
+      "tokens": {
+        "background": "none — no fill in the off state, so a row of toggles reads as one surface",
+        "color": "theme.tertiary-role.fg",
+        "border-color": "transparent — held so the box does not resize when the pressed state paints its border",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+        "padding-inline": "space.control.padding-inline.md",
+        "gap": "space.gap.xs",
+        "border-radius": "radius.element",
+        "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+        "font-weight": "type.control.weight",
+        "line-height": "type.control.line-height.md — constant, as with font-size",
+        "transition-duration": "motion.interactive.duration",
+        "transition-timing-function": "motion.interactive.easing",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "opacity (aria-disabled)": "state.disabled-opacity"
+      }
+    },
+    "tertiary-pressed": {
+      "summary": "The on state of a borderless toggle: the tint alone separates it from its unpressed neighbours.",
+      "tokens": {
+        "background": "theme.accent-role.subtle",
+        "color": "theme.accent-role.fg",
+        "border-color": "transparent — the tint is the cue; a border here would out-shout the secondary variant's pressed state",
+        "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+        "padding-inline": "space.control.padding-inline.md",
+        "gap": "space.gap.xs",
+        "border-radius": "radius.element",
+        "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+        "font-weight": "type.control.weight",
+        "line-height": "type.control.line-height.md — constant, as with font-size",
+        "transition-duration": "motion.interactive.duration",
+        "transition-timing-function": "motion.interactive.easing",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "opacity (aria-disabled)": "state.disabled-opacity"
+      }
+    }
+  }
 }

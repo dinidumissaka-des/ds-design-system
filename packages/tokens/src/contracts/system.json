@@ -125,6 +125,11 @@
       "requires": "AA-text"
     },
     {
+      "fg": "theme.accent-role.fg",
+      "bg": "theme.secondary-role.bg",
+      "requires": "AA-text"
+    },
+    {
       "fg": "theme.success-role.fg",
       "bg": "theme.bg.canvas",
       "requires": "AA-text"

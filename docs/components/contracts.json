@@ -66,7 +66,7 @@
           "lg"
         ],
         "declared": true,
-        "summary": "Control height and text size, from the `size.control.*` scale.",
+        "summary": "Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.",
         "use": [
           "`md` everywhere by default.",
           "`sm` inside dense rows, toolbars, and table cells.",
@@ -74,7 +74,8 @@
         ],
         "dont": [
           "Shrinking to `sm` to fit a cramped layout — fix the layout budget instead.",
-          "Setting font-size or height yourself; the size prop is the only supported way to change either."
+          "Expecting the label to grow with it. All three sizes set the same text size, so `size` buys a bigger target for the same action rather than a louder one — and an icon inside, being sized from that text, does not change either.",
+          "Setting height or padding yourself; the size prop is the only supported way to change either."
         ],
         "conflicts": [],
         "a11y": null
@@ -175,13 +176,13 @@
         "tokens": {
           "background": "theme.accent-role.bg",
           "color": "theme.fg.on-accent",
-          "height": "size.control.md",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
           "padding-inline": "space.control.padding-inline.md",
           "gap": "space.gap.xs",
           "border-radius": "radius.element",
-          "font-size": "type.control.size.md",
+          "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
           "font-weight": "type.control.weight",
-          "line-height": "type.control.line-height.md",
+          "line-height": "type.control.line-height.md — constant, as with font-size",
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
@@ -189,12 +190,12 @@
         }
       },
       "secondary": {
-        "summary": "A supporting action shown next to a primary one.",
+        "summary": "A supporting action shown next to a primary one. Its label is accent-toned rather than neutral, so the outlined button still reads as an action and not as a disabled box — the border alone carries very little at this fill.",
         "tokens": {
           "background": "theme.secondary-role.bg",
-          "color": "theme.secondary-role.fg",
+          "color": "theme.accent-role.fg",
           "border-color": "theme.secondary-role.border",
-          "height": "size.control.md",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
           "border-radius": "radius.element",
           "hover/press": "compose the .ds-state-layer class"
         }
@@ -204,7 +205,7 @@
         "tokens": {
           "background": "theme.danger-role.bg",
           "color": "theme.fg.on-accent",
-          "height": "size.control.md",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
           "border-radius": "radius.element",
           "hover/press": "compose the .ds-state-layer class"
         }
@@ -388,7 +389,7 @@
         }
       }
     },
-    "example": "<ButtonGroup label=\"Form actions\">\n          <Button variant=\"secondary\">Cancel</Button>\n          <Button>Save changes</Button>\n        </ButtonGroup>"
+    "example": "<ButtonGroup label=\"Form actions\">\n        <Button variant=\"secondary\">Cancel</Button>\n        <Button>Save changes</Button>\n      </ButtonGroup>"
   },
   {
     "name": "dialog",
@@ -433,6 +434,145 @@
       }
     },
     "example": null
+  },
+  {
+    "name": "icon",
+    "title": "Icon",
+    "description": "A Lucide glyph sized from the size.icon.* scale, inheriting its colour from the text around it.",
+    "family": "content",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "react": {
+        "state": "latest",
+        "version": "0.1.0"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/icons",
+    "mode": "documented",
+    "note": null,
+    "extends": null,
+    "props": [
+      {
+        "name": "icon",
+        "optional": false,
+        "type": "LucideIcon",
+        "description": "The Lucide component to render, passed as a value so the set stays tree-shakeable.",
+        "declared": true,
+        "summary": "The Lucide component to render, passed as a value rather than a name.",
+        "use": [
+          "Any icon imported from `@ds/icons` — the curated set — or from `lucide-react` directly when the set is missing one.",
+          "Passing the component itself (`icon={Trash2}`), which is what keeps the icon set tree-shakeable: a string name would force every icon into the bundle."
+        ],
+        "dont": [
+          "Rendering the Lucide component directly instead of through `Icon`. It would take Lucide's default 24px rather than a step from the scale, and it would not get the a11y switch below.",
+          "An emoji or a text glyph as a stand-in. Those inherit font metrics rather than the icon scale, so they will not line up with real icons beside them."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered `aria-hidden` unless `label` is set — see `label`."
+      },
+      {
+        "name": "size",
+        "optional": true,
+        "type": "IconSize",
+        "description": "Which step of the `size.icon.*` scale to draw at. Defaults to following the surrounding text.",
+        "default": "\"text\"",
+        "values": [
+          "text",
+          "xs",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "declared": true,
+        "summary": "Which step of the `size.icon.*` scale the glyph is drawn at. Defaults to following the surrounding text.",
+        "use": [
+          "Leave it alone for anything with text near it — the default `text` step is 1.15em, so the glyph tracks whatever font-size it lands in and needs no decision per control.",
+          "`xs` / `sm` / `md` / `lg` only for a standalone glyph with no text to inherit from: a status dot in a table cell, or an icon-only control whose name is an `aria-label` rather than visible text.",
+          "`lg` when the glyph should render unscaled — 24px is Lucide's native artboard."
+        ],
+        "dont": [
+          "Picking a fixed step to match a control's size. A control's `size` changes its box, not its text, so an icon inside it should not change either — and a fixed step stops matching the moment the surrounding text does change.",
+          "Mixing steps within one row of icons — they read as a set, so they measure as a set."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible name, for an icon that carries meaning nothing else conveys.",
+        "declared": true,
+        "summary": "Accessible name, for an icon that carries meaning nothing else conveys.",
+        "use": [
+          "An icon that is the only thing communicating something — a status glyph in a table cell with no adjacent text."
+        ],
+        "dont": [
+          "An icon inside a `Button` with `iconOnly`. That button already carries the `aria-label` the contract requires, so labelling the icon too announces the same thing twice.",
+          "An icon sitting beside a visible text label. The text is the name; the icon is decoration and must stay hidden from assistive technology."
+        ],
+        "conflicts": [],
+        "a11y": "Present, the glyph becomes `role=\"img\"` with this as its name. Absent, it is `aria-hidden` — the same switch `Spinner` uses for the same reason, and the reason the decorative case needs no thought to get right."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the glyph, for placement — not for restyling it.",
+        "use": [
+          "A layout concern the parent cannot express, such as a margin token when the icon is not already inside a flex row with a gap."
+        ],
+        "dont": [
+          "Overriding the size. The four steps are the scale; a fifth size written in a component's CSS is the drift `size.icon.*` exists to prevent — add a step to the scale instead.",
+          "Setting a colour. The glyph strokes with `currentColor` so it always matches the text it sits in; colouring it separately is how an icon ends up contradicting its own label."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "Inside an icon-only button",
+        "when": "The most common pairing, and the one where the a11y split matters most.",
+        "example": "<Button iconOnly aria-label=\"Delete row\">\n  <Icon icon={Trash2} />\n</Button>",
+        "notes": "No `label` on the icon: the button owns the accessible name, so the glyph stays `aria-hidden`. `size` is left at `md`, which is what a 32px control wants."
+      },
+      {
+        "case": "Beside a text label",
+        "when": "An action whose icon reinforces a word rather than replacing it.",
+        "example": "<Button>\n  <Icon icon={Download} />\n  Export CSV\n</Button>",
+        "notes": "No `size`: the default `text` step is 1.15em, so the glyph is sized from the button's own label and stays matched to it. The icon is decorative here, so it takes no `label` either."
+      },
+      {
+        "case": "Carrying meaning on its own",
+        "when": "A status glyph in a dense row, with no adjacent text to name it.",
+        "example": "<Icon icon={CircleAlert} size=\"xs\" label=\"Needs review\" />",
+        "notes": "This is the only case that takes a `label`. Without one the row would announce nothing at all where a sighted user sees a warning."
+      }
+    ],
+    "behavior": null,
+    "tokens": {
+      "base": {
+        "summary": "A glyph sized from the text around it, taking its colour from that text too.",
+        "tokens": {
+          "width": "size.icon.text — 1.15em, so it follows the inherited font-size. size.icon.xs / .sm / .md / .lg for a standalone glyph.",
+          "height": "same step as width; the scale is one number and the glyph is square",
+          "stroke": "currentColor — the icon inherits the colour of the text it sits in, so it needs no colour token of its own and cannot contradict its label",
+          "flex-shrink": "0 — a glyph beside text must not be squeezed by it, which is a layout fact rather than a token"
+        }
+      }
+    },
+    "example": "<Icon icon={Bold} />"
   },
   {
     "name": "menu",
@@ -581,7 +721,7 @@
     ],
     "behavior": null,
     "tokens": {},
-    "example": "<Spinner label=\"Loading\" />"
+    "example": "<Spinner label=\"Loading results\" />"
   },
   {
     "name": "state-layer",
@@ -613,6 +753,12 @@
         "when": "Always — this is the only supported way to express interaction feedback in this system.",
         "example": "<button className=\"ds-thing ds-state-layer\">…</button>",
         "notes": "Add the class alongside the component's own; never write a competing `:hover` background rule. Feedback here is opacity-only by standing decision, which is why the role tokens carry no `bg-hover`/`bg-active` and why `ring.neutral` is deliberately unwired."
+      },
+      {
+        "case": "A host with no border",
+        "when": "The layer's default bleeds outward by border.default, so an unbordered host needs the opt-out or its tint sits a hairline proud of the element.",
+        "example": "<button className=\"ds-thing ds-state-layer ds-state-layer--flush\">…</button>",
+        "notes": "The layer is an absolutely positioned pseudo-element, and `inset` on one resolves against the containing block's padding box — which excludes the border. At `inset: 0` the tint stopped a border-width short on every side, invisible under a filled background but plainly smaller on a host whose only fill is the layer itself. It now bleeds by border.default, since every bordered host in this system uses that width, and CSS gives no way to read a containing block's computed border-width. `--flush` restores `inset: 0` for hosts with none."
       }
     ],
     "behavior": null,
@@ -852,10 +998,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -863,19 +1011,20 @@
     },
     "dependencies": [
       "button",
-      "state-layer"
+      "state-layer",
+      "spinner"
     ],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\" | \"onChange\">",
     "props": [
       {
         "name": "pressed",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Whether the toggle is currently on. Makes the component controlled.",
+        "declared": true,
         "summary": "Whether the toggle is currently on. Makes the component controlled.",
         "use": [
           "Whenever the state lives outside the component — which is nearly always, since a toggle usually reflects something a document or a preference already knows."
@@ -891,10 +1040,10 @@
       },
       {
         "name": "defaultPressed",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Starting state for an uncontrolled toggle. Conflicts with `pressed`.",
+        "declared": true,
         "summary": "Starting state for an uncontrolled toggle that owns its own value.",
         "use": [
           "Genuinely local state nothing else reads — a disclosure of extra columns in one table, say."
@@ -910,10 +1059,10 @@
       },
       {
         "name": "onPressedChange",
-        "type": "(pressed: boolean, event: MouseEvent) => void",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "(pressed: boolean, event: MouseEvent<HTMLButtonElement>) => void",
+        "description": "Called with the state the toggle should move to, not the one it is in.",
+        "declared": true,
         "summary": "Called with the state the toggle should move to — not the one it is leaving.",
         "use": [
           "Applying the change, then letting the new state flow back in through `pressed`."
@@ -927,15 +1076,15 @@
       },
       {
         "name": "variant",
-        "type": "\"secondary\" | \"tertiary\"",
+        "optional": true,
+        "type": "ToggleButtonVariant",
+        "description": "How loud the toggle is in its off state.",
+        "default": "\"secondary\"",
         "values": [
           "secondary",
           "tertiary"
         ],
-        "optional": true,
-        "default": "\"secondary\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "How loud the toggle is in its off state.",
         "use": [
           "`tertiary` for a toolbar of many toggles, where a border each would be visual noise.",
@@ -949,32 +1098,33 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
+        "optional": true,
+        "type": "ToggleButtonSize",
+        "description": null,
+        "default": "\"md\"",
         "values": [
           "sm",
           "md",
           "lg"
         ],
-        "optional": true,
-        "default": "\"md\"",
-        "description": null,
-        "declared": false,
-        "summary": "Control height and text size, from the `size.control.*` scale.",
+        "declared": true,
+        "summary": "Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.",
         "use": [
-          "Matching the density of the surrounding controls, exactly as `Button` does."
+          "Matching the density of the surrounding controls, exactly as `Button` does — including that the label stays one size across all three."
         ],
         "dont": [
-          "Mixing sizes within one group of toggles — they read as a set, so they measure as a set."
+          "Mixing sizes within one group of toggles — they read as a set, so they measure as a set.",
+          "Expecting an icon-only toggle's glyph to grow with it. The glyph follows the text size, which is constant, so only the box changes."
         ],
         "conflicts": [],
         "a11y": null
       },
       {
         "name": "disabled",
-        "type": "boolean",
         "optional": true,
+        "type": "boolean",
         "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Blocks activation while keeping the toggle focusable, announced, and readable in its current state.",
         "use": [
           "A toggle that cannot change yet but whose current state still matters to see."
@@ -989,10 +1139,10 @@
       },
       {
         "name": "loading",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Shows a spinner and blocks activation while preserving focus.",
+        "declared": true,
         "summary": "Shows a spinner and refuses activation while the change this toggle asked for is still in flight.",
         "use": [
           "A toggle whose effect is a server round trip — starring, subscribing, publishing — where the state should not settle until the change lands."
@@ -1008,10 +1158,10 @@
       },
       {
         "name": "iconOnly",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Square icon-only toggle; pass the icon as children and set aria-label.",
+        "declared": true,
         "summary": "Square toggle carrying an icon and no visible text.",
         "use": [
           "Toolbars where the icons are conventional and the row would otherwise be unreadably wide — bold, italic, alignment."
@@ -1080,8 +1230,89 @@
         }
       ]
     },
-    "tokens": {},
-    "example": null
+    "tokens": {
+      "secondary": {
+        "summary": "The off state of a toggle that has to read as a control on its own — identical to the secondary button, because an unpressed toggle is one.",
+        "tokens": {
+          "background": "theme.secondary-role.bg",
+          "color": "theme.secondary-role.fg",
+          "border-color": "theme.secondary-role.border",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+          "padding-inline": "space.control.padding-inline.md",
+          "gap": "space.gap.xs",
+          "border-radius": "radius.element",
+          "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+          "font-weight": "type.control.weight",
+          "line-height": "type.control.line-height.md — constant, as with font-size",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "opacity (aria-disabled)": "state.disabled-opacity"
+        }
+      },
+      "secondary-pressed": {
+        "summary": "The on state: a tint, not a fill. A saturated accent background reads as \"the action to take\", which is the wrong sentence for \"a state you are in\" — the same reason this component has no primary variant.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "color": "theme.accent-role.fg",
+          "border-color": "theme.accent-role.fg — the border moves with the fill, so the pressed state is not carried by background alone",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+          "padding-inline": "space.control.padding-inline.md",
+          "gap": "space.gap.xs",
+          "border-radius": "radius.element",
+          "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+          "font-weight": "type.control.weight",
+          "line-height": "type.control.line-height.md — constant, as with font-size",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "opacity (aria-disabled)": "state.disabled-opacity"
+        }
+      },
+      "tertiary": {
+        "summary": "The off state for a toolbar of many toggles, where a border each would be visual noise.",
+        "tokens": {
+          "background": "none — no fill in the off state, so a row of toggles reads as one surface",
+          "color": "theme.tertiary-role.fg",
+          "border-color": "transparent — held so the box does not resize when the pressed state paints its border",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+          "padding-inline": "space.control.padding-inline.md",
+          "gap": "space.gap.xs",
+          "border-radius": "radius.element",
+          "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+          "font-weight": "type.control.weight",
+          "line-height": "type.control.line-height.md — constant, as with font-size",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "opacity (aria-disabled)": "state.disabled-opacity"
+        }
+      },
+      "tertiary-pressed": {
+        "summary": "The on state of a borderless toggle: the tint alone separates it from its unpressed neighbours.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "color": "theme.accent-role.fg",
+          "border-color": "transparent — the tint is the cue; a border here would out-shout the secondary variant's pressed state",
+          "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
+          "padding-inline": "space.control.padding-inline.md",
+          "gap": "space.gap.xs",
+          "border-radius": "radius.element",
+          "font-size": "type.control.size.md — constant across all three sizes, so `size` changes the box and not the label",
+          "font-weight": "type.control.weight",
+          "line-height": "type.control.line-height.md — constant, as with font-size",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "opacity (aria-disabled)": "state.disabled-opacity"
+        }
+      }
+    },
+    "example": "<ToggleButton value=\"bold\">Bold</ToggleButton>"
   },
   {
     "name": "toggle-button-group",
@@ -1091,10 +1322,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -1106,16 +1339,16 @@
       "state-layer"
     ],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\" | \"onChange\" | \"defaultValue\">",
     "props": [
       {
         "name": "value",
-        "type": "string | string[] | null",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "ToggleButtonGroupValue",
+        "description": "The current selection: a value in single mode, a list in multiple mode.",
+        "declared": true,
         "summary": "The current selection: a value in single mode, a list in multiple mode, `null` or `[]` for none.",
         "use": [
           "Whenever the selection is state the rest of the page reads — which is most of the time, since a toggle group usually is the setting rather than a view of it."
@@ -1131,10 +1364,10 @@
       },
       {
         "name": "defaultValue",
-        "type": "string | string[] | null",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "ToggleButtonGroupValue",
+        "description": "Starting selection for an uncontrolled group. Conflicts with `value`.",
+        "declared": true,
         "summary": "Starting selection for an uncontrolled group that owns its own value.",
         "use": [
           "A local view preference nothing else on the page reacts to."
@@ -1150,10 +1383,10 @@
       },
       {
         "name": "onValueChange",
-        "type": "(value: string | string[] | null) => void",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "(value: ToggleButtonGroupValue) => void",
+        "description": "Called with the selection the group should move to.",
+        "declared": true,
         "summary": "Called with the selection the group should move to — a value, a list in DOM order, or `null`.",
         "use": [
           "Applying the change and letting it flow back in through `value`."
@@ -1167,15 +1400,15 @@
       },
       {
         "name": "selectionMode",
-        "type": "\"single\" | \"multiple\"",
+        "optional": true,
+        "type": "ToggleButtonGroupSelectionMode",
+        "description": "Whether this group holds one answer or any number of independent states.",
+        "default": "\"single\"",
         "values": [
           "single",
           "multiple"
         ],
-        "optional": true,
-        "default": "\"single\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Whether this group holds one answer or any number of independent states — which also decides its ARIA pattern.",
         "use": [
           "`single` for a choice: alignment, a date range preset, a view mode.",
@@ -1190,10 +1423,10 @@
       },
       {
         "name": "deselectable",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Single mode only: whether clicking the selected option clears the selection.",
+        "declared": true,
         "summary": "Single mode only: whether clicking the selected option clears the selection.",
         "use": [
           "Filters, where \"none of these\" is a real answer the user should be able to get back to."
@@ -1207,10 +1440,10 @@
       },
       {
         "name": "label",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Accessible name for the group. Required unless `labelledBy` names an existing element.",
+        "declared": true,
         "summary": "Accessible name for the group — the question these options answer.",
         "use": [
           "Always, unless `labelledBy` points at a visible label that already asks it.",
@@ -1226,10 +1459,10 @@
       },
       {
         "name": "labelledBy",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Id of a visible element that already names this group.",
+        "declared": true,
         "summary": "Id of a visible element that already names this group.",
         "use": [
           "A field label or heading sits above the group and says exactly what the name would."
@@ -1244,15 +1477,11 @@
       },
       {
         "name": "orientation",
-        "type": "\"horizontal\" | \"vertical\"",
-        "values": [
-          "horizontal",
-          "vertical"
-        ],
         "optional": true,
-        "default": "\"horizontal\"",
+        "type": "ButtonGroupOrientation",
         "description": null,
-        "declared": false,
+        "default": "\"horizontal\"",
+        "declared": true,
         "summary": "Which way the options stack, and — in single mode — which arrows move between them.",
         "use": [
           "`vertical` in a narrow rail where a row of options would wrap."
@@ -1265,16 +1494,11 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
-        "values": [
-          "sm",
-          "md",
-          "lg"
-        ],
         "optional": true,
+        "type": "ToggleButtonSize",
+        "description": "Control height for every option. Set here, never per option.",
         "default": "\"md\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Control height and text size for every option, from the `size.control.*` scale.",
         "use": [
           "Matching the density of the surrounding controls — set once here rather than on each option."
@@ -1287,11 +1511,11 @@
       },
       {
         "name": "attached",
-        "type": "boolean",
         "optional": true,
+        "type": "boolean",
+        "description": "Joins the options into one continuous bar. Defaults to true.",
         "default": "true",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Joins the options into one continuous bar, with shared borders and only the outer corners rounded.",
         "use": [
           "The default, and the right one for a segmented control: the options are one question, so they read as one control."
@@ -1304,10 +1528,10 @@
       },
       {
         "name": "disabled",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Blocks activation for every option while keeping them focusable.",
+        "declared": true,
         "summary": "Blocks activation for every option while keeping them focusable, announced, and readable in their current state.",
         "use": [
           "The whole question is unavailable — a filter over data that hasn't loaded, say."
@@ -1384,7 +1608,33 @@
         }
       ]
     },
-    "tokens": {},
-    "example": null
+    "tokens": {
+      "attached": {
+        "summary": "The default, and what a segmented control is: the options are one question, so they close up into one bar and only the outer corners round.",
+        "tokens": {
+          "gap": "space.0",
+          "inner corner border-radius": "radius.none",
+          "outer corner border-radius": "radius.element, as logical corners so the bar flips in RTL",
+          "collapsed shared border": "negative margin of border.1, so two adjacent borders read as one stroke",
+          "focused item stacking": "raised above its neighbours so the focus ring is not clipped by the overlapping border — a stacking fix, not a token",
+          "item height": "size.control.md — set once on the group and pushed to every option, because a bar of options at two heights is ragged",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — owned by the option, never drawn around the group"
+        }
+      },
+      "spaced": {
+        "summary": "Options that belong together but read as separate controls — the right shape when they can wrap, since a broken bar reads as two controls.",
+        "tokens": {
+          "gap": "space.gap.sm",
+          "item border-radius": "radius.element — each option keeps the corners it sets for itself",
+          "item height": "size.control.md — set once on the group and pushed to every option, because a bar of options at two heights is ragged",
+          "transition-duration": "motion.interactive.duration",
+          "transition-timing-function": "motion.interactive.easing",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — owned by the option, never drawn around the group"
+        }
+      }
+    },
+    "example": "<ToggleButtonGroup\n      label=\"Status filter\"\n      deselectable\n      value={status}\n      onValueChange={(next) => setStatus(next as string | null)}\n    >\n      <ToggleButton value=\"open\">Open</ToggleButton>\n      <ToggleButton value=\"closed\">Closed</ToggleButton>\n    </ToggleButtonGroup>"
   }
 ]

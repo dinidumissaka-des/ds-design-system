@@ -16,10 +16,11 @@ behind it yet, and `css-only` when there is no props API by design.
 | [Button](button.md) | `button` | buttons | latest / latest | documented | free |
 | [Button Group](button-group.md) | `button-group` | buttons | latest / latest | documented | free |
 | [Dialog](dialog.md) | `dialog` | overlays | future / future | spec | free |
+| [Icon](icon.md) | `icon` | content | latest / latest | documented | free |
 | [Menu](menu.md) | `menu` | overlays | future / future | spec | free |
 | [Notice](notice.md) | `notice` | feedback | future / future | spec | free |
 | [Loading: Spinner](spinner.md) | `spinner` | loading | latest / latest | documented | free |
 | [State layer](state-layer.md) | `state-layer` | foundations | latest / na | css-only | free |
 | [Input: Text field](text-field.md) | `text-field` | inputs | future / future | spec | free |
-| [Toggle Button](toggle-button.md) | `toggle-button` | buttons | future / future | spec | free |
-| [Toggle Button Group](toggle-button-group.md) | `toggle-button-group` | buttons | future / future | spec | free |
+| [Toggle Button](toggle-button.md) | `toggle-button` | buttons | latest / latest | documented | free |
+| [Toggle Button Group](toggle-button-group.md) | `toggle-button-group` | buttons | latest / latest | documented | free |

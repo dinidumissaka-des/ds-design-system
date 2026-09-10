@@ -101,7 +101,7 @@ export async function getComponentContract(name, registry) {
         if (doc[derivedOnly] !== undefined) {
           issues.push(
             `${name}.props.${propName}.${derivedOnly} is written by hand, but ${name} is implemented — ` +
-              `${derivedOnly} is read from packages/react/src/${name}.tsx. Delete it from the manifest.`
+              `${derivedOnly} is read from the component's React source, at the path the manifest's files array names. Delete it from the manifest.`
           );
         }
       }

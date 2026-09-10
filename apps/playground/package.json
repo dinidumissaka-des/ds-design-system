@@ -9,7 +9,13 @@
   },
   "dependencies": {
     "@ds/css": "*",
+    "@ds/icons": "*",
     "@ds/react": "*",
+    "@ds/theme-cobalt": "*",
+    "@ds/theme-ink": "*",
+    "@ds/theme-lime": "*",
+    "@ds/theme-pine": "*",
+    "@ds/theme-rust": "*",
     "@ds/tokens": "*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
