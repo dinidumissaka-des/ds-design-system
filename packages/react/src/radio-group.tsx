@@ -54,6 +54,11 @@ export function RadioGroup({
   ...rest
 }: RadioGroupProps) {
   const generatedName = useId();
+  // The visible label is associated by id rather than duplicated into
+  // aria-label. Setting both meant the group's name was announced twice: once
+  // as the span in the reading order, then again on entering the radiogroup.
+  const labelId = `${generatedName}-label`;
+  const describedByLabel = labelledBy ?? (label ? labelId : undefined);
   const isControlled = value !== undefined;
   const [uncontrolled, setUncontrolled] = useState<string | null>(defaultValue ?? null);
   const current = isControlled ? value : uncontrolled;
@@ -87,8 +92,10 @@ export function RadioGroup({
     disabled,
     orientation,
     name: name ?? generatedName,
-    label,
-    labelledBy,
+    // Only reaches aria-label when there is no element to point at, which is
+    // the case a caller creates by passing neither.
+    label: describedByLabel ? undefined : label,
+    labelledBy: describedByLabel,
     required,
     onValueChange: (next) => {
       if (!isControlled) setUncontrolled(next);
@@ -105,7 +112,11 @@ export function RadioGroup({
   return (
     <RadioGroupContext.Provider value={context}>
       <div className={cx("rata-radio-group", className)}>
-        {label && !labelledBy && <span className="rata-radio-group-label">{label}</span>}
+        {label && !labelledBy && (
+          <span className="rata-radio-group-label" id={labelId}>
+            {label}
+          </span>
+        )}
         <div {...rest} {...group.root} className="rata-radio-group-options">
           {children}
         </div>

@@ -545,31 +545,29 @@ function BillingExample() {
 }
 
 /**
- * The Radio page's example, deliberately not the same specimen as the
- * RadioGroup page's.
+ * The Radio page's example: one option, and nothing else.
  *
- * A Radio cannot be rendered on its own — it throws, because alone it has no
- * name to share and no siblings to be exclusive with. So a group has to be
- * present, and the risk is that the page then looks like a copy of
- * RadioGroup's. This one keeps the group to the bare minimum that makes an
- * option valid and puts the option's own props on show instead: its label, its
- * description, and one that is individually disabled.
+ * A group is still present because a Radio rendered alone throws — alone it has
+ * no name to share and no siblings to be exclusive with. But the group is kept
+ * to one option so the specimen is unmistakably the item, not the question.
+ * The question's own specimen lives on the RadioGroup page.
  */
 function RadioOptionExample() {
-  const [plan, setPlan] = useState<string | null>("standard");
+  const [on, setOn] = useState<string | null>("annual");
+  // The group is named by an off-screen element rather than by `label`, which
+  // would render a heading above a single option. Not left unnamed: the
+  // contract calls an unnamed radiogroup a mistake, and pointing labelledBy at
+  // an id that does not exist would be worse than either.
+  const labelId = `${useId()}-group`;
   return (
-    <span className="pg-example-stack">
-      <span className="pg-example-aside">
-        A Radio throws outside a RadioGroup, so a group is always present. What
-        this shows is the option: its label, its description, and one disabled
-        on its own.
+    <>
+      <span id={labelId} className="pg-visually-hidden">
+        Billing period
       </span>
-      <RadioGroup label="Support plan" value={plan} onValueChange={setPlan}>
-        <Radio value="standard" label="Standard" />
-        <Radio value="priority" label="Priority" description="One business day response" />
-        <Radio value="dedicated" label="Dedicated" description="Not available on your tier" disabled />
+      <RadioGroup labelledBy={labelId} value={on} onValueChange={setOn}>
+        <Radio value="annual" label="Annual" description="Two months free" />
       </RadioGroup>
-    </span>
+    </>
   );
 }
 

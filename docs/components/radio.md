@@ -113,7 +113,7 @@ The only correct use — and the reason any example of a Radio necessarily shows
 </RadioGroup>
 ```
 
-Everything that makes this a radio comes from the group: the shared name, the exclusivity, and the arrow-key reachability. That is also why no example can show a Radio on its own — rendered outside a group it throws rather than degrading. Read the specimen as being about the option: its label, its description, and whether it is individually disabled. The question the options answer belongs to RadioGroup.
+Everything that makes this a radio comes from the group: the shared name, the exclusivity, and the arrow-key reachability. That is why no example can show a Radio truly on its own — rendered outside a group it throws rather than degrading. Keep the group to one option when the subject is the option itself, and name it with `labelledBy` pointing at an off-screen element: `label` would render a heading above a single row, and leaving it unnamed is the mistake that prop's contract warns about.
 
 ## Real usage in this repo
 
