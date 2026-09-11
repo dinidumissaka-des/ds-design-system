@@ -249,6 +249,15 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         defaultValue="acme"
       />
     ),
+    "A passing async check, confirmed": () => (
+      <TextField
+        className="pg-field"
+        label="Workspace URL"
+        status="valid"
+        message="acme.example.com is available"
+        defaultValue="acme"
+      />
+    ),
     "Unavailable but readable": () => (
       <TextField className="pg-field" label="State" disabled description="Choose a country first." />
     ),

@@ -500,17 +500,17 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--rata-color-data-yellow-3`: `#fbce03`
 - `--rata-color-data-yellow-4`: `#d69804`
 - `--rata-color-data-yellow-5`: `#8a5001`
-- `--rata-color-neutral-100`: `#f1f5f9`
-- `--rata-color-neutral-200`: `#e2e8f0`
-- `--rata-color-neutral-300`: `#cbd5e1`
-- `--rata-color-neutral-400`: `#94a3b8`
-- `--rata-color-neutral-50`: `#f8fafc`
-- `--rata-color-neutral-500`: `#64748b`
-- `--rata-color-neutral-600`: `#475569`
-- `--rata-color-neutral-700`: `#334155`
-- `--rata-color-neutral-800`: `#1e293b`
-- `--rata-color-neutral-900`: `#0f172a`
-- `--rata-color-neutral-950`: `#020617`
+- `--rata-color-neutral-100`: `#F1F6F2`
+- `--rata-color-neutral-200`: `#E0EAE4`
+- `--rata-color-neutral-300`: `#C9D8CF`
+- `--rata-color-neutral-400`: `#8DA89B`
+- `--rata-color-neutral-50`: `#F8FAF9`
+- `--rata-color-neutral-500`: `#5B796C`
+- `--rata-color-neutral-600`: `#3F5A4E`
+- `--rata-color-neutral-700`: `#2A463B`
+- `--rata-color-neutral-800`: `#122D25`
+- `--rata-color-neutral-900`: `#001D17`
+- `--rata-color-neutral-950`: `#000E06`
 - `--rata-color-success-100`: `#dcfce7`
 - `--rata-color-success-200`: `#bbf7d0`
 - `--rata-color-success-300`: `#86efac`
@@ -699,7 +699,7 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--rata-theme-tertiary-role-fg`: `#006E4A`
 - `--rata-theme-warning-role-bg`: `#f59e0b`
 - `--rata-theme-warning-role-fg`: `#92400e`
-- `--rata-theme-warning-role-on`: `#0f172a`
+- `--rata-theme-warning-role-on`: `#001D17`
 - `--rata-theme-warning-role-ring`: `inset 0px 0px 0px 2px rgb(226 164 0 / 0.3)`
 - `--rata-theme-warning-role-subtle`: `#fffbeb`
 - `--rata-type-body-line-height`: `1.4286`

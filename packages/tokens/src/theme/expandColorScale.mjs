@@ -100,6 +100,58 @@ const ACCENT_RAMP_SHAPE = [
 ];
 
 /**
+ * The raw neutral ramp's shape, read off the ramp this repo shipped by hand
+ * (Tailwind's slate) on the same principle as ACCENT_RAMP_SHAPE: the curve is
+ * the rule, the hue is the variable.
+ *
+ * Chroma is scaled by `neutralStyle`'s own chroma over 5 — 5 being `cool`, the
+ * style the hand-listed ramp was drawn at — so `cool` reproduces it and warm or
+ * neutral move the whole ramp's greyness together with the semantic neutrals
+ * rather than independently of them. That coupling is the point: the greys in
+ * theme.bg.* and the greys in color.neutral.* came from one decision, so they
+ * should not be able to disagree.
+ *
+ * WHY GENERATE THIS: exactly the reason color.accent.* is generated. A neutral
+ * ramp that ignored the seed left a green-accented system carrying blue-grey
+ * raw neutrals, while its own semantic greys re-toned correctly — the two
+ * halves of the same palette disagreeing about the brand.
+ */
+const NEUTRAL_RAMP_REFERENCE_CHROMA = 5;
+
+const NEUTRAL_RAMP_SHAPE = [
+  { step: "50", tone: 98.2, chroma: 1.2, hueShift: -13.1 },
+  { step: "100", tone: 96.3, chroma: 2.5, hueShift: -12.9 },
+  { step: "200", tone: 91.8, chroma: 4.6, hueShift: -5.2 },
+  { step: "300", tone: 84.9, chroma: 7.1, hueShift: -7.2 },
+  { step: "400", tone: 66.5, chroma: 12.6, hueShift: -2.0 },
+  { step: "500", tone: 48.3, chroma: 14.5, hueShift: 0 },
+  { step: "600", tone: 35.7, chroma: 13.3, hueShift: 0.5 },
+  { step: "700", tone: 27.1, chroma: 13.8, hueShift: 1.8 },
+  { step: "800", tone: 16.4, chroma: 13.1, hueShift: 6.0 },
+  { step: "900", tone: 8.0, chroma: 14.5, hueShift: 14.6 },
+  { step: "950", tone: 1.9, chroma: 9.0, hueShift: 14.4 },
+];
+
+/**
+ * The raw `color.neutral.*` ramp for a seed hue at a given neutral chroma.
+ *
+ * Scheme-independent, like the accent ramp: one ramp per brand, identical in
+ * light and dark, which is what the palette layer promises.
+ */
+function neutralRamp(seedHue, neutralChroma) {
+  const scale = neutralChroma / NEUTRAL_RAMP_REFERENCE_CHROMA;
+  const ramp = {};
+  for (const { step, tone, chroma, hueShift } of NEUTRAL_RAMP_SHAPE) {
+    ramp[`color.neutral.${step}`] = hctToHex({
+      hue: ((seedHue + hueShift) % 360 + 360) % 360,
+      chroma: chroma * scale,
+      tone,
+    });
+  }
+  return ramp;
+}
+
+/**
  * The raw `color.accent.*` ramp for a seed.
  *
  * Chroma is floored at PALETTE_MIN_CHROMA first, for the same reason the
@@ -261,6 +313,11 @@ export function expandColorScale(config) {
           "theme.focus-ring": [PL[50], PD[70]],
         }
       : null),
+
+    // The raw neutral ramp, generated for the same reason the accent ramp is,
+    // and unconditionally for the same reason the semantic neutrals below are:
+    // an accent-less config still re-tones its greys, from the default hue.
+    ...neutralRamp(lightSeed.hue, nc),
 
     // ── Backgrounds. Surface is the *lifted* tone (99/10) and canvas the
     // tinted page behind it (95/5) — cards float rather than merge, which

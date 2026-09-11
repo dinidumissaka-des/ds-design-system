@@ -2337,6 +2337,12 @@
         "notes": "`validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`."
       },
       {
+        "case": "A passing async check, confirmed",
+        "when": "The one situation `valid` is for: a check ran, it passed, and saying so tells the user something they could not otherwise know.",
+        "example": "<TextField\n  label=\"Workspace URL\"\n  status=\"valid\"\n  message=\"acme.example.com is available\"\n/>",
+        "notes": "`valid` earns its place only where the confirmation carries information. A green ring on every correctly-filled field teaches people to ignore the ring, so it is worth nothing on the field where a check actually passed. Note this state sets no aria-invalid and no aria-busy — the ring and the message are the whole of it, which is why the message is not optional here either: a ring alone would be colour-only information."
+      },
+      {
         "case": "Unavailable but readable",
         "when": "The field depends on an answer the user has not given yet.",
         "example": "<TextField\n  label=\"State\"\n  disabled\n  description=\"Choose a country first.\"\n/>",

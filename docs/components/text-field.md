@@ -294,6 +294,20 @@ A server-side check is running against what the user typed.
 
 `validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`.
 
+### A passing async check, confirmed
+
+The one situation `valid` is for: a check ran, it passed, and saying so tells the user something they could not otherwise know.
+
+```tsx
+<TextField
+  label="Workspace URL"
+  status="valid"
+  message="acme.example.com is available"
+/>
+```
+
+`valid` earns its place only where the confirmation carries information. A green ring on every correctly-filled field teaches people to ignore the ring, so it is worth nothing on the field where a check actually passed. Note this state sets no aria-invalid and no aria-busy — the ring and the message are the whole of it, which is why the message is not optional here either: a ring alone would be colour-only information.
+
 ### Unavailable but readable
 
 The field depends on an answer the user has not given yet.
