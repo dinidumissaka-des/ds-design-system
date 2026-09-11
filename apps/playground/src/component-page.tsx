@@ -102,13 +102,32 @@ export const contracts = (contractsJson as unknown as Contract[])
 
 export const contractsByName = new Map(contracts.map((c) => [c.name, c]));
 
+/**
+ * Artifact status, rendered with the system's own Badge.
+ *
+ * This used to be a hand-rolled `.pg-status` span with its own five colour
+ * rules — a badge in everything but name, written before there was a Badge to
+ * use. Two things came of replacing it: the duplicate stylesheet went, and the
+ * `na`/`deprecated` pills stopped pairing fg.muted with bg.muted, which
+ * measures 4.19:1 in dark and is documented as AA-large only. Badge's neutral
+ * variant uses fg.secondary, at 5.75:1.
+ */
+const STATUS_VARIANT: Record<string, BadgeVariant> = {
+  latest: "success",
+  "in-progress": "warning",
+  future: "neutral",
+  na: "neutral",
+  deprecated: "neutral",
+  tbd: "neutral",
+};
+
 export function StatusPill({ artifact }: { artifact?: { state: string; version?: string } }) {
   const state = artifact?.state ?? "tbd";
   return (
-    <span className={`pg-status pg-status--${state}`}>
+    <Badge variant={STATUS_VARIANT[state] ?? "neutral"}>
       {state}
       {artifact?.version ? ` · ${artifact.version}` : ""}
-    </span>
+    </Badge>
   );
 }
 
@@ -266,10 +285,20 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
 
   badge: {
     "A count beside a label": () => (
-      <Button variant="secondary">
-        Messages
-        <Badge>3</Badge>
-      </Button>
+      <>
+        <Button>
+          Messages
+          <Badge variant="accent">3</Badge>
+        </Button>
+        <Button variant="secondary">
+          Notifications
+          <Badge variant="warning">12</Badge>
+        </Button>
+        <Button variant="tertiary">
+          Updates
+          <Badge>New</Badge>
+        </Button>
+      </>
     ),
     "A status in a table row": () => (
       <>

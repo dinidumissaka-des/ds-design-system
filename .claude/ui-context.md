@@ -72,7 +72,7 @@ Extends: `HTMLAttributes<HTMLSpanElement>`
 
 Real usage (from `apps/`):
 ```tsx
-<Badge>3</Badge>
+<Badge>New</Badge>
 ```
 
 Contract: [docs/components/badge.md](../docs/components/badge.md)

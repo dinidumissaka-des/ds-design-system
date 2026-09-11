@@ -321,7 +321,7 @@
         }
       }
     },
-    "example": "<Badge>3</Badge>"
+    "example": "<Badge>New</Badge>"
   },
   {
     "name": "breadcrumbs",

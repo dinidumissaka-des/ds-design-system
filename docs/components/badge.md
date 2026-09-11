@@ -115,7 +115,7 @@ Don't. That is a Notice: it has room for the sentence, a heading, and somewhere 
 ## Real usage in this repo
 
 ```tsx
-<Badge>3</Badge>
+<Badge>New</Badge>
 ```
 
 ## Token recipe

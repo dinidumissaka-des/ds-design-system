@@ -392,34 +392,10 @@ code {
   color: var(--ds-theme-fg-muted);
 }
 
-.pg-status {
-  display: inline-block;
-  padding: var(--ds-space-0-5) var(--ds-space-2);
-  border-radius: var(--ds-radius-pill);
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-}
 
-.pg-status--latest {
-  background: var(--ds-theme-success-role-subtle);
-  color: var(--ds-theme-success-role-fg);
-}
 
-.pg-status--in-progress {
-  background: var(--ds-theme-warning-role-subtle);
-  color: var(--ds-theme-warning-role-fg);
-}
 
-.pg-status--future {
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
-}
 
-.pg-status--na,
-.pg-status--deprecated {
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-muted);
-}
 
 /* ds-allow: hardcoded-dimension — prose measure for the doc columns below is a
    playground layout constant; this system has no measure/max-width token */
@@ -727,10 +703,6 @@ code {
 .pg-prop-signature {
   font-size: var(--ds-font-size-xs);
   color: var(--ds-theme-fg-muted);
-}
-
-.pg-prop-summary {
-  margin: 0 0 var(--ds-space-2);
 }
 
 
