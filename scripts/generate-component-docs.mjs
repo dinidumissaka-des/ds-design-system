@@ -95,7 +95,7 @@ function renderPage(contract) {
     if (contract.behavior.primitive) {
       lines.push(
         `Headless contract: \`${contract.behavior.primitive}\` in ` +
-          `\`packages/primitives/src/${contract.name}.ts\` — importable from \`@ds/primitives\` ` +
+          `\`packages/primitives/src/${contract.name}.ts\` — importable from \`@rata/primitives\` ` +
           `without the React wrapper or any CSS.`,
         ""
       );
@@ -170,7 +170,7 @@ function renderIndex(contracts) {
     "# Component contracts",
     "",
     "One page per component, generated from that component's registry manifest",
-    "(the written half — what each prop is for) and its `@ds/react` source (the",
+    "(the written half — what each prop is for) and its `@rata/react` source (the",
     "derived half — names, types, defaults). The build fails if the two disagree.",
     "",
     "`mode` is `documented` when the component is implemented and both halves are",

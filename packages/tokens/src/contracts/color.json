@@ -39,7 +39,7 @@
         "Unlike every other palette group, these values are picked directly, not routed through a theme role — a chart's legend is not the same design problem as a button's background."
       ],
       "example": {
-        "css": ".chart-series--1 { fill: var(--ds-color-data-categorical-blue); }"
+        "css": ".chart-series--1 { fill: var(--rata-color-data-categorical-blue); }"
       }
     }
   }

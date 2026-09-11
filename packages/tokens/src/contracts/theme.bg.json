@@ -21,7 +21,7 @@
         "theme.fg.muted"
       ],
       "example": {
-        "css": "body { background: var(--ds-theme-bg-canvas); color: var(--ds-theme-fg-primary); }"
+        "css": "body { background: var(--rata-theme-bg-canvas); color: var(--rata-theme-fg-primary); }"
       }
     },
     "theme.bg.surface": {
@@ -48,7 +48,7 @@
         "A quiet section band inside a surface."
       ],
       "dont": [
-        "An interactive hover/press background — use .ds-state-layer instead of a static fill."
+        "An interactive hover/press background — use .rata-state-layer instead of a static fill."
       ],
       "pairsWith": [
         "theme.fg.primary",

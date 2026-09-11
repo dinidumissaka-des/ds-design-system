@@ -6,7 +6,7 @@
 An on/off setting that takes effect the moment it moves.
 
 ```tsx
-import { Switch } from "@ds/react";
+import { Switch } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { Switch } from "@ds/react";
 
 A native input[type=checkbox] carrying role="switch". The platform supplies Space-to-toggle, the checked state and form participation; the role changes only how it is announced — "Notifications, on" rather than "Notifications, checked".
 
-Headless contract: `getSwitchProps` in `packages/primitives/src/switch.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getSwitchProps` in `packages/primitives/src/switch.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **A setting, not a value waiting to be submitted** — This is the whole reason the component exists separately from Checkbox. A checkbox is a value you are about to submit with a form; a switch takes effect the moment it moves. Getting this wrong is worse than a styling mistake: a switch beside a Save button promises something the control does not do.
 - **role="switch" on a native checkbox, not a div** — The role is the only thing that has to change. Rebuilding the keyboard handling, the checked state and the form participation on a div is how a switch ends up not announcing its state, and there is nothing to gain from it.
@@ -275,7 +275,7 @@ A track the thumb slides along. The track's fill is the state, and the thumb's p
 | label font-size | `type.control.size.md` |
 | description color | `theme.fg.secondary` |
 | description font-size | `type.supporting.size` |
-| hover/press | `compose the .ds-state-layer class` |
+| hover/press | `compose the .rata-state-layer class` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — drawn on the track, and the offset is kept: a pill this small has no room for a flush ring to read as separate from its own edge` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 | transition | `motion.interactive.duration with motion.interactive.easing, on the thumb's transform and the track's fill` |

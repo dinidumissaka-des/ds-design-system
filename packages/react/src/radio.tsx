@@ -51,17 +51,17 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
 
   return (
     <div
-      className={cx("ds-radio", className)}
+      className={cx("rata-radio", className)}
       data-state={item.checked ? "checked" : "unchecked"}
       data-disabled={item["aria-disabled"] ? "" : undefined}
     >
-      <span className="ds-radio-control">
+      <span className="rata-radio-control">
         <input
           {...rest}
           {...item}
           id={id}
           aria-describedby={hasDescription ? descriptionId : undefined}
-          className="ds-radio-input"
+          className="rata-radio-input"
           ref={(node) => {
             group.registerItem(value, node);
             if (typeof ref === "function") ref(node);
@@ -69,17 +69,17 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
           }}
         />
         {/* Paint only: the input beside it carries every semantic. */}
-        <span className="ds-radio-circle" aria-hidden="true">
-          <span className="ds-radio-dot" />
+        <span className="rata-radio-circle" aria-hidden="true">
+          <span className="rata-radio-dot" />
         </span>
       </span>
 
-      <span className="ds-radio-text">
-        <label className="ds-radio-label" htmlFor={id}>
+      <span className="rata-radio-text">
+        <label className="rata-radio-label" htmlFor={id}>
           {label}
         </label>
         {hasDescription && (
-          <span className="ds-radio-description" id={descriptionId}>
+          <span className="rata-radio-description" id={descriptionId}>
             {description}
           </span>
         )}

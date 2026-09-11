@@ -6,7 +6,7 @@
 A person or entity's image, falling back to initials when there is none.
 
 ```tsx
-import { Avatar } from "@ds/react";
+import { Avatar } from "@rata/react";
 ```
 
 | | |

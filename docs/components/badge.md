@@ -6,7 +6,7 @@
 A small inline label for a status, a count, or a category.
 
 ```tsx
-import { Badge } from "@ds/react";
+import { Badge } from "@rata/react";
 ```
 
 | | |

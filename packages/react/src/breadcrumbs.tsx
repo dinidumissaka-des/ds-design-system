@@ -37,29 +37,29 @@ export function Breadcrumbs({
   ...rest
 }: BreadcrumbsProps) {
   return (
-    <nav {...rest} aria-label={label} className={cx("ds-breadcrumbs", className)}>
-      <ol className="ds-breadcrumbs-list">
+    <nav {...rest} aria-label={label} className={cx("rata-breadcrumbs", className)}>
+      <ol className="rata-breadcrumbs-list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
-            <li className="ds-breadcrumbs-item" key={`${item.label}-${index}`}>
+            <li className="rata-breadcrumbs-item" key={`${item.label}-${index}`}>
               {/* The last crumb is the page you are on: text with
                   aria-current, never a link back to itself. Its href is
                   dropped if one was passed, which the contract documents. */}
               {isLast || !item.href ? (
                 <span
-                  className={isLast ? "ds-breadcrumbs-current" : undefined}
+                  className={isLast ? "rata-breadcrumbs-current" : undefined}
                   aria-current={isLast ? "page" : undefined}
                 >
                   {item.label}
                 </span>
               ) : (
-                <a className="ds-breadcrumbs-link" href={item.href}>
+                <a className="rata-breadcrumbs-link" href={item.href}>
                   {item.label}
                 </a>
               )}
               {!isLast && (
-                <span className="ds-breadcrumbs-separator" aria-hidden="true">
+                <span className="rata-breadcrumbs-separator" aria-hidden="true">
                   {separator}
                 </span>
               )}

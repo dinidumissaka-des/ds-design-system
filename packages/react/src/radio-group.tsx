@@ -1,7 +1,7 @@
 import { Children, isValidElement, useCallback, useId, useMemo, useRef, useState } from "react";
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import { getRadioGroupProps } from "@ds/primitives";
-import type { ButtonGroupOrientation } from "@ds/primitives";
+import { getRadioGroupProps } from "@rata/primitives";
+import type { ButtonGroupOrientation } from "@rata/primitives";
 import { cx } from "./cx.js";
 import { RadioGroupContext } from "./radio-group-context.js";
 
@@ -104,9 +104,9 @@ export function RadioGroup({
 
   return (
     <RadioGroupContext.Provider value={context}>
-      <div className={cx("ds-radio-group", className)}>
-        {label && !labelledBy && <span className="ds-radio-group-label">{label}</span>}
-        <div {...rest} {...group.root} className="ds-radio-group-options">
+      <div className={cx("rata-radio-group", className)}>
+        {label && !labelledBy && <span className="rata-radio-group-label">{label}</span>}
+        <div {...rest} {...group.root} className="rata-radio-group-options">
           {children}
         </div>
       </div>

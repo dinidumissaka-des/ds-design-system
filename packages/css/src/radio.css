@@ -5,99 +5,99 @@
    Loaded after checkbox.css. The one thing that must differ before either is
    read is the shape: a circle says "one of these", a square says "any of
    these", and that distinction is doing real work for a user scanning a form. */
-.ds-radio {
+.rata-radio {
   display: flex;
   align-items: flex-start;
-  gap: var(--ds-space-gap-sm);
-  font-family: var(--ds-font-family-sans);
+  gap: var(--rata-space-gap-sm);
+  font-family: var(--rata-font-family-sans);
 }
 
-.ds-radio-control {
+.rata-radio-control {
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
-  block-size: calc(var(--ds-type-control-size-md) * var(--ds-type-control-line-height-md));
+  block-size: calc(var(--rata-type-control-size-md) * var(--rata-type-control-line-height-md));
   align-items: center;
 }
 
-.ds-radio-input {
+.rata-radio-input {
   position: absolute;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
-  margin: var(--ds-space-0);
+  margin: var(--rata-space-0);
   opacity: 0;
   cursor: pointer;
 }
 
-.ds-radio-circle {
+.rata-radio-circle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--ds-size-icon-md);
-  block-size: var(--ds-size-icon-md);
-  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  inline-size: var(--rata-size-icon-md);
+  block-size: var(--rata-size-icon-md);
+  border: var(--rata-border-default) solid var(--rata-theme-border-strong);
   /* Stated, not inherited from the consumer's reset: this rule sets an explicit
      size alongside a border, so under content-box it renders 2px larger than the
-     token says. @ds/css deliberately ships no global reset — a library has no
+     token says. @rata/css deliberately ships no global reset — a library has no
      business restyling a consumer's own elements — so each component that
      measures itself declares this. */
   box-sizing: border-box;
-  border-radius: var(--ds-radius-pill);
+  border-radius: var(--rata-radius-pill);
   pointer-events: none;
   transition:
-    background-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing),
-    border-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+    background-color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing),
+    border-color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing);
 }
 
 /* A radio is filled, not ticked: the dot is the mark. */
-.ds-radio-dot {
-  inline-size: var(--ds-space-gap-sm);
-  block-size: var(--ds-space-gap-sm);
-  border-radius: var(--ds-radius-pill);
-  background: var(--ds-theme-fg-on-accent);
+.rata-radio-dot {
+  inline-size: var(--rata-space-gap-sm);
+  block-size: var(--rata-space-gap-sm);
+  border-radius: var(--rata-radius-pill);
+  background: var(--rata-theme-fg-on-accent);
   transform: scale(0);
-  transition: transform var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+  transition: transform var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing);
 }
 
-.ds-radio[data-state="checked"] .ds-radio-circle {
-  background: var(--ds-theme-accent-role-bg);
-  border-color: var(--ds-theme-accent-role-bg);
+.rata-radio[data-state="checked"] .rata-radio-circle {
+  background: var(--rata-theme-accent-role-bg);
+  border-color: var(--rata-theme-accent-role-bg);
 }
 
-.ds-radio[data-state="checked"] .ds-radio-dot {
+.rata-radio[data-state="checked"] .rata-radio-dot {
   transform: scale(1);
 }
 
-.ds-radio-input:focus-visible + .ds-radio-circle {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+.rata-radio-input:focus-visible + .rata-radio-circle {
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
-.ds-radio-text {
+.rata-radio-text {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-stack-2xs);
+  gap: var(--rata-space-stack-2xs);
 }
 
-.ds-radio-label {
-  color: var(--ds-theme-fg-primary);
-  font-size: var(--ds-type-control-size-md);
-  line-height: var(--ds-type-control-line-height-md);
+.rata-radio-label {
+  color: var(--rata-theme-fg-primary);
+  font-size: var(--rata-type-control-size-md);
+  line-height: var(--rata-type-control-line-height-md);
   cursor: pointer;
 }
 
-.ds-radio-description {
-  color: var(--ds-theme-fg-secondary);
-  font-size: var(--ds-type-supporting-size);
-  line-height: var(--ds-type-supporting-line-height);
+.rata-radio-description {
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-supporting-size);
+  line-height: var(--rata-type-supporting-line-height);
 }
 
-.ds-radio[data-disabled] {
-  opacity: var(--ds-state-disabled-opacity);
+.rata-radio[data-disabled] {
+  opacity: var(--rata-state-disabled-opacity);
 }
 
-.ds-radio[data-disabled] .ds-radio-input,
-.ds-radio[data-disabled] .ds-radio-label {
+.rata-radio[data-disabled] .rata-radio-input,
+.rata-radio[data-disabled] .rata-radio-label {
   cursor: not-allowed;
 }

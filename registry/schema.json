@@ -62,7 +62,7 @@
           },
           "target": {
             "type": "string",
-            "description": "Path relative to the consumer's ds directory"
+            "description": "Path relative to the consumer's rata directory"
           }
         }
       }

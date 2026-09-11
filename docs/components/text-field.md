@@ -6,7 +6,7 @@
 Single-line text input with label, helper text, and validation states.
 
 ```tsx
-import { InputTextfield } from "@ds/react";
+import { InputTextfield } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { InputTextfield } from "@ds/react";
 
 Label/description/message association, validation semantics, and the disabled contract — independent of React and of any styling. The caller owns the `id`; the description and message ids are derived from it, so association cannot be hand-wired wrong.
 
-Headless contract: `getTextFieldProps` in `packages/primitives/src/text-field.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getTextFieldProps` in `packages/primitives/src/text-field.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **`readOnly` is the disabled mechanism, not the native `disabled` attribute** — Consistent with the system-wide rule that disabled controls stay focusable and screen-reader discoverable. A button blocks activation in its click guard; an input has no activation to guard, so `readOnly` is the analogue. Consequence to know: a readOnly field still submits its value, where a disabled one does not.
 - **One four-state `status` enum rather than separate booleans** — `idle | validating | valid | invalid` maps one-to-one onto the four ring mappings in the token recipe, and drives `aria-invalid` and `aria-busy`. Separate `invalid`/`validating` booleans would make contradictory combinations expressible.

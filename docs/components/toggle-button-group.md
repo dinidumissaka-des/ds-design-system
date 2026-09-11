@@ -6,7 +6,7 @@
 A set of toggle buttons that holds a value: one choice out of several, or any number of independent states.
 
 ```tsx
-import { ToggleButtonGroup } from "@ds/react";
+import { ToggleButtonGroup } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { ToggleButtonGroup } from "@ds/react";
 
 Selection state, the ARIA pattern that state implies, and — in single mode — roving focus with arrow-key navigation. Nothing here touches the DOM: where the radio pattern requires focus to move, the primitive reports which value should receive it and the wrapper does the focusing.
 
-Headless contract: `getToggleButtonGroupProps` in `packages/primitives/src/toggle-button-group.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getToggleButtonGroupProps` in `packages/primitives/src/toggle-button-group.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **The selection mode picks the ARIA pattern: `single` is a radiogroup, `multiple` is a group of pressed toggles** — They are different controls wearing the same clothes. "One of these" is a radio group, and announcing it as one is what tells a screen-reader user how many options there are and which is chosen. "Any of these" is a set of independent toggles, and forcing it into radio semantics would claim the options are mutually exclusive when they are not.
 - **Focus behaviour differs between the two modes, deliberately** — Single mode is one tab stop with arrow keys between options, because that is the radio pattern and users of radio groups expect it. Multiple mode gives every item its own tab stop, consistent with `button-group` and with every other button in this system. The inconsistency is the ARIA patterns', not ours — matching them is what makes each mode behave the way its users already know.

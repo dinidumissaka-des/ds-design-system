@@ -190,7 +190,7 @@
         "label font-size": "type.control.size.md",
         "description color": "theme.fg.secondary",
         "description font-size": "type.supporting.size",
-        "hover/press": "compose the .ds-state-layer class",
+        "hover/press": "compose the .rata-state-layer class",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — drawn on the track, and the offset is kept: a pill this small has no room for a flush ring to read as separate from its own edge",
         "opacity (aria-disabled)": "state.disabled-opacity",
         "transition": "motion.interactive.duration with motion.interactive.easing, on the thumb's transform and the track's fill"

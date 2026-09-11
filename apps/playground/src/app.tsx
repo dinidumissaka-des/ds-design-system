@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button } from "@ds/react";
-import { tokens } from "@ds/tokens";
+import { Button } from "@rata/react";
+import { tokens } from "@rata/tokens";
 import { TokenDoc, FamilyDoc, ContrastPage, RecipeList } from "./token-docs.js";
 import { ComponentIndex, ComponentPage, contracts, contractsByName } from "./component-page.js";
 import { componentName, componentPage, hrefFor, parseLocation } from "./routing.js";
@@ -62,7 +62,7 @@ const NAV: NavItem[] = [
 // ---- Token preview helpers ---------------------------------------------
 // Everything below reads straight from the built `tokens` object (light-theme
 // values, static) except theme semantics (color + elevation), which render
-// via var(--ds-theme-*) so they stay theme-reactive when the toggle above is used.
+// via var(--rata-theme-*) so they stay theme-reactive when the toggle above is used.
 
 // Every swatch is a button that opens its contract in the inspector rail.
 // A swatch shows what a token looks like; the contract is the only place that
@@ -80,7 +80,7 @@ function SwatchButton({
   return (
     <button
       type="button"
-      className="pg-swatch-button ds-state-layer ds-state-layer--flush"
+      className="pg-swatch-button rata-state-layer rata-state-layer--flush"
       onClick={() => onInspect(path)}
       aria-label={`Documentation for ${path}`}
     >
@@ -138,7 +138,7 @@ function ColorRamp({
   onInspect: (path: string) => void;
 }) {
   const steps = Object.keys(ramp);
-  const varFor = (step: string) => `--ds-${basePath.replaceAll(".", "-")}-${step}`;
+  const varFor = (step: string) => `--rata-${basePath.replaceAll(".", "-")}-${step}`;
   const applied = useComputedVars(
     steps.map(varFor),
     revision
@@ -185,7 +185,7 @@ function SemanticSwatches({
       <div className="pg-swatches">
         {keys.map((key) => (
           <SwatchButton key={key} path={`theme.${cssVarPrefix}.${key}`} onInspect={onInspect}>
-            <div className="pg-swatch" style={{ background: `var(--ds-theme-${cssVarPrefix}-${key})` }} />
+            <div className="pg-swatch" style={{ background: `var(--rata-theme-${cssVarPrefix}-${key})` }} />
             <div className="pg-swatch-name">{key}</div>
           </SwatchButton>
         ))}
@@ -211,7 +211,7 @@ function ElevationSwatches({
           <SwatchButton key={key} path={`theme.elevation.${key}`} onInspect={onInspect}>
             <div
               className="pg-swatch pg-swatch--elevation"
-              style={{ boxShadow: `var(--ds-theme-elevation-${key})` }}
+              style={{ boxShadow: `var(--rata-theme-elevation-${key})` }}
             />
             <div className="pg-swatch-name">{key}</div>
           </SwatchButton>
@@ -241,7 +241,7 @@ function RingSwatches({
           <SwatchButton key={role} path={`theme.${role}.ring`} onInspect={onInspect}>
             <div
               className="pg-swatch pg-swatch--elevation"
-              style={{ boxShadow: `var(--ds-theme-${role}-ring)` }}
+              style={{ boxShadow: `var(--rata-theme-${role}-ring)` }}
             />
             <div className="pg-swatch-name">{role}</div>
           </SwatchButton>
@@ -431,7 +431,7 @@ export function App() {
   return (
     <div className="pg-app">
       <header className="pg-header">
-        <h1>DS Playground</h1>
+        <h1>Ratā</h1>
         <div className="pg-header-tools">
           {/* The accent seed drives every generated colour token, so it sits
               next to the scheme toggle: both re-theme the whole page, and
@@ -580,7 +580,7 @@ export function App() {
                   <div className="pg-ramp-title">focus-ring</div>
                   <div className="pg-swatches">
                     <SwatchButton path="theme.focus-ring" onInspect={setInspecting}>
-                      <div className="pg-swatch" style={{ background: "var(--ds-theme-focus-ring)" }} />
+                      <div className="pg-swatch" style={{ background: "var(--rata-theme-focus-ring)" }} />
                       <div className="pg-swatch-name">focus-ring</div>
                     </SwatchButton>
                   </div>

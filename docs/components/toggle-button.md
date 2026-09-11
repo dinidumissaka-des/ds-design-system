@@ -6,7 +6,7 @@
 A button that stays on: an on/off state the user sets directly, announced with aria-pressed.
 
 ```tsx
-import { ToggleButton } from "@ds/react";
+import { ToggleButton } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { ToggleButton } from "@ds/react";
 
 Pressed-state semantics over the button's own activation contract. State is not held here: the caller owns `pressed` and is told what it should become, which is what lets a toggle inside a group and a toggle on its own be the same primitive.
 
-Headless contract: `getToggleButtonProps` in `packages/primitives/src/toggle-button.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getToggleButtonProps` in `packages/primitives/src/toggle-button.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **Composes `getButtonProps` instead of reimplementing activation** — A toggle is a button that carries a state. Implementing the disabled and loading guards a second time is how the two drift apart — one gains a fix the other doesn't, and the difference only shows up in whichever one nobody tested.
 - **`aria-pressed` is emitted in both states, never omitted when false** — Unlike `aria-disabled`, which is absent when it doesn't apply, a missing `aria-pressed` makes the control announce as an ordinary button — precisely when the user most needs to know it is a toggle that is currently off.
@@ -293,7 +293,7 @@ The off state of a toggle that has to read as a control on its own — identical
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| hover/press | `compose the .ds-state-layer class — do not swap the background` |
+| hover/press | `compose the .rata-state-layer class — do not swap the background` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 
 ### secondary-pressed
@@ -315,7 +315,7 @@ The on state: a tint, not a fill. A saturated accent background reads as "the ac
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| hover/press | `compose the .ds-state-layer class — do not swap the background` |
+| hover/press | `compose the .rata-state-layer class — do not swap the background` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 
 ### tertiary
@@ -337,7 +337,7 @@ The off state for a toolbar of many toggles, where a border each would be visual
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| hover/press | `compose the .ds-state-layer class — do not swap the background` |
+| hover/press | `compose the .rata-state-layer class — do not swap the background` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 
 ### tertiary-pressed
@@ -359,5 +359,5 @@ The on state of a borderless toggle: the tint alone separates it from its unpres
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| hover/press | `compose the .ds-state-layer class — do not swap the background` |
+| hover/press | `compose the .rata-state-layer class — do not swap the background` |
 | opacity (aria-disabled) | `state.disabled-opacity` |

@@ -25,7 +25,7 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-} from "@ds/react";
+} from "@rata/react";
 import type {
   AvatarSize,
   BadgeVariant,
@@ -37,8 +37,8 @@ import type {
   ButtonVariant,
   ToggleButtonSize,
   ToggleButtonVariant,
-} from "@ds/react";
-import type { IconSize } from "@ds/icons";
+} from "@rata/react";
+import type { IconSize } from "@rata/icons";
 import {
   Icon,
   Settings,
@@ -52,7 +52,7 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-} from "@ds/icons";
+} from "@rata/icons";
 import { COMPONENT_TABS, componentPage, hrefFor } from "./routing.js";
 import type { ComponentTab, Page } from "./routing.js";
 import contractsJson from "../../../docs/components/contracts.json";
@@ -143,7 +143,7 @@ const DEMOS: Record<string, () => ReactNode> = {
   "state-layer": () => (
     <div className="pg-row">
       <span className="pg-row-label">hover / press</span>
-      <button type="button" className="pg-demo-surface ds-state-layer">
+      <button type="button" className="pg-demo-surface rata-state-layer">
         Composed onto any element
       </button>
     </div>
@@ -1024,7 +1024,7 @@ function PropsStage({
       <div className="pg-stage-canvas">
         <button
           type="button"
-          className="pg-stage-code-toggle ds-state-layer ds-state-layer--flush"
+          className="pg-stage-code-toggle rata-state-layer rata-state-layer--flush"
           aria-expanded={showCode}
           aria-label={showCode ? "Hide JSX" : "Show JSX"}
           onClick={() => setShowCode((open) => !open)}
@@ -1560,7 +1560,7 @@ function AccessibilityTab({ contract }: { contract: Contract }) {
             <p className="pg-note">
               Headless contract: <code>{contract.behavior.primitive}</code> in{" "}
               <code>packages/primitives/src/{contract.name}.ts</code> — importable from{" "}
-              <code>@ds/primitives</code> without the React wrapper or any CSS.
+              <code>@rata/primitives</code> without the React wrapper or any CSS.
             </p>
           )}
           {decisions.map((decision) => (

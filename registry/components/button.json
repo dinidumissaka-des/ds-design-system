@@ -153,7 +153,7 @@
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background"
+        "hover/press": "compose the .rata-state-layer class — do not swap the background"
       }
     },
     "secondary": {
@@ -164,7 +164,7 @@
         "border-color": "theme.secondary-role.border",
         "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
         "border-radius": "radius.element",
-        "hover/press": "compose the .ds-state-layer class"
+        "hover/press": "compose the .rata-state-layer class"
       }
     },
     "destructive": {
@@ -174,7 +174,7 @@
         "color": "theme.fg.on-accent",
         "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
         "border-radius": "radius.element",
-        "hover/press": "compose the .ds-state-layer class"
+        "hover/press": "compose the .rata-state-layer class"
       }
     }
   }

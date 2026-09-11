@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useId, useRef, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
-import { getCheckboxProps } from "@ds/primitives";
+import { getCheckboxProps } from "@rata/primitives";
 import { cx } from "./cx.js";
 
 export interface CheckboxProps
@@ -100,15 +100,15 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 
   return (
     <div
-      className={cx("ds-checkbox", className)}
+      className={cx("rata-checkbox", className)}
       data-label-hidden={labelHidden ? "" : undefined}
       {...field.root}
     >
-      <span className="ds-checkbox-control">
+      <span className="rata-checkbox-control">
         <input
           {...rest}
           {...field.input}
-          className="ds-checkbox-input"
+          className="rata-checkbox-input"
           ref={(node) => {
             inputRef.current = node;
             if (typeof ref === "function") ref(node);
@@ -116,25 +116,25 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           }}
         />
         {/* Paint only: the input beside it carries every semantic. */}
-        <span className="ds-checkbox-box" aria-hidden="true">
+        <span className="rata-checkbox-box" aria-hidden="true">
           {indeterminate ? <IndeterminateMark /> : current ? <CheckMark /> : null}
         </span>
       </span>
 
-      <span className="ds-checkbox-text">
+      <span className="rata-checkbox-text">
         <label
-          className={cx("ds-checkbox-label", labelHidden && "ds-checkbox-label--hidden")}
+          className={cx("rata-checkbox-label", labelHidden && "rata-checkbox-label--hidden")}
           {...field.label}
         >
           {label}
           {required && (
-            <span className="ds-checkbox-required" aria-hidden="true">
+            <span className="rata-checkbox-required" aria-hidden="true">
               {" *"}
             </span>
           )}
         </label>
         {description !== undefined && description !== "" && (
-          <span className="ds-checkbox-description" {...field.description}>
+          <span className="rata-checkbox-description" {...field.description}>
             {description}
           </span>
         )}
@@ -143,10 +143,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
   );
 });
 
-/** Inline rather than from @ds/icons: @ds/react must not depend on the icon set. */
+/** Inline rather than from @rata/icons: @rata/react must not depend on the icon set. */
 function CheckMark() {
   return (
-    <svg className="ds-checkbox-mark" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg className="rata-checkbox-mark" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path
         d="M3.5 8.5l3 3 6-7"
         stroke="currentColor"
@@ -161,7 +161,7 @@ function CheckMark() {
 /** A bar, not a tick: the state is "partly checked", and the shape says so. */
 function IndeterminateMark() {
   return (
-    <svg className="ds-checkbox-mark" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg className="rata-checkbox-mark" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M4 8h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );

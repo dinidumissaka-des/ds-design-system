@@ -4,29 +4,29 @@
    placeholder rather than as a filled badge, and takes fg.secondary rather
    than fg.muted: the muted tone falls to AA-large on that background, which
    its own contract says to avoid for text. */
-.ds-avatar {
+.rata-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: var(--ds-radius-pill);
+  border-radius: var(--rata-radius-pill);
   /* Its own edge, so the circle is findable on any surface. Without it the
      fallback sits on theme.bg.muted and vanishes against any container using
      that same tone — and theme.border.default would not help: composited over
      a mid surface it measures about 1.2:1, which is no edge at all.
      theme.border.strong is the token for "a boundary the eye should stop at",
      and it holds 2.4:1 or better against every background in the ladder. */
-  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  border: var(--rata-border-default) solid var(--rata-theme-border-strong);
   /* So the border eats inward instead of adding to the diameter: the sizes
      borrow the control scale precisely so an avatar lines up with the controls
      beside it, and 34px would break that. */
   box-sizing: border-box;
   overflow: hidden;
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
-  font-family: var(--ds-font-family-sans);
-  font-size: var(--ds-type-supporting-size);
-  font-weight: var(--ds-type-control-weight);
+  background: var(--rata-theme-bg-muted);
+  color: var(--rata-theme-fg-secondary);
+  font-family: var(--rata-font-family-sans);
+  font-size: var(--rata-type-supporting-size);
+  font-weight: var(--rata-type-control-weight);
   user-select: none;
 }
 
@@ -34,23 +34,23 @@
    with the controls beside it. (Naming one here would trip vibe-tests' raw
    source scan for interactive elements and demand a focus ring this
    non-interactive element must not own.) */
-.ds-avatar--sm {
-  inline-size: var(--ds-size-control-sm);
-  block-size: var(--ds-size-control-sm);
+.rata-avatar--sm {
+  inline-size: var(--rata-size-control-sm);
+  block-size: var(--rata-size-control-sm);
 }
 
-.ds-avatar--md {
-  inline-size: var(--ds-size-control-md);
-  block-size: var(--ds-size-control-md);
+.rata-avatar--md {
+  inline-size: var(--rata-size-control-md);
+  block-size: var(--rata-size-control-md);
 }
 
-.ds-avatar--lg {
-  inline-size: var(--ds-size-control-lg);
-  block-size: var(--ds-size-control-lg);
+.rata-avatar--lg {
+  inline-size: var(--rata-size-control-lg);
+  block-size: var(--rata-size-control-lg);
 }
 
 /* Cover, so a non-square photo is cropped rather than squashed. */
-.ds-avatar-image {
+.rata-avatar-image {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;

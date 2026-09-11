@@ -6,7 +6,7 @@
 A set of radios holding one answer, with the group owning the name, the value and the focus model.
 
 ```tsx
-import { RadioGroup } from "@ds/react";
+import { RadioGroup } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { RadioGroup } from "@ds/react";
 
 The radiogroup pattern: one tab stop, arrow keys that move and select, and a single value owned here rather than by any item. Native inputs carry the semantics; this decides which one is checked and which one is the tab stop.
 
-Headless contract: `getRadioGroupProps` in `packages/primitives/src/radio-group.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getRadioGroupProps` in `packages/primitives/src/radio-group.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **The group owns the value, not the items** — A radio's whole meaning is 'one of these'. Leaving the value on the item would let two claim to be checked, which is a state the control is supposed to make impossible.
 - **Native input[type=radio] sharing one `name`** — Grouping, arrow-key behaviour and form submission all come from the platform when the name is shared. Re-implementing them on divs is how a radio group ends up not announcing how many options it has.

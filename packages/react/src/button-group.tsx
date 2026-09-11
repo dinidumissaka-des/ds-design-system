@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
-import { getButtonGroupProps } from "@ds/primitives";
-import type { ButtonGroupOrientation } from "@ds/primitives";
+import { getButtonGroupProps } from "@rata/primitives";
+import type { ButtonGroupOrientation } from "@rata/primitives";
 import { cx } from "./cx.js";
 
 export type { ButtonGroupOrientation };
@@ -30,7 +30,7 @@ export function ButtonGroup({
     <div
       {...rest}
       {...group}
-      className={cx("ds-button-group", attached && "ds-button-group--attached", className)}
+      className={cx("rata-button-group", attached && "rata-button-group--attached", className)}
     >
       {children}
     </div>

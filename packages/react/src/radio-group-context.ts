@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { RadioGroupItemProps } from "@ds/primitives";
+import type { RadioGroupItemProps } from "@rata/primitives";
 
 /**
  * How a `Radio` learns which group it belongs to.

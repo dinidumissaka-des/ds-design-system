@@ -27,8 +27,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
  */
 export function Badge({ children, variant = "neutral", dot, className, ...rest }: BadgeProps) {
   return (
-    <span {...rest} className={cx("ds-badge", `ds-badge--${variant}`, className)}>
-      {dot && <span className="ds-badge-dot" aria-hidden="true" />}
+    <span {...rest} className={cx("rata-badge", `rata-badge--${variant}`, className)}>
+      {dot && <span className="rata-badge-dot" aria-hidden="true" />}
       {children}
     </span>
   );

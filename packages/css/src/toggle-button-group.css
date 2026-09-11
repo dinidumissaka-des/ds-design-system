@@ -1,4 +1,4 @@
-/* ds-allow: missing-focus-ring — this is a container. Every focus ring here
+/* rata-allow: missing-focus-ring — this is a container. Every focus ring here
    belongs to an option inside it, and drawing a second one around the group
    would double the indicator. The checker's heuristic sees "button" in these
    class names and expects the component to own a ring. */
@@ -10,12 +10,12 @@
    Geometry only. Which option looks selected is toggle-button's own business:
    it styles [aria-pressed="true"] and [aria-checked="true"], and the group's
    only job is to say which is which through the primitive. */
-.ds-toggle-button-group {
+.rata-toggle-button-group {
   display: inline-flex;
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
 }
 
-.ds-toggle-button-group[data-orientation="vertical"] {
+.rata-toggle-button-group[data-orientation="vertical"] {
   flex-direction: column;
   align-items: stretch;
 }
@@ -23,57 +23,57 @@
 /* Attached — the default for this component, unlike button-group. The options
    answer one question, so the gaps close, the inner corners square off, and
    adjacent borders collapse into a single stroke. */
-.ds-toggle-button-group--attached {
-  gap: var(--ds-space-0);
+.rata-toggle-button-group--attached {
+  gap: var(--rata-space-0);
 }
 
-.ds-toggle-button-group--attached > * {
+.rata-toggle-button-group--attached > * {
   /* Needed for the focus z-index below. The options already have it from
-     .ds-state-layer, but the group must not depend on what its children
+     .rata-state-layer, but the group must not depend on what its children
      happen to compose. */
   position: relative;
-  border-radius: var(--ds-radius-none);
+  border-radius: var(--rata-radius-none);
 }
 
 /* A focused option's ring would otherwise be clipped by the neighbour whose
    collapsed border overlaps it. */
-.ds-toggle-button-group--attached > :focus-visible {
+.rata-toggle-button-group--attached > :focus-visible {
   z-index: 1;
 }
 
 /* A selected option sits above its neighbours too: its border is part of how
    the selection reads, and a neighbour's collapsed border would cut into it. */
-.ds-toggle-button-group--attached > [aria-checked="true"],
-.ds-toggle-button-group--attached > [aria-pressed="true"] {
+.rata-toggle-button-group--attached > [aria-checked="true"],
+.rata-toggle-button-group--attached > [aria-pressed="true"] {
   z-index: 1;
 }
 
 /* Logical properties throughout, so an attached group flips correctly in RTL
    without a second set of rules. */
-.ds-toggle-button-group--attached[data-orientation="horizontal"] > * + * {
-  margin-inline-start: calc(-1 * var(--ds-border-1));
+.rata-toggle-button-group--attached[data-orientation="horizontal"] > * + * {
+  margin-inline-start: calc(-1 * var(--rata-border-1));
 }
 
-.ds-toggle-button-group--attached[data-orientation="horizontal"] > :first-child {
-  border-start-start-radius: var(--ds-radius-element);
-  border-end-start-radius: var(--ds-radius-element);
+.rata-toggle-button-group--attached[data-orientation="horizontal"] > :first-child {
+  border-start-start-radius: var(--rata-radius-element);
+  border-end-start-radius: var(--rata-radius-element);
 }
 
-.ds-toggle-button-group--attached[data-orientation="horizontal"] > :last-child {
-  border-start-end-radius: var(--ds-radius-element);
-  border-end-end-radius: var(--ds-radius-element);
+.rata-toggle-button-group--attached[data-orientation="horizontal"] > :last-child {
+  border-start-end-radius: var(--rata-radius-element);
+  border-end-end-radius: var(--rata-radius-element);
 }
 
-.ds-toggle-button-group--attached[data-orientation="vertical"] > * + * {
-  margin-block-start: calc(-1 * var(--ds-border-1));
+.rata-toggle-button-group--attached[data-orientation="vertical"] > * + * {
+  margin-block-start: calc(-1 * var(--rata-border-1));
 }
 
-.ds-toggle-button-group--attached[data-orientation="vertical"] > :first-child {
-  border-start-start-radius: var(--ds-radius-element);
-  border-start-end-radius: var(--ds-radius-element);
+.rata-toggle-button-group--attached[data-orientation="vertical"] > :first-child {
+  border-start-start-radius: var(--rata-radius-element);
+  border-start-end-radius: var(--rata-radius-element);
 }
 
-.ds-toggle-button-group--attached[data-orientation="vertical"] > :last-child {
-  border-end-start-radius: var(--ds-radius-element);
-  border-end-end-radius: var(--ds-radius-element);
+.rata-toggle-button-group--attached[data-orientation="vertical"] > :last-child {
+  border-end-start-radius: var(--rata-radius-element);
+  border-end-end-radius: var(--rata-radius-element);
 }

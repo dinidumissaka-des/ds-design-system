@@ -7,14 +7,14 @@
 
    States come from the primitive's data-state on the root, so nothing here
    depends on a class the caller has to remember. */
-.ds-checkbox {
+.rata-checkbox {
   display: flex;
   align-items: flex-start;
-  gap: var(--ds-space-gap-sm);
-  font-family: var(--ds-font-family-sans);
+  gap: var(--rata-space-gap-sm);
+  font-family: var(--rata-font-family-sans);
 }
 
-.ds-checkbox-control {
+.rata-checkbox-control {
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
@@ -25,52 +25,52 @@
      The line-height token is a unitless *ratio*, so it is not a length on its
      own: `block-size: 1.4286` is invalid and the browser silently drops the
      declaration. Multiplied by the font size it is the 20px a line occupies. */
-  block-size: calc(var(--ds-type-control-size-md) * var(--ds-type-control-line-height-md));
+  block-size: calc(var(--rata-type-control-size-md) * var(--rata-type-control-line-height-md));
   align-items: center;
 }
 
-.ds-checkbox-input {
+.rata-checkbox-input {
   position: absolute;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
-  margin: var(--ds-space-0);
+  margin: var(--rata-space-0);
   opacity: 0;
   cursor: pointer;
 }
 
 /* The box is sized to the glyph it holds, so it takes the icon scale — the
    control scale is a row height and would dwarf it. */
-.ds-checkbox-box {
+.rata-checkbox-box {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--ds-size-icon-md);
-  block-size: var(--ds-size-icon-md);
-  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  inline-size: var(--rata-size-icon-md);
+  block-size: var(--rata-size-icon-md);
+  border: var(--rata-border-default) solid var(--rata-theme-border-strong);
   /* Stated, not inherited from the consumer's reset: this rule sets an explicit
      size alongside a border, so under content-box it renders 2px larger than the
-     token says. @ds/css deliberately ships no global reset — a library has no
+     token says. @rata/css deliberately ships no global reset — a library has no
      business restyling a consumer's own elements — so each component that
      measures itself declares this. */
   box-sizing: border-box;
-  border-radius: var(--ds-radius-inner);
-  color: var(--ds-theme-fg-on-accent);
+  border-radius: var(--rata-radius-inner);
+  color: var(--rata-theme-fg-on-accent);
   pointer-events: none;
   transition:
-    background-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing),
-    border-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+    background-color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing),
+    border-color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing);
 }
 
 /* Both filled states wear the same fill: "partly checked" is a degree of
    checked, not a third colour. Only the mark inside differs. */
-.ds-checkbox[data-state="checked"] .ds-checkbox-box,
-.ds-checkbox[data-state="indeterminate"] .ds-checkbox-box {
-  background: var(--ds-theme-accent-role-bg);
-  border-color: var(--ds-theme-accent-role-bg);
+.rata-checkbox[data-state="checked"] .rata-checkbox-box,
+.rata-checkbox[data-state="indeterminate"] .rata-checkbox-box {
+  background: var(--rata-theme-accent-role-bg);
+  border-color: var(--rata-theme-accent-role-bg);
 }
 
-.ds-checkbox-mark {
+.rata-checkbox-mark {
   inline-size: 100%;
   block-size: 100%;
 }
@@ -78,27 +78,27 @@
 /* Drawn on the input, shown on the box — the focusable thing and the painted
    thing are different elements. The offset is kept: at 20px the box has no
    room for a flush ring to read as separate from its own border. */
-.ds-checkbox-input:focus-visible + .ds-checkbox-box {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+.rata-checkbox-input:focus-visible + .rata-checkbox-box {
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
-.ds-checkbox-text {
+.rata-checkbox-text {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-stack-2xs);
+  gap: var(--rata-space-stack-2xs);
 }
 
 /* Nothing visible to lay out beside the box, so the row does not reserve a
    text column for it. The label element is still in there, clipped. */
-.ds-checkbox[data-label-hidden] {
-  gap: var(--ds-space-0);
+.rata-checkbox[data-label-hidden] {
+  gap: var(--rata-space-0);
 }
 
-.ds-checkbox-label {
-  color: var(--ds-theme-fg-primary);
-  font-size: var(--ds-type-control-size-md);
-  line-height: var(--ds-type-control-line-height-md);
+.rata-checkbox-label {
+  color: var(--rata-theme-fg-primary);
+  font-size: var(--rata-type-control-size-md);
+  line-height: var(--rata-type-control-line-height-md);
   cursor: pointer;
 }
 
@@ -111,35 +111,35 @@
    NOTE: this is the same recipe text-field uses for its own hidden label. Two
    copies is the point at which it wants to be a shared `visually-hidden`
    utility rather than a rule per component. */
-.ds-checkbox-label--hidden {
+.rata-checkbox-label--hidden {
   position: absolute;
-  inline-size: var(--ds-border-1);
-  block-size: var(--ds-border-1);
-  margin: calc(-1 * var(--ds-border-1));
-  padding: var(--ds-space-0);
+  inline-size: var(--rata-border-1);
+  block-size: var(--rata-border-1);
+  margin: calc(-1 * var(--rata-border-1));
+  padding: var(--rata-space-0);
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-  border: var(--ds-space-0);
+  border: var(--rata-space-0);
 }
 
-.ds-checkbox-required {
-  color: var(--ds-theme-fg-secondary);
+.rata-checkbox-required {
+  color: var(--rata-theme-fg-secondary);
 }
 
-.ds-checkbox-description {
-  color: var(--ds-theme-fg-secondary);
-  font-size: var(--ds-type-supporting-size);
-  line-height: var(--ds-type-supporting-line-height);
+.rata-checkbox-description {
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-supporting-size);
+  line-height: var(--rata-type-supporting-line-height);
 }
 
 /* aria-disabled with a guarded activation, never the native attribute: the box
    stays focusable and keeps announcing its state. */
-.ds-checkbox[data-disabled] {
-  opacity: var(--ds-state-disabled-opacity);
+.rata-checkbox[data-disabled] {
+  opacity: var(--rata-state-disabled-opacity);
 }
 
-.ds-checkbox[data-disabled] .ds-checkbox-input,
-.ds-checkbox[data-disabled] .ds-checkbox-label {
+.rata-checkbox[data-disabled] .rata-checkbox-input,
+.rata-checkbox[data-disabled] .rata-checkbox-label {
   cursor: not-allowed;
 }

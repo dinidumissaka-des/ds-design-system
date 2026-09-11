@@ -4,7 +4,7 @@
 # Component contracts
 
 One page per component, generated from that component's registry manifest
-(the written half — what each prop is for) and its `@ds/react` source (the
+(the written half — what each prop is for) and its `@rata/react` source (the
 derived half — names, types, defaults). The build fails if the two disagree.
 
 `mode` is `documented` when the component is implemented and both halves are

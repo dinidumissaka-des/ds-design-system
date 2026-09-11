@@ -55,7 +55,7 @@ export function Avatar({
 
   return (
     <span
-      className={cx("ds-avatar", `ds-avatar--${size}`, className)}
+      className={cx("rata-avatar", `rata-avatar--${size}`, className)}
       // Decorative means a name is already on screen beside it, so announcing
       // it again is noise. Standalone, the avatar is the only thing
       // identifying this person and must carry the name.
@@ -67,7 +67,7 @@ export function Avatar({
       {showImage ? (
         <img
           {...rest}
-          className="ds-avatar-image"
+          className="rata-avatar-image"
           src={src}
           // The wrapper carries the name, so the image itself never repeats it.
           alt=""

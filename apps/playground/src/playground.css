@@ -4,20 +4,20 @@
 
 body {
   margin: 0;
-  font-family: var(--ds-font-family-sans);
-  background: var(--ds-theme-bg-canvas);
-  color: var(--ds-theme-fg-primary);
-  font-size: var(--ds-type-body-size);
-  font-weight: var(--ds-type-body-weight);
-  line-height: var(--ds-type-body-line-height);
+  font-family: var(--rata-font-family-sans);
+  background: var(--rata-theme-bg-canvas);
+  color: var(--rata-theme-fg-primary);
+  font-size: var(--rata-type-body-size);
+  font-weight: var(--rata-type-body-weight);
+  line-height: var(--rata-type-body-line-height);
 }
 
 /* Browsers default `code` to their own monospace family at a smaller size than
    the surrounding text; this is the system's mono face at the body size, so
    inline code sits on the same line rhythm as the prose around it. */
 code {
-  font-family: var(--ds-font-family-mono);
-  font-size: var(--ds-type-body-size);
+  font-family: var(--rata-font-family-mono);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-app {
@@ -28,8 +28,8 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--ds-space-4) var(--ds-space-page-gutter);
-  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+  padding: var(--rata-space-4) var(--rata-space-page-gutter);
+  border-bottom: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-layout {
@@ -46,35 +46,35 @@ code {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-gap-md);
-  padding: var(--ds-space-page-block-start) var(--ds-space-4);
-  border-right: var(--ds-border-1) solid var(--ds-theme-border-default);
+  gap: var(--rata-space-gap-md);
+  padding: var(--rata-space-page-block-start) var(--rata-space-4);
+  border-right: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-search {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-gap-xs);
-  padding: var(--ds-space-2) var(--ds-space-3);
-  border-radius: var(--ds-radius-pill);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  background: var(--ds-theme-bg-surface);
+  gap: var(--rata-space-gap-xs);
+  padding: var(--rata-space-2) var(--rata-space-3);
+  border-radius: var(--rata-radius-pill);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  background: var(--rata-theme-bg-surface);
 }
 
 /* The input's own outline is suppressed below (a pill-shaped container needs
    the ring drawn on the container, not clipped to the input's own box) — the
    ring still needs to land somewhere, so it lands here on :focus-within. */
 .pg-search:focus-within {
-  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) solid var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 .pg-search-icon {
-  color: var(--ds-theme-fg-muted);
-  font-size: var(--ds-type-body-size);
+  color: var(--rata-theme-fg-muted);
+  font-size: var(--rata-type-body-size);
 }
 
-/* ds-allow: focus-removed — the ring moves to .pg-search:focus-within above,
+/* rata-allow: focus-removed — the ring moves to .pg-search:focus-within above,
    not dropped: a pill-shaped container needs the ring on its own box. */
 .pg-search-input {
   flex: 1;
@@ -82,13 +82,13 @@ code {
   border: none;
   background: none;
   outline: none;
-  color: var(--ds-theme-fg-primary);
+  color: var(--rata-theme-fg-primary);
   font-family: inherit;
-  font-size: var(--ds-type-body-size);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-search-input::placeholder {
-  color: var(--ds-theme-fg-muted);
+  color: var(--rata-theme-fg-muted);
 }
 
 .pg-nav-list {
@@ -103,41 +103,41 @@ code {
   justify-content: space-between;
   width: 100%;
   text-align: left;
-  padding: var(--ds-space-2) var(--ds-space-3);
-  border-radius: var(--ds-radius-pill);
+  padding: var(--rata-space-2) var(--rata-space-3);
+  border-radius: var(--rata-radius-pill);
   border: none;
   background: none;
-  color: var(--ds-theme-fg-primary);
+  color: var(--rata-theme-fg-primary);
   font-family: inherit;
-  font-size: var(--ds-type-body-size);
+  font-size: var(--rata-type-body-size);
   cursor: pointer;
 }
 
 .pg-nav-item:hover {
-  background: var(--ds-theme-bg-muted);
+  background: var(--rata-theme-bg-muted);
 }
 
 .pg-nav-item:focus-visible {
-  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) solid var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 .pg-nav-item.is-active {
-  background: var(--ds-theme-accent-role-subtle);
-  color: var(--ds-theme-accent-role-fg);
-  font-weight: var(--ds-type-heading-weight);
+  background: var(--rata-theme-accent-role-subtle);
+  color: var(--rata-theme-accent-role-fg);
+  font-weight: var(--rata-type-heading-weight);
 }
 
 .pg-nav-item--child {
-  padding-left: var(--ds-space-6);
-  color: var(--ds-theme-fg-secondary);
+  padding-left: var(--rata-space-6);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-nav-chevron {
-  color: var(--ds-theme-fg-muted);
+  color: var(--rata-theme-fg-muted);
   transition-property: transform;
-  transition-duration: var(--ds-motion-interactive-duration);
-  transition-timing-function: var(--ds-motion-interactive-easing);
+  transition-duration: var(--rata-motion-interactive-duration);
+  transition-timing-function: var(--rata-motion-interactive-easing);
 }
 
 .pg-nav-chevron.is-open {
@@ -147,8 +147,8 @@ code {
 .pg-nav-children {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-0-5);
-  margin-top: var(--ds-space-0-5);
+  gap: var(--rata-space-0-5);
+  margin-top: var(--rata-space-0-5);
 }
 
 .pg-main {
@@ -160,109 +160,109 @@ code {
      Auto inline margins absorb that slack on both sides instead, centring the
      column in whatever room the sidebar leaves. */
   margin-inline: auto;
-  padding: var(--ds-space-page-block-start) var(--ds-space-page-gutter) var(--ds-space-page-block-end);
+  padding: var(--rata-space-page-block-start) var(--rata-space-page-gutter) var(--rata-space-page-block-end);
 }
 
 .pg-section {
-  margin-bottom: var(--ds-space-section);
+  margin-bottom: var(--rata-space-section);
 }
 
 .pg-section h2 {
-  font-size: var(--ds-type-heading-size);
-  font-weight: var(--ds-type-heading-weight);
-  line-height: var(--ds-type-heading-line-height);
-  margin: 0 0 var(--ds-space-4);
+  font-size: var(--rata-type-heading-size);
+  font-weight: var(--rata-type-heading-weight);
+  line-height: var(--rata-type-heading-line-height);
+  margin: 0 0 var(--rata-space-4);
 }
 
 .pg-row {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
   flex-wrap: wrap;
-  margin-bottom: var(--ds-space-stack-sm);
+  margin-bottom: var(--rata-space-stack-sm);
 }
 
-/* ds-allow: hardcoded-dimension — the label gutter is a playground layout
+/* rata-allow: hardcoded-dimension — the label gutter is a playground layout
    constant, not a step on the sizing scale */
 .pg-row-label {
   width: 96px;
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-  color: var(--ds-theme-fg-muted);
-  text-transform: var(--ds-type-label-text-transform);
-  letter-spacing: var(--ds-type-label-letter-spacing);
+  font-size: var(--rata-type-label-size);
+  font-weight: var(--rata-type-label-weight);
+  color: var(--rata-theme-fg-muted);
+  text-transform: var(--rata-type-label-text-transform);
+  letter-spacing: var(--rata-type-label-letter-spacing);
 }
 
 .pg-note {
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-muted);
 }
 
 .pg-ramp-title {
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-  text-transform: var(--ds-type-label-text-transform);
-  letter-spacing: var(--ds-type-label-letter-spacing);
-  color: var(--ds-theme-fg-secondary);
-  margin-bottom: var(--ds-space-gap-xs);
+  font-size: var(--rata-type-label-size);
+  font-weight: var(--rata-type-label-weight);
+  text-transform: var(--rata-type-label-text-transform);
+  letter-spacing: var(--rata-type-label-letter-spacing);
+  color: var(--rata-theme-fg-secondary);
+  margin-bottom: var(--rata-space-gap-xs);
 }
 
 .pg-ramp-group {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-stack-lg);
+  gap: var(--rata-space-stack-lg);
 }
 
 .pg-swatches {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
 }
 
-/* ds-allow: hardcoded-dimension — the swatch preview box is a playground
+/* rata-allow: hardcoded-dimension — the swatch preview box is a playground
    layout constant, not a step on the sizing scale */
 .pg-swatch {
-  border-radius: var(--ds-radius-inner);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
+  border-radius: var(--rata-radius-inner);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
   height: 48px;
 }
 
 .pg-swatch--elevation {
   border: none;
-  background: var(--ds-theme-bg-surface);
+  background: var(--rata-theme-bg-surface);
 }
 
 .pg-swatch-name {
-  font-size: var(--ds-font-size-xs);
-  color: var(--ds-theme-fg-muted);
-  margin-top: var(--ds-space-0-5);
+  font-size: var(--rata-font-size-xs);
+  color: var(--rata-theme-fg-muted);
+  margin-top: var(--rata-space-0-5);
 }
 
 /* Spacing bars */
 .pg-bars-group {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-stack-lg);
+  gap: var(--rata-space-stack-lg);
 }
 
 .pg-bar-row {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-gap-sm);
-  margin-bottom: var(--ds-space-gap-xs);
+  gap: var(--rata-space-gap-sm);
+  margin-bottom: var(--rata-space-gap-xs);
 }
 
 .pg-bar-label {
   width: 140px;
   flex-shrink: 0;
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-muted);
 }
 
 .pg-bar-track {
   flex: 1;
-  background: var(--ds-theme-bg-muted);
-  border-radius: var(--ds-radius-inner);
+  background: var(--rata-theme-bg-muted);
+  border-radius: var(--rata-radius-inner);
   overflow: hidden;
   height: 12px;
 }
@@ -270,15 +270,15 @@ code {
 .pg-bar {
   display: block;
   height: 100%;
-  background: var(--ds-theme-accent-role-bg);
-  border-radius: var(--ds-radius-inner);
+  background: var(--rata-theme-accent-role-bg);
+  border-radius: var(--rata-radius-inner);
 }
 
 .pg-bar-value {
   width: 72px;
   flex-shrink: 0;
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-muted);
   text-align: right;
 }
 
@@ -286,8 +286,8 @@ code {
 .pg-radii {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ds-space-gap-md);
-  margin-bottom: var(--ds-space-stack-md);
+  gap: var(--rata-space-gap-md);
+  margin-bottom: var(--rata-space-stack-md);
 }
 
 .pg-radius-item {
@@ -297,44 +297,44 @@ code {
 .pg-radius-preview {
   width: 64px;
   height: 64px;
-  background: var(--ds-theme-bg-muted);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
+  background: var(--rata-theme-bg-muted);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 /* Typography samples */
 .pg-type-sample-row {
   display: flex;
   align-items: baseline;
-  gap: var(--ds-space-gap-md);
-  padding: var(--ds-space-gap-xs) 0;
-  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+  gap: var(--rata-space-gap-md);
+  padding: var(--rata-space-gap-xs) 0;
+  border-bottom: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-type-sample-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--ds-theme-fg-primary);
+  color: var(--rata-theme-fg-primary);
 }
 
 /* Motion tracks */
 .pg-motion-group {
-  margin-bottom: var(--ds-space-stack-lg);
+  margin-bottom: var(--rata-space-stack-lg);
 }
 
 .pg-motion-item {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-gap-md);
-  margin-bottom: var(--ds-space-gap-xs);
+  gap: var(--rata-space-gap-md);
+  margin-bottom: var(--rata-space-gap-xs);
 }
 
 .pg-motion-track {
   position: relative;
   width: 160px;
   height: 28px;
-  background: var(--ds-theme-bg-muted);
-  border-radius: var(--ds-radius-pill);
+  background: var(--rata-theme-bg-muted);
+  border-radius: var(--rata-radius-pill);
   overflow: hidden;
 }
 
@@ -344,8 +344,8 @@ code {
   left: 3px;
   width: 22px;
   height: 22px;
-  border-radius: var(--ds-radius-pill);
-  background: var(--ds-theme-accent-role-bg);
+  border-radius: var(--rata-radius-pill);
+  background: var(--rata-theme-accent-role-bg);
   transition-property: transform;
 }
 
@@ -356,8 +356,8 @@ code {
 /* Elevation previews */
 .pg-elevation-row {
   display: flex;
-  gap: var(--ds-space-gap-lg);
-  margin-bottom: var(--ds-space-stack-md);
+  gap: var(--rata-space-gap-lg);
+  margin-bottom: var(--rata-space-stack-md);
 }
 
 .pg-elevation-item {
@@ -367,29 +367,29 @@ code {
 .pg-elevation-preview {
   width: 64px;
   height: 64px;
-  background: var(--ds-theme-bg-surface);
-  border-radius: var(--ds-radius-element);
+  background: var(--rata-theme-bg-surface);
+  border-radius: var(--rata-radius-element);
 }
 
 .pg-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--ds-type-body-size);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-table th,
 .pg-table td {
   text-align: left;
-  padding: var(--ds-space-2) var(--ds-space-3);
-  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+  padding: var(--rata-space-2) var(--rata-space-3);
+  border-bottom: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-table th {
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-  text-transform: var(--ds-type-label-text-transform);
-  letter-spacing: var(--ds-type-label-letter-spacing);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-type-label-size);
+  font-weight: var(--rata-type-label-weight);
+  text-transform: var(--rata-type-label-text-transform);
+  letter-spacing: var(--rata-type-label-letter-spacing);
+  color: var(--rata-theme-fg-muted);
 }
 
 
@@ -397,12 +397,12 @@ code {
 
 
 
-/* ds-allow: hardcoded-dimension — prose measure for the doc columns below is a
+/* rata-allow: hardcoded-dimension — prose measure for the doc columns below is a
    playground layout constant; this system has no measure/max-width token */
 
 /* ---- Token documentation ------------------------------------------------
    The contract for a token, rendered beside the swatch it belongs to.
-   Everything here reads from @ds/tokens/usage — see src/token-docs.tsx. */
+   Everything here reads from @rata/tokens/usage — see src/token-docs.tsx. */
 
 .pg-swatch-button {
   display: block;
@@ -414,15 +414,15 @@ code {
   color: inherit;
   text-align: left;
   cursor: pointer;
-  border-radius: var(--ds-radius-inner);
+  border-radius: var(--rata-radius-inner);
 }
 
 .pg-swatch-button:focus-visible {
-  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) solid var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
-/* ds-allow: hardcoded-dimension — the inspector rail is a playground layout
+/* rata-allow: hardcoded-dimension — the inspector rail is a playground layout
    constant, the same kind as .pg-sidebar's width, not a step on the scale */
 .pg-inspector {
   width: 340px;
@@ -431,196 +431,196 @@ code {
   top: 0;
   max-height: 100vh;
   overflow-y: auto;
-  padding: var(--ds-space-4);
-  border-left: var(--ds-border-1) solid var(--ds-theme-border-default);
-  background: var(--ds-theme-bg-surface);
+  padding: var(--rata-space-4);
+  border-left: var(--rata-border-1) solid var(--rata-theme-border-default);
+  background: var(--rata-theme-bg-surface);
 }
 
 .pg-inspector-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--ds-space-gap-sm);
-  margin-bottom: var(--ds-space-stack-sm);
+  gap: var(--rata-space-gap-sm);
+  margin-bottom: var(--rata-space-stack-sm);
 }
 
 .pg-inspector-path {
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-primary);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-primary);
   word-break: break-all;
 }
 
 .pg-inspector-close {
   border: none;
   background: none;
-  color: var(--ds-theme-fg-muted);
+  color: var(--rata-theme-fg-muted);
   cursor: pointer;
-  font-size: var(--ds-type-heading-size);
+  font-size: var(--rata-type-heading-size);
   line-height: 1;
   padding: 0;
-  border-radius: var(--ds-radius-inner);
+  border-radius: var(--rata-radius-inner);
 }
 
 .pg-inspector-close:focus-visible {
-  outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) solid var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 .pg-inspector-meta {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
   flex-wrap: wrap;
-  margin-bottom: var(--ds-space-stack-sm);
+  margin-bottom: var(--rata-space-stack-sm);
 }
 
 .pg-inspector-var {
-  font-size: var(--ds-font-size-xs);
-  color: var(--ds-theme-fg-secondary);
+  font-size: var(--rata-font-size-xs);
+  color: var(--rata-theme-fg-secondary);
   word-break: break-all;
 }
 
 .pg-layer {
-  font-size: var(--ds-font-size-xs);
-  padding: var(--ds-space-0-5) var(--ds-space-1);
-  border-radius: var(--ds-radius-inner);
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
+  font-size: var(--rata-font-size-xs);
+  padding: var(--rata-space-0-5) var(--rata-space-1);
+  border-radius: var(--rata-radius-inner);
+  background: var(--rata-theme-bg-muted);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-layer--semantic {
-  background: var(--ds-theme-accent-role-subtle);
-  color: var(--ds-theme-accent-role-fg);
+  background: var(--rata-theme-accent-role-subtle);
+  color: var(--rata-theme-accent-role-fg);
 }
 
 .pg-doc-block {
-  margin-bottom: var(--ds-space-stack-md);
+  margin-bottom: var(--rata-space-stack-md);
 }
 
 .pg-doc-block h4 {
-  margin: 0 0 var(--ds-space-1);
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-  color: var(--ds-theme-fg-secondary);
+  margin: 0 0 var(--rata-space-1);
+  font-size: var(--rata-type-label-size);
+  font-weight: var(--rata-type-label-weight);
+  color: var(--rata-theme-fg-secondary);
   text-transform: uppercase;
 }
 
 .pg-doc-block p {
-  margin: 0 0 var(--ds-space-1);
-  font-size: var(--ds-type-body-size);
-  color: var(--ds-theme-fg-primary);
+  margin: 0 0 var(--rata-space-1);
+  font-size: var(--rata-type-body-size);
+  color: var(--rata-theme-fg-primary);
 }
 
 .pg-doc-block ul,
 .pg-doc-block ol {
   margin: 0;
-  padding-left: var(--ds-space-4);
-  font-size: var(--ds-type-body-size);
+  padding-left: var(--rata-space-4);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-doc-block li {
-  margin-bottom: var(--ds-space-0-5);
+  margin-bottom: var(--rata-space-0-5);
 }
 
 /* The role's subtle tint with its own fg — never the saturated bg, which is
    for non-text indicators only. */
 .pg-doc-block--dont {
-  background: var(--ds-theme-danger-role-subtle);
-  color: var(--ds-theme-danger-role-fg);
-  padding: var(--ds-space-2);
-  border-radius: var(--ds-radius-element);
+  background: var(--rata-theme-danger-role-subtle);
+  color: var(--rata-theme-danger-role-fg);
+  padding: var(--rata-space-2);
+  border-radius: var(--rata-radius-element);
 }
 
 .pg-doc-block--dont h4,
 .pg-doc-block--dont p {
-  color: var(--ds-theme-danger-role-fg);
+  color: var(--rata-theme-danger-role-fg);
 }
 
 .pg-instead {
   margin: 0;
-  font-size: var(--ds-type-body-size);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-instead dt {
-  color: var(--ds-theme-fg-secondary);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-instead dd {
-  margin: 0 0 var(--ds-space-1);
+  margin: 0 0 var(--rata-space-1);
 }
 
 .pg-ratio {
   display: inline-block;
-  font-size: var(--ds-font-size-xs);
-  color: var(--ds-theme-fg-secondary);
-  margin-left: var(--ds-space-1);
+  font-size: var(--rata-font-size-xs);
+  color: var(--rata-theme-fg-secondary);
+  margin-left: var(--rata-space-1);
   white-space: nowrap;
 }
 
 .pg-requires {
   display: inline-block;
-  font-size: var(--ds-font-size-xs);
-  color: var(--ds-theme-fg-muted);
-  margin-left: var(--ds-space-1);
+  font-size: var(--rata-font-size-xs);
+  color: var(--rata-theme-fg-muted);
+  margin-left: var(--rata-space-1);
 }
 
 .pg-pairing-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: var(--ds-type-body-size);
+  font-size: var(--rata-type-body-size);
 }
 
 .pg-pairing-list li {
-  margin-bottom: var(--ds-space-stack-xs);
+  margin-bottom: var(--rata-space-stack-xs);
 }
 
 .pg-pairing-list--gaps li {
-  background: var(--ds-theme-danger-role-subtle);
-  color: var(--ds-theme-danger-role-fg);
-  padding: var(--ds-space-2);
-  border-radius: var(--ds-radius-element);
-  margin-bottom: var(--ds-space-stack-sm);
+  background: var(--rata-theme-danger-role-subtle);
+  color: var(--rata-theme-danger-role-fg);
+  padding: var(--rata-space-2);
+  border-radius: var(--rata-radius-element);
+  margin-bottom: var(--rata-space-stack-sm);
 }
 
 .pg-code {
   margin: 0;
-  padding: var(--ds-space-2);
-  background: var(--ds-theme-bg-muted);
-  border-radius: var(--ds-radius-element);
-  font-size: var(--ds-font-size-xs);
+  padding: var(--rata-space-2);
+  background: var(--rata-theme-bg-muted);
+  border-radius: var(--rata-radius-element);
+  font-size: var(--rata-font-size-xs);
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .pg-family-doc {
-  margin-bottom: var(--ds-space-stack-md);
+  margin-bottom: var(--rata-space-stack-md);
   max-width: 68ch;
 }
 
 .pg-family-summary {
-  margin: 0 0 var(--ds-space-1);
-  color: var(--ds-theme-fg-primary);
+  margin: 0 0 var(--rata-space-1);
+  color: var(--rata-theme-fg-primary);
 }
 
 .pg-family-dont {
   margin: 0;
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-secondary);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-rules {
   max-width: 68ch;
-  padding-left: var(--ds-space-4);
+  padding-left: var(--rata-space-4);
 }
 
 .pg-rules li {
-  margin-bottom: var(--ds-space-stack-xs);
+  margin-bottom: var(--rata-space-stack-xs);
 }
 
 .pg-recipe {
-  margin-bottom: var(--ds-space-stack-lg);
+  margin-bottom: var(--rata-space-stack-lg);
 }
 
 /* ---- Component pages ----------------------------------------------------
@@ -629,98 +629,98 @@ code {
    src/component-page.tsx. */
 
 .pg-section h3 {
-  font-size: var(--ds-type-heading-3-size);
-  font-weight: var(--ds-type-heading-3-weight);
-  line-height: var(--ds-type-heading-3-line-height);
-  margin: 0 0 var(--ds-space-3);
+  font-size: var(--rata-type-heading-3-size);
+  font-weight: var(--rata-type-heading-3-weight);
+  line-height: var(--rata-type-heading-3-line-height);
+  margin: 0 0 var(--rata-space-3);
 }
 
 .pg-component-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--ds-space-gap-md);
+  gap: var(--rata-space-gap-md);
   flex-wrap: wrap;
 }
 
 .pg-component-status {
   display: flex;
-  gap: var(--ds-space-gap-xs);
+  gap: var(--rata-space-gap-xs);
   flex-wrap: wrap;
 }
 
 .pg-component-description {
-  margin: 0 0 var(--ds-space-1);
+  margin: 0 0 var(--rata-space-1);
   max-width: 68ch;
 }
 
 .pg-callout {
   max-width: 68ch;
-  margin: var(--ds-space-stack-sm) 0 0;
-  padding: var(--ds-space-padding-xs);
-  border-radius: var(--ds-radius-element);
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
-  font-size: var(--ds-type-label-size);
+  margin: var(--rata-space-stack-sm) 0 0;
+  padding: var(--rata-space-padding-xs);
+  border-radius: var(--rata-radius-element);
+  background: var(--rata-theme-bg-muted);
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-label-size);
 }
 
 /* A spec page is an approved intent with no code behind it — the warning
    role's subtle tint with its own fg, never the saturated bg, which is for
    non-text indicators only. */
 .pg-callout--spec {
-  background: var(--ds-theme-warning-role-subtle);
-  color: var(--ds-theme-warning-role-fg);
+  background: var(--rata-theme-warning-role-subtle);
+  color: var(--rata-theme-warning-role-fg);
 }
 
 .pg-prop-list {
-  margin-top: var(--ds-space-stack-lg);
+  margin-top: var(--rata-space-stack-lg);
 }
 
 .pg-prop {
-  padding: var(--ds-space-padding-sm);
-  margin-bottom: var(--ds-space-stack-sm);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  border-radius: var(--ds-radius-container);
-  background: var(--ds-theme-bg-surface);
+  padding: var(--rata-space-padding-sm);
+  margin-bottom: var(--rata-space-stack-sm);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  border-radius: var(--rata-radius-container);
+  background: var(--rata-theme-bg-surface);
   max-width: 68ch;
 }
 
 .pg-prop-head {
   display: flex;
   align-items: baseline;
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
   flex-wrap: wrap;
-  margin-bottom: var(--ds-space-1);
+  margin-bottom: var(--rata-space-1);
 }
 
 .pg-prop-head h4 {
   margin: 0;
-  font-size: var(--ds-type-heading-4-size);
-  font-weight: var(--ds-type-heading-4-weight);
-  line-height: var(--ds-type-heading-4-line-height);
+  font-size: var(--rata-type-heading-4-size);
+  font-weight: var(--rata-type-heading-4-weight);
+  line-height: var(--rata-type-heading-4-line-height);
 }
 
 .pg-prop-signature {
-  font-size: var(--ds-font-size-xs);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-font-size-xs);
+  color: var(--rata-theme-fg-muted);
 }
 
 
 /* Host element for the state-layer demo: a neutral surface whose only job is
    to have the class composed onto it. */
 .pg-demo-surface {
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  border-radius: var(--ds-radius-element);
-  background: var(--ds-theme-bg-surface);
-  color: var(--ds-theme-fg-primary);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  border-radius: var(--rata-radius-element);
+  background: var(--rata-theme-bg-surface);
+  color: var(--rata-theme-fg-primary);
   font: inherit;
-  padding: var(--ds-space-padding-xs) var(--ds-space-padding-sm);
+  padding: var(--rata-space-padding-xs) var(--rata-space-padding-sm);
   cursor: pointer;
 }
 
 .pg-demo-surface:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 .pg-link {
@@ -728,14 +728,14 @@ code {
   border: 0;
   padding: 0;
   font: inherit;
-  color: var(--ds-theme-accent-role-fg);
+  color: var(--rata-theme-accent-role-fg);
   text-decoration: underline;
   cursor: pointer;
 }
 
 .pg-link:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 /* ---- Props as controls ---------------------------------------------------
@@ -744,7 +744,7 @@ code {
    src/component-page.tsx. */
 
 .pg-stage {
-  margin-bottom: var(--ds-space-stack-lg);
+  margin-bottom: var(--rata-space-stack-lg);
 }
 
 .pg-stage-canvas {
@@ -752,64 +752,64 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ds-space-gap-md);
-  /* ds-allow: hardcoded-dimension — the stage is a viewport for the component,
+  gap: var(--rata-space-gap-md);
+  /* rata-allow: hardcoded-dimension — the stage is a viewport for the component,
      sized to be roomy on this page rather than to a step on the sizing scale */
   min-height: 220px;
-  padding: var(--ds-space-padding-lg);
-  background: var(--ds-theme-bg-surface);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  border-radius: var(--ds-radius-page);
+  padding: var(--rata-space-padding-lg);
+  background: var(--rata-theme-bg-surface);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  border-radius: var(--rata-radius-page);
 }
 
 .pg-stage-code-toggle {
   position: absolute;
-  top: var(--ds-space-3);
-  right: var(--ds-space-3);
-  height: var(--ds-size-control-sm);
-  padding: 0 var(--ds-space-2);
+  top: var(--rata-space-3);
+  right: var(--rata-space-3);
+  height: var(--rata-size-control-sm);
+  padding: 0 var(--rata-space-2);
   border: 0;
-  border-radius: var(--ds-radius-inner);
+  border-radius: var(--rata-radius-inner);
   background: transparent;
-  color: var(--ds-theme-fg-muted);
-  font-family: var(--ds-font-family-mono);
-  font-size: var(--ds-type-control-size-sm);
+  color: var(--rata-theme-fg-muted);
+  font-family: var(--rata-font-family-mono);
+  font-size: var(--rata-type-control-size-sm);
   cursor: pointer;
 }
 
 .pg-stage-code-toggle:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
 .pg-stage-code {
-  margin-top: var(--ds-space-stack-xs);
+  margin-top: var(--rata-space-stack-xs);
 }
 
 .pg-props {
-  border-top: var(--ds-border-1) solid var(--ds-theme-border-default);
+  border-top: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-props-group {
-  padding: var(--ds-space-3) 0 var(--ds-space-1);
-  font-size: var(--ds-type-label-size);
-  font-weight: var(--ds-type-label-weight);
-  color: var(--ds-theme-fg-muted);
+  padding: var(--rata-space-3) 0 var(--rata-space-1);
+  font-size: var(--rata-type-label-size);
+  font-weight: var(--rata-type-label-weight);
+  color: var(--rata-theme-fg-muted);
 }
 
 .pg-prop-row {
   display: grid;
-  /* ds-allow: hardcoded-dimension — a three-column reading grid: a name column,
+  /* rata-allow: hardcoded-dimension — a three-column reading grid: a name column,
      a control column, and everything left over for the prose between them */
   grid-template-columns: 160px minmax(0, 1fr) 220px;
-  gap: var(--ds-space-gap-lg);
+  gap: var(--rata-space-gap-lg);
   align-items: start;
-  padding: var(--ds-space-4) 0;
-  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+  padding: var(--rata-space-4) 0;
+  border-bottom: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-props--static .pg-prop-row {
-  /* ds-allow: hardcoded-dimension — same name column as above, without the
+  /* rata-allow: hardcoded-dimension — same name column as above, without the
      control column there is nothing to drive */
   grid-template-columns: 160px minmax(0, 1fr);
 }
@@ -819,14 +819,14 @@ code {
 }
 
 .pg-prop-name code {
-  font-weight: var(--ds-type-control-weight);
-  color: var(--ds-theme-fg-primary);
+  font-weight: var(--rata-type-control-weight);
+  color: var(--rata-theme-fg-primary);
 }
 
 .pg-prop-type {
   display: block;
-  color: var(--ds-theme-fg-primary);
-  margin-bottom: var(--ds-space-1);
+  color: var(--rata-theme-fg-primary);
+  margin-bottom: var(--rata-space-1);
 }
 
 .pg-prop-type-line {
@@ -834,32 +834,32 @@ code {
 }
 
 .pg-prop-default {
-  color: var(--ds-theme-fg-muted);
+  color: var(--rata-theme-fg-muted);
 }
 
 .pg-prop-summary {
-  margin: 0 0 var(--ds-space-1);
-  color: var(--ds-theme-fg-secondary);
+  margin: 0 0 var(--rata-space-1);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-prop-guidance {
-  margin-top: var(--ds-space-2);
+  margin-top: var(--rata-space-2);
 }
 
 .pg-prop-guidance summary {
-  font-size: var(--ds-type-label-size);
-  color: var(--ds-theme-fg-muted);
+  font-size: var(--rata-type-label-size);
+  color: var(--rata-theme-fg-muted);
   cursor: pointer;
 }
 
 .pg-prop-guidance summary:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
-  border-radius: var(--ds-radius-inner);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
+  border-radius: var(--rata-radius-inner);
 }
 
 .pg-prop-guidance[open] summary {
-  margin-bottom: var(--ds-space-2);
+  margin-bottom: var(--rata-space-2);
 }
 
 /* Was a right-aligned row when every control was a single native input. The
@@ -876,8 +876,8 @@ code {
    not an error: the role's subtle tint with its own fg. */
 .pg-callout--conflict {
   max-width: none;
-  background: var(--ds-theme-warning-role-subtle);
-  color: var(--ds-theme-warning-role-fg);
+  background: var(--rata-theme-warning-role-subtle);
+  color: var(--rata-theme-warning-role-fg);
 }
 
 /* One column below the reading width: the control belongs under the prose it
@@ -885,7 +885,7 @@ code {
 @media (max-width: 900px) {
   .pg-prop-row {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--ds-space-gap-sm);
+    gap: var(--rata-space-gap-sm);
   }
 
   /* The column already starts its content at the block start, so the narrow
@@ -897,45 +897,45 @@ code {
    one is a real URL, so they behave like the links they are. */
 
 .pg-section--head {
-  margin-bottom: var(--ds-space-stack-lg);
+  margin-bottom: var(--rata-space-stack-lg);
 }
 
 .pg-tabs {
   display: flex;
-  gap: var(--ds-space-gap-lg);
-  margin-top: var(--ds-space-stack-md);
-  border-bottom: var(--ds-border-1) solid var(--ds-theme-border-default);
+  gap: var(--rata-space-gap-lg);
+  margin-top: var(--rata-space-stack-md);
+  border-bottom: var(--rata-border-1) solid var(--rata-theme-border-default);
 }
 
 .pg-tab {
-  padding: var(--ds-space-2) var(--ds-space-1);
-  color: var(--ds-theme-fg-secondary);
+  padding: var(--rata-space-2) var(--rata-space-1);
+  color: var(--rata-theme-fg-secondary);
   text-decoration: none;
-  font-size: var(--ds-type-control-size-md);
-  font-weight: var(--ds-type-control-weight);
-  border-bottom: var(--ds-border-2) solid transparent;
+  font-size: var(--rata-type-control-size-md);
+  font-weight: var(--rata-type-control-weight);
+  border-bottom: var(--rata-border-2) solid transparent;
   /* Sits on the container's own 1px rule, so the active underline replaces it
      rather than stacking two lines of different weights. */
-  margin-bottom: calc(-1 * var(--ds-border-1));
-  transition-duration: var(--ds-motion-interactive-duration);
-  transition-timing-function: var(--ds-motion-interactive-easing);
+  margin-bottom: calc(-1 * var(--rata-border-1));
+  transition-duration: var(--rata-motion-interactive-duration);
+  transition-timing-function: var(--rata-motion-interactive-easing);
   transition-property: color, border-color;
 }
 
 .pg-tab.is-active {
-  color: var(--ds-theme-fg-primary);
-  border-bottom-color: var(--ds-theme-accent-role-bg);
+  color: var(--rata-theme-fg-primary);
+  border-bottom-color: var(--rata-theme-accent-role-bg);
 }
 
 .pg-tab:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
-  border-radius: var(--ds-radius-inner);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
+  border-radius: var(--rata-radius-inner);
 }
 
 
 /* ---- Accent switcher ----------------------------------------------------
-   Five accent options, each a brand theme scoped to [data-ds-theme]. The
+   Five accent options, each a brand theme scoped to [data-rata-theme]. The
    swatches take their colour from the theme they stand for rather than from a
    hex written here, so this block never has to be updated when a seed moves. */
 
@@ -954,53 +954,53 @@ code {
 .pg-accent {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-1);
+  gap: var(--rata-space-1);
   margin: 0;
-  padding: var(--ds-space-1);
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  border-radius: var(--ds-radius-container);
+  padding: var(--rata-space-1);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  border-radius: var(--rata-radius-container);
 }
 
 .pg-accent-option {
   display: inline-flex;
   align-items: center;
-  gap: var(--ds-space-2);
-  padding: var(--ds-space-1) var(--ds-space-2);
-  border: var(--ds-border-1) solid transparent;
-  border-radius: var(--ds-radius-element);
-  color: var(--ds-theme-fg-secondary);
-  font-size: var(--ds-type-supporting-size);
+  gap: var(--rata-space-2);
+  padding: var(--rata-space-1) var(--rata-space-2);
+  border: var(--rata-border-1) solid transparent;
+  border-radius: var(--rata-radius-element);
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-supporting-size);
   cursor: pointer;
   transition:
-    background-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing),
-    color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+    background-color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing),
+    color var(--rata-motion-interactive-duration) var(--rata-motion-interactive-easing);
 }
 
 .pg-accent-option:hover {
-  background: var(--ds-theme-bg-subtle);
+  background: var(--rata-theme-bg-subtle);
 }
 
 /* The selected option, marked by more than colour: it gains a border and the
    primary text weight, so the choice survives a greyscale screenshot. */
 .pg-accent-option:has(input:checked) {
-  background: var(--ds-theme-bg-subtle);
-  border-color: var(--ds-theme-border-strong);
-  color: var(--ds-theme-fg-primary);
-  font-weight: var(--ds-type-control-weight);
+  background: var(--rata-theme-bg-subtle);
+  border-color: var(--rata-theme-border-strong);
+  color: var(--rata-theme-fg-primary);
+  font-weight: var(--rata-type-control-weight);
 }
 
 .pg-accent-option:has(input:focus-visible) {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
 }
 
-/* Reads its own theme's generated fill through the data-ds-theme on itself. */
+/* Reads its own theme's generated fill through the data-rata-theme on itself. */
 .pg-accent-swatch {
-  inline-size: var(--ds-space-4);
-  block-size: var(--ds-space-4);
-  border-radius: var(--ds-radius-pill);
-  background: var(--ds-theme-accent-role-bg);
-  box-shadow: inset 0 0 0 var(--ds-border-1) var(--ds-theme-border-default);
+  inline-size: var(--rata-space-4);
+  block-size: var(--rata-space-4);
+  border-radius: var(--rata-radius-pill);
+  background: var(--rata-theme-accent-role-bg);
+  box-shadow: inset 0 0 0 var(--rata-border-1) var(--rata-theme-border-default);
 }
 
 /* The five names are useful but wide; below the sidebar breakpoint the
@@ -1021,7 +1021,7 @@ code {
 .pg-header-tools {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-4);
+  gap: var(--rata-space-4);
   flex-wrap: wrap;
   justify-content: flex-end;
 }
@@ -1041,17 +1041,17 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ds-space-5);
+  gap: var(--rata-space-5);
   flex-wrap: wrap;
   min-block-size: 22rem;
-  padding: var(--ds-space-7);
-  border-radius: var(--ds-radius-chat);
+  padding: var(--rata-space-7);
+  border-radius: var(--rata-radius-chat);
   /* The system's white: bg.surface is the lifted tone (#F3FFF9 in light), and
      it inverts to the dark surface in the dark scheme. Not color.white — that
      is a palette token, which this system forbids in components precisely
      because it is the same value in both schemes, so a hard #fff panel would
      stay white in dark mode. */
-  background: var(--ds-theme-bg-surface);
+  background: var(--rata-theme-bg-surface);
 }
 
 /* A bare specimen — no card, no background of its own. The panel is the
@@ -1059,19 +1059,19 @@ code {
 .pg-showcase-item {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-3);
+  gap: var(--rata-space-3);
 }
 
 .pg-section-lede {
-  margin: 0 0 var(--ds-space-4);
+  margin: 0 0 var(--rata-space-4);
   max-inline-size: 60ch;
-  color: var(--ds-theme-fg-secondary);
+  color: var(--rata-theme-fg-secondary);
 }
 
 @media (max-width: 60rem) {
   .pg-showcase {
     min-block-size: 14rem;
-    padding: var(--ds-space-5);
+    padding: var(--rata-space-5);
   }
 }
 
@@ -1084,9 +1084,9 @@ code {
 .pg-layer-head {
   display: flex;
   align-items: baseline;
-  gap: var(--ds-space-3);
+  gap: var(--rata-space-3);
   flex-wrap: wrap;
-  margin-block-end: var(--ds-space-2);
+  margin-block-end: var(--rata-space-2);
 }
 
 .pg-layer-head h3 {
@@ -1096,26 +1096,26 @@ code {
 /* Default is the palette warning tone: these are the tokens a component must
    not reach for. Text on the role's subtle tint, never on its saturated bg. */
 .pg-layer-tag {
-  padding: 0 var(--ds-space-2);
-  border-radius: var(--ds-radius-pill);
-  background: var(--ds-theme-warning-role-subtle);
-  color: var(--ds-theme-warning-role-fg);
-  font-size: var(--ds-type-supporting-size);
-  font-weight: var(--ds-type-control-weight);
+  padding: 0 var(--rata-space-2);
+  border-radius: var(--rata-radius-pill);
+  background: var(--rata-theme-warning-role-subtle);
+  color: var(--rata-theme-warning-role-fg);
+  font-size: var(--rata-type-supporting-size);
+  font-weight: var(--rata-type-control-weight);
   white-space: nowrap;
 }
 
 .pg-layer-tag--semantic {
-  background: var(--ds-theme-success-role-subtle);
-  color: var(--ds-theme-success-role-fg);
+  background: var(--rata-theme-success-role-subtle);
+  color: var(--rata-theme-success-role-fg);
 }
 
 /* Neutral variant: a group that is raw material but not forbidden — the
    spacing scale, where a raw step is a legitimate choice and the roles are
    merely preferred. Using the warning tone here would overstate the rule. */
 .pg-layer-tag--neutral {
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
+  background: var(--rata-theme-bg-muted);
+  color: var(--rata-theme-fg-secondary);
 }
 
 /* ---- Example cards -------------------------------------------------------
@@ -1128,46 +1128,46 @@ code {
 .pg-examples {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-5);
+  gap: var(--rata-space-5);
 }
 
 .pg-example {
-  border: var(--ds-border-1) solid var(--ds-theme-border-default);
-  border-radius: var(--ds-radius-container);
+  border: var(--rata-border-1) solid var(--rata-theme-border-default);
+  border-radius: var(--rata-radius-container);
   overflow: hidden;
-  background: var(--ds-theme-bg-surface);
+  background: var(--rata-theme-bg-surface);
 }
 
 .pg-example-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--ds-space-4);
-  padding: var(--ds-space-4) var(--ds-space-5);
+  gap: var(--rata-space-4);
+  padding: var(--rata-space-4) var(--rata-space-5);
 }
 
 .pg-example-titleblock {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-2);
+  gap: var(--rata-space-2);
   min-width: 0;
 }
 
 /* The <h4> inside the button-group example that `labelledBy` points at — not
    the card's own title. */
 .pg-example-heading {
-  margin: 0 0 var(--ds-space-2);
-  font-size: var(--ds-type-label-size);
+  margin: 0 0 var(--rata-space-2);
+  font-size: var(--rata-type-label-size);
 }
 
 .pg-example-titleline {
   display: flex;
   align-items: center;
-  gap: var(--ds-space-3);
+  gap: var(--rata-space-3);
 }
 
 .pg-example-title {
-  font-weight: var(--ds-type-control-weight);
+  font-weight: var(--rata-type-control-weight);
 }
 
 /* The contract's prose, under the title. Measured rather than full-width: two
@@ -1175,7 +1175,7 @@ code {
 .pg-example-desc {
   margin: 0;
   max-inline-size: 80ch;
-  color: var(--ds-theme-fg-secondary);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-example-open {
@@ -1183,15 +1183,15 @@ code {
   padding: 0;
   border: none;
   background: none;
-  color: var(--ds-theme-accent-role-fg);
+  color: var(--rata-theme-accent-role-fg);
   font: inherit;
   cursor: pointer;
 }
 
 .pg-example-open:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
-  border-radius: var(--ds-radius-inner);
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style) var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
+  border-radius: var(--rata-radius-inner);
 }
 
 .pg-example-stage {
@@ -1199,43 +1199,43 @@ code {
   align-items: center;
   justify-content: center;
   min-block-size: 12rem;
-  padding: var(--ds-space-6) var(--ds-space-5);
-  border-block-start: var(--ds-border-1) solid var(--ds-theme-border-default);
+  padding: var(--rata-space-6) var(--rata-space-5);
+  border-block-start: var(--rata-border-1) solid var(--rata-theme-border-default);
   /* Not bg.subtle: that step is identical to bg.canvas in light (#E8F3EE) and
      to bg.surface in dark (#151D1A), so a stage using it merged into the page
      in one scheme or into its own card in the other. bg.muted is the only step
      distinct from both in both schemes. */
-  background: var(--ds-theme-bg-muted);
+  background: var(--rata-theme-bg-muted);
 }
 
 /* The stage is on bg.muted, where fg.muted measures 4.19:1 in dark — the token
    documents that pairing as AA-large only and names fg.secondary as the
    body-text answer. Only the empty-stage fallback text is affected. */
 .pg-example-stage .pg-note {
-  color: var(--ds-theme-fg-secondary);
+  color: var(--rata-theme-fg-secondary);
 }
 
 .pg-example-render {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ds-space-3);
+  gap: var(--rata-space-3);
   flex-wrap: wrap;
 }
 
 /* A case the contract includes in order to say "don't". Marked with a flag and
    a border, never rendered live — and colour is not the only cue. */
 .pg-example--counter {
-  border-color: var(--ds-theme-danger-role-fg);
+  border-color: var(--rata-theme-danger-role-fg);
 }
 
 .pg-example-flag {
-  padding: 0 var(--ds-space-2);
-  border-radius: var(--ds-radius-pill);
-  background: var(--ds-theme-danger-role-subtle);
-  color: var(--ds-theme-danger-role-fg);
-  font-size: var(--ds-type-supporting-size);
-  font-weight: var(--ds-type-control-weight);
+  padding: 0 var(--rata-space-2);
+  border-radius: var(--rata-radius-pill);
+  background: var(--rata-theme-danger-role-subtle);
+  color: var(--rata-theme-danger-role-fg);
+  font-size: var(--rata-type-supporting-size);
+  font-weight: var(--rata-type-control-weight);
   text-transform: uppercase;
 }
 
@@ -1254,18 +1254,18 @@ code {
 .pg-example-inline {
   display: inline-flex;
   align-items: center;
-  gap: var(--ds-space-gap-sm);
+  gap: var(--rata-space-gap-sm);
 }
 
 .pg-example-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-stack-2xs);
+  gap: var(--rata-space-stack-2xs);
   text-align: start;
 }
 
 /* The nested rows of a "select all" group sit in from their parent, so the
    relationship is visible rather than implied by order alone. */
 .pg-example-stack > * + * {
-  margin-inline-start: var(--ds-space-gap-lg);
+  margin-inline-start: var(--rata-space-gap-lg);
 }

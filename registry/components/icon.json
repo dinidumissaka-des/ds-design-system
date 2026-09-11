@@ -32,7 +32,7 @@
     "icon": {
       "summary": "The Lucide component to render, passed as a value rather than a name.",
       "use": [
-        "Any icon imported from `@ds/icons` — the curated set — or from `lucide-react` directly when the set is missing one.",
+        "Any icon imported from `@rata/icons` — the curated set — or from `lucide-react` directly when the set is missing one.",
         "Passing the component itself (`icon={Trash2}`), which is what keeps the icon set tree-shakeable: a string name would force every icon into the bundle."
       ],
       "dont": [

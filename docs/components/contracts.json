@@ -19,7 +19,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<ImgHTMLAttributes<HTMLImageElement>, \"src\" | \"alt\" | \"size\">",
@@ -166,7 +166,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "HTMLAttributes<HTMLSpanElement>",
@@ -343,7 +343,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<HTMLAttributes<HTMLElement>, \"aria-label\">",
@@ -452,7 +452,7 @@
       "state-layer",
       "spinner"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\">",
@@ -616,7 +616,7 @@
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-          "hover/press": "compose the .ds-state-layer class — do not swap the background"
+          "hover/press": "compose the .rata-state-layer class — do not swap the background"
         }
       },
       "secondary": {
@@ -627,7 +627,7 @@
           "border-color": "theme.secondary-role.border",
           "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
           "border-radius": "radius.element",
-          "hover/press": "compose the .ds-state-layer class"
+          "hover/press": "compose the .rata-state-layer class"
         }
       },
       "destructive": {
@@ -637,7 +637,7 @@
           "color": "theme.fg.on-accent",
           "height": "size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes",
           "border-radius": "radius.element",
-          "hover/press": "compose the .ds-state-layer class"
+          "hover/press": "compose the .rata-state-layer class"
         }
       }
     },
@@ -665,7 +665,7 @@
     "dependencies": [
       "button"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\">",
@@ -843,7 +843,7 @@
     "dependencies": [
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<",
@@ -1088,7 +1088,7 @@
           "description color": "theme.fg.secondary",
           "description font-size": "type.supporting.size",
           "checked background": "theme.accent-role.bg",
-          "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+          "hover/press": "compose the .rata-state-layer class — never a hand-written hover rule",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
           "opacity (aria-disabled)": "state.disabled-opacity",
           "transition": "motion.interactive.duration with motion.interactive.easing",
@@ -1118,7 +1118,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "spec",
     "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
     "extends": null,
@@ -1164,7 +1164,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/icons",
+    "importPath": "@rata/icons",
     "mode": "documented",
     "note": null,
     "extends": null,
@@ -1177,7 +1177,7 @@
         "declared": true,
         "summary": "The Lucide component to render, passed as a value rather than a name.",
         "use": [
-          "Any icon imported from `@ds/icons` — the curated set — or from `lucide-react` directly when the set is missing one.",
+          "Any icon imported from `@rata/icons` — the curated set — or from `lucide-react` directly when the set is missing one.",
           "Passing the component itself (`icon={Trash2}`), which is what keeps the icon set tree-shakeable: a string name would force every icon into the bundle."
         ],
         "dont": [
@@ -1303,7 +1303,7 @@
     "dependencies": [
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "spec",
     "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
     "extends": null,
@@ -1323,7 +1323,7 @@
           "item color": "theme.fg.primary",
           "destructive item color": "theme.danger-role.fg",
           "selected item background": "theme.accent-role.subtle",
-          "item hover/press": "compose the .ds-state-layer class",
+          "item hover/press": "compose the .rata-state-layer class",
           "separator": "border.default solid theme.border.default",
           "enter transition": "motion.overlay.duration with motion.easing.enter"
         }
@@ -1349,7 +1349,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "spec",
     "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
     "extends": null,
@@ -1395,7 +1395,7 @@
     "dependencies": [
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<",
@@ -1506,7 +1506,7 @@
           "description color": "theme.fg.secondary",
           "description font-size": "type.supporting.size",
           "checked background": "theme.accent-role.bg",
-          "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+          "hover/press": "compose the .rata-state-layer class — never a hand-written hover rule",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
           "opacity (aria-disabled)": "state.disabled-opacity",
           "transition": "motion.interactive.duration with motion.interactive.easing",
@@ -1540,7 +1540,7 @@
       "radio",
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\" | \"onChange\" | \"defaultValue\">",
@@ -1767,7 +1767,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": null,
@@ -1825,7 +1825,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "css-only",
     "note": "No standalone React component — \"State layer\" is CSS-only (see registry description), composed onto other components' className.",
     "extends": null,
@@ -1834,13 +1834,13 @@
       {
         "case": "Giving a new interactive component hover and press feedback",
         "when": "Always — this is the only supported way to express interaction feedback in this system.",
-        "example": "<button className=\"ds-thing ds-state-layer\">…</button>",
+        "example": "<button className=\"rata-thing rata-state-layer\">…</button>",
         "notes": "Add the class alongside the component's own; never write a competing `:hover` background rule. Feedback here is opacity-only by standing decision, which is why the role tokens carry no `bg-hover`/`bg-active` and why `ring.neutral` is deliberately unwired."
       },
       {
         "case": "A host with no border",
         "when": "The layer's default bleeds outward by border.default, so an unbordered host needs the opt-out or its tint sits a hairline proud of the element.",
-        "example": "<button className=\"ds-thing ds-state-layer ds-state-layer--flush\">…</button>",
+        "example": "<button className=\"rata-thing rata-state-layer rata-state-layer--flush\">…</button>",
         "notes": "The layer is an absolutely positioned pseudo-element, and `inset` on one resolves against the containing block's padding box — which excludes the border. At `inset: 0` the tint stopped a border-width short on every side, invisible under a filled background but plainly smaller on a host whose only fill is the layer itself. It now bleeds by border.default, since every bordered host in this system uses that width, and CSS gives no way to read a containing block's computed border-width. `--flush` restores `inset: 0` for hosts with none."
       }
     ],
@@ -1870,7 +1870,7 @@
     "dependencies": [
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<",
@@ -2091,7 +2091,7 @@
           "label font-size": "type.control.size.md",
           "description color": "theme.fg.secondary",
           "description font-size": "type.supporting.size",
-          "hover/press": "compose the .ds-state-layer class",
+          "hover/press": "compose the .rata-state-layer class",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — drawn on the track, and the offset is kept: a pill this small has no room for a flush ring to read as separate from its own edge",
           "opacity (aria-disabled)": "state.disabled-opacity",
           "transition": "motion.interactive.duration with motion.interactive.easing, on the thumb's transform and the track's fill"
@@ -2120,7 +2120,7 @@
       }
     },
     "dependencies": [],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<",
@@ -2428,7 +2428,7 @@
       "state-layer",
       "spinner"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\" | \"onChange\">",
@@ -2661,7 +2661,7 @@
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "hover/press": "compose the .rata-state-layer class — do not swap the background",
           "opacity (aria-disabled)": "state.disabled-opacity"
         }
       },
@@ -2681,7 +2681,7 @@
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "hover/press": "compose the .rata-state-layer class — do not swap the background",
           "opacity (aria-disabled)": "state.disabled-opacity"
         }
       },
@@ -2701,7 +2701,7 @@
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "hover/press": "compose the .rata-state-layer class — do not swap the background",
           "opacity (aria-disabled)": "state.disabled-opacity"
         }
       },
@@ -2721,7 +2721,7 @@
           "transition-duration": "motion.interactive.duration",
           "transition-timing-function": "motion.interactive.easing",
           "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-          "hover/press": "compose the .ds-state-layer class — do not swap the background",
+          "hover/press": "compose the .rata-state-layer class — do not swap the background",
           "opacity (aria-disabled)": "state.disabled-opacity"
         }
       }
@@ -2752,7 +2752,7 @@
       "button",
       "state-layer"
     ],
-    "importPath": "@ds/react",
+    "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
     "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\" | \"onChange\" | \"defaultValue\">",

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState, Children, isValidElement } from "react";
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import { getToggleButtonGroupProps } from "@ds/primitives";
-import type { ButtonGroupOrientation, ToggleButtonGroupSelectionMode } from "@ds/primitives";
+import { getToggleButtonGroupProps } from "@rata/primitives";
+import type { ButtonGroupOrientation, ToggleButtonGroupSelectionMode } from "@rata/primitives";
 import { cx } from "./cx.js";
 import { ToggleButtonGroupContext } from "./toggle-button-group-context.js";
 import type { ToggleButtonSize } from "./toggle-button.js";
@@ -144,8 +144,8 @@ export function ToggleButtonGroup({
         {...rest}
         {...group.root}
         className={cx(
-          "ds-toggle-button-group",
-          attached && "ds-toggle-button-group--attached",
+          "rata-toggle-button-group",
+          attached && "rata-toggle-button-group--attached",
           className
         )}
       >

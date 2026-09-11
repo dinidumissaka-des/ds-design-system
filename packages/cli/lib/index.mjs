@@ -1,10 +1,10 @@
-// Shared logic behind `ds` (bin/ds.mjs) and the root ui-context generator
+// Shared logic behind `rata` (bin/rata.mjs) and the root ui-context generator
 // (scripts/generate-ui-context.mjs). Kept here, once, so the CLI an agent
 // runs interactively and the file an agent reads passively can never say two
 // different things about the same component.
 //
-// Everything below reads straight from source (registry manifests, @ds/react
-// .tsx files, @ds/tokens' build output) rather than a hand-maintained
+// Everything below reads straight from source (registry manifests, @rata/react
+// .tsx files, @rata/tokens' build output) rather than a hand-maintained
 // description. If it's wrong, the source is wrong — not a doc that drifted.
 import { readFile, readdir } from "node:fs/promises";
 import { readFileSync } from "node:fs";
@@ -182,29 +182,29 @@ export async function getExamples(tagName, limit = 1) {
  * The published package name for a source path under packages/*.
  *
  * Read from that package's own package.json rather than guessed from the
- * directory: `packages/icons` publishes as `@ds/icons`, and the two only
+ * directory: `packages/icons` publishes as `@rata/icons`, and the two only
  * happen to look alike. A component's documented import has to be the one a
  * consumer would actually write.
  */
 function packageNameFor(sourcePath) {
   const dir = sourcePath.split("/")[1];
-  if (!dir) return "@ds/react";
+  if (!dir) return "@rata/react";
   try {
     const manifest = JSON.parse(
       readFileSync(path.join(repoRoot, "packages", dir, "package.json"), "utf8")
     );
-    return manifest.name ?? "@ds/react";
+    return manifest.name ?? "@rata/react";
   } catch {
-    return "@ds/react";
+    return "@rata/react";
   }
 }
 
 export async function getComponentProps(name, registry) {
   const entry = registry[name];
-  if (!entry) return { error: `Unknown component: "${name}". Run \`ds list\` — don't guess.` };
+  if (!entry) return { error: `Unknown component: "${name}". Run \`rata list\` — don't guess.` };
 
   // The manifest declares where a component's React source lives, so this
-  // trusts it rather than assuming one package. @ds/icons holds its own
+  // trusts it rather than assuming one package. @rata/icons holds its own
   // component, and hardcoding packages/react/src/ made the docs build treat it
   // as having no source at all — i.e. as an unimplemented spec.
   const reactFile = entry.files?.find((f) => /^packages\/[^/]+\/src\/.+\.tsx$/.test(f.source));
@@ -228,7 +228,7 @@ export async function getComponentProps(name, registry) {
 
   // A prop's union type may be declared in the primitive rather than beside the
   // component — `orientation?: ButtonGroupOrientation` re-exported from
-  // @ds/primitives, say. Following that one hop is what keeps "look it up" true
+  // @rata/primitives, say. Following that one hop is what keeps "look it up" true
   // for types the component owns but does not declare; re-declaring them in the
   // .tsx to keep the parser happy would be the second source of truth this
   // whole module exists to prevent. Local declarations still win.
@@ -263,7 +263,7 @@ export async function getComponentProps(name, registry) {
 }
 
 // Flat resolved token map, e.g. { "color-accent-500": "#3b82f6", "space-4": "16px" }.
-// Reads @ds/tokens' own build output rather than re-resolving base+theme JSON
+// Reads @rata/tokens' own build output rather than re-resolving base+theme JSON
 // a second time — one resolver (packages/tokens/build.mjs), two readers.
 export async function getTokens() {
   const distPath = path.join(repoRoot, "packages/tokens/dist/index.js");

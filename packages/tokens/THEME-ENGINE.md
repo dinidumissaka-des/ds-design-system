@@ -106,11 +106,11 @@ Everything here was ported from Astryx (MIT). Four deliberate differences:
 **1. Dotted token paths, not flat CSS variable names.** Astryx keys tokens as
 `'--color-background-surface'`. This repo keys them as
 `theme.bg.surface` and derives the CSS name from the path. The dotted path is
-what `usage.json`, `TOKENS.md`, the `.d.ts` output and the `ds` CLI all
+what `usage.json`, `TOKENS.md`, the `.d.ts` output and the `rata` CLI all
 address tokens by; switching to flat names would have meant rewriting the
 documentation and enforcement layer to gain nothing this system was missing.
 
-**2. `--ds-` prefix and this system's own role names.** A design system's token
+**2. `--rata-` prefix and this system's own role names.** A design system's token
 names are part of its identity. Adopting Astryx's architecture is worth doing;
 adopting its namespace is not.
 
@@ -141,8 +141,8 @@ disabled text is.
 ## Adding a brand theme
 
 ```js
-import { defineTheme } from "@ds/tokens/theme";
-import { baseTheme } from "@ds/tokens/theme/base";
+import { defineTheme } from "@rata/tokens/theme";
+import { baseTheme } from "@rata/tokens/theme/base";
 
 export const myTheme = defineTheme({
   name: "my-brand",
@@ -153,7 +153,7 @@ export const myTheme = defineTheme({
 
 Then `node packages/tokens/build-theme.mjs src/myTheme.mjs -o dist/theme.css`.
 It emits only the tokens that differ from base, scoped to
-`[data-ds-theme="my-brand"]`, and **fails** if the brand breaks any contrast
+`[data-rata-theme="my-brand"]`, and **fails** if the brand breaks any contrast
 promise `usage.json` makes. `packages/themes/ember` and `packages/themes/slate`
 are worked examples; `npm run themes:check` verifies both.
 

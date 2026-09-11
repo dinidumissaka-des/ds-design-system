@@ -6,7 +6,7 @@
 The trail from the site's root to the current page.
 
 ```tsx
-import { Breadcrumbs } from "@ds/react";
+import { Breadcrumbs } from "@rata/react";
 ```
 
 | | |

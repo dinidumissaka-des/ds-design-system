@@ -4,52 +4,52 @@
    never the saturated `bg`. Those fills are non-text indicator tones: white on
    success-role.bg measures in the low 3s and is recorded as a known gap. The
    text is what carries the meaning here, so it has to be readable. */
-.ds-badge {
+.rata-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--ds-space-gap-xs);
-  block-size: var(--ds-size-icon-lg);
-  padding-inline: var(--ds-space-gap-sm);
-  border-radius: var(--ds-radius-pill);
-  font-family: var(--ds-font-family-sans);
-  font-size: var(--ds-type-supporting-size);
+  gap: var(--rata-space-gap-xs);
+  block-size: var(--rata-size-icon-lg);
+  padding-inline: var(--rata-space-gap-sm);
+  border-radius: var(--rata-radius-pill);
+  font-family: var(--rata-font-family-sans);
+  font-size: var(--rata-type-supporting-size);
   /* Heavier than the text around it: a badge has to be found before it is read. */
-  font-weight: var(--ds-type-control-weight);
+  font-weight: var(--rata-type-control-weight);
   white-space: nowrap;
   vertical-align: middle;
 }
 
-.ds-badge--neutral {
-  background: var(--ds-theme-bg-muted);
-  color: var(--ds-theme-fg-secondary);
+.rata-badge--neutral {
+  background: var(--rata-theme-bg-muted);
+  color: var(--rata-theme-fg-secondary);
 }
 
-.ds-badge--accent {
-  background: var(--ds-theme-accent-role-subtle);
-  color: var(--ds-theme-accent-role-fg);
+.rata-badge--accent {
+  background: var(--rata-theme-accent-role-subtle);
+  color: var(--rata-theme-accent-role-fg);
 }
 
-.ds-badge--success {
-  background: var(--ds-theme-success-role-subtle);
-  color: var(--ds-theme-success-role-fg);
+.rata-badge--success {
+  background: var(--rata-theme-success-role-subtle);
+  color: var(--rata-theme-success-role-fg);
 }
 
-.ds-badge--warning {
-  background: var(--ds-theme-warning-role-subtle);
-  color: var(--ds-theme-warning-role-fg);
+.rata-badge--warning {
+  background: var(--rata-theme-warning-role-subtle);
+  color: var(--rata-theme-warning-role-fg);
 }
 
-.ds-badge--danger {
-  background: var(--ds-theme-danger-role-subtle);
-  color: var(--ds-theme-danger-role-fg);
+.rata-badge--danger {
+  background: var(--rata-theme-danger-role-subtle);
+  color: var(--rata-theme-danger-role-fg);
 }
 
 /* The dot repeats what the text already says, so it is aria-hidden in the
    markup and takes currentColor here — it can never disagree with its label. */
-.ds-badge-dot {
-  inline-size: var(--ds-space-gap-sm);
-  block-size: var(--ds-space-gap-sm);
-  border-radius: var(--ds-radius-pill);
+.rata-badge-dot {
+  inline-size: var(--rata-space-gap-sm);
+  block-size: var(--rata-space-gap-sm);
+  border-radius: var(--rata-radius-pill);
   background: currentColor;
   flex-shrink: 0;
 }

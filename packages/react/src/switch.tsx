@@ -1,6 +1,6 @@
 import { forwardRef, useId, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
-import { getSwitchProps } from "@ds/primitives";
+import { getSwitchProps } from "@rata/primitives";
 import { cx } from "./cx.js";
 
 export interface SwitchProps
@@ -81,27 +81,27 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
 
   return (
     <div
-      className={cx("ds-switch", className)}
+      className={cx("rata-switch", className)}
       data-label-hidden={labelHidden ? "" : undefined}
       {...field.root}
     >
-      <span className="ds-switch-control">
-        <input {...rest} {...field.input} className="ds-switch-input" ref={ref} />
+      <span className="rata-switch-control">
+        <input {...rest} {...field.input} className="rata-switch-input" ref={ref} />
         {/* Paint only: the input beside it carries every semantic. */}
-        <span className="ds-switch-track" aria-hidden="true">
-          <span className="ds-switch-thumb" />
+        <span className="rata-switch-track" aria-hidden="true">
+          <span className="rata-switch-thumb" />
         </span>
       </span>
 
-      <span className="ds-switch-text">
+      <span className="rata-switch-text">
         <label
-          className={cx("ds-switch-label", labelHidden && "ds-switch-label--hidden")}
+          className={cx("rata-switch-label", labelHidden && "rata-switch-label--hidden")}
           {...field.label}
         >
           {label}
         </label>
         {description !== undefined && description !== "" && (
-          <span className="ds-switch-description" {...field.description}>
+          <span className="rata-switch-description" {...field.description}>
             {description}
           </span>
         )}

@@ -6,7 +6,7 @@
 One option inside a radio group. Not usable on its own.
 
 ```tsx
-import { Radio } from "@ds/react";
+import { Radio } from "@rata/react";
 ```
 
 | | |
@@ -138,7 +138,7 @@ One option in a radio group. Circular, so its shape says 'one of these' before t
 | description color | `theme.fg.secondary` |
 | description font-size | `type.supporting.size` |
 | checked background | `theme.accent-role.bg` |
-| hover/press | `compose the .ds-state-layer class — never a hand-written hover rule` |
+| hover/press | `compose the .rata-state-layer class — never a hand-written hover rule` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 | transition | `motion.interactive.duration with motion.interactive.easing` |

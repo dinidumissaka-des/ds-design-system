@@ -18,7 +18,7 @@
         "ring-style": "Always solid."
       },
       "example": {
-        "css": ":focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-theme-focus-ring); outline-offset: var(--ds-focus-ring-offset); }"
+        "css": ":focus-visible { outline: var(--rata-focus-ring-width) solid var(--rata-theme-focus-ring); outline-offset: var(--rata-focus-ring-offset); }"
       }
     }
   }

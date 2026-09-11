@@ -209,7 +209,7 @@
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "hover/press": "compose the .rata-state-layer class — do not swap the background",
         "opacity (aria-disabled)": "state.disabled-opacity"
       }
     },
@@ -229,7 +229,7 @@
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "hover/press": "compose the .rata-state-layer class — do not swap the background",
         "opacity (aria-disabled)": "state.disabled-opacity"
       }
     },
@@ -249,7 +249,7 @@
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "hover/press": "compose the .rata-state-layer class — do not swap the background",
         "opacity (aria-disabled)": "state.disabled-opacity"
       }
     },
@@ -269,7 +269,7 @@
         "transition-duration": "motion.interactive.duration",
         "transition-timing-function": "motion.interactive.easing",
         "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
-        "hover/press": "compose the .ds-state-layer class — do not swap the background",
+        "hover/press": "compose the .rata-state-layer class — do not swap the background",
         "opacity (aria-disabled)": "state.disabled-opacity"
       }
     }

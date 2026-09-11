@@ -23,7 +23,7 @@
         "theme.fg.on-accent"
       ],
       "example": {
-        "css": ".ds-button--primary { background: var(--ds-theme-accent-role-bg); color: var(--ds-theme-fg-on-accent); }"
+        "css": ".rata-button--primary { background: var(--rata-theme-accent-role-bg); color: var(--rata-theme-fg-on-accent); }"
       }
     },
     "theme.accent-role.fg": {
@@ -62,7 +62,7 @@
         "As a replacement for the :focus-visible outline (theme.focus-ring) — the two can coexist but answer different questions (keyboard focus vs. selection/validation state)."
       ],
       "example": {
-        "css": ".ds-input--selected { box-shadow: var(--ds-theme-accent-role-ring); }"
+        "css": ".rata-input--selected { box-shadow: var(--rata-theme-accent-role-ring); }"
       }
     }
   }

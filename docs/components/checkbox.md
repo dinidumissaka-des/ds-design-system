@@ -6,7 +6,7 @@
 A single on/off choice, with an indeterminate state for a parent summarising its children.
 
 ```tsx
-import { Checkbox } from "@ds/react";
+import { Checkbox } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { Checkbox } from "@ds/react";
 
 Checked state, the indeterminate third appearance, and the activation guard. Built on a native input[type=checkbox] so keyboard, form participation and the checked semantics come from the platform rather than being re-implemented.
 
-Headless contract: `getCheckboxProps` in `packages/primitives/src/checkbox.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getCheckboxProps` in `packages/primitives/src/checkbox.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **A native input, not a div with role="checkbox"** — Space to toggle, participation in a form's data, and the checked state itself are all free from the platform and all easy to get subtly wrong by hand. The visual is drawn by a sibling element; the input stays in the DOM and keeps the semantics.
 - **`indeterminate` is a separate prop, not a third value of `checked`** — It answers a different question. `checked` is this control's own value; `indeterminate` says the control is standing in for a set of children that disagree. A tri-state `checked` would force every caller to handle a value that only a parent checkbox can ever have, and would make the common two-state case read as incomplete.
@@ -299,7 +299,7 @@ A single on/off choice, with a third appearance for a parent summarising its chi
 | description color | `theme.fg.secondary` |
 | description font-size | `type.supporting.size` |
 | checked background | `theme.accent-role.bg` |
-| hover/press | `compose the .ds-state-layer class — never a hand-written hover rule` |
+| hover/press | `compose the .rata-state-layer class — never a hand-written hover rule` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border` |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 | transition | `motion.interactive.duration with motion.interactive.easing` |

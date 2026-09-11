@@ -3,13 +3,13 @@
  *
  * Each option is a real brand theme under `packages/themes/<slug>/`, stating
  * one accent seed and inheriting everything else from base. Selecting one sets
- * `data-ds-theme` on the document, which is the whole switch: the theme's
+ * `data-rata-theme` on the document, which is the whole switch: the theme's
  * stylesheet re-declares every colour token the new accent generates, so every
  * component re-tones at once without re-rendering anything.
  *
  * Note what this file does NOT contain: any colour. The swatches carry
- * `data-ds-theme` themselves, so each one resolves
- * `--ds-theme-accent-role-bg` through its own theme's scope — the swatch shows
+ * `data-rata-theme` themselves, so each one resolves
+ * `--rata-theme-accent-role-bg` through its own theme's scope — the swatch shows
  * the real generated fill rather than a hex someone re-typed here, and it
  * cannot drift from the theme it stands for.
  *
@@ -83,11 +83,11 @@ export function AccentSwitcher({
             onChange={() => onChange(accent.slug)}
           />
           {/* Both attributes, because a theme's dark half is scoped
-              [data-ds-theme="x"][data-theme="dark"] — one compound selector, so
+              [data-rata-theme="x"][data-theme="dark"] — one compound selector, so
               the swatch needs both to show the right value in dark mode. */}
           <span
             className="pg-accent-swatch"
-            data-ds-theme={accent.slug}
+            data-rata-theme={accent.slug}
             data-theme={scheme}
             aria-hidden="true"
           />

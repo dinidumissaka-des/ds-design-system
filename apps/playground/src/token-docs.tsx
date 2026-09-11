@@ -1,4 +1,4 @@
-// Token documentation, rendered from @ds/tokens/usage — the same machine-
+// Token documentation, rendered from @rata/tokens/usage — the same machine-
 // readable contract that generates TOKENS.md, the JSDoc in dist/index.d.ts,
 // and the rules internal/vibe-tests scores against. Nothing here is written
 // by hand: if a token's guidance changes, it changes in the contracts under
@@ -9,7 +9,7 @@
 // for exactly one action per view, that the only foreground allowed on it is
 // theme.fg.on-accent, or that a tinted region wants accent-role.subtle
 // instead. That is what the contract knows.
-import usage from "@ds/tokens/usage";
+import usage from "@rata/tokens/usage";
 
 interface TokenEntry {
   layer?: string;

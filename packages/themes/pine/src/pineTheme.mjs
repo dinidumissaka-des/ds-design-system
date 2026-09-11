@@ -9,8 +9,8 @@
  * re-measures every contrast promise in the system against each of them.
  */
 
-import { defineTheme } from "@ds/tokens/theme";
-import { baseTheme } from "@ds/tokens/theme/base";
+import { defineTheme } from "@rata/tokens/theme";
+import { baseTheme } from "@rata/tokens/theme/base";
 
 export const pineTheme = defineTheme({
   name: "pine",
