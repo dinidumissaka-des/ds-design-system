@@ -281,7 +281,7 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
   },
 
   radio: {
-    "Inside its group": () => <RadioOptionExample />,
+    "Inside its group": () => <RadioStage />,
   },
 
   badge: {
@@ -545,19 +545,32 @@ function BillingExample() {
 }
 
 /**
- * The Radio page's example: one option, and nothing else.
+ * A single Radio, staged.
  *
- * A group is still present because a Radio rendered alone throws — alone it has
- * no name to share and no siblings to be exclusive with. But the group is kept
- * to one option so the specimen is unmistakably the item, not the question.
- * The question's own specimen lives on the RadioGroup page.
+ * A Radio rendered alone throws — alone it has no name to share and no siblings
+ * to be exclusive with — so a group is always present. Kept to one option, so
+ * the specimen is unmistakably the item rather than the question; the question
+ * has its own specimen on the RadioGroup page.
+ *
+ * The group is named by an off-screen element rather than by `label`, which
+ * would render a heading above a single row. Not left unnamed: the contract
+ * calls an unnamed radiogroup a mistake, and pointing labelledBy at an id that
+ * does not exist would be worse than either.
+ *
+ * A component rather than an inline render, because it needs useId and useState
+ * — a hook written straight into an EXAMPLES or INTERACTIVE entry would join
+ * the hook list of whatever is rendering it and change its length on navigation.
  */
-function RadioOptionExample() {
+function RadioStage({
+  label = "Annual",
+  description = "Two months free",
+  disabled,
+}: {
+  label?: ReactNode;
+  description?: ReactNode;
+  disabled?: boolean;
+}) {
   const [on, setOn] = useState<string | null>("annual");
-  // The group is named by an off-screen element rather than by `label`, which
-  // would render a heading above a single option. Not left unnamed: the
-  // contract calls an unnamed radiogroup a mistake, and pointing labelledBy at
-  // an id that does not exist would be worse than either.
   const labelId = `${useId()}-group`;
   return (
     <>
@@ -565,7 +578,7 @@ function RadioOptionExample() {
         Billing period
       </span>
       <RadioGroup labelledBy={labelId} value={on} onValueChange={setOn}>
-        <Radio value="annual" label="Annual" description="Two months free" />
+        <Radio value="annual" label={label} description={description} disabled={disabled} />
       </RadioGroup>
     </>
   );
@@ -705,6 +718,18 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  radio: {
+    // `value` is not a control: it is the option's identity, not a setting to
+    // try. Everything a Radio itself decides is here.
+    controls: ["label", "description", "disabled"],
+    render: (state) => (
+      <RadioStage
+        label={String(state.label || "Annual")}
+        description={state.description ? String(state.description) : undefined}
+        disabled={Boolean(state.disabled)}
+      />
+    ),
+  },
   switch: {
     controls: ["label", "labelHidden", "description", "checked", "disabled"],
     render: (state, set) => (
