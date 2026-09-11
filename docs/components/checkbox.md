@@ -15,7 +15,7 @@ import { Checkbox } from "@rata/react";
 | Family | inputs |
 | Tier | free |
 | Status (css / react / figma) | latest / latest / future |
-| Depends on | `state-layer` |
+| Depends on | `state-layer`, `visually-hidden` |
 
 ## Behavior
 

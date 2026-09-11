@@ -16,7 +16,9 @@
       "state": "future"
     }
   },
-  "dependencies": [],
+  "dependencies": [
+    "visually-hidden"
+  ],
   "files": [
     {
       "source": "packages/css/src/text-field.css",
@@ -237,7 +239,7 @@
         "hover inner band": "theme.bg.muted at border.2, drawn as an inset shadow so the fill recedes 2px while the border stays border.1 and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate",
         "focus border-color": "theme.fg.primary — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched",
         "focus outline": "focus.ring-width solid theme.fg.primary, offset space.0 — deliberately NOT theme.focus-ring, the only such departure in the library. It gives 16.75:1 against the field's fill where theme.focus-ring gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field",
-        "hidden label geometry": "border.1 box with space.0 padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled"
+        "hidden label geometry": "compose the .rata-visually-hidden class — the utility, not a rule of this component's own. It clips rather than using display:none, which would take the accessible name off with the pixels"
       }
     }
   }

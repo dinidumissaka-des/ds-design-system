@@ -36,26 +36,6 @@
   line-height: var(--rata-type-label-line-height);
 }
 
-/* Label taken off screen, not removed.
-   Clipped rather than `display: none` or `visibility: hidden`: both of those
-   take the element out of the accessibility tree, which would strip the
-   field's accessible name — the exact failure this modifier exists to avoid.
-   Clipping leaves it a real, `for`-bound label that a screen reader still
-   reads; only its pixels are gone.
-
-   Not collapsed to zero size either: a 1px box with overflow hidden keeps some
-   assistive tech from skipping it, which a 0x0 box does not reliably do. */
-.rata-text-field-label--hidden {
-  position: absolute;
-  inline-size: var(--rata-border-1);
-  block-size: var(--rata-border-1);
-  margin: calc(-1 * var(--rata-border-1));
-  padding: var(--rata-space-0);
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: var(--rata-space-0);
-}
 
 /* Required-ness is information, not a fault, so this is not the danger tone.
    It is also aria-hidden in the markup: aria-required already announces it,

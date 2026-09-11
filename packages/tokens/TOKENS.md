@@ -1333,7 +1333,7 @@ A single-line input with a label, helper text, and validation states.
 | hover inner band | `theme.bg.muted` at `border.2`, drawn as an inset shadow so the fill recedes 2px while the border stays `border.1` and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate |
 | focus border-color | `theme.fg.primary` — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched |
 | focus outline | `focus.ring-width` solid `theme.fg.primary`, offset `space.0` — deliberately NOT `theme.focus-ring`, the only such departure in the library. It gives 16.75:1 against the field's fill where `theme.focus-ring` gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field |
-| hidden label geometry | `border.1` box with `space.0` padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled |
+| hidden label geometry | compose the .rata-visually-hidden class — the utility, not a rule of this component's own. It clips rather than using display:none, which would take the accessible name off with the pixels |
 
 ### toggle-button-group-attached
 
@@ -1451,3 +1451,18 @@ The on state of a borderless toggle: the tint alone separates it from its unpres
 | outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
 | hover/press | compose the .rata-state-layer class — do not swap the background |
 | opacity (aria-disabled) | `state.disabled-opacity` |
+
+### visually-hidden
+
+Geometry only. Nothing here is a colour or a type decision, because the element is off screen rather than restyled.
+
+| Property | Token |
+|---|---|
+| inline-size | `border.1` — a 1px box rather than a zero-size one, because some assistive technology skips elements with no dimensions |
+| block-size | `border.1` |
+| margin | negative `border.1`, so the 1px box does not occupy a pixel of layout |
+| padding | `space.0` |
+| border | `space.0` |
+| clip-path | inset(50%) — clips to nothing, which is what keeps the element in the accessibility tree while display:none and visibility:hidden would not |
+| overflow | hidden, so the clipped content cannot reappear as a scroll region |
+| white-space | nowrap, so a long string does not lay out and affect scroll height before it is clipped |

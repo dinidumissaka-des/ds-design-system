@@ -92,7 +92,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   return (
     <div className={cx("rata-text-field", className)} {...field.root}>
       <label
-        className={cx("rata-text-field-label", labelHidden && "rata-text-field-label--hidden")}
+        className={cx("rata-text-field-label", labelHidden && "rata-visually-hidden")}
         {...field.label}
       >
         {label}

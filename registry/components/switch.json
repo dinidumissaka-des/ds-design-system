@@ -17,7 +17,8 @@
     }
   },
   "dependencies": [
-    "state-layer"
+    "state-layer",
+    "visually-hidden"
   ],
   "files": [
     {

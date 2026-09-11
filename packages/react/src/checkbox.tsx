@@ -123,7 +123,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 
       <span className="rata-checkbox-text">
         <label
-          className={cx("rata-checkbox-label", labelHidden && "rata-checkbox-label--hidden")}
+          className={cx("rata-checkbox-label", labelHidden && "rata-visually-hidden")}
           {...field.label}
         >
           {label}

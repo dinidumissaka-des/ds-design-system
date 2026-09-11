@@ -36,6 +36,7 @@ this path is the honest answer to when it last actually moved.
 | [text-field](../docs/components/text-field.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [toggle-button](../docs/components/toggle-button.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [toggle-button-group](../docs/components/toggle-button-group.md) | `@rata/react` | buttons | latest / latest / future | free |
+| [visually-hidden](../docs/components/visually-hidden.md) | `@rata/react` | foundations | latest / na / na | free |
 
 ## Props
 
@@ -414,6 +415,12 @@ Real usage (from `apps/`):
 ```
 
 Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-button-group.md)
+
+### Visually hidden
+
+No standalone React component — "Visually hidden" is CSS-only (see registry description), composed onto other components' className.
+
+Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidden.md)
 
 ## Tokens
 

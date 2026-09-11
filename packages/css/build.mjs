@@ -28,6 +28,9 @@ const ORDER = [
   "badge.css",
   "avatar.css",
   "breadcrumbs.css",
+  // Last on purpose: a class whose job is to hide must not lose the cascade
+  // to a component rule that happens to set position or padding.
+  "visually-hidden.css",
 ];
 
 const srcFiles = await readdir(path.join(root, "src"));

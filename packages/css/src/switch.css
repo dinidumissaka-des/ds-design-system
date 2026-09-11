@@ -122,20 +122,6 @@
   cursor: pointer;
 }
 
-/* Clipped, not display:none — that would take the accessible name with the
-   pixels. Third copy of this recipe in the library; it wants to be a shared
-   visually-hidden utility. */
-.rata-switch-label--hidden {
-  position: absolute;
-  inline-size: var(--rata-border-1);
-  block-size: var(--rata-border-1);
-  margin: calc(-1 * var(--rata-border-1));
-  padding: var(--rata-space-0);
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: var(--rata-space-0);
-}
 
 .rata-switch[data-label-hidden] {
   gap: var(--rata-space-0);

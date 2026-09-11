@@ -95,7 +95,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
 
       <span className="rata-switch-text">
         <label
-          className={cx("rata-switch-label", labelHidden && "rata-switch-label--hidden")}
+          className={cx("rata-switch-label", labelHidden && "rata-visually-hidden")}
           {...field.label}
         >
           {label}
