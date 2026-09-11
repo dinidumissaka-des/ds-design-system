@@ -47,7 +47,10 @@
   /* The same height as a checkbox's box, so a switch and a checkbox in one
      settings column line up. */
   box-sizing: border-box;
-  padding: var(--ds-space-gap-xs);
+  /* A tighter inset than the checkbox's, because the thumb is deliberately
+     large in the track — the channel reads as a channel with a couple of
+     pixels showing, not a wide gutter. */
+  padding: var(--ds-space-0-5);
   border: var(--ds-border-default) solid var(--ds-theme-border-strong);
   border-radius: var(--ds-radius-pill);
   /* An off track is an empty channel, not a filled control. */
@@ -59,8 +62,11 @@
 }
 
 .ds-switch-thumb {
-  inline-size: var(--ds-space-gap-md);
-  block-size: var(--ds-space-gap-md);
+  /* A spacing step, not the icon scale: the thumb is a mark rather than a
+     glyph — the same reasoning the radio's dot follows. At 16px it fills 89% of
+     the track's inner height, which is the proportion a switch reads as. */
+  inline-size: var(--ds-space-gap-lg);
+  block-size: var(--ds-space-gap-lg);
   border-radius: var(--ds-radius-pill);
   background: var(--ds-theme-fg-secondary);
   /* transform, not a layout property: the thumb slides, so nothing around it
@@ -84,7 +90,7 @@
      than a magic number, so it follows if any of the three change. */
   transform: translateX(
     calc(
-      var(--ds-size-control-lg) - var(--ds-space-gap-md) - (2 * var(--ds-space-gap-xs)) -
+      var(--ds-size-control-lg) - var(--ds-space-gap-lg) - (2 * var(--ds-space-0-5)) -
         (2 * var(--ds-border-default))
     )
   );

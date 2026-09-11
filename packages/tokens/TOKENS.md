@@ -1285,11 +1285,11 @@ A track the thumb slides along. The track's fill is the state, and the thumb's p
 | track background (off) | `theme.bg.muted` — the most recessed surface, so an off switch reads as an empty channel rather than a filled control |
 | track background (on) | `theme.accent-role.bg` |
 | track border | `border.default` solid `theme.border.strong` when off — an off track needs its own boundary at the 3:1 WCAG 1.4.11 asks of a control's edge, because its fill is nearly its surroundings. On, the accent fill is the boundary and the border matches it |
-| thumb size | `space.gap.md` |
+| thumb size | `space.gap.lg` — a spacing step rather than the icon scale, because the thumb is a mark and not a glyph, the same reasoning the radio's dot follows. At 16px it fills 89% of the track's inner height, which is the proportion a switch reads as; smaller and it looks like a dot rattling in a channel |
 | thumb border-radius | `radius.pill` |
 | thumb background (off) | `theme.fg.secondary` |
 | thumb background (on) | `theme.fg.on-accent` — the only foreground permitted on the accent fill, and it inverts with the accent in the dark scheme |
-| thumb inset | `space.gap.xs` — the gap between the thumb and the track it sits in, at both ends of its travel |
+| thumb inset | `space.0-5` at both ends of the travel — tighter than the checkbox's inset on purpose, since a large thumb wants a couple of pixels of channel showing rather than a gutter |
 | thumb travel | transform, not a layout property: the thumb slides rather than reflowing, so nothing around it moves |
 | gap between track and label | `space.gap.sm` |
 | gap between label and description | `space.stack.2xs` |
