@@ -9,7 +9,7 @@
 // The live demos are the one thing this file adds, and they are deliberately
 // the only hand-written part: a contract can say `loading` shows a spinner and
 // refuses clicks, but only a real button can be clicked.
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import {
   Avatar,
@@ -894,49 +894,65 @@ function activeConflicts(contract: Contract, state: DemoState): string[] {
  * already shows in its first column — a second visible copy beside the input
  * would be the same word twice, so this labels without repeating.
  */
+/**
+ * A prop's control, built from the system's own components.
+ *
+ * These were a native `<select>`, `<input type="checkbox">` and text input —
+ * written before the system had a Checkbox, a RadioGroup or a TextField to use.
+ * A documentation tool that styles its own form controls by hand is the least
+ * convincing possible argument for the components it is documenting.
+ *
+ * Unions become a vertical RadioGroup rather than a segmented
+ * ToggleButtonGroup: the control column is 220px, and five attached options
+ * (badge's variant, icon's size) need closer to 370px. A group that overflows
+ * its column is worse than one that is tall.
+ *
+ * The group takes `labelledBy` rather than `label`, pointing at the prop name
+ * already rendered in the row's first column — which is precisely what that
+ * prop is documented for, and it avoids naming the same thing twice on screen.
+ */
 function Control({
   prop,
   value,
   onChange,
+  labelledBy,
 }: {
   prop: ContractProp;
   value: string | boolean;
   onChange: (value: string | boolean) => void;
+  labelledBy: string;
 }) {
   if (prop.values?.length) {
     return (
-      <select
-        className="pg-control-input"
-        aria-label={prop.name}
+      <RadioGroup
+        labelledBy={labelledBy}
         value={String(value)}
-        onChange={(event) => onChange(event.target.value)}
+        onValueChange={onChange}
       >
         {prop.values.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
+          <Radio key={option} value={option} label={option} />
         ))}
-      </select>
+      </RadioGroup>
     );
   }
 
   if (prop.type === "boolean") {
+    // Labelled with the prop's own name: a bare box in a right-aligned column
+    // is not self-describing, and the label is also the hit target.
     return (
-      <input
-        type="checkbox"
-        className="pg-control-checkbox"
-        aria-label={prop.name}
+      <Checkbox
+        label={prop.name}
         checked={Boolean(value)}
-        onChange={(event) => onChange(event.target.checked)}
+        onCheckedChange={(next) => onChange(next)}
       />
     );
   }
 
   return (
-    <input
-      type="text"
-      className="pg-control-input"
-      aria-label={prop.name}
+    <TextField
+      label={prop.name}
+      labelHidden
+      size="sm"
       placeholder="value"
       value={String(value)}
       onChange={(event) => onChange(event.target.value)}
@@ -1023,11 +1039,14 @@ function PropRow({
   onChange?: (value: string | boolean) => void;
 }) {
   const guidance = prop.use.length + prop.dont.length + prop.conflicts.length > 0;
+  // The name in column one is what names the control in column three, so the
+  // control never repeats it.
+  const nameId = `${useId()}-name`;
 
   return (
     <div className="pg-prop-row">
       <div className="pg-prop-name">
-        <code>{prop.name}</code>
+        <code id={nameId}>{prop.name}</code>
       </div>
 
       <div className="pg-prop-detail">
@@ -1083,7 +1102,9 @@ function PropRow({
       </div>
 
       <div className="pg-prop-control">
-        {onChange && <Control prop={prop} value={value ?? ""} onChange={onChange} />}
+        {onChange && (
+          <Control prop={prop} value={value ?? ""} onChange={onChange} labelledBy={nameId} />
+        )}
       </div>
     </div>
   );
@@ -1433,10 +1454,10 @@ function PropertiesTab({ contract }: { contract: Contract }) {
                   </p>
                 </div>
                 <div className="pg-prop-control">
-                  <input
-                    type="text"
-                    className="pg-control-input"
-                    aria-label="children"
+                  <TextField
+                    label="children"
+                    labelHidden
+                    size="sm"
                     placeholder="value"
                     value={String(state.children ?? "")}
                     onChange={(event) => set("children")(event.target.value)}

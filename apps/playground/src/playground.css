@@ -862,35 +862,15 @@ code {
   margin-bottom: var(--ds-space-2);
 }
 
+/* Was a right-aligned row when every control was a single native input. The
+   union control is a stacked RadioGroup now, so the column aligns its content
+   to the start of the block and lets it be as tall as it needs. */
 .pg-prop-control {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.pg-control-input {
-  width: 100%;
-  height: var(--ds-size-control-md);
-  padding: 0 var(--ds-space-3);
-  font: inherit;
-  font-size: var(--ds-type-control-size-sm);
-  color: var(--ds-theme-fg-primary);
-  background: var(--ds-theme-bg-surface);
-  border: var(--ds-border-1) solid var(--ds-theme-border-strong);
-  border-radius: var(--ds-radius-pill);
-}
-
-.pg-control-checkbox {
-  width: var(--ds-space-5);
-  height: var(--ds-space-5);
-  margin: 0;
-  accent-color: var(--ds-theme-accent-role-bg);
-}
-
-.pg-control-input:focus-visible,
-.pg-control-checkbox:focus-visible {
-  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
-  outline-offset: var(--ds-focus-ring-offset);
-}
 
 /* A conflict is a rule the compiler won't enforce, so it reads as a warning,
    not an error: the role's subtle tint with its own fg. */
@@ -908,13 +888,8 @@ code {
     gap: var(--ds-space-gap-sm);
   }
 
-  .pg-prop-control {
-    justify-content: flex-start;
-  }
-
-  .pg-control-input {
-    width: auto;
-  }
+  /* The column already starts its content at the block start, so the narrow
+     breakpoint has nothing left to correct here. */
 }
 
 /* ---- Component tabs ------------------------------------------------------
