@@ -23,6 +23,8 @@ const ORDER = [
   // After checkbox: radio shares its construction and overrides the shape.
   "radio.css",
   "radio-group.css",
+  // After radio: the switch shares their construction and redraws the control.
+  "switch.css",
   "badge.css",
   "avatar.css",
   "breadcrumbs.css",

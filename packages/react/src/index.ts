@@ -14,6 +14,8 @@ export type {
   ToggleButtonGroupSelectionMode,
   ToggleButtonGroupValue,
 } from "./toggle-button-group.js";
+export { Switch } from "./switch.js";
+export type { SwitchProps } from "./switch.js";
 export { TextField } from "./text-field.js";
 export type { TextFieldProps, TextFieldSize, TextFieldStatus } from "./text-field.js";
 export { Avatar } from "./avatar.js";

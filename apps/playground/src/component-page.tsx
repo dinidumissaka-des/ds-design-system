@@ -21,6 +21,7 @@ import {
   Radio,
   RadioGroup,
   Spinner,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -353,6 +354,23 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  switch: {
+    "A setting that applies immediately": () => <NotificationsExample />,
+    "A setting whose consequence needs saying": () => (
+      <Switch
+        label="Public profile"
+        description="Anyone with the link can see your activity."
+        defaultChecked
+      />
+    ),
+    "A row in a settings table": () => (
+      <span className="pg-example-inline">
+        <Switch label="Email digest" labelHidden defaultChecked />
+        <Switch label="Push digest" labelHidden />
+      </span>
+    ),
+  },
+
   spinner: {
     "Standalone region loading": () => <Spinner label="Loading results" />,
     "Inside a button": () => <Button loading>Saving…</Button>,
@@ -526,6 +544,12 @@ function BillingExample() {
   );
 }
 
+/** Controlled, because a setting is state the rest of the page reads. */
+function NotificationsExample() {
+  const [on, setOn] = useState(true);
+  return <Switch label="Notifications" checked={on} onCheckedChange={setOn} />;
+}
+
 /** A case the contract includes to say "don't" — its notes open with exactly that. */
 const isCounterExample = (item: Contract["usage"][number]) =>
   (item.notes ?? "").trimStart().toLowerCase().startsWith("don't");
@@ -654,6 +678,19 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  switch: {
+    controls: ["label", "labelHidden", "description", "checked", "disabled"],
+    render: (state, set) => (
+      <Switch
+        label={String(state.label || "Notifications")}
+        labelHidden={Boolean(state.labelHidden)}
+        description={state.description ? String(state.description) : undefined}
+        checked={Boolean(state.checked)}
+        disabled={Boolean(state.disabled)}
+        onCheckedChange={(next) => set({ checked: next })}
+      />
+    ),
+  },
   checkbox: {
     controls: ["label", "description", "checked", "indeterminate", "disabled", "required"],
     render: (state, set) => (

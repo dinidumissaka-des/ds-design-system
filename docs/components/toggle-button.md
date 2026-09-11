@@ -25,7 +25,7 @@ Headless contract: `getToggleButtonProps` in `packages/primitives/src/toggle-but
 
 - **Composes `getButtonProps` instead of reimplementing activation** — A toggle is a button that carries a state. Implementing the disabled and loading guards a second time is how the two drift apart — one gains a fix the other doesn't, and the difference only shows up in whichever one nobody tested.
 - **`aria-pressed` is emitted in both states, never omitted when false** — Unlike `aria-disabled`, which is absent when it doesn't apply, a missing `aria-pressed` makes the control announce as an ordinary button — precisely when the user most needs to know it is a toggle that is currently off.
-- **`aria-pressed`, not `role="switch"`** — A switch is an on/off setting that takes effect immediately and reads as a thing with a state ("Notifications, on"). A toggle button is an action you leave engaged — bold, mute, pin — and reads as a verb. When the control is a setting in a form, the answer is a switch, and this component is the wrong one.
+- **`aria-pressed`, not `role="switch"`** — A switch is an on/off setting that takes effect immediately and reads as a thing with a state ("Notifications, on"). A toggle button is an action you leave engaged — bold, mute, pin — and reads as a verb. When the control is a setting, the answer is Switch, and this component is the wrong one.
 - **The label does not change with the state** — `aria-pressed` already says whether it is on. Swapping the label to "Unmute" as well means the name and the state contradict each other — a screen reader announces "Unmute, pressed", which is a double negative the user has to unpick. The visual treatment carries the state; the word stays put.
 - **No `data-pressed` attribute** — `[aria-pressed="true"]` is already a CSS selector. A parallel data attribute would be a second copy of the same fact, free to go stale.
 - **Controlled by default, with an uncontrolled escape hatch** — A toggle almost always reflects state that lives somewhere else — a document's formatting, a saved preference — so the controlled form is the honest default. `defaultPressed` exists for the genuinely local case, and passing both is a conflict rather than a precedence rule to memorize.
@@ -264,7 +264,7 @@ The control is a setting in a form, applied immediately, and reads as a thing wi
 </ToggleButton>
 ```
 
-Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. This system has no Switch yet — say so and flag the gap rather than dressing a toggle button up as one.
+Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. Use Switch, which announces with aria-checked as "Notifications, on" — the sentence a setting should produce.
 
 ## Real usage in this repo
 

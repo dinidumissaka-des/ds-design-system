@@ -32,6 +32,7 @@ this path is the honest answer to when it last actually moved.
 | [radio-group](../docs/components/radio-group.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@ds/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@ds/react` | foundations | latest / na / future | free |
+| [switch](../docs/components/switch.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [toggle-button](../docs/components/toggle-button.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [toggle-button-group](../docs/components/toggle-button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
@@ -285,6 +286,35 @@ Contract: [docs/components/spinner.md](../docs/components/spinner.md)
 No standalone React component — "State layer" is CSS-only (see registry description), composed onto other components' className.
 
 Contract: [docs/components/state-layer.md](../docs/components/state-layer.md)
+
+### Switch (`@ds/react`)
+
+Extends: `Omit<`
+
+- `label: ReactNode`
+  The setting's label. Always required — `labelHidden` hides it, nothing removes it.
+- `labelHidden?: boolean`
+  Takes the label off screen while leaving it in the accessibility tree.
+- `checked?: boolean`
+  Whether the setting is on. Makes the component controlled.
+- `defaultChecked?: boolean`
+  Starting state for an uncontrolled switch. Conflicts with `checked`.
+- `onCheckedChange?: (checked: boolean, event: { preventDefault(): void }) => void`
+  Called with the state the setting should move to.
+- `description?: ReactNode`
+  Helper text under the label.
+- `id?: string`
+  Stable id for the input. Defaults to a generated one.
+- `disabled?: boolean`
+  Blocks the change while keeping the switch focusable and readable.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Switch label="Push digest" labelHidden />
+```
+
+Contract: [docs/components/switch.md](../docs/components/switch.md)
 
 ### Input: Text field (`@ds/react`)
 

@@ -1273,6 +1273,35 @@ One option in a radio group. Circular, so its shape says 'one of these' before t
 | border-radius | `radius.pill` — a circle, which is the one thing that tells a radio from a checkbox before either is read |
 | checked mark | `theme.fg.on-accent` as a centred dot; a radio is filled, not ticked |
 
+### switch
+
+A track the thumb slides along. The track's fill is the state, and the thumb's position says the same thing a second way, so the setting is never carried by colour alone.
+
+| Property | Token |
+|---|---|
+| track inline-size | `size.control.lg` — the track is twice the thumb's diameter plus its inset, which is what gives the thumb somewhere to travel; borrowing a control step keeps it on the scale |
+| track block-size | `size.icon.md` — the same height as a checkbox's box, so a switch and a checkbox in one settings column line up |
+| track border-radius | `radius.pill` |
+| track background (off) | `theme.bg.muted` — the most recessed surface, so an off switch reads as an empty channel rather than a filled control |
+| track background (on) | `theme.accent-role.bg` |
+| track border | `border.default` solid `theme.border.strong` when off — an off track needs its own boundary at the 3:1 WCAG 1.4.11 asks of a control's edge, because its fill is nearly its surroundings. On, the accent fill is the boundary and the border matches it |
+| thumb size | `space.gap.md` |
+| thumb border-radius | `radius.pill` |
+| thumb background (off) | `theme.fg.secondary` |
+| thumb background (on) | `theme.fg.on-accent` — the only foreground permitted on the accent fill, and it inverts with the accent in the dark scheme |
+| thumb inset | `space.gap.xs` — the gap between the thumb and the track it sits in, at both ends of its travel |
+| thumb travel | transform, not a layout property: the thumb slides rather than reflowing, so nothing around it moves |
+| gap between track and label | `space.gap.sm` |
+| gap between label and description | `space.stack.2xs` |
+| label color | `theme.fg.primary` |
+| label font-size | `type.control.size.md` |
+| description color | `theme.fg.secondary` |
+| description font-size | `type.supporting.size` |
+| hover/press | compose the .ds-state-layer class |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` — drawn on the track, and the offset is kept: a pill this small has no room for a flush ring to read as separate from its own edge |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+| transition | `motion.interactive.duration` with `motion.interactive.easing`, on the thumb's transform and the track's fill |
+
 ### text-field
 
 A single-line input with a label, helper text, and validation states.

@@ -50,7 +50,7 @@
       },
       {
         "decision": "`aria-pressed`, not `role=\"switch\"`",
-        "why": "A switch is an on/off setting that takes effect immediately and reads as a thing with a state (\"Notifications, on\"). A toggle button is an action you leave engaged — bold, mute, pin — and reads as a verb. When the control is a setting in a form, the answer is a switch, and this component is the wrong one."
+        "why": "A switch is an on/off setting that takes effect immediately and reads as a thing with a state (\"Notifications, on\"). A toggle button is an action you leave engaged — bold, mute, pin — and reads as a verb. When the control is a setting, the answer is Switch, and this component is the wrong one."
       },
       {
         "decision": "The label does not change with the state",
@@ -189,7 +189,7 @@
       "case": "Reaching for the wrong component",
       "when": "The control is a setting in a form, applied immediately, and reads as a thing with a state.",
       "example": "<ToggleButton pressed={notifications} onPressedChange={setNotifications}>\n  Notifications\n</ToggleButton>",
-      "notes": "Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. This system has no Switch yet — say so and flag the gap rather than dressing a toggle button up as one."
+      "notes": "Don't. That is a switch, not a toggle button: it is a setting, not an action left engaged. Use Switch, which announces with aria-checked as \"Notifications, on\" — the sentence a setting should produce."
     }
   ],
   "tokens": {
