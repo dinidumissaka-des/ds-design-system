@@ -1149,7 +1149,7 @@ A single on/off choice, with a third appearance for a parent summarising its chi
 | control height | one line tall, from calc(`type.control.size.md` x `type.control.line-height.md`) = 20px. The line-height token is a unitless ratio, so it is not a length on its own — used alone the browser drops the declaration |
 | border | `border.default` solid `theme.border.strong` — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge |
 | gap between box and label | `space.gap.sm` — the inline role, because this pairing is horizontal |
-| gap between label and description | `space.stack.2xs` |
+| gap between label and description | none — the label and the description each carry line-height leading, which already reads as 7px of separation. A gap on top of that made 11px and read as two unrelated lines |
 | label color | `theme.fg.primary` |
 | label font-size | `type.control.size.md` |
 | description color | `theme.fg.secondary` |
@@ -1260,7 +1260,7 @@ One option in a radio group. Circular, so its shape says 'one of these' before t
 | control height | one line tall, from calc(`type.control.size.md` x `type.control.line-height.md`) = 20px. The line-height token is a unitless ratio, so it is not a length on its own — used alone the browser drops the declaration |
 | border | `border.default` solid `theme.border.strong` — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge |
 | gap between box and label | `space.gap.sm` — the inline role, because this pairing is horizontal |
-| gap between label and description | `space.stack.2xs` |
+| gap between label and description | none — the label and the description each carry line-height leading, which already reads as 7px of separation. A gap on top of that made 11px and read as two unrelated lines |
 | label color | `theme.fg.primary` |
 | label font-size | `type.control.size.md` |
 | description color | `theme.fg.secondary` |
@@ -1292,7 +1292,7 @@ A track the thumb slides along. The track's fill is the state, and the thumb's p
 | thumb inset | `space.0-5` at both ends of the travel — tighter than the checkbox's inset on purpose, since a large thumb wants a couple of pixels of channel showing rather than a gutter |
 | thumb travel | transform, not a layout property: the thumb slides rather than reflowing, so nothing around it moves |
 | gap between track and label | `space.gap.sm` |
-| gap between label and description | `space.stack.2xs` |
+| gap between label and description | none — the label and the description each carry line-height leading, which already reads as 7px of separation. A gap on top of that made 11px and read as two unrelated lines |
 | label color | `theme.fg.primary` |
 | label font-size | `type.control.size.md` |
 | description color | `theme.fg.secondary` |

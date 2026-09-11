@@ -270,7 +270,7 @@ A track the thumb slides along. The track's fill is the state, and the thumb's p
 | thumb inset | `space.0-5 at both ends of the travel — tighter than the checkbox's inset on purpose, since a large thumb wants a couple of pixels of channel showing rather than a gutter` |
 | thumb travel | `transform, not a layout property: the thumb slides rather than reflowing, so nothing around it moves` |
 | gap between track and label | `space.gap.sm` |
-| gap between label and description | `space.stack.2xs` |
+| gap between label and description | `none — the label and the description each carry line-height leading, which already reads as 7px of separation. A gap on top of that made 11px and read as two unrelated lines` |
 | label color | `theme.fg.primary` |
 | label font-size | `type.control.size.md` |
 | description color | `theme.fg.secondary` |

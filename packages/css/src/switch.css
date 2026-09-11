@@ -104,7 +104,15 @@
 .rata-switch-text {
   display: flex;
   flex-direction: column;
-  gap: var(--rata-space-stack-2xs);
+  /* No gap: the label and the description each carry line-height leading of
+     their own — 3px below the label and 4px above the description — which
+     already reads as 7px of separation. Adding space.stack.2xs on top of that
+     made 11px, which looked like the two were unrelated.
+
+     Tightening further would mean giving the description another role's
+     line-height while keeping supporting's size, and the type contract is
+     explicit that each role carries a matched size, weight and line-height.
+     Not worth breaking that for 2px. */
 }
 
 .rata-switch-label {
