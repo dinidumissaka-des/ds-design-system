@@ -35,7 +35,8 @@ Extends `Omit<`.
 
 | Prop | Type | Default | Summary |
 |---|---|---|---|
-| `label` | `ReactNode` | — | The checkbox's label. Always required. |
+| `label` | `ReactNode` | — | The checkbox's label. Always required — `labelHidden` can take it off screen, but nothing removes it. |
+| `labelHidden?` | `boolean` | — | Takes the label off screen while leaving it in the accessibility tree. |
 | `checked?` | `boolean` | — | Whether the box is checked. Makes the component controlled. |
 | `defaultChecked?` | `boolean` | — | Starting state for an uncontrolled checkbox. |
 | `onCheckedChange?` | `(checked: boolean, event: { preventDefault(): void }) => void` | — | Called with the state the box should move to, not the one it is leaving. |
@@ -52,7 +53,9 @@ Extends `Omit<`.
 label: ReactNode
 ```
 
-The checkbox's label. Always required.
+The checkbox's label. Always required — `labelHidden` can take it off screen, but nothing removes it.
+
+Source doc: The checkbox's label. Always required — `labelHidden` hides it, nothing removes it.
 
 **Use when**
 
@@ -61,8 +64,30 @@ The checkbox's label. Always required.
 **Don't use for**
 
 - Using the surrounding sentence as the label and leaving this empty — the binding is what makes the text a hit target and an accessible name.
+- Passing an empty string. An empty label is an unnamed control; hide it with `labelHidden` instead.
 
-**Accessibility** Rendered as a real `<label for>` bound to the input, so clicking the text toggles the box.
+**Accessibility** Rendered as a real `<label for>` bound to the input, so clicking the text toggles the box. Still a real label when hidden — only its pixels go away.
+
+### `labelHidden`
+
+```ts
+labelHidden?: boolean
+```
+
+Takes the label off screen while leaving it in the accessibility tree.
+
+**Use when**
+
+- A checkbox in a table row or header cell, where the column already names what is being toggled and repeating it per row would be noise.
+- A dense control panel where the box sits directly under a heading that names it.
+
+**Don't use for**
+
+- Hiding it to save space in a form. In a form the label is the last thing to cut; if space is short the layout budget is wrong.
+- Hiding it on a standalone checkbox. With no adjacent text naming it, the label is the only thing saying what agreeing to this means.
+- Hiding it and then relying on a neighbouring cell's position to explain the box — position is not a name, and it is the first thing lost when a layout reflows.
+
+**Accessibility** The label element is still rendered and still bound by `for`, so the accessible name is unchanged — it is clipped, not removed. Not `display: none`, which would take the name with it. The required marker goes off screen with it; `aria-required` still carries that.
 
 ### `checked`
 
@@ -238,6 +263,16 @@ A choice that cannot be made yet, whose current state still matters.
 ```
 
 aria-disabled and a refused activation, never the native `disabled` attribute — the box stays focusable so a keyboard user can find it and read its state.
+
+### A column of boxes under a heading that names them
+
+A table or a settings grid where the column header already says what is being toggled.
+
+```tsx
+<Checkbox label="Notify by email" labelHidden checked={row.email} onCheckedChange={…} />
+```
+
+`labelHidden` hides the pixels, not the name: the `<label for>` is still rendered and still bound, so each box is announced as "Notify by email" exactly as it would be with the label visible. The hit target shrinks to the box itself, which is the cost of this choice — it is why the visible label is the default.
 
 ## Real usage in this repo
 

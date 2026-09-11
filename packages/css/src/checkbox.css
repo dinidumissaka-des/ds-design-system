@@ -89,11 +89,38 @@
   gap: var(--ds-space-stack-2xs);
 }
 
+/* Nothing visible to lay out beside the box, so the row does not reserve a
+   text column for it. The label element is still in there, clipped. */
+.ds-checkbox[data-label-hidden] {
+  gap: var(--ds-space-0);
+}
+
 .ds-checkbox-label {
   color: var(--ds-theme-fg-primary);
   font-size: var(--ds-type-control-size-md);
   line-height: var(--ds-type-control-line-height-md);
   cursor: pointer;
+}
+
+/* Label taken off screen, not removed.
+   Clipped rather than display:none or visibility:hidden: both of those drop the
+   element from the accessibility tree, which would strip the checkbox's
+   accessible name — the exact failure this modifier exists to avoid. It stays a
+   real, `for`-bound label that a screen reader reads; only its pixels go.
+
+   NOTE: this is the same recipe text-field uses for its own hidden label. Two
+   copies is the point at which it wants to be a shared `visually-hidden`
+   utility rather than a rule per component. */
+.ds-checkbox-label--hidden {
+  position: absolute;
+  inline-size: var(--ds-border-1);
+  block-size: var(--ds-border-1);
+  margin: calc(-1 * var(--ds-border-1));
+  padding: var(--ds-space-0);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: var(--ds-space-0);
 }
 
 .ds-checkbox-required {

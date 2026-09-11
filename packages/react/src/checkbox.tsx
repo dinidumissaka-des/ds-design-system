@@ -8,8 +8,10 @@ export interface CheckboxProps
     InputHTMLAttributes<HTMLInputElement>,
     "disabled" | "required" | "id" | "checked" | "defaultChecked" | "onChange" | "type"
   > {
-  /** The checkbox's label. Always required. */
+  /** The checkbox's label. Always required — `labelHidden` hides it, nothing removes it. */
   label: ReactNode;
+  /** Takes the label off screen while leaving it in the accessibility tree. */
+  labelHidden?: boolean;
   /** Whether the box is checked. Makes the component controlled. */
   checked?: boolean;
   /** Starting state for an uncontrolled checkbox. Conflicts with `checked`. */
@@ -38,6 +40,11 @@ export interface CheckboxProps
  * accessibility tree along with the pixels. It stays a real form control; the
  * box is only paint, which is why the box is `aria-hidden`.
  *
+ * `labelHidden` concedes the label's pixels and never its name: the element is
+ * still rendered and still bound by `for`. The alternative people reach for —
+ * dropping the label and leaning on a neighbouring cell to explain the box —
+ * leaves the control unnamed the moment the layout reflows.
+ *
  * `indeterminate` is assigned to the element as a DOM property, because HTML
  * has no such attribute — it cannot be written in JSX, and that is the whole
  * reason this is a component rather than a styled input.
@@ -45,6 +52,7 @@ export interface CheckboxProps
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
   {
     label,
+    labelHidden,
     checked,
     defaultChecked,
     onCheckedChange,
@@ -91,7 +99,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
   }, [field.indeterminate]);
 
   return (
-    <div className={cx("ds-checkbox", className)} {...field.root}>
+    <div
+      className={cx("ds-checkbox", className)}
+      data-label-hidden={labelHidden ? "" : undefined}
+      {...field.root}
+    >
       <span className="ds-checkbox-control">
         <input
           {...rest}
@@ -110,7 +122,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       </span>
 
       <span className="ds-checkbox-text">
-        <label className="ds-checkbox-label" {...field.label}>
+        <label
+          className={cx("ds-checkbox-label", labelHidden && "ds-checkbox-label--hidden")}
+          {...field.label}
+        >
           {label}
           {required && (
             <span className="ds-checkbox-required" aria-hidden="true">

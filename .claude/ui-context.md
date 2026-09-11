@@ -147,7 +147,9 @@ Contract: [docs/components/button-group.md](../docs/components/button-group.md)
 Extends: `Omit<`
 
 - `label: ReactNode`
-  The checkbox's label. Always required.
+  The checkbox's label. Always required — `labelHidden` hides it, nothing removes it.
+- `labelHidden?: boolean`
+  Takes the label off screen while leaving it in the accessibility tree.
 - `checked?: boolean`
   Whether the box is checked. Makes the component controlled.
 - `defaultChecked?: boolean`

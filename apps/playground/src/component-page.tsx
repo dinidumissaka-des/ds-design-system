@@ -937,11 +937,13 @@ function Control({
   }
 
   if (prop.type === "boolean") {
-    // Labelled with the prop's own name: a bare box in a right-aligned column
-    // is not self-describing, and the label is also the hit target.
+    // The prop name is already the row's first column, so the label is hidden
+    // rather than repeated — the same reason the union control above takes
+    // `labelledBy`. Hidden, not dropped: the box keeps its accessible name.
     return (
       <Checkbox
         label={prop.name}
+        labelHidden
         checked={Boolean(value)}
         onCheckedChange={(next) => onChange(next)}
       />
