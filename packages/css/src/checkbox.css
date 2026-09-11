@@ -11,9 +11,6 @@
   display: flex;
   align-items: flex-start;
   gap: var(--ds-space-gap-sm);
-  /* The hit target is control-sized even though the box is not, so this is as
-     easy to hit as any other control in the row. */
-  min-block-size: var(--ds-size-control-md);
   font-family: var(--ds-font-family-sans);
 }
 
@@ -21,8 +18,14 @@
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
-  /* Centres the box on the first line of the label rather than the top of it. */
-  block-size: var(--ds-type-control-line-height-md);
+  /* Exactly one line tall, so the box centres on the label's first line rather
+     than its whole block — which is what keeps a two-line description from
+     dragging the box down the middle of it.
+
+     The line-height token is a unitless *ratio*, so it is not a length on its
+     own: `block-size: 1.4286` is invalid and the browser silently drops the
+     declaration. Multiplied by the font size it is the 20px a line occupies. */
+  block-size: calc(var(--ds-type-control-size-md) * var(--ds-type-control-line-height-md));
   align-items: center;
 }
 
@@ -45,6 +48,12 @@
   inline-size: var(--ds-size-icon-md);
   block-size: var(--ds-size-icon-md);
   border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  /* Stated, not inherited from the consumer's reset: this rule sets an explicit
+     size alongside a border, so under content-box it renders 2px larger than the
+     token says. @ds/css deliberately ships no global reset — a library has no
+     business restyling a consumer's own elements — so each component that
+     measures itself declares this. */
+  box-sizing: border-box;
   border-radius: var(--ds-radius-inner);
   color: var(--ds-theme-fg-on-accent);
   pointer-events: none;
@@ -78,8 +87,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--ds-space-stack-2xs);
-  /* Aligns the label's first line with the box beside it. */
-  padding-block-start: var(--ds-space-0);
 }
 
 .ds-checkbox-label {

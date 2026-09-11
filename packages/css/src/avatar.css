@@ -10,6 +10,17 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: var(--ds-radius-pill);
+  /* Its own edge, so the circle is findable on any surface. Without it the
+     fallback sits on theme.bg.muted and vanishes against any container using
+     that same tone — and theme.border.default would not help: composited over
+     a mid surface it measures about 1.2:1, which is no edge at all.
+     theme.border.strong is the token for "a boundary the eye should stop at",
+     and it holds 2.4:1 or better against every background in the ladder. */
+  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  /* So the border eats inward instead of adding to the diameter: the sizes
+     borrow the control scale precisely so an avatar lines up with the controls
+     beside it, and 34px would break that. */
+  box-sizing: border-box;
   overflow: hidden;
   background: var(--ds-theme-bg-muted);
   color: var(--ds-theme-fg-secondary);

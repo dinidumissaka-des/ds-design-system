@@ -3,7 +3,12 @@
   display: inline-block;
   width: 1em;
   height: 1em;
-  border: 2px solid currentColor;
+  /* Without this the 2px ring is added to the 1em box, so a spinner claiming to
+     scale with its font size actually rendered 4px larger than it. */
+  box-sizing: border-box;
+  /* border.2 rather than a literal 2px: the ring is a stroke width, and this
+     scale is where stroke widths live. */
+  border: var(--ds-border-2) solid currentColor;
   border-right-color: transparent;
   border-radius: var(--ds-radius-pill);
   animation: ds-spin var(--ds-motion-duration-spin) linear infinite;

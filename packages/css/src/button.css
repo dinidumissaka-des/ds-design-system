@@ -5,6 +5,12 @@
   justify-content: center;
   gap: var(--ds-space-2);
   border: var(--ds-border-default) solid transparent;
+  /* Stated, not inherited from the consumer's reset: this rule sets an explicit
+     size alongside a border, so under content-box it renders 2px larger than the
+     token says. @ds/css deliberately ships no global reset — a library has no
+     business restyling a consumer's own elements — so each component that
+     measures itself declares this. */
+  box-sizing: border-box;
   border-radius: var(--ds-radius-element);
   font-family: var(--ds-font-family-sans);
   /* One text size across all three control sizes. `size` changes the box the

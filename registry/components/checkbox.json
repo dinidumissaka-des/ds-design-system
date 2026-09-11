@@ -168,7 +168,8 @@
       "summary": "A single on/off choice, with a third appearance for a parent summarising its children.",
       "tokens": {
         "box size": "size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself",
-        "row min-height": "size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it",
+        "row height": "no reserved row height. An earlier version set it to size.control.md for a bigger hit target, but with the box aligned to the first line that reserved 12px of dead space under every row and inflated the list's pitch to 40px. At the resulting 28px pitch the target conforms through WCAG 2.5.8's spacing exception: 24px circles centred on adjacent targets do not intersect. The label is bound, so the target is the full width of the text as well",
+        "control height": "one line tall, from calc(type.control.size.md x type.control.line-height.md) = 20px. The line-height token is a unitless ratio, so it is not a length on its own — used alone the browser drops the declaration",
         "border": "border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge",
         "gap between box and label": "space.gap.sm — the inline role, because this pairing is horizontal",
         "gap between label and description": "space.stack.2xs",

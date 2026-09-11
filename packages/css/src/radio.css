@@ -9,7 +9,6 @@
   display: flex;
   align-items: flex-start;
   gap: var(--ds-space-gap-sm);
-  min-block-size: var(--ds-size-control-md);
   font-family: var(--ds-font-family-sans);
 }
 
@@ -17,7 +16,7 @@
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
-  block-size: var(--ds-type-control-line-height-md);
+  block-size: calc(var(--ds-type-control-size-md) * var(--ds-type-control-line-height-md));
   align-items: center;
 }
 
@@ -38,6 +37,12 @@
   inline-size: var(--ds-size-icon-md);
   block-size: var(--ds-size-icon-md);
   border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  /* Stated, not inherited from the consumer's reset: this rule sets an explicit
+     size alongside a border, so under content-box it renders 2px larger than the
+     token says. @ds/css deliberately ships no global reset — a library has no
+     business restyling a consumer's own elements — so each component that
+     measures itself declares this. */
+  box-sizing: border-box;
   border-radius: var(--ds-radius-pill);
   pointer-events: none;
   transition:
