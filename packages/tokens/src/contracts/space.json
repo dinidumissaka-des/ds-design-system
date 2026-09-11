@@ -31,6 +31,7 @@
         "gap.sm": "A compact row's internal gap.",
         "gap.md": "The default gap between related inline items.",
         "gap.lg": "A looser gap between grouped inline items.",
+        "stack.2xs": "The tightest vertical step: a control and the label or helper text bound to it, where stack.xs still reads as separation. Note the line-height of the text either side adds leading on top of this, so the perceived gap is larger than the number.",
         "stack.xs": "Tightest vertical rhythm, e.g. a label and its helper text.",
         "stack.sm": "Compact vertical rhythm within a component.",
         "stack.md": "The default vertical gap between stacked elements.",

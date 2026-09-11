@@ -778,6 +778,7 @@ The spacing scale, plus rolled-up roles (gap/stack/padding/control/page/section)
 | `gap.sm` | `var(--ds-space-gap-sm)` | `8px` | A compact row's internal gap. |
 | `gap.md` | `var(--ds-space-gap-md)` | `12px` | The default gap between related inline items. |
 | `gap.lg` | `var(--ds-space-gap-lg)` | `16px` | A looser gap between grouped inline items. |
+| `stack.2xs` | `var(--ds-space-stack-2xs)` | `4px` | The tightest vertical step: a control and the label or helper text bound to it, where stack.xs still reads as separation. Note the line-height of the text either side adds leading on top of this, so the perceived gap is larger than the number. |
 | `stack.xs` | `var(--ds-space-stack-xs)` | `8px` | Tightest vertical rhythm, e.g. a label and its helper text. |
 | `stack.sm` | `var(--ds-space-stack-sm)` | `12px` | Compact vertical rhythm within a component. |
 | `stack.md` | `var(--ds-space-stack-md)` | `16px` | The default vertical gap between stacked elements. |
@@ -1099,10 +1100,12 @@ A single-line input with a label, helper text, and validation states.
 | label font-size | `type.label.size` |
 | input background | `theme.bg.surface` |
 | input color | `theme.fg.primary` |
+| input font-family | `font.family.sans` |
+| input font-size | `type.control.size.md` — constant across all three sizes, so `size` changes the box and not the text. The same constant the button family uses, so a field and a button in one row measure their text alike |
 | input border-color | `theme.border.strong` |
 | placeholder color | `theme.fg.muted` |
-| height | `size.control.md` |
-| padding-inline | `space.control.padding-inline.md` |
+| height | `size.control.md` — and `size.control.sm` / .lg at the other sizes. Together with padding-inline this is the only thing `size` changes |
+| padding-inline | `space.control.padding-inline.md` — and the sm / lg steps at the other sizes |
 | border-radius | `radius.element` |
 | helper text color | `theme.fg.secondary` |
 | error text color | `theme.danger-role.fg` |
@@ -1110,8 +1113,13 @@ A single-line input with a label, helper text, and validation states.
 | validating (in-progress) ring | `theme.accent-role.ring` |
 | valid ring | `theme.success-role.ring` |
 | invalid ring | `theme.danger-role.ring` |
-| focus outline | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
-| gap between label, input, and helper | `space.stack.xs` |
+| gap between label, input, and helper | `space.stack.2xs` — the tightest vertical step. The text either side carries line-height leading of its own, so this reads looser than 4px and `space.stack.xs` read as separation |
+| required marker color | `theme.fg.secondary` — required-ness is information, not a fault, so it is deliberately not the danger role's foreground; the requirement itself is announced through aria-required |
+| disabled opacity | `state.disabled-opacity` on the root — the field stays readable and focusable, which is why it emits aria-disabled and readOnly rather than the native disabled attribute |
+| hover inner band | `theme.bg.muted` at `border.2`, drawn as an inset shadow so the fill recedes 2px while the border stays `border.1` and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate |
+| focus border-color | `theme.fg.primary` — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched |
+| focus outline | `focus.ring-width` solid `theme.fg.primary`, offset `space.0` — deliberately NOT `theme.focus-ring`, the only such departure in the library. It gives 16.75:1 against the field's fill where `theme.focus-ring` gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field |
+| hidden label geometry | `border.1` box with `space.0` padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled |
 
 ### toggle-button-group-attached
 

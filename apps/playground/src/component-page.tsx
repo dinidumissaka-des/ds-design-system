@@ -11,9 +11,11 @@
 // refuses clicks, but only a real button can be clicked.
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Spinner, ToggleButton, ToggleButtonGroup } from "@ds/react";
+import { Button, ButtonGroup, Spinner, TextField, ToggleButton, ToggleButtonGroup } from "@ds/react";
 import type {
   ButtonGroupOrientation,
+  TextFieldSize,
+  TextFieldStatus,
   ToggleButtonGroupSelectionMode,
   ButtonSize,
   ButtonVariant,
@@ -189,6 +191,34 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
     "Carrying meaning on its own": () => (
       <Icon icon={CircleAlert} size="xs" label="Needs review" />
+    ),
+  },
+
+  "text-field": {
+    "Plain labelled field with a format hint": () => (
+      <TextField className="pg-field" label="Email" description="We’ll only use this for receipts." placeholder="name@example.com" />
+    ),
+    "Failed validation after blur": () => (
+      <TextField className="pg-field"
+        label="Email"
+        status="invalid"
+        message="Use the format name@example.com"
+        defaultValue="name@"
+      />
+    ),
+    "Async uniqueness check in flight": () => (
+      <TextField className="pg-field"
+        label="Workspace URL"
+        status="validating"
+        message="Checking availability…"
+        defaultValue="acme"
+      />
+    ),
+    "Unavailable but readable": () => (
+      <TextField className="pg-field" label="State" disabled description="Choose a country first." />
+    ),
+    "Purpose already clear on screen": () => (
+      <TextField className="pg-field" label="Search" labelHidden placeholder="Search…" />
     ),
   },
 
@@ -440,6 +470,22 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  "text-field": {
+    controls: ["label", "labelHidden", "size", "status", "description", "message", "disabled", "required"],
+    render: (state) => (
+      <TextField className="pg-field"
+        label={String(state.label || "Email")}
+        labelHidden={Boolean(state.labelHidden)}
+        size={state.size as TextFieldSize}
+        status={state.status as TextFieldStatus}
+        description={state.description ? String(state.description) : undefined}
+        message={state.message ? String(state.message) : undefined}
+        disabled={Boolean(state.disabled)}
+        required={Boolean(state.required)}
+        placeholder="name@example.com"
+      />
+    ),
+  },
   "toggle-button-group": {
     controls: ["label", "selectionMode", "orientation", "size", "attached", "deselectable", "disabled"],
     render: (state) => (

@@ -26,7 +26,7 @@ this path is the honest answer to when it last actually moved.
 | [notice](../docs/components/notice.md) | `@ds/react` | feedback | future / future / future | free |
 | [spinner](../docs/components/spinner.md) | `@ds/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@ds/react` | foundations | latest / na / future | free |
-| [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | future / future / future | free |
+| [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [toggle-button](../docs/components/toggle-button.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [toggle-button-group](../docs/components/toggle-button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
 
@@ -126,9 +126,35 @@ No standalone React component — "State layer" is CSS-only (see registry descri
 
 Contract: [docs/components/state-layer.md](../docs/components/state-layer.md)
 
-### Input: Text field
+### Input: Text field (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<`
+
+- `label: ReactNode`
+  The field's label. Always required — `labelHidden` hides it, nothing removes it.
+- `labelHidden?: boolean`
+  Takes the label off screen while leaving it in the accessibility tree.
+- `id?: string`
+  Stable id for the input. Defaults to a generated one.
+- `size?: TextFieldSize` — default: `"md"`
+  Control height and inline padding. Text size does not change with it.
+- `status?: TextFieldStatus` — default: `"idle"`
+  Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and the ring.
+- `description?: ReactNode`
+  Persistent helper text under the input.
+- `message?: ReactNode`
+  Status-dependent message under the input: the error, confirmation, or in-flight note.
+- `disabled?: boolean`
+  Blocks editing while keeping the field focusable, readable and announced.
+- `required?: boolean`
+  Marks the field required to assistive technology and in the label.
+- `className?: string`
+  Class for the wrapper. The input itself is styled by the system.
+
+Real usage (from `apps/`):
+```tsx
+<TextField className="pg-field" label="Search" labelHidden placeholder="Search…" />
+```
 
 Contract: [docs/components/text-field.md](../docs/components/text-field.md)
 
@@ -441,6 +467,7 @@ Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-but
 - `--ds-space-size-7`: `28px`
 - `--ds-space-size-8`: `32px`
 - `--ds-space-size-9`: `36px`
+- `--ds-space-stack-2xs`: `4px`
 - `--ds-space-stack-lg`: `24px`
 - `--ds-space-stack-md`: `16px`
 - `--ds-space-stack-sm`: `12px`

@@ -1291,3 +1291,13 @@ code {
   font-weight: var(--ds-type-control-weight);
   text-transform: uppercase;
 }
+
+/* Demo width for the text field. Lives here, not in the component: a field's
+   width is the form's decision, which is why TextField ships none and its
+   className contract names "a column span, a width" as the reason that prop
+   exists. Raw px matches this file's idiom for layout dimensions (the sidebar
+   and main column are px too) — these are demo measurements, not tokens. */
+.pg-field {
+  inline-size: 300px;
+  max-inline-size: 100%;
+}
