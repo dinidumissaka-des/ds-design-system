@@ -32,6 +32,10 @@
     {
       "source": "packages/react/src/cx.ts",
       "target": "lib/cx.ts"
+    },
+    {
+      "source": "packages/react/src/keep-checkedness.ts",
+      "target": "lib/keep-checkedness.ts"
     }
   ],
   "tier": "free",

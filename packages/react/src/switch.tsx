@@ -2,6 +2,7 @@ import { forwardRef, useId, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { getSwitchProps } from "@rata/primitives";
 import { cx } from "./cx.js";
+import { keepCheckedness } from "./keep-checkedness.js";
 
 export interface SwitchProps
   extends Omit<
@@ -86,7 +87,18 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
       {...field.root}
     >
       <span className="rata-switch-control">
-        <input {...rest} {...field.input} className="rata-switch-input" ref={ref} />
+        <input
+          {...rest}
+          {...field.input}
+          onClick={(event) => {
+            field.input.onClick(event);
+            // Blocked activation leaves the native checkedness inverted; see
+            // keep-checkedness.ts for why the repair has to be deferred.
+            if (disabled) keepCheckedness(event.currentTarget, current);
+          }}
+          className="rata-switch-input"
+          ref={ref}
+        />
         {/* Paint only: the input beside it carries every semantic. */}
         <span className="rata-switch-track" aria-hidden="true">
           <span className="rata-switch-thumb" />

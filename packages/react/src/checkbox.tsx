@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useId, useRef, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { getCheckboxProps } from "@rata/primitives";
 import { cx } from "./cx.js";
+import { keepCheckedness } from "./keep-checkedness.js";
 
 export interface CheckboxProps
   extends Omit<
@@ -108,6 +109,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         <input
           {...rest}
           {...field.input}
+          onClick={(event) => {
+            field.input.onClick(event);
+            // Blocked activation leaves the native checkedness inverted; see
+            // keep-checkedness.ts for why the repair has to be deferred.
+            if (disabled) keepCheckedness(event.currentTarget, current);
+          }}
           className="rata-checkbox-input"
           ref={(node) => {
             inputRef.current = node;

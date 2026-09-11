@@ -16,7 +16,7 @@
     "vibe:tasks": "node internal/vibe-tests/run.mjs tasks",
     "vibe:test": "node --test internal/vibe-tests/rules.test.mjs",
     "dev": "npm run build && npm run dev -w playground",
-    "test": "npm run test -w @rata/primitives && npm run test:theme",
+    "test": "npm run test -w @rata/primitives && npm run test -w @rata/react && npm run test -w @rata/icons && npm run test:theme",
     "build:playground": "npm run build && npm run build -w playground",
     "ui": "node packages/cli/bin/rata.mjs",
     "ui:sync": "node scripts/generate-ui-context.mjs",
