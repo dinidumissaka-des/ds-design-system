@@ -5,14 +5,16 @@
 
 Single-line text input with label, helper text, and validation states.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { InputTextfield } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `text-field` |
 | Family | inputs |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | — |
 
 ## Behavior
@@ -28,34 +30,62 @@ Headless contract: `getTextFieldProps` in `packages/primitives/src/text-field.ts
 
 ## Props
 
+Extends `Omit<`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
-| `label` | `string` | — | The field's visible label. Required — there is no unlabelled mode. |
+| `label` | `ReactNode` | — | The field's label. Always required — `labelHidden` can take it off screen, but nothing removes it. |
+| `labelHidden?` | `boolean` | — | Takes the label off screen while leaving it in the accessibility tree. |
 | `id?` | `string` | — | Stable id for the input. Defaults to a generated one. |
-| `status?` | `"idle" \| "validating" \| "valid" \| "invalid"` | `"idle"` | Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token the field wears. |
-| `description?` | `string` | — | Persistent helper text under the input — format hints, constraints, why the field is asked for. |
-| `message?` | `string` | — | Status-dependent message under the input: the error, the confirmation, or the in-flight note. |
+| `size?` | `TextFieldSize` | `"md"` | Control height and inline padding, from the `size.control.*` scale. Text size does not change with it. |
+| `status?` | `TextFieldStatus` | `"idle"` | Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token the field wears. |
+| `description?` | `ReactNode` | — | Persistent helper text under the input — format hints, constraints, why the field is asked for. |
+| `message?` | `ReactNode` | — | Status-dependent message under the input: the error, the confirmation, or the in-flight note. |
 | `disabled?` | `boolean` | — | Blocks editing while keeping the field focusable, readable, and announced. |
 | `required?` | `boolean` | — | Marks the field as required to assistive technology and in the label. |
+| `className?` | `string` | — | Class for the field's wrapper — the label, input and helper text are styled by the system. |
 
 ### `label`
 
 ```ts
-label: string
+label: ReactNode
 ```
 
-The field's visible label. Required — there is no unlabelled mode.
+The field's label. Always required — `labelHidden` can take it off screen, but nothing removes it.
+
+Source doc: The field's label. Always required — `labelHidden` hides it, nothing removes it.
 
 **Use when**
 
-- Always. Every field gets a visible label.
+- Always. Every field has a label, whether or not it is visible.
 
 **Don't use for**
 
-- Placeholder-as-label — the placeholder disappears on first keystroke, taking the field's name with it.
-- Passing an empty string to hide it; if the label is visually redundant, the layout is wrong, not the label.
+- Placeholder-as-label — the placeholder disappears on first keystroke, taking the field's name with it. `labelHidden` exists so the visual choice never costs the name.
+- Passing an empty string. An empty label is an unnamed field, which is the one thing this component will not render; hide it with `labelHidden` instead.
 
-**Accessibility** Rendered as a real `<label for>` bound to the input's id, so clicking it focuses the field.
+**Accessibility** Rendered as a real `<label for>` bound to the input's id, so clicking it focuses the field. Still a real label when hidden — only its pixels go away.
+
+### `labelHidden`
+
+```ts
+labelHidden?: boolean
+```
+
+Takes the label off screen while leaving it in the accessibility tree.
+
+**Use when**
+
+- A field whose purpose is already unambiguous on screen — a search input beside a magnifier icon, a filter in a toolbar column with its own heading.
+- A dense row of fields under a table header that names each column, where repeating the name per row would be noise.
+
+**Don't use for**
+
+- Hiding a label because the form looks crowded. The label is the last thing to cut; if space is short the layout budget is wrong.
+- Hiding it and then relying on `placeholder` to say what the field is — the placeholder is gone the moment someone types, and this prop exists precisely so that trade is never necessary.
+- Hiding it when the field's only other context is its position. Position is not a name, and it is the first thing lost when a layout reflows.
+
+**Accessibility** The label element is still rendered and still bound by `for`, so the accessible name is unchanged — it is clipped, not removed. It is not `display: none`, which would take the name with it. The required marker goes off screen with it; `aria-required` still carries that.
 
 ### `id`
 
@@ -74,13 +104,41 @@ Stable id for the input. Defaults to a generated one.
 
 - Reusing one id across two fields — the derived description and message ids would collide too.
 
+### `size`
+
+```ts
+size?: TextFieldSize = "md"
+```
+
+Control height and inline padding, from the `size.control.*` scale. Text size does not change with it.
+
+Source doc: Control height and inline padding. Text size does not change with it.
+
+**Use when**
+
+- `md` everywhere by default.
+- `sm` inside dense rows, table cells, and filter bars.
+- `lg` for a single prominent field on a sparse surface — a sign-in form, an empty-state search.
+
+**Don't use for**
+
+- Shrinking to `sm` to fit a cramped layout — fix the layout budget instead.
+- Expecting the text to grow with it. All three sizes set the same text size, so `size` buys a bigger target for the same field rather than a louder one — the same bargain `Button` makes, which is what lets a field and a button sit in one row and measure alike.
+- Mixing sizes down a single form. The fields are one set, so they measure as one set.
+- Setting height or padding yourself; the size prop is the only supported way to change either.
+- Reaching for the native HTML `size` attribute — it is deliberately shadowed by this prop. It measures a visible width in characters, a pre-CSS legacy, and width here belongs to the form via `className`.
+
+**Accessibility** Visual only. A larger control is a larger pointer target, which is a usability gain rather than an accessibility claim — none of the three sizes falls below the system's control heights.
+
 ### `status`
 
 ```ts
-status?: "idle" | "validating" | "valid" | "invalid" = "idle"
+status?: TextFieldStatus = "idle"
 ```
 
 Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token the field wears.
+
+Source doc: Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and the ring.
 
 **Use when**
 
@@ -98,10 +156,12 @@ Validation lifecycle. Drives `aria-invalid`, `aria-busy`, and which ring token t
 ### `description`
 
 ```ts
-description?: string
+description?: ReactNode
 ```
 
 Persistent helper text under the input — format hints, constraints, why the field is asked for.
+
+Source doc: Persistent helper text under the input.
 
 **Use when**
 
@@ -117,10 +177,12 @@ Persistent helper text under the input — format hints, constraints, why the fi
 ### `message`
 
 ```ts
-message?: string
+message?: ReactNode
 ```
 
 Status-dependent message under the input: the error, the confirmation, or the in-flight note.
+
+Source doc: Status-dependent message under the input: the error, confirmation, or in-flight note.
 
 **Use when**
 
@@ -141,6 +203,8 @@ disabled?: boolean
 
 Blocks editing while keeping the field focusable, readable, and announced.
 
+Source doc: Blocks editing while keeping the field focusable, readable and announced.
+
 **Use when**
 
 - A field temporarily unavailable but still meaningful to read — awaiting a prior answer, say.
@@ -160,6 +224,8 @@ required?: boolean
 
 Marks the field as required to assistive technology and in the label.
 
+Source doc: Marks the field required to assistive technology and in the label.
+
 **Use when**
 
 - Fields the form genuinely cannot be submitted without.
@@ -170,6 +236,25 @@ Marks the field as required to assistive technology and in the label.
 - Relying on it for validation — it announces the requirement, it does not enforce it.
 
 **Accessibility** Emits `aria-required`. The visible required marker is the label's job, not the attribute's.
+
+### `className`
+
+```ts
+className?: string
+```
+
+Class for the field's wrapper — the label, input and helper text are styled by the system.
+
+Source doc: Class for the wrapper. The input itself is styled by the system.
+
+**Use when**
+
+- Placing the field in a form's layout: a column span, a width, a margin token the parent cannot express.
+
+**Don't use for**
+
+- Restyling the input through a descendant selector. The border, ring and height are the approved token mapping, and overriding them here puts a second answer in a place the contract cannot see.
+- Setting a width on the wrapper to imply a maximum input length — that is a `maxLength` and, better, a `description` stating the constraint before it is violated.
 
 ## Use cases
 
@@ -223,6 +308,22 @@ The field depends on an answer the user has not given yet.
 
 Stays focusable and announced. Remember it still submits its value — clear it yourself if that matters.
 
+### Purpose already clear on screen
+
+A search input beside a magnifier, or a column of fields under a header that names them — where a visible label per field would be noise.
+
+```tsx
+<TextField label="Search" labelHidden placeholder="Search…" />
+```
+
+`labelHidden` hides the pixels, not the name: the `<label for>` is still rendered and still bound, so the field is announced as "Search" exactly as it would be with the label visible. Note the `placeholder` is a convenience here, not the name — it disappears on the first keystroke, which is why the label still has to exist.
+
+## Real usage in this repo
+
+```tsx
+<TextField className="pg-field" label="Search" labelHidden placeholder="Search…" />
+```
+
 ## Token recipe
 
 ### base
@@ -235,10 +336,12 @@ A single-line input with a label, helper text, and validation states.
 | label font-size | `type.label.size` |
 | input background | `theme.bg.surface` |
 | input color | `theme.fg.primary` |
+| input font-family | `font.family.sans` |
+| input font-size | `type.control.size.md — constant across all three sizes, so `size` changes the box and not the text. The same constant the button family uses, so a field and a button in one row measure their text alike` |
 | input border-color | `theme.border.strong` |
 | placeholder color | `theme.fg.muted` |
-| height | `size.control.md` |
-| padding-inline | `space.control.padding-inline.md` |
+| height | `size.control.md — and size.control.sm / .lg at the other sizes. Together with padding-inline this is the only thing `size` changes` |
+| padding-inline | `space.control.padding-inline.md — and the sm / lg steps at the other sizes` |
 | border-radius | `radius.element` |
 | helper text color | `theme.fg.secondary` |
 | error text color | `theme.danger-role.fg` |
@@ -246,5 +349,10 @@ A single-line input with a label, helper text, and validation states.
 | validating (in-progress) ring | `theme.accent-role.ring` |
 | valid ring | `theme.success-role.ring` |
 | invalid ring | `theme.danger-role.ring` |
-| focus outline | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| gap between label, input, and helper | `space.stack.xs` |
+| gap between label, input, and helper | `space.stack.2xs — the tightest vertical step. The text either side carries line-height leading of its own, so this reads looser than 4px and space.stack.xs read as separation` |
+| required marker color | `theme.fg.secondary — required-ness is information, not a fault, so it is deliberately not the danger role's foreground; the requirement itself is announced through aria-required` |
+| disabled opacity | `state.disabled-opacity on the root — the field stays readable and focusable, which is why it emits aria-disabled and readOnly rather than the native disabled attribute` |
+| hover inner band | `theme.bg.muted at border.2, drawn as an inset shadow so the fill recedes 2px while the border stays border.1 and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate` |
+| focus border-color | `theme.fg.primary — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched` |
+| focus outline | `focus.ring-width solid theme.fg.primary, offset space.0 — deliberately NOT theme.focus-ring, the only such departure in the library. It gives 16.75:1 against the field's fill where theme.focus-ring gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field` |
+| hidden label geometry | `border.1 box with space.0 padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled` |

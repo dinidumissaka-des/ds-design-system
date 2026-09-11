@@ -18,6 +18,7 @@ const ORDER = [
   // After toggle-button: the attached bar overrides the radius each option sets.
   "toggle-button-group.css",
   "icon.css",
+  "text-field.css",
 ];
 
 const srcFiles = await readdir(path.join(root, "src"));
