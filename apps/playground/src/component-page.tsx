@@ -281,7 +281,7 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
   },
 
   radio: {
-    "Inside its group": () => <BillingExample />,
+    "Inside its group": () => <RadioOptionExample />,
   },
 
   badge: {
@@ -541,6 +541,35 @@ function BillingExample() {
       <Radio value="monthly" label="Monthly" />
       <Radio value="annual" label="Annual" description="Two months free" />
     </RadioGroup>
+  );
+}
+
+/**
+ * The Radio page's example, deliberately not the same specimen as the
+ * RadioGroup page's.
+ *
+ * A Radio cannot be rendered on its own — it throws, because alone it has no
+ * name to share and no siblings to be exclusive with. So a group has to be
+ * present, and the risk is that the page then looks like a copy of
+ * RadioGroup's. This one keeps the group to the bare minimum that makes an
+ * option valid and puts the option's own props on show instead: its label, its
+ * description, and one that is individually disabled.
+ */
+function RadioOptionExample() {
+  const [plan, setPlan] = useState<string | null>("standard");
+  return (
+    <span className="pg-example-stack">
+      <span className="pg-example-aside">
+        A Radio throws outside a RadioGroup, so a group is always present. What
+        this shows is the option: its label, its description, and one disabled
+        on its own.
+      </span>
+      <RadioGroup label="Support plan" value={plan} onValueChange={setPlan}>
+        <Radio value="standard" label="Standard" />
+        <Radio value="priority" label="Priority" description="One business day response" />
+        <Radio value="dedicated" label="Dedicated" description="Not available on your tier" disabled />
+      </RadioGroup>
+    </span>
   );
 }
 

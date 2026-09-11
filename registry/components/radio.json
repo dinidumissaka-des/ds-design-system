@@ -86,9 +86,9 @@
   "usage": [
     {
       "case": "Inside its group",
-      "when": "The only correct use.",
-      "example": "<RadioGroup label=\"Billing period\" value={period} onValueChange={setPeriod}>\n  <Radio value=\"annual\" label=\"Annual\" description=\"Two months free\" />\n</RadioGroup>",
-      "notes": "Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group."
+      "when": "The only correct use — and the reason any example of a Radio necessarily shows a group.",
+      "example": "<RadioGroup label=\"Support plan\" value={plan} onValueChange={setPlan}>\n  <Radio value=\"standard\" label=\"Standard\" />\n  <Radio value=\"priority\" label=\"Priority\" description=\"One business day response\" />\n  <Radio value=\"dedicated\" label=\"Dedicated\" disabled />\n</RadioGroup>",
+      "notes": "Everything that makes this a radio comes from the group: the shared name, the exclusivity, and the arrow-key reachability. That is also why no example can show a Radio on its own — rendered outside a group it throws rather than degrading. Read the specimen as being about the option: its label, its description, and whether it is individually disabled. The question the options answer belongs to RadioGroup."
     }
   ],
   "tokens": {

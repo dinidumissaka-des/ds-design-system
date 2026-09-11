@@ -103,15 +103,17 @@ Class for the option's wrapper.
 
 ### Inside its group
 
-The only correct use.
+The only correct use — and the reason any example of a Radio necessarily shows a group.
 
 ```tsx
-<RadioGroup label="Billing period" value={period} onValueChange={setPeriod}>
-  <Radio value="annual" label="Annual" description="Two months free" />
+<RadioGroup label="Support plan" value={plan} onValueChange={setPlan}>
+  <Radio value="standard" label="Standard" />
+  <Radio value="priority" label="Priority" description="One business day response" />
+  <Radio value="dedicated" label="Dedicated" disabled />
 </RadioGroup>
 ```
 
-Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group.
+Everything that makes this a radio comes from the group: the shared name, the exclusivity, and the arrow-key reachability. That is also why no example can show a Radio on its own — rendered outside a group it throws rather than degrading. Read the specimen as being about the option: its label, its description, and whether it is individually disabled. The question the options answer belongs to RadioGroup.
 
 ## Real usage in this repo
 

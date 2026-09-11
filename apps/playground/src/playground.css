@@ -1269,3 +1269,13 @@ code {
 .pg-example-stack > * + * {
   margin-inline-start: var(--rata-space-gap-lg);
 }
+
+/* A short aside inside an example stage, for a specimen that needs framing —
+   the Radio page has to show a group, and saying why belongs beside the
+   specimen rather than only in the card's description. */
+.pg-example-aside {
+  max-inline-size: 44ch;
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-supporting-size);
+  text-align: start;
+}
