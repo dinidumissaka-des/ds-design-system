@@ -7,10 +7,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -18,16 +20,16 @@
     },
     "dependencies": [],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<ImgHTMLAttributes<HTMLImageElement>, \"src\" | \"alt\" | \"size\">",
     "props": [
       {
         "name": "name",
-        "type": "string",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "The person or entity's name: both the fallback initials and the accessible name.",
+        "declared": true,
         "summary": "The person or entity's name. Required — it is both the fallback initials and the accessible name.",
         "use": [
           "Always. The name is what makes the fallback possible and the image describable."
@@ -40,10 +42,10 @@
       },
       {
         "name": "src",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Image URL. Omit, or let it fail, to fall back to initials.",
+        "declared": true,
         "summary": "Image URL. Omit, or let it fail, to fall back to initials.",
         "use": [
           "A real photo or logo. The fallback is automatic, so there is no need to branch on whether one exists."
@@ -54,16 +56,16 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
+        "optional": true,
+        "type": "AvatarSize",
+        "description": "Diameter, from the control scale so an avatar lines up with the controls beside it.",
+        "default": "\"md\"",
         "values": [
           "sm",
           "md",
           "lg"
         ],
-        "optional": true,
-        "default": "\"md\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it.",
         "use": [],
         "dont": [
@@ -74,10 +76,10 @@
       },
       {
         "name": "decorative",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Marks the avatar as redundant to a name already on screen.",
+        "declared": true,
         "summary": "Marks the avatar as redundant to a name already on screen.",
         "use": [
           "An avatar immediately beside the person's name in a row — announcing it again is noise."
@@ -87,6 +89,23 @@
         ],
         "conflicts": [],
         "a11y": "Renders `aria-hidden` with an empty `alt`. The `name` is still required, because it still produces the initials."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Class for the avatar's wrapper.",
+        "use": [
+          "Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express."
+        ],
+        "dont": [
+          "Overriding the size — the three steps are the scale, and a fourth written in a component's CSS is the drift the scale exists to prevent.",
+          "Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see."
+        ],
+        "conflicts": [],
+        "a11y": null
       }
     ],
     "usage": [
@@ -110,7 +129,20 @@
       }
     ],
     "behavior": null,
-    "tokens": {},
+    "tokens": {
+      "base": {
+        "summary": "A circular image, falling back to initials on the most recessed surface.",
+        "tokens": {
+          "size": "size.control.md, with the sm and lg steps at the other sizes — an avatar lines up with the controls beside it, which is the whole reason it borrows the control scale",
+          "border-radius": "radius.pill",
+          "fallback background": "theme.bg.muted — the most recessed surface, so initials read as a placeholder rather than a filled badge",
+          "fallback color": "theme.fg.secondary — the pairing the muted background documents for text; theme.fg.muted falls to AA-large there",
+          "fallback font-size": "type.supporting.size",
+          "fallback font-weight": "type.control.weight",
+          "image fit": "cover, so a non-square photo is cropped rather than squashed — a layout fact, not a token"
+        }
+      }
+    },
     "example": null
   },
   {
@@ -121,10 +153,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -132,16 +166,16 @@
     },
     "dependencies": [],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "HTMLAttributes<HTMLSpanElement>",
     "props": [
       {
         "name": "children",
-        "type": "ReactNode",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "ReactNode",
+        "description": "The badge's text.",
+        "declared": true,
         "summary": "The badge's text.",
         "use": [],
         "dont": [
@@ -152,7 +186,10 @@
       },
       {
         "name": "variant",
-        "type": "\"neutral\" | \"accent\" | \"success\" | \"warning\" | \"danger\"",
+        "optional": true,
+        "type": "BadgeVariant",
+        "description": "Which role's tone the badge wears.",
+        "default": "\"neutral\"",
         "values": [
           "neutral",
           "accent",
@@ -160,10 +197,7 @@
           "warning",
           "danger"
         ],
-        "optional": true,
-        "default": "\"neutral\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Which role's tone the badge wears.",
         "use": [
           "`neutral` for a count or a category — the default, and right whenever the badge is not reporting health.",
@@ -178,10 +212,10 @@
       },
       {
         "name": "dot",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Renders a status dot before the text.",
+        "declared": true,
         "summary": "Renders a status dot before the text.",
         "use": [
           "A status badge in a dense table, where the dot is findable at a glance and the text confirms it."
@@ -214,7 +248,78 @@
       }
     ],
     "behavior": null,
-    "tokens": {},
+    "tokens": {
+      "neutral": {
+        "summary": "The default: a count or a category, saying nothing about health.",
+        "tokens": {
+          "background": "theme.bg.muted",
+          "color": "theme.fg.secondary — verified on that background at AA",
+          "block-size": "size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button",
+          "padding-inline": "space.gap.sm",
+          "border-radius": "radius.pill",
+          "font-size": "type.supporting.size",
+          "font-weight": "type.control.weight — heavier than the text around it, because a badge has to be found before it is read",
+          "gap between dot and text": "space.gap.xs",
+          "dot size": "space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale"
+        }
+      },
+      "accent": {
+        "summary": "A category the brand wants noticed, still not a status.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "color": "theme.accent-role.fg — a verified pairing on that tint",
+          "block-size": "size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button",
+          "padding-inline": "space.gap.sm",
+          "border-radius": "radius.pill",
+          "font-size": "type.supporting.size",
+          "font-weight": "type.control.weight — heavier than the text around it, because a badge has to be found before it is read",
+          "gap between dot and text": "space.gap.xs",
+          "dot size": "space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale"
+        }
+      },
+      "success": {
+        "summary": "Healthy, passing, complete.",
+        "tokens": {
+          "background": "theme.success-role.subtle",
+          "color": "theme.success-role.fg — never theme.success-role.bg, which is a non-text indicator tone that fails contrast under white",
+          "block-size": "size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button",
+          "padding-inline": "space.gap.sm",
+          "border-radius": "radius.pill",
+          "font-size": "type.supporting.size",
+          "font-weight": "type.control.weight — heavier than the text around it, because a badge has to be found before it is read",
+          "gap between dot and text": "space.gap.xs",
+          "dot size": "space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale"
+        }
+      },
+      "warning": {
+        "summary": "Degraded, expiring, needs attention but not broken.",
+        "tokens": {
+          "background": "theme.warning-role.subtle",
+          "color": "theme.warning-role.fg — same reason as success: the saturated bg carries no text",
+          "block-size": "size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button",
+          "padding-inline": "space.gap.sm",
+          "border-radius": "radius.pill",
+          "font-size": "type.supporting.size",
+          "font-weight": "type.control.weight — heavier than the text around it, because a badge has to be found before it is read",
+          "gap between dot and text": "space.gap.xs",
+          "dot size": "space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale"
+        }
+      },
+      "danger": {
+        "summary": "Failed, revoked, blocked.",
+        "tokens": {
+          "background": "theme.danger-role.subtle",
+          "color": "theme.danger-role.fg",
+          "block-size": "size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button",
+          "padding-inline": "space.gap.sm",
+          "border-radius": "radius.pill",
+          "font-size": "type.supporting.size",
+          "font-weight": "type.control.weight — heavier than the text around it, because a badge has to be found before it is read",
+          "gap between dot and text": "space.gap.xs",
+          "dot size": "space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale"
+        }
+      }
+    },
     "example": null
   },
   {
@@ -225,10 +330,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -236,16 +343,16 @@
     },
     "dependencies": [],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLElement>, \"aria-label\">",
     "props": [
       {
         "name": "items",
-        "type": "Array<{ label: string; href?: string }>",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "BreadcrumbsItem[]",
+        "description": "The trail in order, root first. The last item is the current page.",
+        "declared": true,
         "summary": "The trail in order, root first. The last item is the current page and is not a link.",
         "use": [
           "Every ancestor of the current page, ending with the page itself."
@@ -260,11 +367,11 @@
       },
       {
         "name": "label",
-        "type": "string",
         "optional": true,
+        "type": "string",
+        "description": "Accessible name for the navigation landmark.",
         "default": "\"Breadcrumb\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "Accessible name for the navigation landmark.",
         "use": [
           "Changing it only when a page has more than one navigation landmark and they need telling apart."
@@ -275,11 +382,11 @@
       },
       {
         "name": "separator",
-        "type": "ReactNode",
         "optional": true,
+        "type": "ReactNode",
+        "description": "What sits between crumbs.",
         "default": "\"/\"",
-        "description": null,
-        "declared": false,
+        "declared": true,
         "summary": "What sits between crumbs.",
         "use": [],
         "dont": [
@@ -304,7 +411,21 @@
       }
     ],
     "behavior": null,
-    "tokens": {},
+    "tokens": {
+      "base": {
+        "summary": "A trail of links ending in the current page.",
+        "tokens": {
+          "gap between crumbs": "space.gap.xs",
+          "font-size": "type.supporting.size — a trail is orientation, not content, so it sits below body size",
+          "link color": "theme.accent-role.fg — the token documented for an inline link",
+          "current page color": "theme.fg.primary — the end of the trail is where you are, so it reads as text rather than as another link",
+          "current page font-weight": "type.control.weight",
+          "separator color": "theme.fg.muted — punctuation, quieter than either crumb",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset",
+          "transition": "motion.interactive.duration with motion.interactive.easing"
+        }
+      }
+    },
     "example": null
   },
   {
@@ -707,10 +828,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -720,16 +843,16 @@
       "state-layer"
     ],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<",
     "props": [
       {
         "name": "label",
-        "type": "ReactNode",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "ReactNode",
+        "description": "The checkbox's label. Always required.",
+        "declared": true,
         "summary": "The checkbox's label. Always required.",
         "use": [
           "Always. A checkbox with no label is a control nobody can describe."
@@ -742,10 +865,10 @@
       },
       {
         "name": "checked",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Whether the box is checked. Makes the component controlled.",
+        "declared": true,
         "summary": "Whether the box is checked. Makes the component controlled.",
         "use": [
           "Whenever the value lives outside the component, which is most of the time."
@@ -760,10 +883,10 @@
       },
       {
         "name": "defaultChecked",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Starting state for an uncontrolled checkbox. Conflicts with `checked`.",
+        "declared": true,
         "summary": "Starting state for an uncontrolled checkbox.",
         "use": [
           "Genuinely local state nothing else reads."
@@ -776,10 +899,10 @@
       },
       {
         "name": "onCheckedChange",
-        "type": "(checked: boolean, event: ChangeEvent<HTMLInputElement>) => void",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "(checked: boolean, event: { preventDefault(): void }) => void",
+        "description": "Called with the state the box should move to, not the one it is leaving.",
+        "declared": true,
         "summary": "Called with the state the box should move to, not the one it is leaving.",
         "use": [],
         "dont": [
@@ -790,10 +913,11 @@
       },
       {
         "name": "indeterminate",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "A parent summarising children that disagree. Outranks `checked`.",
+        "default": "false",
+        "declared": true,
         "summary": "Shows the box as neither checked nor unchecked: a parent summarising children that disagree.",
         "use": [
           "A 'select all' box above a list where only some rows are selected."
@@ -807,10 +931,10 @@
       },
       {
         "name": "description",
-        "type": "ReactNode",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "ReactNode",
+        "description": "Helper text under the label.",
+        "declared": true,
         "summary": "Helper text under the label.",
         "use": [],
         "dont": [
@@ -820,11 +944,27 @@
         "a11y": null
       },
       {
-        "name": "disabled",
-        "type": "boolean",
+        "name": "id",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Stable id for the input. Defaults to a generated one.",
+        "declared": true,
+        "summary": "Stable id for the input. Defaults to a generated one.",
+        "use": [
+          "Linking an external label, or a scroll-to-error that needs the id to survive a re-render."
+        ],
+        "dont": [
+          "Reusing one id across two checkboxes — the derived description id would collide too."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "disabled",
+        "optional": true,
+        "type": "boolean",
+        "description": "Blocks activation while keeping the box focusable and announced.",
+        "declared": true,
         "summary": "Blocks activation while keeping the box focusable and announced.",
         "use": [],
         "dont": [],
@@ -833,10 +973,10 @@
       },
       {
         "name": "required",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Marks the checkbox as required.",
+        "declared": true,
         "summary": "Marks the checkbox as required to assistive technology and in the label.",
         "use": [],
         "dont": [],
@@ -844,14 +984,19 @@
         "a11y": "Emits `aria-required`. The visible marker is the label's job."
       },
       {
-        "name": "value",
-        "type": "string",
+        "name": "className",
         "optional": true,
+        "type": "string",
         "description": null,
-        "declared": false,
-        "summary": "Submitted value when the box is checked and inside a form.",
-        "use": [],
-        "dont": [],
+        "declared": true,
+        "summary": "Class for the checkbox's wrapper.",
+        "use": [
+          "Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express."
+        ],
+        "dont": [
+          "Restyling the box. Its size, border and fill are the approved mapping.",
+          "Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see."
+        ],
         "conflicts": [],
         "a11y": null
       }
@@ -901,7 +1046,30 @@
         }
       ]
     },
-    "tokens": {},
+    "tokens": {
+      "base": {
+        "summary": "A single on/off choice, with a third appearance for a parent summarising its children.",
+        "tokens": {
+          "box size": "size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself",
+          "row min-height": "size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it",
+          "border": "border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge",
+          "gap between box and label": "space.gap.sm — the inline role, because this pairing is horizontal",
+          "gap between label and description": "space.stack.2xs",
+          "label color": "theme.fg.primary",
+          "label font-size": "type.control.size.md",
+          "description color": "theme.fg.secondary",
+          "description font-size": "type.supporting.size",
+          "checked background": "theme.accent-role.bg",
+          "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
+          "opacity (aria-disabled)": "state.disabled-opacity",
+          "transition": "motion.interactive.duration with motion.interactive.easing",
+          "border-radius": "radius.inner — a nested square, which is what radius.inner names",
+          "checked mark": "theme.fg.on-accent — the only foreground permitted on that fill, and it inverts with the accent in the dark scheme",
+          "indeterminate mark": "theme.fg.on-accent on theme.accent-role.bg, drawn as a bar rather than a tick. The fill matches checked because the state is 'partly checked', not a third colour"
+        }
+      }
+    },
     "example": null
   },
   {
@@ -1185,10 +1353,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -1198,16 +1368,16 @@
       "state-layer"
     ],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<",
     "props": [
       {
         "name": "value",
-        "type": "string",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "This option's value. What the group reports when it is chosen.",
+        "declared": true,
         "summary": "This option's value. What the group reports when it is chosen.",
         "use": [],
         "dont": [
@@ -1218,10 +1388,10 @@
       },
       {
         "name": "label",
-        "type": "ReactNode",
         "optional": false,
-        "description": null,
-        "declared": false,
+        "type": "ReactNode",
+        "description": "The option's label.",
+        "declared": true,
         "summary": "The option's label.",
         "use": [],
         "dont": [],
@@ -1230,10 +1400,10 @@
       },
       {
         "name": "description",
-        "type": "ReactNode",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "ReactNode",
+        "description": "Helper text under the label.",
+        "declared": true,
         "summary": "Helper text under the label, for an option whose consequence is not obvious.",
         "use": [],
         "dont": [
@@ -1244,15 +1414,32 @@
       },
       {
         "name": "disabled",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Blocks this one option while leaving it focusable and readable.",
+        "declared": true,
         "summary": "Blocks this one option while leaving it focusable and readable.",
         "use": [],
         "dont": [],
         "conflicts": [],
         "a11y": "Emits `aria-disabled`. Arrow keys still land on it; it just does not become the answer."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Class for the option's wrapper.",
+        "use": [
+          "Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express."
+        ],
+        "dont": [
+          "Setting a width to align options — that is the group's layout decision, not the item's.",
+          "Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see."
+        ],
+        "conflicts": [],
+        "a11y": null
       }
     ],
     "usage": [
@@ -1276,7 +1463,29 @@
         }
       ]
     },
-    "tokens": {},
+    "tokens": {
+      "base": {
+        "summary": "One option in a radio group. Circular, so its shape says 'one of these' before the label is read.",
+        "tokens": {
+          "box size": "size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself",
+          "row min-height": "size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it",
+          "border": "border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge",
+          "gap between box and label": "space.gap.sm — the inline role, because this pairing is horizontal",
+          "gap between label and description": "space.stack.2xs",
+          "label color": "theme.fg.primary",
+          "label font-size": "type.control.size.md",
+          "description color": "theme.fg.secondary",
+          "description font-size": "type.supporting.size",
+          "checked background": "theme.accent-role.bg",
+          "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+          "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
+          "opacity (aria-disabled)": "state.disabled-opacity",
+          "transition": "motion.interactive.duration with motion.interactive.easing",
+          "border-radius": "radius.pill — a circle, which is the one thing that tells a radio from a checkbox before either is read",
+          "checked mark": "theme.fg.on-accent as a centred dot; a radio is filled, not ticked"
+        }
+      }
+    },
     "example": null
   },
   {
@@ -1287,10 +1496,12 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "react": {
-        "state": "future"
+        "state": "latest",
+        "version": "0.1.0"
       },
       "figma": {
         "state": "future"
@@ -1301,16 +1512,16 @@
       "state-layer"
     ],
     "importPath": "@ds/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"role\" | \"onChange\" | \"defaultValue\">",
     "props": [
       {
         "name": "label",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Accessible name for the group — the question these radios answer.",
+        "declared": true,
         "summary": "Accessible name for the group — the question these radios answer.",
         "use": [
           "Always, unless `labelledBy` points at a visible heading that already asks it."
@@ -1325,10 +1536,10 @@
       },
       {
         "name": "labelledBy",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Id of a visible element that already names this group.",
+        "declared": true,
         "summary": "Id of a visible element that already names this group.",
         "use": [],
         "dont": [],
@@ -1339,10 +1550,10 @@
       },
       {
         "name": "value",
-        "type": "string | null",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string | null",
+        "description": "The chosen value, or null for nothing chosen yet.",
+        "declared": true,
         "summary": "The chosen value, or null for nothing chosen yet.",
         "use": [],
         "dont": [
@@ -1355,10 +1566,10 @@
       },
       {
         "name": "defaultValue",
-        "type": "string | null",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string | null",
+        "description": "Starting choice for an uncontrolled group. Conflicts with `value`.",
+        "declared": true,
         "summary": "Starting choice for an uncontrolled group.",
         "use": [],
         "dont": [],
@@ -1369,10 +1580,10 @@
       },
       {
         "name": "onValueChange",
-        "type": "(value: string) => void",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "(value: string) => void",
+        "description": "Called with the value the group should move to.",
+        "declared": true,
         "summary": "Called with the value the group should move to.",
         "use": [],
         "dont": [
@@ -1383,10 +1594,10 @@
       },
       {
         "name": "name",
-        "type": "string",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "string",
+        "description": "Shared form field name. Defaults to a generated one.",
+        "declared": true,
         "summary": "Form field name shared by every radio. Defaults to a generated one.",
         "use": [
           "A real form post, where the name is the key the server reads."
@@ -1397,15 +1608,11 @@
       },
       {
         "name": "orientation",
-        "type": "\"horizontal\" | \"vertical\"",
-        "values": [
-          "horizontal",
-          "vertical"
-        ],
         "optional": true,
-        "default": "\"vertical\"",
+        "type": "ButtonGroupOrientation",
         "description": null,
-        "declared": false,
+        "default": "\"vertical\"",
+        "declared": true,
         "summary": "Which way the options stack, and which arrows move between them.",
         "use": [
           "`vertical` for a list of options, which is the default and the readable shape for anything with more than two."
@@ -1416,10 +1623,10 @@
       },
       {
         "name": "disabled",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Blocks the whole question while keeping every option focusable.",
+        "declared": true,
         "summary": "Blocks the whole question while keeping every option focusable and readable.",
         "use": [],
         "dont": [
@@ -1430,10 +1637,10 @@
       },
       {
         "name": "required",
-        "type": "boolean",
         "optional": true,
-        "description": null,
-        "declared": false,
+        "type": "boolean",
+        "description": "Marks the group as requiring an answer.",
+        "declared": true,
         "summary": "Marks the group as requiring an answer.",
         "use": [],
         "dont": [],
@@ -1487,7 +1694,28 @@
         }
       ]
     },
-    "tokens": {},
+    "tokens": {
+      "vertical": {
+        "summary": "The default: a readable column of options.",
+        "tokens": {
+          "gap between options": "space.stack.xs",
+          "gap between group label and options": "space.stack.2xs",
+          "group label color": "theme.fg.primary",
+          "group label font-size": "type.label.size",
+          "group label font-weight": "type.label.weight"
+        }
+      },
+      "horizontal": {
+        "summary": "A row, for two or three short options that fit on one line.",
+        "tokens": {
+          "gap between options": "space.gap.lg — wider than the vertical step, so two options on one line do not read as one phrase",
+          "gap between group label and options": "space.stack.2xs",
+          "group label color": "theme.fg.primary",
+          "group label font-size": "type.label.size",
+          "group label font-weight": "type.label.weight"
+        }
+      }
+    },
     "example": null
   },
   {

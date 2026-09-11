@@ -5,22 +5,26 @@
 
 A small inline label for a status, a count, or a category.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { Badge } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `badge` |
 | Family | content |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | — |
 
 ## Props
 
+Extends `HTMLAttributes<HTMLSpanElement>`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
 | `children` | `ReactNode` | — | The badge's text. |
-| `variant?` | `"neutral" \| "accent" \| "success" \| "warning" \| "danger"` | `"neutral"` | Which role's tone the badge wears. |
+| `variant?` | `BadgeVariant` | `"neutral"` | Which role's tone the badge wears. |
 | `dot?` | `boolean` | — | Renders a status dot before the text. |
 
 ### `children`
@@ -38,7 +42,7 @@ The badge's text.
 ### `variant`
 
 ```ts
-variant?: "neutral" | "accent" | "success" | "warning" | "danger" = "neutral"
+variant?: BadgeVariant = "neutral"
 ```
 
 Which role's tone the badge wears.
@@ -107,3 +111,85 @@ The text is a sentence explaining something.
 ```
 
 Don't. That is a Notice: it has room for the sentence, a heading, and somewhere to put the action. A badge that wraps onto two lines has already stopped being a badge.
+
+## Token recipe
+
+### neutral
+
+The default: a count or a category, saying nothing about health.
+
+| Property | Token |
+|---|---|
+| background | `theme.bg.muted` |
+| color | `theme.fg.secondary — verified on that background at AA` |
+| block-size | `size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button` |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight — heavier than the text around it, because a badge has to be found before it is read` |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale` |
+
+### accent
+
+A category the brand wants noticed, still not a status.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.accent-role.fg — a verified pairing on that tint` |
+| block-size | `size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button` |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight — heavier than the text around it, because a badge has to be found before it is read` |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale` |
+
+### success
+
+Healthy, passing, complete.
+
+| Property | Token |
+|---|---|
+| background | `theme.success-role.subtle` |
+| color | `theme.success-role.fg — never theme.success-role.bg, which is a non-text indicator tone that fails contrast under white` |
+| block-size | `size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button` |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight — heavier than the text around it, because a badge has to be found before it is read` |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale` |
+
+### warning
+
+Degraded, expiring, needs attention but not broken.
+
+| Property | Token |
+|---|---|
+| background | `theme.warning-role.subtle` |
+| color | `theme.warning-role.fg — same reason as success: the saturated bg carries no text` |
+| block-size | `size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button` |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight — heavier than the text around it, because a badge has to be found before it is read` |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale` |
+
+### danger
+
+Failed, revoked, blocked.
+
+| Property | Token |
+|---|---|
+| background | `theme.danger-role.subtle` |
+| color | `theme.danger-role.fg` |
+| block-size | `size.icon.lg — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button` |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight — heavier than the text around it, because a badge has to be found before it is read` |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale` |

@@ -962,6 +962,115 @@ These combinations fall short of the stated level. They are verified every build
 
 The exact token for every property of a common component. Build from these rather than choosing tokens one at a time.
 
+### avatar
+
+A circular image, falling back to initials on the most recessed surface.
+
+| Property | Token |
+|---|---|
+| size | `size.control.md`, with the sm and lg steps at the other sizes — an avatar lines up with the controls beside it, which is the whole reason it borrows the control scale |
+| border-radius | `radius.pill` |
+| fallback background | `theme.bg.muted` — the most recessed surface, so initials read as a placeholder rather than a filled badge |
+| fallback color | `theme.fg.secondary` — the pairing the muted background documents for text; `theme.fg.muted` falls to AA-large there |
+| fallback font-size | `type.supporting.size` |
+| fallback font-weight | `type.control.weight` |
+| image fit | cover, so a non-square photo is cropped rather than squashed — a layout fact, not a token |
+
+### badge-neutral
+
+The default: a count or a category, saying nothing about health.
+
+| Property | Token |
+|---|---|
+| background | `theme.bg.muted` |
+| color | `theme.fg.secondary` — verified on that background at AA |
+| block-size | `size.icon.lg` — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight` — heavier than the text around it, because a badge has to be found before it is read |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm` — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale |
+
+### badge-accent
+
+A category the brand wants noticed, still not a status.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.accent-role.fg` — a verified pairing on that tint |
+| block-size | `size.icon.lg` — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight` — heavier than the text around it, because a badge has to be found before it is read |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm` — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale |
+
+### badge-success
+
+Healthy, passing, complete.
+
+| Property | Token |
+|---|---|
+| background | `theme.success-role.subtle` |
+| color | `theme.success-role.fg` — never `theme.success-role.bg`, which is a non-text indicator tone that fails contrast under white |
+| block-size | `size.icon.lg` — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight` — heavier than the text around it, because a badge has to be found before it is read |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm` — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale |
+
+### badge-warning
+
+Degraded, expiring, needs attention but not broken.
+
+| Property | Token |
+|---|---|
+| background | `theme.warning-role.subtle` |
+| color | `theme.warning-role.fg` — same reason as success: the saturated bg carries no text |
+| block-size | `size.icon.lg` — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight` — heavier than the text around it, because a badge has to be found before it is read |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm` — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale |
+
+### badge-danger
+
+Failed, revoked, blocked.
+
+| Property | Token |
+|---|---|
+| background | `theme.danger-role.subtle` |
+| color | `theme.danger-role.fg` |
+| block-size | `size.icon.lg` — a badge is glyph-height, not control-height; it sits inside a line of text rather than beside a button |
+| padding-inline | `space.gap.sm` |
+| border-radius | `radius.pill` |
+| font-size | `type.supporting.size` |
+| font-weight | `type.control.weight` — heavier than the text around it, because a badge has to be found before it is read |
+| gap between dot and text | `space.gap.xs` |
+| dot size | `space.gap.sm` — a dot is a mark, not a glyph, so it takes a spacing step rather than the icon scale |
+
+### breadcrumbs
+
+A trail of links ending in the current page.
+
+| Property | Token |
+|---|---|
+| gap between crumbs | `space.gap.xs` |
+| font-size | `type.supporting.size` — a trail is orientation, not content, so it sits below body size |
+| link color | `theme.accent-role.fg` — the token documented for an inline link |
+| current page color | `theme.fg.primary` — the end of the trail is where you are, so it reads as text rather than as another link |
+| current page font-weight | `type.control.weight` |
+| separator color | `theme.fg.muted` — punctuation, quieter than either crumb |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` |
+| transition | `motion.interactive.duration` with `motion.interactive.easing` |
+
 ### button-group-spaced
 
 The default: buttons that belong together but read as separate controls.
@@ -1028,6 +1137,30 @@ An action that deletes or revokes something.
 | border-radius | `radius.element` |
 | hover/press | compose the .ds-state-layer class |
 
+### checkbox
+
+A single on/off choice, with a third appearance for a parent summarising its children.
+
+| Property | Token |
+|---|---|
+| box size | `size.icon.md` — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself |
+| row min-height | `size.control.md` — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it |
+| border | `border.default` solid `theme.border.strong` — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge |
+| gap between box and label | `space.gap.sm` — the inline role, because this pairing is horizontal |
+| gap between label and description | `space.stack.2xs` |
+| label color | `theme.fg.primary` |
+| label font-size | `type.control.size.md` |
+| description color | `theme.fg.secondary` |
+| description font-size | `type.supporting.size` |
+| checked background | `theme.accent-role.bg` |
+| hover/press | compose the .ds-state-layer class — never a hand-written hover rule |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+| transition | `motion.interactive.duration` with `motion.interactive.easing` |
+| border-radius | `radius.inner` — a nested square, which is what `radius.inner` names |
+| checked mark | `theme.fg.on-accent` — the only foreground permitted on that fill, and it inverts with the accent in the dark scheme |
+| indeterminate mark | `theme.fg.on-accent` on `theme.accent-role.bg`, drawn as a bar rather than a tick. The fill matches checked because the state is 'partly checked', not a third colour |
+
 ### dialog
 
 A modal surface that takes over the screen.
@@ -1089,6 +1222,53 @@ An inline banner. Only the tinted subtle backgrounds carry text; the saturated r
 | border-radius | `radius.element` |
 | gap between icon and text | `space.gap.sm` |
 | leading accent bar (optional) | the matching role bg — a non-text use |
+
+### radio-group-vertical
+
+The default: a readable column of options.
+
+| Property | Token |
+|---|---|
+| gap between options | `space.stack.xs` |
+| gap between group label and options | `space.stack.2xs` |
+| group label color | `theme.fg.primary` |
+| group label font-size | `type.label.size` |
+| group label font-weight | `type.label.weight` |
+
+### radio-group-horizontal
+
+A row, for two or three short options that fit on one line.
+
+| Property | Token |
+|---|---|
+| gap between options | `space.gap.lg` — wider than the vertical step, so two options on one line do not read as one phrase |
+| gap between group label and options | `space.stack.2xs` |
+| group label color | `theme.fg.primary` |
+| group label font-size | `type.label.size` |
+| group label font-weight | `type.label.weight` |
+
+### radio
+
+One option in a radio group. Circular, so its shape says 'one of these' before the label is read.
+
+| Property | Token |
+|---|---|
+| box size | `size.icon.md` — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself |
+| row min-height | `size.control.md` — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it |
+| border | `border.default` solid `theme.border.strong` — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge |
+| gap between box and label | `space.gap.sm` — the inline role, because this pairing is horizontal |
+| gap between label and description | `space.stack.2xs` |
+| label color | `theme.fg.primary` |
+| label font-size | `type.control.size.md` |
+| description color | `theme.fg.secondary` |
+| description font-size | `type.supporting.size` |
+| checked background | `theme.accent-role.bg` |
+| hover/press | compose the .ds-state-layer class — never a hand-written hover rule |
+| outline (focus-visible) | `focus.ring-width` solid `theme.focus-ring`, offset `focus.ring-offset` — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+| transition | `motion.interactive.duration` with `motion.interactive.easing` |
+| border-radius | `radius.pill` — a circle, which is the one thing that tells a radio from a checkbox before either is read |
+| checked mark | `theme.fg.on-accent` as a centred dot; a radio is filled, not ticked |
 
 ### text-field
 

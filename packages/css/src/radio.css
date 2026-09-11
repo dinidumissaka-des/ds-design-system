@@ -1,0 +1,98 @@
+/* Radio — the same construction as the checkbox: a native input laid over a
+   drawn control at zero opacity, so it keeps the tab order, the semantics and
+   the form participation while the visual is painted separately.
+
+   Loaded after checkbox.css. The one thing that must differ before either is
+   read is the shape: a circle says "one of these", a square says "any of
+   these", and that distinction is doing real work for a user scanning a form. */
+.ds-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-gap-sm);
+  min-block-size: var(--ds-size-control-md);
+  font-family: var(--ds-font-family-sans);
+}
+
+.ds-radio-control {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  block-size: var(--ds-type-control-line-height-md);
+  align-items: center;
+}
+
+.ds-radio-input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: var(--ds-space-0);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.ds-radio-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ds-size-icon-md);
+  block-size: var(--ds-size-icon-md);
+  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  border-radius: var(--ds-radius-pill);
+  pointer-events: none;
+  transition:
+    background-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing),
+    border-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+}
+
+/* A radio is filled, not ticked: the dot is the mark. */
+.ds-radio-dot {
+  inline-size: var(--ds-space-gap-sm);
+  block-size: var(--ds-space-gap-sm);
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-theme-fg-on-accent);
+  transform: scale(0);
+  transition: transform var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+}
+
+.ds-radio[data-state="checked"] .ds-radio-circle {
+  background: var(--ds-theme-accent-role-bg);
+  border-color: var(--ds-theme-accent-role-bg);
+}
+
+.ds-radio[data-state="checked"] .ds-radio-dot {
+  transform: scale(1);
+}
+
+.ds-radio-input:focus-visible + .ds-radio-circle {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.ds-radio-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-stack-2xs);
+}
+
+.ds-radio-label {
+  color: var(--ds-theme-fg-primary);
+  font-size: var(--ds-type-control-size-md);
+  line-height: var(--ds-type-control-line-height-md);
+  cursor: pointer;
+}
+
+.ds-radio-description {
+  color: var(--ds-theme-fg-secondary);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line-height);
+}
+
+.ds-radio[data-disabled] {
+  opacity: var(--ds-state-disabled-opacity);
+}
+
+.ds-radio[data-disabled] .ds-radio-input,
+.ds-radio[data-disabled] .ds-radio-label {
+  cursor: not-allowed;
+}

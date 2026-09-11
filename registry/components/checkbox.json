@@ -5,10 +5,12 @@
   "description": "A single on/off choice, with an indeterminate state for a parent summarising its children.",
   "status": {
     "css": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "react": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "figma": {
       "state": "future"
@@ -17,7 +19,20 @@
   "dependencies": [
     "state-layer"
   ],
-  "files": [],
+  "files": [
+    {
+      "source": "packages/css/src/checkbox.css",
+      "target": "styles/checkbox.css"
+    },
+    {
+      "source": "packages/react/src/checkbox.tsx",
+      "target": "components/checkbox.tsx"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
   "tier": "free",
   "behavior": {
     "primitive": "getCheckboxProps",
@@ -47,8 +62,6 @@
   },
   "props": {
     "label": {
-      "type": "ReactNode",
-      "required": true,
       "summary": "The checkbox's label. Always required.",
       "use": [
         "Always. A checkbox with no label is a control nobody can describe."
@@ -58,8 +71,16 @@
       ],
       "a11y": "Rendered as a real `<label for>` bound to the input, so clicking the text toggles the box."
     },
+    "id": {
+      "summary": "Stable id for the input. Defaults to a generated one.",
+      "use": [
+        "Linking an external label, or a scroll-to-error that needs the id to survive a re-render."
+      ],
+      "dont": [
+        "Reusing one id across two checkboxes — the derived description id would collide too."
+      ]
+    },
     "checked": {
-      "type": "boolean",
       "summary": "Whether the box is checked. Makes the component controlled.",
       "use": [
         "Whenever the value lives outside the component, which is most of the time."
@@ -73,7 +94,6 @@
       "a11y": "Drives the native checked state, which is what assistive technology reports."
     },
     "defaultChecked": {
-      "type": "boolean",
       "summary": "Starting state for an uncontrolled checkbox.",
       "use": [
         "Genuinely local state nothing else reads."
@@ -83,14 +103,12 @@
       ]
     },
     "onCheckedChange": {
-      "type": "(checked: boolean, event: ChangeEvent<HTMLInputElement>) => void",
       "summary": "Called with the state the box should move to, not the one it is leaving.",
       "dont": [
         "Reading `event.target.checked` instead of the argument — they agree, but the argument is the one this component promises."
       ]
     },
     "indeterminate": {
-      "type": "boolean",
       "summary": "Shows the box as neither checked nor unchecked: a parent summarising children that disagree.",
       "use": [
         "A 'select all' box above a list where only some rows are selected."
@@ -102,25 +120,28 @@
       "a11y": "Announced as `aria-checked=\"mixed\"`. Set as a DOM property by this component, because HTML has no such attribute."
     },
     "description": {
-      "type": "ReactNode",
       "summary": "Helper text under the label.",
       "dont": [
         "Error text. A checkbox that is invalid belongs in a field wrapper that owns the message."
       ]
     },
     "disabled": {
-      "type": "boolean",
       "summary": "Blocks activation while keeping the box focusable and announced.",
       "a11y": "Emits `aria-disabled` and refuses activation. Never the native `disabled` attribute, which would remove it from the tab order."
     },
     "required": {
-      "type": "boolean",
       "summary": "Marks the checkbox as required to assistive technology and in the label.",
       "a11y": "Emits `aria-required`. The visible marker is the label's job."
     },
-    "value": {
-      "type": "string",
-      "summary": "Submitted value when the box is checked and inside a form."
+    "className": {
+      "summary": "Class for the checkbox's wrapper.",
+      "use": [
+        "Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express."
+      ],
+      "dont": [
+        "Restyling the box. Its size, border and fill are the approved mapping.",
+        "Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see."
+      ]
     }
   },
   "usage": [
@@ -141,5 +162,29 @@
       "example": "<Checkbox label=\"Ship to billing address\" checked disabled />",
       "notes": "aria-disabled and a refused activation, never the native `disabled` attribute — the box stays focusable so a keyboard user can find it and read its state."
     }
-  ]
+  ],
+  "tokens": {
+    "base": {
+      "summary": "A single on/off choice, with a third appearance for a parent summarising its children.",
+      "tokens": {
+        "box size": "size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself",
+        "row min-height": "size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it",
+        "border": "border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge",
+        "gap between box and label": "space.gap.sm — the inline role, because this pairing is horizontal",
+        "gap between label and description": "space.stack.2xs",
+        "label color": "theme.fg.primary",
+        "label font-size": "type.control.size.md",
+        "description color": "theme.fg.secondary",
+        "description font-size": "type.supporting.size",
+        "checked background": "theme.accent-role.bg",
+        "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
+        "opacity (aria-disabled)": "state.disabled-opacity",
+        "transition": "motion.interactive.duration with motion.interactive.easing",
+        "border-radius": "radius.inner — a nested square, which is what radius.inner names",
+        "checked mark": "theme.fg.on-accent — the only foreground permitted on that fill, and it inverts with the accent in the dark scheme",
+        "indeterminate mark": "theme.fg.on-accent on theme.accent-role.bg, drawn as a bar rather than a tick. The fill matches checked because the state is 'partly checked', not a third colour"
+      }
+    }
+  }
 }

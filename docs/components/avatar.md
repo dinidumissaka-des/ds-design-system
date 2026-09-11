@@ -5,24 +5,29 @@
 
 A person or entity's image, falling back to initials when there is none.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { Avatar } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `avatar` |
 | Family | content |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | — |
 
 ## Props
+
+Extends `Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "size">`.
 
 | Prop | Type | Default | Summary |
 |---|---|---|---|
 | `name` | `string` | — | The person or entity's name. Required — it is both the fallback initials and the accessible name. |
 | `src?` | `string` | — | Image URL. Omit, or let it fail, to fall back to initials. |
-| `size?` | `"sm" \| "md" \| "lg"` | `"md"` | Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it. |
+| `size?` | `AvatarSize` | `"md"` | Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it. |
 | `decorative?` | `boolean` | — | Marks the avatar as redundant to a name already on screen. |
+| `className?` | `string` | — | Class for the avatar's wrapper. |
 
 ### `name`
 
@@ -31,6 +36,8 @@ name: string
 ```
 
 The person or entity's name. Required — it is both the fallback initials and the accessible name.
+
+Source doc: The person or entity's name: both the fallback initials and the accessible name.
 
 **Use when**
 
@@ -57,10 +64,12 @@ Image URL. Omit, or let it fail, to fall back to initials.
 ### `size`
 
 ```ts
-size?: "sm" | "md" | "lg" = "md"
+size?: AvatarSize = "md"
 ```
 
 Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it.
+
+Source doc: Diameter, from the control scale so an avatar lines up with the controls beside it.
 
 **Don't use for**
 
@@ -83,6 +92,23 @@ Marks the avatar as redundant to a name already on screen.
 - Anything standing alone. Without adjacent text the avatar is the only thing identifying the person, so hiding it removes that identification entirely.
 
 **Accessibility** Renders `aria-hidden` with an empty `alt`. The `name` is still required, because it still produces the initials.
+
+### `className`
+
+```ts
+className?: string
+```
+
+Class for the avatar's wrapper.
+
+**Use when**
+
+- Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express.
+
+**Don't use for**
+
+- Overriding the size — the three steps are the scale, and a fourth written in a component's CSS is the drift the scale exists to prevent.
+- Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see.
 
 ## Use cases
 
@@ -116,3 +142,19 @@ A user who has not uploaded a photo — which is most of them.
 ```
 
 Initials are shown and the full name is announced. There is nothing to branch on: omitting `src`, and an `src` that 404s, land in the same place.
+
+## Token recipe
+
+### base
+
+A circular image, falling back to initials on the most recessed surface.
+
+| Property | Token |
+|---|---|
+| size | `size.control.md, with the sm and lg steps at the other sizes — an avatar lines up with the controls beside it, which is the whole reason it borrows the control scale` |
+| border-radius | `radius.pill` |
+| fallback background | `theme.bg.muted — the most recessed surface, so initials read as a placeholder rather than a filled badge` |
+| fallback color | `theme.fg.secondary — the pairing the muted background documents for text; theme.fg.muted falls to AA-large there` |
+| fallback font-size | `type.supporting.size` |
+| fallback font-weight | `type.control.weight` |
+| image fit | `cover, so a non-square photo is cropped rather than squashed — a layout fact, not a token` |

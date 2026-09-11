@@ -19,6 +19,13 @@ const ORDER = [
   "toggle-button-group.css",
   "icon.css",
   "text-field.css",
+  "checkbox.css",
+  // After checkbox: radio shares its construction and overrides the shape.
+  "radio.css",
+  "radio-group.css",
+  "badge.css",
+  "avatar.css",
+  "breadcrumbs.css",
 ];
 
 const srcFiles = await readdir(path.join(root, "src"));

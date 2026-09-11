@@ -1,0 +1,111 @@
+/* Checkbox — a native input carrying the semantics, with a drawn box on top.
+
+   The input is not hidden with display:none or visibility:hidden, which would
+   take it out of the tab order and the accessibility tree along with the
+   pixels. It is laid over the box at zero opacity: still focusable, still
+   announced, still a real form control — the box is only paint.
+
+   States come from the primitive's data-state on the root, so nothing here
+   depends on a class the caller has to remember. */
+.ds-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-gap-sm);
+  /* The hit target is control-sized even though the box is not, so this is as
+     easy to hit as any other control in the row. */
+  min-block-size: var(--ds-size-control-md);
+  font-family: var(--ds-font-family-sans);
+}
+
+.ds-checkbox-control {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  /* Centres the box on the first line of the label rather than the top of it. */
+  block-size: var(--ds-type-control-line-height-md);
+  align-items: center;
+}
+
+.ds-checkbox-input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: var(--ds-space-0);
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The box is sized to the glyph it holds, so it takes the icon scale — the
+   control scale is a row height and would dwarf it. */
+.ds-checkbox-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ds-size-icon-md);
+  block-size: var(--ds-size-icon-md);
+  border: var(--ds-border-default) solid var(--ds-theme-border-strong);
+  border-radius: var(--ds-radius-inner);
+  color: var(--ds-theme-fg-on-accent);
+  pointer-events: none;
+  transition:
+    background-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing),
+    border-color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+}
+
+/* Both filled states wear the same fill: "partly checked" is a degree of
+   checked, not a third colour. Only the mark inside differs. */
+.ds-checkbox[data-state="checked"] .ds-checkbox-box,
+.ds-checkbox[data-state="indeterminate"] .ds-checkbox-box {
+  background: var(--ds-theme-accent-role-bg);
+  border-color: var(--ds-theme-accent-role-bg);
+}
+
+.ds-checkbox-mark {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Drawn on the input, shown on the box — the focusable thing and the painted
+   thing are different elements. The offset is kept: at 20px the box has no
+   room for a flush ring to read as separate from its own border. */
+.ds-checkbox-input:focus-visible + .ds-checkbox-box {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.ds-checkbox-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-stack-2xs);
+  /* Aligns the label's first line with the box beside it. */
+  padding-block-start: var(--ds-space-0);
+}
+
+.ds-checkbox-label {
+  color: var(--ds-theme-fg-primary);
+  font-size: var(--ds-type-control-size-md);
+  line-height: var(--ds-type-control-line-height-md);
+  cursor: pointer;
+}
+
+.ds-checkbox-required {
+  color: var(--ds-theme-fg-secondary);
+}
+
+.ds-checkbox-description {
+  color: var(--ds-theme-fg-secondary);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line-height);
+}
+
+/* aria-disabled with a guarded activation, never the native attribute: the box
+   stays focusable and keeps announcing its state. */
+.ds-checkbox[data-disabled] {
+  opacity: var(--ds-state-disabled-opacity);
+}
+
+.ds-checkbox[data-disabled] .ds-checkbox-input,
+.ds-checkbox[data-disabled] .ds-checkbox-label {
+  cursor: not-allowed;
+}

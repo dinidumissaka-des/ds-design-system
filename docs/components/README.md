@@ -13,18 +13,18 @@ behind it yet, and `css-only` when there is no props API by design.
 
 | Component | Name | Family | Status (css / react) | Mode | Tier |
 |---|---|---|---|---|---|
-| [Avatar](avatar.md) | `avatar` | content | future / future | spec | free |
-| [Badge](badge.md) | `badge` | content | future / future | spec | free |
-| [Breadcrumbs](breadcrumbs.md) | `breadcrumbs` | navigation | future / future | spec | free |
+| [Avatar](avatar.md) | `avatar` | content | latest / latest | documented | free |
+| [Badge](badge.md) | `badge` | content | latest / latest | documented | free |
+| [Breadcrumbs](breadcrumbs.md) | `breadcrumbs` | navigation | latest / latest | documented | free |
 | [Button](button.md) | `button` | buttons | latest / latest | documented | free |
 | [Button Group](button-group.md) | `button-group` | buttons | latest / latest | documented | free |
-| [Checkbox](checkbox.md) | `checkbox` | inputs | future / future | spec | free |
+| [Checkbox](checkbox.md) | `checkbox` | inputs | latest / latest | documented | free |
 | [Dialog](dialog.md) | `dialog` | overlays | future / future | spec | free |
 | [Icon](icon.md) | `icon` | content | latest / latest | documented | free |
 | [Menu](menu.md) | `menu` | overlays | future / future | spec | free |
 | [Notice](notice.md) | `notice` | feedback | future / future | spec | free |
-| [Radio](radio.md) | `radio` | inputs | future / future | spec | free |
-| [Radio Group](radio-group.md) | `radio-group` | inputs | future / future | spec | free |
+| [Radio](radio.md) | `radio` | inputs | latest / latest | documented | free |
+| [Radio Group](radio-group.md) | `radio-group` | inputs | latest / latest | documented | free |
 | [Loading: Spinner](spinner.md) | `spinner` | loading | latest / latest | documented | free |
 | [State layer](state-layer.md) | `state-layer` | foundations | latest / na | css-only | free |
 | [Input: Text field](text-field.md) | `text-field` | inputs | latest / latest | documented | free |

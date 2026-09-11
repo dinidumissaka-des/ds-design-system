@@ -234,9 +234,15 @@ export function evaluateSource(source, model, { filename = "input" } = {}) {
 
   // A focusable control must draw a focus ring. Hover rules alone are not enough:
   // a composable overlay primitive (.ds-state-layer) has them and is never focused.
+  // `user-select` is a CSS property, not a <select> element, and \bselect\b
+  // matches inside it because the hyphen is a word boundary — which demanded a
+  // focus ring from Avatar, an element that cannot be focused. Stripped rather
+  // than excluded by lookbehind, because the names are also meant to match
+  // inside *class* names (`.ds-button` should still count as interactive).
+  const forElementTest = source.replace(/user-select/g, "");
   const looksInteractive =
     /cursor:\s*pointer|\bbutton\b|\binput\b|\bselect\b|\btextarea\b|role="(button|link|menuitem|tab)"/.test(
-      source
+      forElementTest
     );
   const hasFocusRing = source.includes("--ds-theme-focus-ring");
   if (looksInteractive && !hasFocusRing) {

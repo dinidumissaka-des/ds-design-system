@@ -5,14 +5,16 @@
 
 A set of radios holding one answer, with the group owning the name, the value and the focus model.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { RadioGroup } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `radio-group` |
 | Family | inputs |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | `radio`, `state-layer` |
 
 ## Behavior
@@ -29,6 +31,8 @@ Headless contract: `getRadioGroupProps` in `packages/primitives/src/radio-group.
 
 ## Props
 
+Extends `Omit<HTMLAttributes<HTMLDivElement>, "role" | "onChange" | "defaultValue">`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
 | `label?` | `string` | — | Accessible name for the group — the question these radios answer. |
@@ -37,7 +41,7 @@ Headless contract: `getRadioGroupProps` in `packages/primitives/src/radio-group.
 | `defaultValue?` | `string \| null` | — | Starting choice for an uncontrolled group. |
 | `onValueChange?` | `(value: string) => void` | — | Called with the value the group should move to. |
 | `name?` | `string` | — | Form field name shared by every radio. Defaults to a generated one. |
-| `orientation?` | `"horizontal" \| "vertical"` | `"vertical"` | Which way the options stack, and which arrows move between them. |
+| `orientation?` | `ButtonGroupOrientation` | `"vertical"` | Which way the options stack, and which arrows move between them. |
 | `disabled?` | `boolean` | — | Blocks the whole question while keeping every option focusable and readable. |
 | `required?` | `boolean` | — | Marks the group as requiring an answer. |
 
@@ -93,6 +97,8 @@ defaultValue?: string | null
 
 Starting choice for an uncontrolled group.
 
+Source doc: Starting choice for an uncontrolled group. Conflicts with `value`.
+
 **Conflicts with** `value`
 
 ### `onValueChange`
@@ -115,6 +121,8 @@ name?: string
 
 Form field name shared by every radio. Defaults to a generated one.
 
+Source doc: Shared form field name. Defaults to a generated one.
+
 **Use when**
 
 - A real form post, where the name is the key the server reads.
@@ -122,7 +130,7 @@ Form field name shared by every radio. Defaults to a generated one.
 ### `orientation`
 
 ```ts
-orientation?: "horizontal" | "vertical" = "vertical"
+orientation?: ButtonGroupOrientation = "vertical"
 ```
 
 Which way the options stack, and which arrows move between them.
@@ -140,6 +148,8 @@ disabled?: boolean
 ```
 
 Blocks the whole question while keeping every option focusable and readable.
+
+Source doc: Blocks the whole question while keeping every option focusable.
 
 **Don't use for**
 
@@ -196,3 +206,29 @@ The options are a filter that should be clearable, or a view switch.
 ```
 
 Don't. A radio group cannot go back to nothing once answered — that is the platform's behaviour and users rely on it. A clearable set of options is toggle-button-group with `deselectable`; a view switch is a tab list, which this system does not have yet.
+
+## Token recipe
+
+### vertical
+
+The default: a readable column of options.
+
+| Property | Token |
+|---|---|
+| gap between options | `space.stack.xs` |
+| gap between group label and options | `space.stack.2xs` |
+| group label color | `theme.fg.primary` |
+| group label font-size | `type.label.size` |
+| group label font-weight | `type.label.weight` |
+
+### horizontal
+
+A row, for two or three short options that fit on one line.
+
+| Property | Token |
+|---|---|
+| gap between options | `space.gap.lg — wider than the vertical step, so two options on one line do not read as one phrase` |
+| gap between group label and options | `space.stack.2xs` |
+| group label color | `theme.fg.primary` |
+| group label font-size | `type.label.size` |
+| group label font-weight | `type.label.weight` |

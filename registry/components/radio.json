@@ -5,10 +5,12 @@
   "description": "One option inside a radio group. Not usable on its own.",
   "status": {
     "css": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "react": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "figma": {
       "state": "future"
@@ -17,7 +19,24 @@
   "dependencies": [
     "state-layer"
   ],
-  "files": [],
+  "files": [
+    {
+      "source": "packages/css/src/radio.css",
+      "target": "styles/radio.css"
+    },
+    {
+      "source": "packages/react/src/radio.tsx",
+      "target": "components/radio.tsx"
+    },
+    {
+      "source": "packages/react/src/radio-group-context.ts",
+      "target": "lib/radio-group-context.ts"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
   "tier": "free",
   "behavior": {
     "summary": "An option rendered by its group, with no primitive of its own. It holds no state: getRadioGroupProps decides whether this one is checked, whether it is the tab stop, and what happens when it is activated. That is the point — a radio that owned any of those could disagree with its siblings.",
@@ -34,30 +53,34 @@
   },
   "props": {
     "value": {
-      "type": "string",
-      "required": true,
       "summary": "This option's value. What the group reports when it is chosen.",
       "dont": [
         "Reusing a value across two radios in one group — the group would consider both chosen."
       ]
     },
     "label": {
-      "type": "ReactNode",
-      "required": true,
       "summary": "The option's label.",
       "a11y": "A real `<label for>`, so the text is part of the hit target."
     },
     "description": {
-      "type": "ReactNode",
       "summary": "Helper text under the label, for an option whose consequence is not obvious.",
       "dont": [
         "Restating the label in more words."
       ]
     },
     "disabled": {
-      "type": "boolean",
       "summary": "Blocks this one option while leaving it focusable and readable.",
       "a11y": "Emits `aria-disabled`. Arrow keys still land on it; it just does not become the answer."
+    },
+    "className": {
+      "summary": "Class for the option's wrapper.",
+      "use": [
+        "Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express."
+      ],
+      "dont": [
+        "Setting a width to align options — that is the group's layout decision, not the item's.",
+        "Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see."
+      ]
     }
   },
   "usage": [
@@ -67,5 +90,28 @@
       "example": "<RadioGroup label=\"Billing period\" value={period} onValueChange={setPeriod}>\n  <Radio value=\"annual\" label=\"Annual\" description=\"Two months free\" />\n</RadioGroup>",
       "notes": "Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group."
     }
-  ]
+  ],
+  "tokens": {
+    "base": {
+      "summary": "One option in a radio group. Circular, so its shape says 'one of these' before the label is read.",
+      "tokens": {
+        "box size": "size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself",
+        "row min-height": "size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it",
+        "border": "border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge",
+        "gap between box and label": "space.gap.sm — the inline role, because this pairing is horizontal",
+        "gap between label and description": "space.stack.2xs",
+        "label color": "theme.fg.primary",
+        "label font-size": "type.control.size.md",
+        "description color": "theme.fg.secondary",
+        "description font-size": "type.supporting.size",
+        "checked background": "theme.accent-role.bg",
+        "hover/press": "compose the .ds-state-layer class — never a hand-written hover rule",
+        "outline (focus-visible)": "focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border",
+        "opacity (aria-disabled)": "state.disabled-opacity",
+        "transition": "motion.interactive.duration with motion.interactive.easing",
+        "border-radius": "radius.pill — a circle, which is the one thing that tells a radio from a checkbox before either is read",
+        "checked mark": "theme.fg.on-accent as a centred dot; a radio is filled, not ticked"
+      }
+    }
+  }
 }

@@ -1,0 +1,52 @@
+/* Breadcrumbs — the trail from the root to the page you are on.
+
+   The structure does the accessible work: a <nav> landmark wrapping an ordered
+   list, so the count and the order are announced. The separators are
+   aria-hidden punctuation — the list already conveys sequence, and hearing
+   "slash" between every crumb is noise. */
+.ds-breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ds-space-gap-xs);
+  margin: var(--ds-space-0);
+  padding: var(--ds-space-0);
+  list-style: none;
+  font-family: var(--ds-font-family-sans);
+  /* Orientation rather than content, so it sits below body size. */
+  font-size: var(--ds-type-supporting-size);
+}
+
+.ds-breadcrumbs-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-gap-xs);
+}
+
+.ds-breadcrumbs-link {
+  color: var(--ds-theme-accent-role-fg);
+  text-decoration: none;
+  border-radius: var(--ds-radius-inner);
+  transition: color var(--ds-motion-interactive-duration) var(--ds-motion-interactive-easing);
+}
+
+.ds-breadcrumbs-link:hover {
+  text-decoration: underline;
+  text-underline-offset: var(--ds-border-2);
+}
+
+.ds-breadcrumbs-link:focus-visible {
+  outline: var(--ds-focus-ring-width) var(--ds-focus-ring-style) var(--ds-theme-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* The end of the trail is where you are, so it reads as text. It is not a link
+   in the markup either — a link to the page you are on is a dead end. */
+.ds-breadcrumbs-current {
+  color: var(--ds-theme-fg-primary);
+  font-weight: var(--ds-type-control-weight);
+}
+
+.ds-breadcrumbs-separator {
+  color: var(--ds-theme-fg-muted);
+}

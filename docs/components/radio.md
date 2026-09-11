@@ -5,14 +5,16 @@
 
 One option inside a radio group. Not usable on its own.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { Radio } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `radio` |
 | Family | inputs |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | `state-layer` |
 
 ## Behavior
@@ -24,12 +26,15 @@ An option rendered by its group, with no primitive of its own. It holds no state
 
 ## Props
 
+Extends `Omit<`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
 | `value` | `string` | — | This option's value. What the group reports when it is chosen. |
 | `label` | `ReactNode` | — | The option's label. |
 | `description?` | `ReactNode` | — | Helper text under the label, for an option whose consequence is not obvious. |
 | `disabled?` | `boolean` | — | Blocks this one option while leaving it focusable and readable. |
+| `className?` | `string` | — | Class for the option's wrapper. |
 
 ### `value`
 
@@ -61,6 +66,8 @@ description?: ReactNode
 
 Helper text under the label, for an option whose consequence is not obvious.
 
+Source doc: Helper text under the label.
+
 **Don't use for**
 
 - Restating the label in more words.
@@ -75,6 +82,23 @@ Blocks this one option while leaving it focusable and readable.
 
 **Accessibility** Emits `aria-disabled`. Arrow keys still land on it; it just does not become the answer.
 
+### `className`
+
+```ts
+className?: string
+```
+
+Class for the option's wrapper.
+
+**Use when**
+
+- Placing the component in its surrounding layout — a span, a width, a margin the parent cannot express.
+
+**Don't use for**
+
+- Setting a width to align options — that is the group's layout decision, not the item's.
+- Restyling the component's internals through descendant selectors. Those are the approved token mapping, and overriding them here puts a second answer somewhere the contract cannot see.
+
 ## Use cases
 
 ### Inside its group
@@ -88,3 +112,28 @@ The only correct use.
 ```
 
 Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group.
+
+## Token recipe
+
+### base
+
+One option in a radio group. Circular, so its shape says 'one of these' before the label is read.
+
+| Property | Token |
+|---|---|
+| box size | `size.icon.md — the box is sized to the glyph it holds, so it takes the icon scale rather than the control one; the control heights are row heights and would dwarf the box itself` |
+| row min-height | `size.control.md — the hit target is control-sized even though the box is not, so this is as easy to hit as a button beside it` |
+| border | `border.default solid theme.border.strong — the same boundary tone text-field uses, tone-walked to the 3:1 WCAG 1.4.11 asks of a control's edge` |
+| gap between box and label | `space.gap.sm — the inline role, because this pairing is horizontal` |
+| gap between label and description | `space.stack.2xs` |
+| label color | `theme.fg.primary` |
+| label font-size | `type.control.size.md` |
+| description color | `theme.fg.secondary` |
+| description font-size | `type.supporting.size` |
+| checked background | `theme.accent-role.bg` |
+| hover/press | `compose the .ds-state-layer class — never a hand-written hover rule` |
+| outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset — the offset is kept here, unlike text-field: a 20px box has no room for a flush ring to read as separate from its own border` |
+| opacity (aria-disabled) | `state.disabled-opacity` |
+| transition | `motion.interactive.duration with motion.interactive.easing` |
+| border-radius | `radius.pill — a circle, which is the one thing that tells a radio from a checkbox before either is read` |
+| checked mark | `theme.fg.on-accent as a centred dot; a radio is filled, not ticked` |

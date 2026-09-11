@@ -5,10 +5,12 @@
   "description": "A set of radios holding one answer, with the group owning the name, the value and the focus model.",
   "status": {
     "css": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "react": {
-      "state": "future"
+      "state": "latest",
+      "version": "0.1.0"
     },
     "figma": {
       "state": "future"
@@ -18,7 +20,24 @@
     "radio",
     "state-layer"
   ],
-  "files": [],
+  "files": [
+    {
+      "source": "packages/css/src/radio-group.css",
+      "target": "styles/radio-group.css"
+    },
+    {
+      "source": "packages/react/src/radio-group.tsx",
+      "target": "components/radio-group.tsx"
+    },
+    {
+      "source": "packages/react/src/radio-group-context.ts",
+      "target": "lib/radio-group-context.ts"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
   "tier": "free",
   "behavior": {
     "primitive": "getRadioGroupProps",
@@ -48,7 +67,6 @@
   },
   "props": {
     "label": {
-      "type": "string",
       "summary": "Accessible name for the group — the question these radios answer.",
       "use": [
         "Always, unless `labelledBy` points at a visible heading that already asks it."
@@ -62,14 +80,12 @@
       "a11y": "Becomes `aria-label` on the group."
     },
     "labelledBy": {
-      "type": "string",
       "summary": "Id of a visible element that already names this group.",
       "conflicts": [
         "label"
       ]
     },
     "value": {
-      "type": "string | null",
       "summary": "The chosen value, or null for nothing chosen yet.",
       "dont": [
         "Passing it without `onValueChange` — the group would render a choice and refuse to change it."
@@ -79,29 +95,24 @@
       ]
     },
     "defaultValue": {
-      "type": "string | null",
       "summary": "Starting choice for an uncontrolled group.",
       "conflicts": [
         "value"
       ]
     },
     "onValueChange": {
-      "type": "(value: string) => void",
       "summary": "Called with the value the group should move to.",
       "dont": [
         "Assuming it only fires on click; arrow keys select as they move, which is the pattern working correctly."
       ]
     },
     "name": {
-      "type": "string",
       "summary": "Form field name shared by every radio. Defaults to a generated one.",
       "use": [
         "A real form post, where the name is the key the server reads."
       ]
     },
     "orientation": {
-      "type": "\"horizontal\" | \"vertical\"",
-      "default": "\"vertical\"",
       "summary": "Which way the options stack, and which arrows move between them.",
       "use": [
         "`vertical` for a list of options, which is the default and the readable shape for anything with more than two."
@@ -109,7 +120,6 @@
       "a11y": "Announced as `aria-orientation`. Both axes' arrow keys still move, so a user who reaches for Down in a horizontal group does not hit a dead end."
     },
     "disabled": {
-      "type": "boolean",
       "summary": "Blocks the whole question while keeping every option focusable and readable.",
       "dont": [
         "Disabling one option; that belongs on the radio itself."
@@ -117,7 +127,6 @@
       "a11y": "Emits `aria-disabled` on each option, never the native `disabled` attribute."
     },
     "required": {
-      "type": "boolean",
       "summary": "Marks the group as requiring an answer.",
       "a11y": "Emits `aria-required` on the group."
     }
@@ -141,5 +150,27 @@
       "example": "<RadioGroup label=\"Status\" value={status} onValueChange={setStatus}>\n  <Radio value=\"open\" label=\"Open\" />\n</RadioGroup>",
       "notes": "Don't. A radio group cannot go back to nothing once answered — that is the platform's behaviour and users rely on it. A clearable set of options is toggle-button-group with `deselectable`; a view switch is a tab list, which this system does not have yet."
     }
-  ]
+  ],
+  "tokens": {
+    "vertical": {
+      "summary": "The default: a readable column of options.",
+      "tokens": {
+        "gap between options": "space.stack.xs",
+        "gap between group label and options": "space.stack.2xs",
+        "group label color": "theme.fg.primary",
+        "group label font-size": "type.label.size",
+        "group label font-weight": "type.label.weight"
+      }
+    },
+    "horizontal": {
+      "summary": "A row, for two or three short options that fit on one line.",
+      "tokens": {
+        "gap between options": "space.gap.lg — wider than the vertical step, so two options on one line do not read as one phrase",
+        "gap between group label and options": "space.stack.2xs",
+        "group label color": "theme.fg.primary",
+        "group label font-size": "type.label.size",
+        "group label font-weight": "type.label.weight"
+      }
+    }
+  }
 }

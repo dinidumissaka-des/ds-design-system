@@ -18,18 +18,18 @@ this path is the honest answer to when it last actually moved.
 
 | Name | Import | Family | Status (css / react / figma) | Tier |
 |---|---|---|---|---|
-| [avatar](../docs/components/avatar.md) | `@ds/react` | content | future / future / future | free |
-| [badge](../docs/components/badge.md) | `@ds/react` | content | future / future / future | free |
-| [breadcrumbs](../docs/components/breadcrumbs.md) | `@ds/react` | navigation | future / future / future | free |
+| [avatar](../docs/components/avatar.md) | `@ds/react` | content | latest / latest / future | free |
+| [badge](../docs/components/badge.md) | `@ds/react` | content | latest / latest / future | free |
+| [breadcrumbs](../docs/components/breadcrumbs.md) | `@ds/react` | navigation | latest / latest / future | free |
 | [button](../docs/components/button.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [button-group](../docs/components/button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
-| [checkbox](../docs/components/checkbox.md) | `@ds/react` | inputs | future / future / future | free |
+| [checkbox](../docs/components/checkbox.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [dialog](../docs/components/dialog.md) | `@ds/react` | overlays | future / future / future | free |
 | [icon](../docs/components/icon.md) | `@ds/react` | content | latest / latest / future | free |
 | [menu](../docs/components/menu.md) | `@ds/react` | overlays | future / future / future | free |
 | [notice](../docs/components/notice.md) | `@ds/react` | feedback | future / future / future | free |
-| [radio](../docs/components/radio.md) | `@ds/react` | inputs | future / future / future | free |
-| [radio-group](../docs/components/radio-group.md) | `@ds/react` | inputs | future / future / future | free |
+| [radio](../docs/components/radio.md) | `@ds/react` | inputs | latest / latest / future | free |
+| [radio-group](../docs/components/radio-group.md) | `@ds/react` | inputs | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@ds/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@ds/react` | foundations | latest / na / future | free |
 | [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | latest / latest / future | free |
@@ -38,21 +38,45 @@ this path is the honest answer to when it last actually moved.
 
 ## Props
 
-### Avatar
+### Avatar (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "size">`
+
+- `name: string`
+  The person or entity's name: both the fallback initials and the accessible name.
+- `src?: string`
+  Image URL. Omit, or let it fail, to fall back to initials.
+- `size?: AvatarSize` — default: `"md"`
+  Diameter, from the control scale so an avatar lines up with the controls beside it.
+- `decorative?: boolean`
+  Marks the avatar as redundant to a name already on screen.
+- `className?: string`
 
 Contract: [docs/components/avatar.md](../docs/components/avatar.md)
 
-### Badge
+### Badge (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `HTMLAttributes<HTMLSpanElement>`
+
+- `children: ReactNode`
+  The badge's text.
+- `variant?: BadgeVariant` — default: `"neutral"`
+  Which role's tone the badge wears.
+- `dot?: boolean`
+  Renders a status dot before the text.
 
 Contract: [docs/components/badge.md](../docs/components/badge.md)
 
-### Breadcrumbs
+### Breadcrumbs (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<HTMLAttributes<HTMLElement>, "aria-label">`
+
+- `items: BreadcrumbsItem[]`
+  The trail in order, root first. The last item is the current page.
+- `label?: string` — default: `"Breadcrumb"`
+  Accessible name for the navigation landmark.
+- `separator?: ReactNode` — default: `"/"`
+  What sits between crumbs.
 
 Contract: [docs/components/breadcrumbs.md](../docs/components/breadcrumbs.md)
 
@@ -97,9 +121,29 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/button-group.md](../docs/components/button-group.md)
 
-### Checkbox
+### Checkbox (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<`
+
+- `label: ReactNode`
+  The checkbox's label. Always required.
+- `checked?: boolean`
+  Whether the box is checked. Makes the component controlled.
+- `defaultChecked?: boolean`
+  Starting state for an uncontrolled checkbox. Conflicts with `checked`.
+- `onCheckedChange?: (checked: boolean, event: { preventDefault(): void }) => void`
+  Called with the state the box should move to, not the one it is leaving.
+- `indeterminate?: boolean` — default: `false`
+  A parent summarising children that disagree. Outranks `checked`.
+- `description?: ReactNode`
+  Helper text under the label.
+- `id?: string`
+  Stable id for the input. Defaults to a generated one.
+- `disabled?: boolean`
+  Blocks activation while keeping the box focusable and announced.
+- `required?: boolean`
+  Marks the checkbox as required.
+- `className?: string`
 
 Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 
@@ -138,15 +182,43 @@ No React implementation yet (status: future). There is nothing to look up — do
 
 Contract: [docs/components/notice.md](../docs/components/notice.md)
 
-### Radio
+### Radio (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<`
+
+- `value: string`
+  This option's value. What the group reports when it is chosen.
+- `label: ReactNode`
+  The option's label.
+- `description?: ReactNode`
+  Helper text under the label.
+- `disabled?: boolean`
+  Blocks this one option while leaving it focusable and readable.
+- `className?: string`
 
 Contract: [docs/components/radio.md](../docs/components/radio.md)
 
-### Radio Group
+### Radio Group (`@ds/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<HTMLAttributes<HTMLDivElement>, "role" | "onChange" | "defaultValue">`
+
+- `label?: string`
+  Accessible name for the group — the question these radios answer.
+- `labelledBy?: string`
+  Id of a visible element that already names this group.
+- `value?: string | null`
+  The chosen value, or null for nothing chosen yet.
+- `defaultValue?: string | null`
+  Starting choice for an uncontrolled group. Conflicts with `value`.
+- `onValueChange?: (value: string) => void`
+  Called with the value the group should move to.
+- `name?: string`
+  Shared form field name. Defaults to a generated one.
+- `orientation?: ButtonGroupOrientation` — default: `"vertical"`
+- `disabled?: boolean`
+  Blocks the whole question while keeping every option focusable.
+- `required?: boolean`
+  Marks the group as requiring an answer.
 
 Contract: [docs/components/radio-group.md](../docs/components/radio-group.md)
 

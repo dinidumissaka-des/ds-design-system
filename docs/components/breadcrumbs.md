@@ -5,31 +5,37 @@
 
 The trail from the site's root to the current page.
 
-**Not implemented yet.** This page is the *approved intent* — the props API signed off at gate 1 of the build order, before any React exists. Do not import it; there is nothing to import.
+```tsx
+import { Breadcrumbs } from "@ds/react";
+```
 
 | | |
 |---|---|
 | Registry name | `breadcrumbs` |
 | Family | navigation |
 | Tier | free |
-| Status (css / react / figma) | future / future / future |
+| Status (css / react / figma) | latest / latest / future |
 | Depends on | — |
 
 ## Props
 
+Extends `Omit<HTMLAttributes<HTMLElement>, "aria-label">`.
+
 | Prop | Type | Default | Summary |
 |---|---|---|---|
-| `items` | `Array<{ label: string; href?: string }>` | — | The trail in order, root first. The last item is the current page and is not a link. |
+| `items` | `BreadcrumbsItem[]` | — | The trail in order, root first. The last item is the current page and is not a link. |
 | `label?` | `string` | `"Breadcrumb"` | Accessible name for the navigation landmark. |
 | `separator?` | `ReactNode` | `"/"` | What sits between crumbs. |
 
 ### `items`
 
 ```ts
-items: Array<{ label: string; href?: string }>
+items: BreadcrumbsItem[]
 ```
 
 The trail in order, root first. The last item is the current page and is not a link.
+
+Source doc: The trail in order, root first. The last item is the current page.
 
 **Use when**
 
@@ -98,3 +104,20 @@ A page that also has a primary nav and a pagination nav.
 ```
 
 Distinct `aria-label`s are what make landmarks tellable apart in a screen reader's landmark list. Two navs both called 'Navigation' are worse than one.
+
+## Token recipe
+
+### base
+
+A trail of links ending in the current page.
+
+| Property | Token |
+|---|---|
+| gap between crumbs | `space.gap.xs` |
+| font-size | `type.supporting.size — a trail is orientation, not content, so it sits below body size` |
+| link color | `theme.accent-role.fg — the token documented for an inline link` |
+| current page color | `theme.fg.primary — the end of the trail is where you are, so it reads as text rather than as another link` |
+| current page font-weight | `type.control.weight` |
+| separator color | `theme.fg.muted — punctuation, quieter than either crumb` |
+| outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
+| transition | `motion.interactive.duration with motion.interactive.easing` |
