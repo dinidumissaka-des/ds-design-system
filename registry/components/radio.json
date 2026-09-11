@@ -1,0 +1,71 @@
+{
+  "name": "radio",
+  "title": "Radio",
+  "family": "inputs",
+  "description": "One option inside a radio group. Not usable on its own.",
+  "status": {
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
+  },
+  "dependencies": [
+    "state-layer"
+  ],
+  "files": [],
+  "tier": "free",
+  "behavior": {
+    "summary": "An option rendered by its group, with no primitive of its own. It holds no state: getRadioGroupProps decides whether this one is checked, whether it is the tab stop, and what happens when it is activated. That is the point — a radio that owned any of those could disagree with its siblings.",
+    "decisions": [
+      {
+        "decision": "A Radio outside a RadioGroup is a mistake, not a fallback",
+        "why": "Alone it has no name to share, no siblings to be exclusive with, and no way to be reached by arrow keys — everything that makes it a radio lives in the group. Rendering one standalone would produce a control that looks right and behaves like nothing."
+      },
+      {
+        "decision": "`value` is required and is the item's whole identity",
+        "why": "It is what the group compares against, what arrow keys walk, and what a form submits. Without it the group has no way to refer to this option."
+      }
+    ]
+  },
+  "props": {
+    "value": {
+      "type": "string",
+      "required": true,
+      "summary": "This option's value. What the group reports when it is chosen.",
+      "dont": [
+        "Reusing a value across two radios in one group — the group would consider both chosen."
+      ]
+    },
+    "label": {
+      "type": "ReactNode",
+      "required": true,
+      "summary": "The option's label.",
+      "a11y": "A real `<label for>`, so the text is part of the hit target."
+    },
+    "description": {
+      "type": "ReactNode",
+      "summary": "Helper text under the label, for an option whose consequence is not obvious.",
+      "dont": [
+        "Restating the label in more words."
+      ]
+    },
+    "disabled": {
+      "type": "boolean",
+      "summary": "Blocks this one option while leaving it focusable and readable.",
+      "a11y": "Emits `aria-disabled`. Arrow keys still land on it; it just does not become the answer."
+    }
+  },
+  "usage": [
+    {
+      "case": "Inside its group",
+      "when": "The only correct use.",
+      "example": "<RadioGroup label=\"Billing period\" value={period} onValueChange={setPeriod}>\n  <Radio value=\"annual\" label=\"Annual\" description=\"Two months free\" />\n</RadioGroup>",
+      "notes": "Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group."
+    }
+  ]
+}

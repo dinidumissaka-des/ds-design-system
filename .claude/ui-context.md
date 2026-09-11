@@ -18,12 +18,18 @@ this path is the honest answer to when it last actually moved.
 
 | Name | Import | Family | Status (css / react / figma) | Tier |
 |---|---|---|---|---|
+| [avatar](../docs/components/avatar.md) | `@ds/react` | content | future / future / future | free |
+| [badge](../docs/components/badge.md) | `@ds/react` | content | future / future / future | free |
+| [breadcrumbs](../docs/components/breadcrumbs.md) | `@ds/react` | navigation | future / future / future | free |
 | [button](../docs/components/button.md) | `@ds/react` | buttons | latest / latest / future | free |
 | [button-group](../docs/components/button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
+| [checkbox](../docs/components/checkbox.md) | `@ds/react` | inputs | future / future / future | free |
 | [dialog](../docs/components/dialog.md) | `@ds/react` | overlays | future / future / future | free |
 | [icon](../docs/components/icon.md) | `@ds/react` | content | latest / latest / future | free |
 | [menu](../docs/components/menu.md) | `@ds/react` | overlays | future / future / future | free |
 | [notice](../docs/components/notice.md) | `@ds/react` | feedback | future / future / future | free |
+| [radio](../docs/components/radio.md) | `@ds/react` | inputs | future / future / future | free |
+| [radio-group](../docs/components/radio-group.md) | `@ds/react` | inputs | future / future / future | free |
 | [spinner](../docs/components/spinner.md) | `@ds/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@ds/react` | foundations | latest / na / future | free |
 | [text-field](../docs/components/text-field.md) | `@ds/react` | inputs | latest / latest / future | free |
@@ -31,6 +37,24 @@ this path is the honest answer to when it last actually moved.
 | [toggle-button-group](../docs/components/toggle-button-group.md) | `@ds/react` | buttons | latest / latest / future | free |
 
 ## Props
+
+### Avatar
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/avatar.md](../docs/components/avatar.md)
+
+### Badge
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/badge.md](../docs/components/badge.md)
+
+### Breadcrumbs
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/breadcrumbs.md](../docs/components/breadcrumbs.md)
 
 ### Button (`@ds/react`)
 
@@ -73,6 +97,12 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/button-group.md](../docs/components/button-group.md)
 
+### Checkbox
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
+
 ### Dialog
 
 No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
@@ -107,6 +137,18 @@ Contract: [docs/components/menu.md](../docs/components/menu.md)
 No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
 
 Contract: [docs/components/notice.md](../docs/components/notice.md)
+
+### Radio
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/radio.md](../docs/components/radio.md)
+
+### Radio Group
+
+No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+
+Contract: [docs/components/radio-group.md](../docs/components/radio-group.md)
 
 ### Loading: Spinner (`@ds/react`)
 

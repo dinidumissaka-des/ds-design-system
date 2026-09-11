@@ -1,5 +1,313 @@
 [
   {
+    "name": "avatar",
+    "title": "Avatar",
+    "description": "A person or entity's image, falling back to initials when there is none.",
+    "family": "content",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The person or entity's name. Required — it is both the fallback initials and the accessible name.",
+        "use": [
+          "Always. The name is what makes the fallback possible and the image describable."
+        ],
+        "dont": [
+          "Passing an email or a user id. Initials derived from `a.hartley@` are not initials, and the accessible name would be an address."
+        ],
+        "conflicts": [],
+        "a11y": "Used as the image's `alt` when `decorative` is not set. When the image is missing, the initials are shown but the full name is still what is announced — a screen reader should never hear 'AH'."
+      },
+      {
+        "name": "src",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Image URL. Omit, or let it fail, to fall back to initials.",
+        "use": [
+          "A real photo or logo. The fallback is automatic, so there is no need to branch on whether one exists."
+        ],
+        "dont": [],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "optional": true,
+        "default": "\"md\"",
+        "description": null,
+        "declared": false,
+        "summary": "Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it.",
+        "use": [],
+        "dont": [
+          "Mixing sizes within one stack of avatars — they read as a set."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "decorative",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Marks the avatar as redundant to a name already on screen.",
+        "use": [
+          "An avatar immediately beside the person's name in a row — announcing it again is noise."
+        ],
+        "dont": [
+          "Anything standing alone. Without adjacent text the avatar is the only thing identifying the person, so hiding it removes that identification entirely."
+        ],
+        "conflicts": [],
+        "a11y": "Renders `aria-hidden` with an empty `alt`. The `name` is still required, because it still produces the initials."
+      }
+    ],
+    "usage": [
+      {
+        "case": "A photo with its name beside it",
+        "when": "A row in a member list, where the name is already text.",
+        "example": "<Avatar name=\"Ada Hartley\" src={user.photo} decorative />\n<span>Ada Hartley</span>",
+        "notes": "`decorative` because the name is right there — announcing it twice is noise. Note `name` is still required: it is what produces the initials if the photo fails to load."
+      },
+      {
+        "case": "Standing alone",
+        "when": "An avatar in a toolbar or a stack, with no adjacent name.",
+        "example": "<Avatar name=\"Ada Hartley\" src={user.photo} />",
+        "notes": "Not decorative: the avatar is the only thing identifying this person, so it carries the name."
+      },
+      {
+        "case": "No image at all",
+        "when": "A user who has not uploaded a photo — which is most of them.",
+        "example": "<Avatar name=\"Ada Hartley\" />",
+        "notes": "Initials are shown and the full name is announced. There is nothing to branch on: omitting `src`, and an `src` that 404s, land in the same place."
+      }
+    ],
+    "behavior": null,
+    "tokens": {},
+    "example": null
+  },
+  {
+    "name": "badge",
+    "title": "Badge",
+    "description": "A small inline label for a status, a count, or a category.",
+    "family": "content",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The badge's text.",
+        "use": [],
+        "dont": [
+          "A sentence. A badge that wraps is a Notice wearing the wrong component."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "variant",
+        "type": "\"neutral\" | \"accent\" | \"success\" | \"warning\" | \"danger\"",
+        "values": [
+          "neutral",
+          "accent",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "optional": true,
+        "default": "\"neutral\"",
+        "description": null,
+        "declared": false,
+        "summary": "Which role's tone the badge wears.",
+        "use": [
+          "`neutral` for a count or a category — the default, and right whenever the badge is not reporting health.",
+          "`success` / `warning` / `danger` only for actual status, where the colour is telling the reader something the text also says."
+        ],
+        "dont": [
+          "Colour as decoration. Five badges in five colours that mean nothing teaches readers to ignore the colour on the one that does.",
+          "`danger` for 'important'. It means something is wrong."
+        ],
+        "conflicts": [],
+        "a11y": "Every variant uses its role's subtle background with that role's foreground — never the saturated `bg`, which is a non-text indicator tone. The text carries the meaning; colour only reinforces it, so a badge is never colour-only."
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Renders a status dot before the text.",
+        "use": [
+          "A status badge in a dense table, where the dot is findable at a glance and the text confirms it."
+        ],
+        "dont": [
+          "A dot with no text. A bare coloured dot is colour-only information, which is exactly what the variant contract forbids."
+        ],
+        "conflicts": [],
+        "a11y": "Decorative and `aria-hidden` — it repeats what the text already says."
+      }
+    ],
+    "usage": [
+      {
+        "case": "A count beside a label",
+        "when": "The commonest case: a number qualifying something next to it.",
+        "example": "<Button>\n  Messages\n  <Badge>3</Badge>\n</Button>",
+        "notes": "Neutral by default: a count is not a status, and colouring it would imply something about the number."
+      },
+      {
+        "case": "A status in a table row",
+        "when": "Reporting health, where the colour reinforces text that already says it.",
+        "example": "<Badge variant=\"danger\" dot>Failed</Badge>",
+        "notes": "The dot is decorative and aria-hidden. Removing it would lose nothing for a screen reader, which is the test of whether a visual flourish is safe."
+      },
+      {
+        "case": "Reaching for the wrong component",
+        "when": "The text is a sentence explaining something.",
+        "example": "<Badge variant=\"warning\">Your trial ends in three days, renew to keep your data</Badge>",
+        "notes": "Don't. That is a Notice: it has room for the sentence, a heading, and somewhere to put the action. A badge that wraps onto two lines has already stopped being a badge."
+      }
+    ],
+    "behavior": null,
+    "tokens": {},
+    "example": null
+  },
+  {
+    "name": "breadcrumbs",
+    "title": "Breadcrumbs",
+    "description": "The trail from the site's root to the current page.",
+    "family": "navigation",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "items",
+        "type": "Array<{ label: string; href?: string }>",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The trail in order, root first. The last item is the current page and is not a link.",
+        "use": [
+          "Every ancestor of the current page, ending with the page itself."
+        ],
+        "dont": [
+          "Omitting the current page. The trail ends at where you are; ending it at the parent leaves the reader unsure whether the last crumb is a link they are already on.",
+          "A trail that is not a hierarchy. Breadcrumbs say where this page sits, not how the user got here — history is the back button's job.",
+          "Giving the last item an `href`. It is the page you are on, and this component drops it."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered as an ordered list inside a `<nav>`, so the count and the order are announced. The last item gets `aria-current=\"page\"` and renders as text rather than a link."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "optional": true,
+        "default": "\"Breadcrumb\"",
+        "description": null,
+        "declared": false,
+        "summary": "Accessible name for the navigation landmark.",
+        "use": [
+          "Changing it only when a page has more than one navigation landmark and they need telling apart."
+        ],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Becomes the `<nav>`'s `aria-label`. A page with several landmarks needs distinct names or they are indistinguishable in a landmark list."
+      },
+      {
+        "name": "separator",
+        "type": "ReactNode",
+        "optional": true,
+        "default": "\"/\"",
+        "description": null,
+        "declared": false,
+        "summary": "What sits between crumbs.",
+        "use": [],
+        "dont": [
+          "A character that carries meaning, such as an arrow implying a flow. The separator is punctuation."
+        ],
+        "conflicts": [],
+        "a11y": "Decorative and `aria-hidden`: the list structure already conveys the order, and announcing 'slash' between every crumb is noise."
+      }
+    ],
+    "usage": [
+      {
+        "case": "A page three levels deep",
+        "when": "The ordinary case.",
+        "example": "<Breadcrumbs\n  items={[\n    { label: \"Home\", href: \"/\" },\n    { label: \"Reports\", href: \"/reports\" },\n    { label: \"Q3 revenue\" },\n  ]}\n/>",
+        "notes": "The last item has no `href` — it is the page you are on. It renders as text with `aria-current=\"page\"` rather than a link to itself."
+      },
+      {
+        "case": "One landmark among several",
+        "when": "A page that also has a primary nav and a pagination nav.",
+        "example": "<Breadcrumbs label=\"Breadcrumb\" items={trail} />",
+        "notes": "Distinct `aria-label`s are what make landmarks tellable apart in a screen reader's landmark list. Two navs both called 'Navigation' are worse than one."
+      }
+    ],
+    "behavior": null,
+    "tokens": {},
+    "example": null
+  },
+  {
     "name": "button",
     "title": "Button",
     "description": "Primary, secondary, tertiary, and destructive actions in three sizes, with loading and icon-only modes.",
@@ -392,6 +700,211 @@
     "example": "<ButtonGroup label=\"Form actions\">\n        <Button variant=\"secondary\">Cancel</Button>\n        <Button>Save changes</Button>\n      </ButtonGroup>"
   },
   {
+    "name": "checkbox",
+    "title": "Checkbox",
+    "description": "A single on/off choice, with an indeterminate state for a parent summarising its children.",
+    "family": "inputs",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The checkbox's label. Always required.",
+        "use": [
+          "Always. A checkbox with no label is a control nobody can describe."
+        ],
+        "dont": [
+          "Using the surrounding sentence as the label and leaving this empty — the binding is what makes the text a hit target and an accessible name."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered as a real `<label for>` bound to the input, so clicking the text toggles the box."
+      },
+      {
+        "name": "checked",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Whether the box is checked. Makes the component controlled.",
+        "use": [
+          "Whenever the value lives outside the component, which is most of the time."
+        ],
+        "dont": [
+          "Passing it without `onCheckedChange`; the box would render its state and then refuse to change it."
+        ],
+        "conflicts": [
+          "defaultChecked"
+        ],
+        "a11y": "Drives the native checked state, which is what assistive technology reports."
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Starting state for an uncontrolled checkbox.",
+        "use": [
+          "Genuinely local state nothing else reads."
+        ],
+        "dont": [],
+        "conflicts": [
+          "checked"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(checked: boolean, event: ChangeEvent<HTMLInputElement>) => void",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Called with the state the box should move to, not the one it is leaving.",
+        "use": [],
+        "dont": [
+          "Reading `event.target.checked` instead of the argument — they agree, but the argument is the one this component promises."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Shows the box as neither checked nor unchecked: a parent summarising children that disagree.",
+        "use": [
+          "A 'select all' box above a list where only some rows are selected."
+        ],
+        "dont": [
+          "Expressing 'unknown' or 'not yet answered'. It means partially checked, and a screen reader announces it as `mixed`.",
+          "Combining it with a `checked` that is also true and expecting both to show — indeterminate wins visually and in what is announced, which is why they are not one prop."
+        ],
+        "conflicts": [],
+        "a11y": "Announced as `aria-checked=\"mixed\"`. Set as a DOM property by this component, because HTML has no such attribute."
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Helper text under the label.",
+        "use": [],
+        "dont": [
+          "Error text. A checkbox that is invalid belongs in a field wrapper that owns the message."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks activation while keeping the box focusable and announced.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Emits `aria-disabled` and refuses activation. Never the native `disabled` attribute, which would remove it from the tab order."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Marks the checkbox as required to assistive technology and in the label.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Emits `aria-required`. The visible marker is the label's job."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Submitted value when the box is checked and inside a form.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "A single consent box",
+        "when": "The commonest case: one box, one label, its own state.",
+        "example": "<Checkbox\n  label=\"Email me product updates\"\n  checked={subscribed}\n  onCheckedChange={setSubscribed}\n/>"
+      },
+      {
+        "case": "A parent summarising a list",
+        "when": "Some rows selected, so the parent is neither checked nor unchecked.",
+        "example": "<Checkbox\n  label=\"Select all\"\n  checked={all}\n  indeterminate={some && !all}\n  onCheckedChange={toggleAll}\n/>",
+        "notes": "`indeterminate` is what a screen reader hears as `mixed`. It is deliberately separate from `checked`, because it answers a different question: not this box's value, but whether the children below agree."
+      },
+      {
+        "case": "Unavailable but still readable",
+        "when": "A choice that cannot be made yet, whose current state still matters.",
+        "example": "<Checkbox label=\"Ship to billing address\" checked disabled />",
+        "notes": "aria-disabled and a refused activation, never the native `disabled` attribute — the box stays focusable so a keyboard user can find it and read its state."
+      }
+    ],
+    "behavior": {
+      "primitive": "getCheckboxProps",
+      "summary": "Checked state, the indeterminate third appearance, and the activation guard. Built on a native input[type=checkbox] so keyboard, form participation and the checked semantics come from the platform rather than being re-implemented.",
+      "decisions": [
+        {
+          "decision": "A native input, not a div with role=\"checkbox\"",
+          "why": "Space to toggle, participation in a form's data, and the checked state itself are all free from the platform and all easy to get subtly wrong by hand. The visual is drawn by a sibling element; the input stays in the DOM and keeps the semantics."
+        },
+        {
+          "decision": "`indeterminate` is a separate prop, not a third value of `checked`",
+          "why": "It answers a different question. `checked` is this control's own value; `indeterminate` says the control is standing in for a set of children that disagree. A tri-state `checked` would force every caller to handle a value that only a parent checkbox can ever have, and would make the common two-state case read as incomplete."
+        },
+        {
+          "decision": "Indeterminate is set as a DOM property, never an attribute",
+          "why": "There is no `indeterminate` content attribute in HTML — only an IDL property — so it cannot be expressed in JSX and has to be assigned to the element. The wrapper owns that, which is the whole reason this component cannot be a bare styled input."
+        },
+        {
+          "decision": "Activation is guarded, not disabled",
+          "why": "This system's disabled controls stay focusable and announced. `readOnly` is the input analogue used by text-field, but it has no effect on a checkbox, so the guard here is a refused activation plus aria-disabled — the same shape as the button primitive."
+        },
+        {
+          "decision": "The label is required and is a real `<label for>`",
+          "why": "A checkbox's hit target should include its text, and a bound label gives that for free. It also means the accessible name cannot drift from what is on screen."
+        }
+      ]
+    },
+    "tokens": {},
+    "example": null
+  },
+  {
     "name": "dialog",
     "title": "Dialog",
     "description": "Modal dialog with focus trapping, scroll locking, and dismiss behavior.",
@@ -662,6 +1175,319 @@
         }
       }
     },
+    "example": null
+  },
+  {
+    "name": "radio",
+    "title": "Radio",
+    "description": "One option inside a radio group. Not usable on its own.",
+    "family": "inputs",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "This option's value. What the group reports when it is chosen.",
+        "use": [],
+        "dont": [
+          "Reusing a value across two radios in one group — the group would consider both chosen."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "optional": false,
+        "description": null,
+        "declared": false,
+        "summary": "The option's label.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "A real `<label for>`, so the text is part of the hit target."
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Helper text under the label, for an option whose consequence is not obvious.",
+        "use": [],
+        "dont": [
+          "Restating the label in more words."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks this one option while leaving it focusable and readable.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Emits `aria-disabled`. Arrow keys still land on it; it just does not become the answer."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Inside its group",
+        "when": "The only correct use.",
+        "example": "<RadioGroup label=\"Billing period\" value={period} onValueChange={setPeriod}>\n  <Radio value=\"annual\" label=\"Annual\" description=\"Two months free\" />\n</RadioGroup>",
+        "notes": "Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group."
+      }
+    ],
+    "behavior": {
+      "summary": "An option rendered by its group, with no primitive of its own. It holds no state: getRadioGroupProps decides whether this one is checked, whether it is the tab stop, and what happens when it is activated. That is the point — a radio that owned any of those could disagree with its siblings.",
+      "decisions": [
+        {
+          "decision": "A Radio outside a RadioGroup is a mistake, not a fallback",
+          "why": "Alone it has no name to share, no siblings to be exclusive with, and no way to be reached by arrow keys — everything that makes it a radio lives in the group. Rendering one standalone would produce a control that looks right and behaves like nothing."
+        },
+        {
+          "decision": "`value` is required and is the item's whole identity",
+          "why": "It is what the group compares against, what arrow keys walk, and what a form submits. Without it the group has no way to refer to this option."
+        }
+      ]
+    },
+    "tokens": {},
+    "example": null
+  },
+  {
+    "name": "radio-group",
+    "title": "Radio Group",
+    "description": "A set of radios holding one answer, with the group owning the name, the value and the focus model.",
+    "family": "inputs",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "future"
+      },
+      "react": {
+        "state": "future"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "radio",
+      "state-layer"
+    ],
+    "importPath": "@ds/react",
+    "mode": "spec",
+    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
+    "extends": null,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Accessible name for the group — the question these radios answer.",
+        "use": [
+          "Always, unless `labelledBy` points at a visible heading that already asks it."
+        ],
+        "dont": [
+          "Leaving both this and `labelledBy` unset; an unnamed radiogroup announces its options with no idea what they are options for."
+        ],
+        "conflicts": [
+          "labelledBy"
+        ],
+        "a11y": "Becomes `aria-label` on the group."
+      },
+      {
+        "name": "labelledBy",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Id of a visible element that already names this group.",
+        "use": [],
+        "dont": [],
+        "conflicts": [
+          "label"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "The chosen value, or null for nothing chosen yet.",
+        "use": [],
+        "dont": [
+          "Passing it without `onValueChange` — the group would render a choice and refuse to change it."
+        ],
+        "conflicts": [
+          "defaultValue"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Starting choice for an uncontrolled group.",
+        "use": [],
+        "dont": [],
+        "conflicts": [
+          "value"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Called with the value the group should move to.",
+        "use": [],
+        "dont": [
+          "Assuming it only fires on click; arrow keys select as they move, which is the pattern working correctly."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Form field name shared by every radio. Defaults to a generated one.",
+        "use": [
+          "A real form post, where the name is the key the server reads."
+        ],
+        "dont": [],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "values": [
+          "horizontal",
+          "vertical"
+        ],
+        "optional": true,
+        "default": "\"vertical\"",
+        "description": null,
+        "declared": false,
+        "summary": "Which way the options stack, and which arrows move between them.",
+        "use": [
+          "`vertical` for a list of options, which is the default and the readable shape for anything with more than two."
+        ],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Announced as `aria-orientation`. Both axes' arrow keys still move, so a user who reaches for Down in a horizontal group does not hit a dead end."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Blocks the whole question while keeping every option focusable and readable.",
+        "use": [],
+        "dont": [
+          "Disabling one option; that belongs on the radio itself."
+        ],
+        "conflicts": [],
+        "a11y": "Emits `aria-disabled` on each option, never the native `disabled` attribute."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "optional": true,
+        "description": null,
+        "declared": false,
+        "summary": "Marks the group as requiring an answer.",
+        "use": [],
+        "dont": [],
+        "conflicts": [],
+        "a11y": "Emits `aria-required` on the group."
+      }
+    ],
+    "usage": [
+      {
+        "case": "Choosing one of a few",
+        "when": "The default: a short list of mutually exclusive options.",
+        "example": "<RadioGroup label=\"Billing period\" value={period} onValueChange={setPeriod}>\n  <Radio value=\"monthly\" label=\"Monthly\" />\n  <Radio value=\"annual\" label=\"Annual\" description=\"Two months free\" />\n</RadioGroup>",
+        "notes": "One tab stop for the whole group; arrows move between options and select as they go. That is the radio pattern, and it is why a radio group is not just several checkboxes."
+      },
+      {
+        "case": "An option that cannot be chosen yet",
+        "when": "One option unavailable while the rest remain answerable.",
+        "example": "<RadioGroup label=\"Shipping\" value={ship} onValueChange={setShip}>\n  <Radio value=\"standard\" label=\"Standard\" />\n  <Radio value=\"overnight\" label=\"Overnight\" disabled description=\"Not available to this address\" />\n</RadioGroup>",
+        "notes": "The disabled option still takes focus, so a keyboard user discovers it exists and reads why. Arrow keys land on it without selecting it."
+      },
+      {
+        "case": "Reaching for the wrong component",
+        "when": "The options are a filter that should be clearable, or a view switch.",
+        "example": "<RadioGroup label=\"Status\" value={status} onValueChange={setStatus}>\n  <Radio value=\"open\" label=\"Open\" />\n</RadioGroup>",
+        "notes": "Don't. A radio group cannot go back to nothing once answered — that is the platform's behaviour and users rely on it. A clearable set of options is toggle-button-group with `deselectable`; a view switch is a tab list, which this system does not have yet."
+      }
+    ],
+    "behavior": {
+      "primitive": "getRadioGroupProps",
+      "summary": "The radiogroup pattern: one tab stop, arrow keys that move and select, and a single value owned here rather than by any item. Native inputs carry the semantics; this decides which one is checked and which one is the tab stop.",
+      "decisions": [
+        {
+          "decision": "The group owns the value, not the items",
+          "why": "A radio's whole meaning is 'one of these'. Leaving the value on the item would let two claim to be checked, which is a state the control is supposed to make impossible."
+        },
+        {
+          "decision": "Native input[type=radio] sharing one `name`",
+          "why": "Grouping, arrow-key behaviour and form submission all come from the platform when the name is shared. Re-implementing them on divs is how a radio group ends up not announcing how many options it has."
+        },
+        {
+          "decision": "Roving tabindex is derived from the value",
+          "why": "The checked radio is the tab stop; a group with nothing chosen is entered at its first enabled option. Deriving it means focus and value cannot disagree, because there is no second piece of state."
+        },
+        {
+          "decision": "Arrow keys select as they move, and a disabled option only takes focus",
+          "why": "Selecting on arrow is the radio pattern. This system's disabled controls stay focusable and announced, so a disabled radio must still be reachable — it just must not become the answer."
+        },
+        {
+          "decision": "No deselect",
+          "why": "Unlike toggle-button-group, a radio group has no way back to nothing once answered. That is the platform's behaviour and users rely on it; a clearable set of options is a different control, and this system has toggle-button-group for it."
+        }
+      ]
+    },
+    "tokens": {},
     "example": null
   },
   {

@@ -1,0 +1,80 @@
+{
+  "name": "avatar",
+  "title": "Avatar",
+  "family": "content",
+  "description": "A person or entity's image, falling back to initials when there is none.",
+  "status": {
+    "css": {
+      "state": "future"
+    },
+    "react": {
+      "state": "future"
+    },
+    "figma": {
+      "state": "future"
+    }
+  },
+  "dependencies": [],
+  "files": [],
+  "tier": "free",
+  "props": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "summary": "The person or entity's name. Required — it is both the fallback initials and the accessible name.",
+      "use": [
+        "Always. The name is what makes the fallback possible and the image describable."
+      ],
+      "dont": [
+        "Passing an email or a user id. Initials derived from `a.hartley@` are not initials, and the accessible name would be an address."
+      ],
+      "a11y": "Used as the image's `alt` when `decorative` is not set. When the image is missing, the initials are shown but the full name is still what is announced — a screen reader should never hear 'AH'."
+    },
+    "src": {
+      "type": "string",
+      "summary": "Image URL. Omit, or let it fail, to fall back to initials.",
+      "use": [
+        "A real photo or logo. The fallback is automatic, so there is no need to branch on whether one exists."
+      ]
+    },
+    "size": {
+      "type": "\"sm\" | \"md\" | \"lg\"",
+      "default": "\"md\"",
+      "summary": "Diameter, from the `size.control.*` scale so an avatar lines up with the controls beside it.",
+      "dont": [
+        "Mixing sizes within one stack of avatars — they read as a set."
+      ]
+    },
+    "decorative": {
+      "type": "boolean",
+      "summary": "Marks the avatar as redundant to a name already on screen.",
+      "use": [
+        "An avatar immediately beside the person's name in a row — announcing it again is noise."
+      ],
+      "dont": [
+        "Anything standing alone. Without adjacent text the avatar is the only thing identifying the person, so hiding it removes that identification entirely."
+      ],
+      "a11y": "Renders `aria-hidden` with an empty `alt`. The `name` is still required, because it still produces the initials."
+    }
+  },
+  "usage": [
+    {
+      "case": "A photo with its name beside it",
+      "when": "A row in a member list, where the name is already text.",
+      "example": "<Avatar name=\"Ada Hartley\" src={user.photo} decorative />\n<span>Ada Hartley</span>",
+      "notes": "`decorative` because the name is right there — announcing it twice is noise. Note `name` is still required: it is what produces the initials if the photo fails to load."
+    },
+    {
+      "case": "Standing alone",
+      "when": "An avatar in a toolbar or a stack, with no adjacent name.",
+      "example": "<Avatar name=\"Ada Hartley\" src={user.photo} />",
+      "notes": "Not decorative: the avatar is the only thing identifying this person, so it carries the name."
+    },
+    {
+      "case": "No image at all",
+      "when": "A user who has not uploaded a photo — which is most of them.",
+      "example": "<Avatar name=\"Ada Hartley\" />",
+      "notes": "Initials are shown and the full name is announced. There is nothing to branch on: omitting `src`, and an `src` that 404s, land in the same place."
+    }
+  ]
+}
