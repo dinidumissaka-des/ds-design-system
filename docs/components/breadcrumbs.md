@@ -105,6 +105,18 @@ A page that also has a primary nav and a pagination nav.
 
 Distinct `aria-label`s are what make landmarks tellable apart in a screen reader's landmark list. Two navs both called 'Navigation' are worse than one.
 
+## Real usage in this repo
+
+```tsx
+<Breadcrumbs
+        label="Breadcrumb"
+        items={[
+          { label: "Settings", href: "#" },
+          { label: "Billing" },
+        ]}
+      />
+```
+
 ## Token recipe
 
 ### base

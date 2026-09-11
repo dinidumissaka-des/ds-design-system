@@ -207,6 +207,20 @@ The options are a filter that should be clearable, or a view switch.
 
 Don't. A radio group cannot go back to nothing once answered — that is the platform's behaviour and users rely on it. A clearable set of options is toggle-button-group with `deselectable`; a view switch is a tab list, which this system does not have yet.
 
+## Real usage in this repo
+
+```tsx
+<RadioGroup label="Shipping" defaultValue="standard">
+        <Radio value="standard" label="Standard" />
+        <Radio
+          value="overnight"
+          label="Overnight"
+          disabled
+          description="Not available to this address"
+        />
+      </RadioGroup>
+```
+
 ## Token recipe
 
 ### vertical

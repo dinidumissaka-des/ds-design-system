@@ -52,6 +52,11 @@ Extends: `Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "size">`
   Marks the avatar as redundant to a name already on screen.
 - `className?: string`
 
+Real usage (from `apps/`):
+```tsx
+<Avatar name="Ada Hartley" />
+```
+
 Contract: [docs/components/avatar.md](../docs/components/avatar.md)
 
 ### Badge (`@ds/react`)
@@ -65,6 +70,11 @@ Extends: `HTMLAttributes<HTMLSpanElement>`
 - `dot?: boolean`
   Renders a status dot before the text.
 
+Real usage (from `apps/`):
+```tsx
+<Badge>3</Badge>
+```
+
 Contract: [docs/components/badge.md](../docs/components/badge.md)
 
 ### Breadcrumbs (`@ds/react`)
@@ -77,6 +87,17 @@ Extends: `Omit<HTMLAttributes<HTMLElement>, "aria-label">`
   Accessible name for the navigation landmark.
 - `separator?: ReactNode` — default: `"/"`
   What sits between crumbs.
+
+Real usage (from `apps/`):
+```tsx
+<Breadcrumbs
+        label="Breadcrumb"
+        items={[
+          { label: "Settings", href: "#" },
+          { label: "Billing" },
+        ]}
+      />
+```
 
 Contract: [docs/components/breadcrumbs.md](../docs/components/breadcrumbs.md)
 
@@ -145,6 +166,11 @@ Extends: `Omit<`
   Marks the checkbox as required.
 - `className?: string`
 
+Real usage (from `apps/`):
+```tsx
+<Checkbox label="Ship to billing address" checked disabled />
+```
+
 Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 
 ### Dialog
@@ -196,6 +222,11 @@ Extends: `Omit<`
   Blocks this one option while leaving it focusable and readable.
 - `className?: string`
 
+Real usage (from `apps/`):
+```tsx
+<Radio value="annual" label="Annual" />
+```
+
 Contract: [docs/components/radio.md](../docs/components/radio.md)
 
 ### Radio Group (`@ds/react`)
@@ -219,6 +250,19 @@ Extends: `Omit<HTMLAttributes<HTMLDivElement>, "role" | "onChange" | "defaultVal
   Blocks the whole question while keeping every option focusable.
 - `required?: boolean`
   Marks the group as requiring an answer.
+
+Real usage (from `apps/`):
+```tsx
+<RadioGroup label="Shipping" defaultValue="standard">
+        <Radio value="standard" label="Standard" />
+        <Radio
+          value="overnight"
+          label="Overnight"
+          disabled
+          description="Not available to this address"
+        />
+      </RadioGroup>
+```
 
 Contract: [docs/components/radio-group.md](../docs/components/radio-group.md)
 

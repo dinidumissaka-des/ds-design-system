@@ -143,7 +143,7 @@
         }
       }
     },
-    "example": null
+    "example": "<Avatar name=\"Ada Hartley\" />"
   },
   {
     "name": "badge",
@@ -320,7 +320,7 @@
         }
       }
     },
-    "example": null
+    "example": "<Badge>3</Badge>"
   },
   {
     "name": "breadcrumbs",
@@ -426,7 +426,7 @@
         }
       }
     },
-    "example": null
+    "example": "<Breadcrumbs\n        label=\"Breadcrumb\"\n        items={[\n          { label: \"Settings\", href: \"#\" },\n          { label: \"Billing\" },\n        ]}\n      />"
   },
   {
     "name": "button",
@@ -1070,7 +1070,7 @@
         }
       }
     },
-    "example": null
+    "example": "<Checkbox label=\"Ship to billing address\" checked disabled />"
   },
   {
     "name": "dialog",
@@ -1486,7 +1486,7 @@
         }
       }
     },
-    "example": null
+    "example": "<Radio value=\"annual\" label=\"Annual\" />"
   },
   {
     "name": "radio-group",
@@ -1716,7 +1716,7 @@
         }
       }
     },
-    "example": null
+    "example": "<RadioGroup label=\"Shipping\" defaultValue=\"standard\">\n        <Radio value=\"standard\" label=\"Standard\" />\n        <Radio\n          value=\"overnight\"\n          label=\"Overnight\"\n          disabled\n          description=\"Not available to this address\"\n        />\n      </RadioGroup>"
   },
   {
     "name": "spinner",

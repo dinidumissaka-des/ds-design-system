@@ -239,6 +239,12 @@ A choice that cannot be made yet, whose current state still matters.
 
 aria-disabled and a refused activation, never the native `disabled` attribute — the box stays focusable so a keyboard user can find it and read its state.
 
+## Real usage in this repo
+
+```tsx
+<Checkbox label="Ship to billing address" checked disabled />
+```
+
 ## Token recipe
 
 ### base

@@ -143,6 +143,12 @@ A user who has not uploaded a photo — which is most of them.
 
 Initials are shown and the full name is announced. There is nothing to branch on: omitting `src`, and an `src` that 404s, land in the same place.
 
+## Real usage in this repo
+
+```tsx
+<Avatar name="Ada Hartley" />
+```
+
 ## Token recipe
 
 ### base

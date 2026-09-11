@@ -112,6 +112,12 @@ The text is a sentence explaining something.
 
 Don't. That is a Notice: it has room for the sentence, a heading, and somewhere to put the action. A badge that wraps onto two lines has already stopped being a badge.
 
+## Real usage in this repo
+
+```tsx
+<Badge>3</Badge>
+```
+
 ## Token recipe
 
 ### neutral

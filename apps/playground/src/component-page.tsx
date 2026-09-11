@@ -11,8 +11,23 @@
 // refuses clicks, but only a real button can be clicked.
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Spinner, TextField, ToggleButton, ToggleButtonGroup } from "@ds/react";
+import {
+  Avatar,
+  Badge,
+  Breadcrumbs,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  Spinner,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@ds/react";
 import type {
+  AvatarSize,
+  BadgeVariant,
   ButtonGroupOrientation,
   TextFieldSize,
   TextFieldStatus,
@@ -222,6 +237,93 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  checkbox: {
+    "A single consent box": () => <ConsentExample />,
+    "A parent summarising a list": () => <SelectAllExample />,
+    "Unavailable but still readable": () => (
+      <Checkbox label="Ship to billing address" checked disabled />
+    ),
+  },
+
+  "radio-group": {
+    "Choosing one of a few": () => <BillingExample />,
+    "An option that cannot be chosen yet": () => (
+      <RadioGroup label="Shipping" defaultValue="standard">
+        <Radio value="standard" label="Standard" />
+        <Radio
+          value="overnight"
+          label="Overnight"
+          disabled
+          description="Not available to this address"
+        />
+      </RadioGroup>
+    ),
+  },
+
+  radio: {
+    "Inside its group": () => <BillingExample />,
+  },
+
+  badge: {
+    "A count beside a label": () => (
+      <Button variant="secondary">
+        Messages
+        <Badge>3</Badge>
+      </Button>
+    ),
+    "A status in a table row": () => (
+      <>
+        <Badge variant="success" dot>
+          Passing
+        </Badge>
+        <Badge variant="warning" dot>
+          Degraded
+        </Badge>
+        <Badge variant="danger" dot>
+          Failed
+        </Badge>
+      </>
+    ),
+  },
+
+  avatar: {
+    "A photo with its name beside it": () => (
+      <span className="pg-example-inline">
+        <Avatar name="Ada Hartley" decorative />
+        <span>Ada Hartley</span>
+      </span>
+    ),
+    "Standing alone": () => <Avatar name="Ada Hartley" />,
+    "No image at all": () => (
+      <>
+        <Avatar name="Ada Hartley" size="sm" />
+        <Avatar name="Bo Nakamura" size="md" />
+        <Avatar name="Chidi Okonkwo" size="lg" />
+      </>
+    ),
+  },
+
+  breadcrumbs: {
+    "A page three levels deep": () => (
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "#" },
+          { label: "Reports", href: "#" },
+          { label: "Q3 revenue" },
+        ]}
+      />
+    ),
+    "One landmark among several": () => (
+      <Breadcrumbs
+        label="Breadcrumb"
+        items={[
+          { label: "Settings", href: "#" },
+          { label: "Billing" },
+        ]}
+      />
+    ),
+  },
+
   spinner: {
     "Standalone region loading": () => <Spinner label="Loading results" />,
     "Inside a button": () => <Button loading>Saving…</Button>,
@@ -339,6 +441,59 @@ function FilterGroupExample() {
       <ToggleButton value="open">Open</ToggleButton>
       <ToggleButton value="closed">Closed</ToggleButton>
     </ToggleButtonGroup>
+  );
+}
+
+/** Controlled, because the consent value is the thing the page cares about. */
+function ConsentExample() {
+  const [subscribed, setSubscribed] = useState(true);
+  return (
+    <Checkbox
+      label="Email me product updates"
+      description="Roughly monthly. Unsubscribe from any of them."
+      checked={subscribed}
+      onCheckedChange={setSubscribed}
+    />
+  );
+}
+
+/**
+ * The indeterminate case, live — a frozen screenshot of it would show the bar
+ * but not the thing the state is *for*: that activating a partly-filled parent
+ * resolves to checked rather than toggling from its own value.
+ */
+function SelectAllExample() {
+  const [rows, setRows] = useState([true, false, false]);
+  const all = rows.every(Boolean);
+  const some = rows.some(Boolean);
+  return (
+    <span className="pg-example-stack">
+      <Checkbox
+        label="Select all"
+        checked={all}
+        indeterminate={some && !all}
+        onCheckedChange={(next) => setRows(rows.map(() => next))}
+      />
+      {rows.map((on, i) => (
+        <Checkbox
+          key={i}
+          label={`Row ${i + 1}`}
+          checked={on}
+          onCheckedChange={(next) => setRows(rows.map((v, j) => (j === i ? next : v)))}
+        />
+      ))}
+    </span>
+  );
+}
+
+/** Arrow keys move and select here, which is the pattern a frozen demo hides. */
+function BillingExample() {
+  const [period, setPeriod] = useState<string | null>("annual");
+  return (
+    <RadioGroup label="Billing period" value={period} onValueChange={setPeriod}>
+      <Radio value="monthly" label="Monthly" />
+      <Radio value="annual" label="Annual" description="Two months free" />
+    </RadioGroup>
   );
 }
 
@@ -470,6 +625,72 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  checkbox: {
+    controls: ["label", "description", "checked", "indeterminate", "disabled", "required"],
+    render: (state, set) => (
+      <Checkbox
+        label={String(state.label || "Email me product updates")}
+        description={state.description ? String(state.description) : undefined}
+        checked={Boolean(state.checked)}
+        indeterminate={Boolean(state.indeterminate)}
+        disabled={Boolean(state.disabled)}
+        required={Boolean(state.required)}
+        onCheckedChange={(next) => set({ checked: next, indeterminate: false })}
+      />
+    ),
+  },
+
+  "radio-group": {
+    controls: ["label", "orientation", "disabled", "required"],
+    render: (state) => (
+      <RadioGroup
+        label={String(state.label || "Billing period")}
+        orientation={state.orientation as ButtonGroupOrientation}
+        disabled={Boolean(state.disabled)}
+        required={Boolean(state.required)}
+        defaultValue="annual"
+      >
+        <Radio value="monthly" label="Monthly" />
+        <Radio value="annual" label="Annual" />
+      </RadioGroup>
+    ),
+  },
+
+  badge: {
+    controls: ["variant", "dot"],
+    slot: { label: "Children", initial: "Passing" },
+    render: (state) => (
+      <Badge variant={state.variant as BadgeVariant} dot={Boolean(state.dot)}>
+        {String(state.children)}
+      </Badge>
+    ),
+  },
+
+  avatar: {
+    controls: ["name", "size", "decorative"],
+    render: (state) => (
+      <Avatar
+        name={String(state.name || "Ada Hartley")}
+        size={state.size as AvatarSize}
+        decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  breadcrumbs: {
+    controls: ["label", "separator"],
+    render: (state) => (
+      <Breadcrumbs
+        label={String(state.label || "Breadcrumb")}
+        separator={state.separator ? String(state.separator) : undefined}
+        items={[
+          { label: "Home", href: "#" },
+          { label: "Reports", href: "#" },
+          { label: "Q3 revenue" },
+        ]}
+      />
+    ),
+  },
   "text-field": {
     controls: ["label", "labelHidden", "size", "status", "description", "message", "disabled", "required"],
     render: (state) => (

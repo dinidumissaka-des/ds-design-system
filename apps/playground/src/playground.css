@@ -1301,3 +1301,24 @@ code {
   inline-size: 300px;
   max-inline-size: 100%;
 }
+
+/* Layout for the example stages that show a component beside or above other
+   content — an avatar next to its name, a parent checkbox over its rows. */
+.pg-example-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-gap-sm);
+}
+
+.pg-example-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-stack-2xs);
+  text-align: start;
+}
+
+/* The nested rows of a "select all" group sit in from their parent, so the
+   relationship is visible rather than implied by order alone. */
+.pg-example-stack > * + * {
+  margin-inline-start: var(--ds-space-gap-lg);
+}

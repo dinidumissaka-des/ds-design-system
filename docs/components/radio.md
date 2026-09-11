@@ -113,6 +113,12 @@ The only correct use.
 
 Everything that makes this a radio — the shared name, the exclusivity, the arrow-key reachability — comes from the group.
 
+## Real usage in this repo
+
+```tsx
+<Radio value="annual" label="Annual" />
+```
+
 ## Token recipe
 
 ### base
