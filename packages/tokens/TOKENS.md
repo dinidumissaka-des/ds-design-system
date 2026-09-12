@@ -941,7 +941,7 @@ Ratios are measured from the resolved token values every build. A pairing listed
 | `theme.warning-role.fg` | `theme.warning-role.subtle` | AA-text | 6.84:1 | 8.97:1 |
 | `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 5.70:1 | 6.85:1 |
 | `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.31:1 | 6.21:1 |
-| `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-large | 5.91:1 | 5.84:1 |
+| `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-text | 5.91:1 | 5.84:1 |
 | `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 6.31:1 | 7.31:1 |
 | `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.89:1 | 8.26:1 |
 | `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 4.31:1 | 7.49:1 |
@@ -1214,18 +1214,74 @@ A transient list of actions anchored to a trigger.
 
 ### notice
 
-An inline banner. Only the tinted subtle backgrounds carry text; the saturated role fills do not.
+The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are for the leading bar and nothing else.
 
 | Property | Token |
 |---|---|
-| info background / text | `theme.accent-role.subtle` / `theme.accent-role.fg` |
-| success background / text | `theme.success-role.subtle` / `theme.success-role.fg` |
-| warning background / text | `theme.warning-role.subtle` / `theme.warning-role.fg` |
-| error background / text | `theme.danger-role.subtle` / `theme.danger-role.fg` |
 | padding | `space.padding.sm` `space.padding.md` |
 | border-radius | `radius.element` |
 | gap between icon and text | `space.gap.sm` |
-| leading accent bar (optional) | the matching role bg — a non-text use |
+| gap between title and message | `space.stack.2xs` |
+| gap between message and actions | `space.stack.xs` |
+| font-size | `type.body.size` |
+| line-height | `type.body.line-height` |
+| title font-weight | `type.label.weight` |
+| icon size | `size.icon.text` |
+| leading bar inline-size | `border.2` |
+
+### notice-info
+
+Tinted neutral rather than with the brand accent: there is no info role, and accent-role.subtle moves with the brand, so in a red or orange theme an info notice would read as an error.
+
+| Property | Token |
+|---|---|
+| background | `theme.bg.muted` |
+| color | `theme.fg.primary` |
+| leading bar | `theme.fg.muted` |
+
+### notice-success
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.success-role.subtle` |
+| color | `theme.success-role.fg` |
+| leading bar | `theme.success-role.bg` |
+
+### notice-warning
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.warning-role.subtle` |
+| color | `theme.warning-role.fg` |
+| leading bar | `theme.warning-role.bg` |
+
+### notice-danger
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.danger-role.subtle` |
+| color | `theme.danger-role.fg` |
+| leading bar | `theme.danger-role.bg` |
+
+### notice-dismiss
+
+The close button, when `onDismiss` is passed. It takes currentColor so the glyph always matches the variant's foreground and cannot clash with the tint it sits on — which is also why it is not a Button: a tertiary Button would bring its own colour into a tinted surface.
+
+| Property | Token |
+|---|---|
+| color | currentColor — inherited from the variant's own foreground |
+| glyph size | `size.icon.text` |
+| target inline-size / block-size | `size.control.sm` |
+| border-radius | `radius.inner` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| background | transparent — the variant's tint shows through |
 
 ### radio-group-vertical
 

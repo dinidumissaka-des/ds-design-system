@@ -27,7 +27,7 @@ this path is the honest answer to when it last actually moved.
 | [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | future / future / future | free |
 | [icon](../docs/components/icon.md) | `@rata/react` | content | latest / latest / future | free |
 | [menu](../docs/components/menu.md) | `@rata/react` | overlays | future / future / future | free |
-| [notice](../docs/components/notice.md) | `@rata/react` | feedback | future / future / future | free |
+| [notice](../docs/components/notice.md) | `@rata/react` | feedback | latest / latest / future | free |
 | [radio](../docs/components/radio.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [radio-group](../docs/components/radio-group.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@rata/react` | loading | latest / latest / future | free |
@@ -206,9 +206,31 @@ No React implementation yet (status: future). There is nothing to look up — do
 
 Contract: [docs/components/menu.md](../docs/components/menu.md)
 
-### Notice
+### Notice (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<HTMLAttributes<HTMLDivElement>, "title" | "role">`
+
+- `children: ReactNode`
+  The message.
+- `variant?: NoticeVariant` — default: `"info"`
+  Which kind of message this is.
+- `live?: NoticeLive` — default: `"off"`
+  Whether assistive technology is told about this notice when it appears.
+- `title?: ReactNode`
+  A short first line above the message.
+- `icon?: LucideIcon | false`
+  Overrides the icon the variant chooses, or removes it.
+- `actions?: ReactNode`
+  Buttons or links for what to do about the message.
+- `onDismiss?: () => void`
+  Called when the reader closes the notice. Its presence is what renders the close button.
+- `dismissLabel?: string` — default: `"Dismiss"`
+  Accessible name for the close button.
+
+Real usage (from `apps/`):
+```tsx
+<Notice>Your plan renews on the 1st.</Notice>
+```
 
 Contract: [docs/components/notice.md](../docs/components/notice.md)
 

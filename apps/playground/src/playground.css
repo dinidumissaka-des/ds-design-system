@@ -1270,3 +1270,13 @@ code {
   margin-inline-start: var(--rata-space-gap-lg);
 }
 
+/* A plain vertical stack for full-width examples — notices, and anything else
+   that fills its line. Deliberately not .pg-example-stack, which indents each
+   sibling to show a parent/child relationship these do not have. */
+.pg-block-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--rata-space-stack-sm);
+}
+

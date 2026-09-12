@@ -30,6 +30,8 @@ export { Radio } from "./radio.js";
 export type { RadioProps } from "./radio.js";
 export { RadioGroup } from "./radio-group.js";
 export type { RadioGroupProps } from "./radio-group.js";
+export { Notice } from "./notice.js";
+export type { NoticeProps, NoticeVariant, NoticeLive } from "./notice.js";
 export { Spinner } from "./spinner.js";
 export type { SpinnerProps } from "./spinner.js";
 export { cx } from "./cx.js";

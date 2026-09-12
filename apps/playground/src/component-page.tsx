@@ -9,7 +9,7 @@
 // The live demos are the one thing this file adds, and they are deliberately
 // the only hand-written part: a contract can say `loading` shows a spinner and
 // refuses clicks, but only a real button can be clicked.
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   Avatar,
@@ -18,6 +18,7 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Notice,
   Radio,
   RadioGroup,
   Spinner,
@@ -30,6 +31,8 @@ import type {
   AvatarSize,
   BadgeVariant,
   ButtonGroupOrientation,
+  NoticeLive,
+  NoticeVariant,
   TextFieldSize,
   TextFieldStatus,
   ToggleButtonGroupSelectionMode,
@@ -342,6 +345,24 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  notice: {
+    "A message that is on the page at load": () => (
+      <Notice variant="warning">This project is read-only while the migration runs.</Notice>
+    ),
+    "An error after an action, announced correctly": () => <SaveFailureExample />,
+    "A dismissible confirmation": () => <InvitesExample />,
+    "Every variant": () => (
+      <div className="pg-block-stack">
+        <Notice>Your plan renews on the 1st.</Notice>
+        <Notice variant="success">Invitations sent to 12 people.</Notice>
+        <Notice variant="warning" title="Card expiring">
+          Update it before the 30th to avoid an interruption.
+        </Notice>
+        <Notice variant="danger" title="Could not save">The server refused the change.</Notice>
+      </div>
+    ),
+  },
+
   breadcrumbs: {
     "A page three levels deep": () => (
       <Breadcrumbs
@@ -599,6 +620,74 @@ function NotificationsExample() {
   return <Switch label="Notifications" checked={on} onCheckedChange={setOn} />;
 }
 
+/**
+ * The live-region pattern the contract insists on.
+ *
+ * The wrapper is always rendered, so the region exists before the notice's text
+ * arrives — mounting the region and its content in the same commit is what
+ * makes announcements unreliable, and it is invisible in testing unless you are
+ * listening. `live` stays off on the Notice for exactly that reason.
+ */
+function SaveFailureExample() {
+  const [failed, setFailed] = useState(true);
+  return (
+    <div className="pg-block-stack">
+      <div aria-live="polite">
+        {failed ? (
+          <Notice
+            variant="danger"
+            title="Could not save"
+            actions={
+              <Button variant="secondary" onClick={() => setFailed(false)}>
+                Retry
+              </Button>
+            }
+          >
+            The server refused the change.
+          </Notice>
+        ) : null}
+      </div>
+      {!failed && (
+        <Button variant="secondary" onClick={() => setFailed(true)}>
+          Make it fail again
+        </Button>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Dismissal, with the two things Notice deliberately does not do.
+ *
+ * It does not hide itself — this component owns that — and it does not move
+ * focus, so the handler puts focus somewhere deliberate instead of letting it
+ * fall to <body> when the close button it was on disappears.
+ */
+function InvitesExample() {
+  const [sent, setSent] = useState(true);
+  const afterRef = useRef<HTMLButtonElement | null>(null);
+  return (
+    <div className="pg-block-stack">
+      <div aria-live="polite">
+        {sent ? (
+          <Notice
+            variant="success"
+            onDismiss={() => {
+              setSent(false);
+              afterRef.current?.focus();
+            }}
+          >
+            Invitations sent to 12 people.
+          </Notice>
+        ) : null}
+      </div>
+      <Button ref={afterRef} variant="secondary" onClick={() => setSent(true)}>
+        {sent ? "Send more" : "Send again"}
+      </Button>
+    </div>
+  );
+}
+
 /** A case the contract includes to say "don't" — its notes open with exactly that. */
 const isCounterExample = (item: Contract["usage"][number]) =>
   (item.notes ?? "").trimStart().toLowerCase().startsWith("don't");
@@ -801,6 +890,20 @@ const INTERACTIVE: Record<string, Interactive> = {
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
       />
+    ),
+  },
+
+  notice: {
+    controls: ["variant", "live", "title"],
+    slot: { label: "Children", initial: "This project is read-only while the migration runs." },
+    render: (state) => (
+      <Notice
+        variant={state.variant as NoticeVariant}
+        live={state.live as NoticeLive}
+        title={state.title ? String(state.title) : undefined}
+      >
+        {String(state.children)}
+      </Notice>
     ),
   },
 
