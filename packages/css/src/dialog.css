@@ -36,21 +36,34 @@
 
 /* Three widths from the control scale rather than a size.dialog.* family:
    a dialog is measured in controls, and a scale with one consumer is a list.
-   `inline-size: 100%` with a max is what makes them shrink on a narrow
-   viewport instead of overflowing it. */
+
+   Each is min()'d with the viewport inset rather than just stating the width.
+   `max-inline-size` on the modifier otherwise REPLACES the inset on the base
+   rule, and since `inline-size: 100%` resolves against the viewport for a
+   top-layer element, a dialog narrower than its own max went edge to edge
+   with no margin at all. */
 .rata-dialog--sm {
   inline-size: 100%;
-  max-inline-size: calc(var(--rata-size-control-lg) * 10);
+  max-inline-size: min(
+    calc(var(--rata-size-control-lg) * 10),
+    calc(100% - var(--rata-space-padding-lg) * 2)
+  );
 }
 
 .rata-dialog--md {
   inline-size: 100%;
-  max-inline-size: calc(var(--rata-size-control-lg) * 14);
+  max-inline-size: min(
+    calc(var(--rata-size-control-lg) * 14),
+    calc(100% - var(--rata-space-padding-lg) * 2)
+  );
 }
 
 .rata-dialog--lg {
   inline-size: 100%;
-  max-inline-size: calc(var(--rata-size-control-lg) * 20);
+  max-inline-size: min(
+    calc(var(--rata-size-control-lg) * 20),
+    calc(100% - var(--rata-space-padding-lg) * 2)
+  );
 }
 
 /* theme.scrim exists for exactly this. It is not theme.bg.muted at an alpha:
@@ -63,16 +76,29 @@
 /* Animating to and from display:none needs both of these: `allow-discrete`
    lets `display` and `overlay` flip at the right end of the transition
    instead of immediately, and @starting-style supplies the from-state for an
-   element that was not in the DOM's rendering tree a moment ago. Without the
+   element that was not in the rendering tree a moment ago. Without the
    `overlay` transition the dialog drops out of the top layer the instant it
-   starts closing and the exit animation plays behind the page. */
+   starts closing and the exit animation plays behind the page.
+
+   A rise as well as a fade: opacity alone reads as the surface being revealed
+   rather than arriving, which is the wrong impression for something that
+   takes the screen over. `overlay` is transitioned only on the dialog — the
+   backdrop is not a top-layer element of its own and has no such property. */
 @media (prefers-reduced-motion: no-preference) {
-  .rata-dialog,
+  .rata-dialog {
+    transition:
+      opacity var(--rata-motion-modal-duration) var(--rata-motion-easing-exit),
+      translate var(--rata-motion-modal-duration) var(--rata-motion-easing-exit),
+      display var(--rata-motion-modal-duration) allow-discrete,
+      overlay var(--rata-motion-modal-duration) allow-discrete;
+    opacity: 0;
+    translate: 0 var(--rata-space-2);
+  }
+
   .rata-dialog::backdrop {
     transition:
       opacity var(--rata-motion-modal-duration) var(--rata-motion-easing-exit),
-      display var(--rata-motion-modal-duration) allow-discrete,
-      overlay var(--rata-motion-modal-duration) allow-discrete;
+      display var(--rata-motion-modal-duration) allow-discrete;
     opacity: 0;
   }
 
@@ -82,10 +108,20 @@
     transition-timing-function: var(--rata-motion-easing-enter);
   }
 
+  .rata-dialog[open] {
+    translate: 0 var(--rata-space-0);
+  }
+
+  /* Last, so it wins over the [open] rules above for the one frame it
+     applies to. */
   @starting-style {
     .rata-dialog[open],
     .rata-dialog[open]::backdrop {
       opacity: 0;
+    }
+
+    .rata-dialog[open] {
+      translate: 0 var(--rata-space-2);
     }
   }
 }
@@ -120,8 +156,15 @@
 }
 
 /* Scrolls on its own rather than letting the whole dialog grow past the
-   viewport, so the title stays put and the actions stay reachable. */
+   viewport, so the title stays put and the actions stay reachable.
+
+   `min-block-size: 0` is what makes that actually happen. A flex item's
+   default `min-height: auto` refuses to shrink below its content, so
+   `overflow-y` never engaged: tall content pushed the footer out of the
+   dialog's own max-block-size instead of scrolling inside it. */
 .rata-dialog-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
   margin-block-start: var(--rata-space-stack-md);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -151,6 +194,18 @@
   background: transparent;
   color: currentColor;
   cursor: pointer;
+  /* Centred on the title's FIRST line rather than on the whole heading block,
+     which is what `align-items: flex-start` gives it, and pulled back by the
+     difference so a 28px control does not make the header taller than the
+     24px line beside it. Derived from the heading's own metrics, so it stays
+     right if the type scale moves — `1em` would be wrong here because the
+     button inherits the body size, not the heading's. */
+  margin-block-start: calc(
+    (
+        var(--rata-type-heading-size) * var(--rata-type-heading-line-height) -
+          var(--rata-size-control-sm)
+      ) / 2
+  );
 }
 
 .rata-dialog-dismiss:focus-visible {

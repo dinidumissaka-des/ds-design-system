@@ -704,7 +704,7 @@ Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidde
 - `--rata-motion-easing-standard`: `cubic-bezier(0.24, 1, 0.4, 1)`
 - `--rata-motion-interactive-duration`: `175ms`
 - `--rata-motion-interactive-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-modal-duration`: `975ms`
+- `--rata-motion-modal-duration`: `545ms`
 - `--rata-motion-modal-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
 - `--rata-motion-overlay-duration`: `410ms`
 - `--rata-motion-overlay-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`

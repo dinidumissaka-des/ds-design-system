@@ -27,6 +27,7 @@ A native `<dialog>` opened with `showModal()`. The browser supplies a real focus
 - **Escape is always prevented, then reported** — The platform would close the dialog itself, leaving `open` still saying it is showing. Preventing the default and reporting through `onClose` keeps React the single source of truth for whether it is open.
 - **Initial focus is a ref, because React's `autoFocus` cannot work here** — React implements `autoFocus` by calling `.focus()` during commit rather than by emitting the HTML attribute, so `showModal()` — which runs afterwards, in an effect — never sees an `[autofocus]` element and applies its own default, undoing it. `initialFocus` is applied after `showModal()` and therefore wins.
 - **The scroll lock counts holders rather than saving and restoring** — Save-and-restore is wrong the moment two dialogs overlap: the second captures `hidden` as the value to put back, so closing it leaves the page locked with nothing open. A counter has no stale state — the property is set while anything holds the lock and removed when the last holder lets go.
+- **motion.modal.duration was repointed from the slow band to medium-max** — It resolved to motion.duration.slow, which this system's own motion contract documents as “Continuous animation” — the spinner band. A dialog fading in over 975ms reads as broken rather than deliberate. The medium band is the entrance/exit band, and the expander's own config names “(dialog, drawer)” for it, so a modal belongs at its slowest step: 545ms, still distinct from the 410ms an overlay gets. Only this component used the role, so nothing else moved.
 
 ## Props
 
@@ -363,8 +364,9 @@ A modal surface that takes over the screen.
 | description color | `theme.fg.secondary` |
 | gap between title, body, and footer | `space.stack.md` |
 | gap between title and description | `space.stack.2xs` |
-| enter transition | `motion.modal.duration with motion.easing.enter` |
+| enter transition | `motion.modal.duration with motion.easing.enter, fading and rising` |
 | exit transition | `motion.modal.duration with motion.easing.exit` |
+| enter/exit rise distance | `space.2` |
 
 ### backdrop
 
@@ -381,10 +383,10 @@ Three widths, derived from the control scale rather than stated: a dialog is mea
 
 | Property | Token |
 |---|---|
-| sm max-inline-size | `size.control.lg multiplied by 10` |
-| md max-inline-size | `size.control.lg multiplied by 14` |
-| lg max-inline-size | `size.control.lg multiplied by 20` |
-| inline margin from the viewport | `space.padding.lg` |
+| sm max-inline-size | `size.control.lg multiplied by 10, or the viewport less its inset — whichever is smaller` |
+| md max-inline-size | `size.control.lg multiplied by 14, or the viewport less its inset — whichever is smaller` |
+| lg max-inline-size | `size.control.lg multiplied by 20, or the viewport less its inset — whichever is smaller` |
+| inline and block inset from the viewport | `space.padding.lg` |
 
 ### footer
 
@@ -407,3 +409,4 @@ The close control. Same construction as Notice's: currentColor on a transparent 
 | border-radius | `radius.inner` |
 | hover / press | `compose the .rata-state-layer class` |
 | focus ring | `theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible` |
+| block alignment | `centred on the title's first line, from type.heading.size and type.heading.line-height` |

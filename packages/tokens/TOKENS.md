@@ -682,7 +682,7 @@ Duration and easing. The duration bands are generated from the theme's {fast, me
 | `interactive.easing` | `var(--rata-motion-interactive-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for interactive transitions. |
 | `overlay.duration` | `var(--rata-motion-overlay-duration)` | `410ms` | Menus, popovers, tooltips. |
 | `overlay.easing` | `var(--rata-motion-overlay-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for overlay transitions. |
-| `modal.duration` | `var(--rata-motion-modal-duration)` | `975ms` | Dialogs, sheets, drawers. |
+| `modal.duration` | `var(--rata-motion-modal-duration)` | `545ms` | Dialogs, sheets, drawers. |
 | `modal.easing` | `var(--rata-motion-modal-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for modal transitions. |
 
 **Use for**
@@ -1213,8 +1213,9 @@ A modal surface that takes over the screen.
 | description color | `theme.fg.secondary` |
 | gap between title, body, and footer | `space.stack.md` |
 | gap between title and description | `space.stack.2xs` |
-| enter transition | `motion.modal.duration` with `motion.easing.enter` |
+| enter transition | `motion.modal.duration` with `motion.easing.enter`, fading and rising |
 | exit transition | `motion.modal.duration` with `motion.easing.exit` |
+| enter/exit rise distance | `space.2` |
 
 ### dialog-backdrop
 
@@ -1231,10 +1232,10 @@ Three widths, derived from the control scale rather than stated: a dialog is mea
 
 | Property | Token |
 |---|---|
-| sm max-inline-size | `size.control.lg` multiplied by 10 |
-| md max-inline-size | `size.control.lg` multiplied by 14 |
-| lg max-inline-size | `size.control.lg` multiplied by 20 |
-| inline margin from the viewport | `space.padding.lg` |
+| sm max-inline-size | `size.control.lg` multiplied by 10, or the viewport less its inset — whichever is smaller |
+| md max-inline-size | `size.control.lg` multiplied by 14, or the viewport less its inset — whichever is smaller |
+| lg max-inline-size | `size.control.lg` multiplied by 20, or the viewport less its inset — whichever is smaller |
+| inline and block inset from the viewport | `space.padding.lg` |
 
 ### dialog-footer
 
@@ -1257,6 +1258,7 @@ The close control. Same construction as Notice's: currentColor on a transparent 
 | border-radius | `radius.inner` |
 | hover / press | compose the .rata-state-layer class |
 | focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| block alignment | centred on the title's first line, from `type.heading.size` and `type.heading.line-height` |
 
 ### icon
 
