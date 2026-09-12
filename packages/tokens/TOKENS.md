@@ -1329,7 +1329,7 @@ A rule between groups of actions.
 
 ### notice
 
-The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are for the leading bar and nothing else.
+The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are not used here at all — they are non-text indicator tones, and text on them is a recorded contrast gap.
 
 | Property | Token |
 |---|---|
@@ -1342,7 +1342,6 @@ The shared frame. Only the tinted subtle backgrounds carry text; the saturated r
 | line-height | `type.body.line-height` |
 | title font-weight | `type.label.weight` |
 | icon size | `size.icon.text` |
-| leading bar inline-size | `border.2` |
 
 ### notice-info
 
@@ -1352,7 +1351,6 @@ Tinted neutral rather than with the brand accent: there is no info role, and acc
 |---|---|
 | background | `theme.bg.muted` |
 | color | `theme.fg.primary` |
-| leading bar | `theme.fg.muted` |
 
 ### notice-success
 
@@ -1362,7 +1360,6 @@ The role's subtle tint with its own foreground.
 |---|---|
 | background | `theme.success-role.subtle` |
 | color | `theme.success-role.fg` |
-| leading bar | `theme.success-role.bg` |
 
 ### notice-warning
 
@@ -1372,7 +1369,6 @@ The role's subtle tint with its own foreground.
 |---|---|
 | background | `theme.warning-role.subtle` |
 | color | `theme.warning-role.fg` |
-| leading bar | `theme.warning-role.bg` |
 
 ### notice-danger
 
@@ -1382,7 +1378,6 @@ The role's subtle tint with its own foreground.
 |---|---|
 | background | `theme.danger-role.subtle` |
 | color | `theme.danger-role.fg` |
-| leading bar | `theme.danger-role.bg` |
 
 ### notice-dismiss
 

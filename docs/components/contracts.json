@@ -2047,7 +2047,7 @@
           "A paragraph. A notice is read in passing; anything longer belongs on the page itself."
         ],
         "conflicts": [],
-        "a11y": "The text carries the meaning. Both the icon and the leading bar are aria-hidden, so this is the only thing announced besides `title`."
+        "a11y": "The text carries the meaning. The icon beside it is aria-hidden, so this is the only thing announced besides `title`."
       },
       {
         "name": "variant",
@@ -2234,7 +2234,7 @@
     },
     "tokens": {
       "base": {
-        "summary": "The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are for the leading bar and nothing else.",
+        "summary": "The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are not used here at all — they are non-text indicator tones, and text on them is a recorded contrast gap.",
         "tokens": {
           "padding": "space.padding.sm space.padding.md",
           "border-radius": "radius.element",
@@ -2244,40 +2244,35 @@
           "font-size": "type.body.size",
           "line-height": "type.body.line-height",
           "title font-weight": "type.label.weight",
-          "icon size": "size.icon.text",
-          "leading bar inline-size": "border.2"
+          "icon size": "size.icon.text"
         }
       },
       "info": {
         "summary": "Tinted neutral rather than with the brand accent: there is no info role, and accent-role.subtle moves with the brand, so in a red or orange theme an info notice would read as an error.",
         "tokens": {
           "background": "theme.bg.muted",
-          "color": "theme.fg.primary",
-          "leading bar": "theme.fg.muted"
+          "color": "theme.fg.primary"
         }
       },
       "success": {
         "summary": "The role's subtle tint with its own foreground.",
         "tokens": {
           "background": "theme.success-role.subtle",
-          "color": "theme.success-role.fg",
-          "leading bar": "theme.success-role.bg"
+          "color": "theme.success-role.fg"
         }
       },
       "warning": {
         "summary": "The role's subtle tint with its own foreground.",
         "tokens": {
           "background": "theme.warning-role.subtle",
-          "color": "theme.warning-role.fg",
-          "leading bar": "theme.warning-role.bg"
+          "color": "theme.warning-role.fg"
         }
       },
       "danger": {
         "summary": "The role's subtle tint with its own foreground.",
         "tokens": {
           "background": "theme.danger-role.subtle",
-          "color": "theme.danger-role.fg",
-          "leading bar": "theme.danger-role.bg"
+          "color": "theme.danger-role.fg"
         }
       },
       "dismiss": {

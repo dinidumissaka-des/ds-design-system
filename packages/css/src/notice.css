@@ -2,26 +2,23 @@
    error message.
 
    Every variant pairs a tinted background with a foreground that reads on it.
-   The saturated role fills appear only as the leading bar, which is the one
-   non-text use those tones are for — text on them is a recorded contrast gap.
+   The saturated role fills are not used at all here: they are non-text
+   indicator tones, and text on them is a recorded contrast gap. The tint and
+   the icon carry the severity between them.
 
    The variant sets `color` on the notice itself and everything inside takes
    currentColor, so the icon and the close control can never drift away from
    the message they belong to. */
 .rata-notice {
-  /* Declared here rather than inherited from a consumer's reset: this element
-     sets padding and a border on the same box, and without border-box the
-     leading bar adds its own width to the frame. Five components in this
-     system shipped that bug because the playground's global reset hid it. */
+  /* Kept after the leading bar was removed: padding plus any width a caller
+     sets still needs border-box, and five components in this system shipped
+     that bug because the playground's global reset hid it. */
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
   gap: var(--rata-space-gap-sm);
   padding: var(--rata-space-padding-sm) var(--rata-space-padding-md);
   border-radius: var(--rata-radius-element);
-  /* The leading bar is a real border, not an extra element — it carries no
-     meaning, so there is nothing for assistive technology to skip. */
-  border-inline-start: var(--rata-border-2) solid transparent;
   font-family: var(--rata-font-family-sans);
   font-size: var(--rata-type-body-size);
   line-height: var(--rata-type-body-line-height);
@@ -35,25 +32,21 @@
 .rata-notice--info {
   background: var(--rata-theme-bg-muted);
   color: var(--rata-theme-fg-primary);
-  border-inline-start-color: var(--rata-theme-fg-muted);
 }
 
 .rata-notice--success {
   background: var(--rata-theme-success-role-subtle);
   color: var(--rata-theme-success-role-fg);
-  border-inline-start-color: var(--rata-theme-success-role-bg);
 }
 
 .rata-notice--warning {
   background: var(--rata-theme-warning-role-subtle);
   color: var(--rata-theme-warning-role-fg);
-  border-inline-start-color: var(--rata-theme-warning-role-bg);
 }
 
 .rata-notice--danger {
   background: var(--rata-theme-danger-role-subtle);
   color: var(--rata-theme-danger-role-fg);
-  border-inline-start-color: var(--rata-theme-danger-role-bg);
 }
 
 /* Sized from the icon scale's text step, so it tracks the message's font-size
