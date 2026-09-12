@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// ds CLI — v0: resolves components from the local monorepo registry.
+// rata CLI — v0: resolves components from the local monorepo registry.
 // Later: fetch manifests over HTTPS from the hosted registry, with license
-// auth (`ds login`) gating pro-tier components.
+// auth (`rata login`) gating pro-tier components.
 //
 // `list` / `add` are the copy-paste distribution tool for consumer repos.
 // `props` / `tokens` / `pages` are the agent-lookup surface described in
@@ -18,20 +18,24 @@ import {
   getPages,
   getExamples,
 } from "../lib/index.mjs";
+import { getComponentContract } from "../lib/contract.mjs";
 
 function usage() {
-  console.log(`ds — design system CLI
+  console.log(`rata — design system CLI
 
 Distribution:
-  ds list                 List every component and its status
-  ds add <name...>        Copy component source (and dependencies) into ./ds
-    --dir <path>          Target directory (default: ./ds)
+  rata list                 List every component and its status
+  rata add <name...>        Copy component source (and dependencies) into ./rata
+    --dir <path>          Target directory (default: ./rata)
 
 Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
-  ds props <name>          Props for one component, read straight from source
+  rata props <name>          Props for one component, read straight from source
     --example              Include a real usage snippet from apps/
-  ds tokens [filter]        Flat --ds-* token reference; filter is a substring match
-  ds pages                  Page shells already in this repo (find the precedent)
+  rata contract <name>        Full contract: what each prop is FOR, when not to
+                            reach for it, and the use cases — the written half,
+                            cross-checked against source every build
+  rata tokens [filter]        Flat --rata-* token reference; filter is a substring match
+  rata pages                  Page shells already in this repo (find the precedent)
 
   --dense                  Compact, token-efficient output for any of the above
 `);
@@ -39,7 +43,13 @@ Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
 
 async function list(dense) {
   const registry = await loadRegistry();
-  for (const entry of sortedEntries(registry)) {
+  const entries = sortedEntries(registry);
+  // Measured, not a constant: `toggle-button-group` is 19 characters and a
+  // fixed 16-wide column shunts every row after it out of alignment. The
+  // registry decides how wide the name column is.
+  const nameWidth = Math.max(...entries.map((entry) => entry.name.length), 16);
+
+  for (const entry of entries) {
     if (dense) {
       console.log(entry.name);
       continue;
@@ -47,7 +57,7 @@ async function list(dense) {
     const css = entry.status?.css?.state ?? "tbd";
     const react = entry.status?.react?.state ?? "tbd";
     console.log(
-      `${entry.name.padEnd(16)} ${entry.family.padEnd(12)} css:${css.padEnd(12)} react:${react.padEnd(12)} [${entry.tier ?? "free"}]`
+      `${entry.name.padEnd(nameWidth)} ${entry.family.padEnd(12)} css:${css.padEnd(12)} react:${react.padEnd(12)} [${entry.tier ?? "free"}]`
     );
   }
 }
@@ -88,12 +98,12 @@ async function add(names, targetDir) {
     }
   }
   console.log(`\nAdded ${resolved.size} component(s), ${copied} file(s).`);
-  console.log(`Remember to import @ds/tokens/css (or copy tokens.css) once at your app root.`);
+  console.log(`Remember to import @rata/tokens/css (or copy tokens.css) once at your app root.`);
 }
 
 async function props(name, { dense, example }) {
   if (!name) {
-    console.error("Usage: ds props <name> [--example]");
+    console.error("Usage: rata props <name> [--example]");
     process.exitCode = 1;
     return;
   }
@@ -133,10 +143,71 @@ async function props(name, { dense, example }) {
   }
 }
 
+async function contractCmd(name, dense) {
+  if (!name) {
+    console.error("Usage: rata contract <name>");
+    process.exitCode = 1;
+    return;
+  }
+  const registry = await loadRegistry();
+  const contract = await getComponentContract(name, registry);
+
+  if (contract.issues?.length && !contract.title) {
+    console.error(contract.issues.join("\n"));
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log(`${contract.title} (${contract.name}) — ${contract.mode}`);
+  if (contract.mode === "spec") {
+    console.log("Not implemented yet. This is the approved intent, not something you can import.");
+  }
+  if (contract.mode === "css-only") {
+    console.log("CSS-only — a class composed onto other components, with no props API.");
+  }
+  console.log("");
+
+  if (contract.behavior && !dense) {
+    if (contract.behavior.summary) console.log(`Behavior: ${contract.behavior.summary}\n`);
+    for (const d of contract.behavior.decisions ?? []) console.log(`  · ${d.decision}\n      ${d.why}`);
+    if (contract.behavior.decisions?.length) console.log("");
+  }
+
+  for (const prop of contract.props) {
+    const def = prop.default !== undefined && prop.default !== null ? ` = ${prop.default}` : "";
+    console.log(`  ${prop.name}${prop.optional ? "?" : ""}: ${prop.type}${def}`);
+    if (prop.summary) console.log(`    ${prop.summary}`);
+    if (dense) continue;
+    for (const item of prop.use) console.log(`    use    ${item}`);
+    for (const item of prop.dont) console.log(`    don't  ${item}`);
+    if (prop.conflicts.length) console.log(`    with   conflicts with ${prop.conflicts.join(", ")}`);
+    if (prop.a11y) console.log(`    a11y   ${prop.a11y}`);
+    console.log("");
+  }
+
+  if (contract.usage.length && !dense) {
+    console.log("Use cases:");
+    for (const item of contract.usage) {
+      console.log(`  ${item.case}${item.when ? ` — ${item.when}` : ""}`);
+      if (item.example) console.log(item.example.split("\n").map((l) => `      ${l}`).join("\n"));
+      if (item.notes) console.log(`      note: ${item.notes}`);
+      console.log("");
+    }
+  }
+
+  if (contract.issues.length) {
+    console.error("Contract disagrees with source:");
+    for (const issue of contract.issues) console.error(`  ✗ ${issue}`);
+    process.exitCode = 1;
+  }
+
+  console.log(`Full page: docs/components/${contract.name}.md`);
+}
+
 async function tokensCmd(filter, dense) {
   const tokens = await getTokens();
   if (!tokens) {
-    console.error("Tokens haven't been built yet — run `npm run build -w @ds/tokens` (or `npm run build`) first.");
+    console.error("Tokens haven't been built yet — run `npm run build -w @rata/tokens` (or `npm run build`) first.");
     process.exitCode = 1;
     return;
   }
@@ -144,7 +215,7 @@ async function tokensCmd(filter, dense) {
     .filter((key) => !filter || key.includes(filter))
     .sort();
   for (const key of keys) {
-    console.log(dense ? `--ds-${key}` : `--ds-${key}: ${tokens[key]}`);
+    console.log(dense ? `--rata-${key}` : `--rata-${key}: ${tokens[key]}`);
   }
 }
 
@@ -164,7 +235,7 @@ const dense = rest.includes("--dense");
 const example = rest.includes("--example");
 const dirFlag = rest.indexOf("--dir");
 const targetDir =
-  dirFlag !== -1 ? path.resolve(rest[dirFlag + 1] ?? "ds") : path.resolve("ds");
+  dirFlag !== -1 ? path.resolve(rest[dirFlag + 1] ?? "rata") : path.resolve("rata");
 const positional = rest.filter(
   (arg, i) => !arg.startsWith("--") && (dirFlag === -1 || i !== dirFlag + 1)
 );
@@ -172,6 +243,7 @@ const positional = rest.filter(
 if (command === "list") await list(dense);
 else if (command === "add" && positional.length) await add(positional, targetDir);
 else if (command === "props") await props(positional[0], { dense, example });
+else if (command === "contract") await contractCmd(positional[0], dense);
 else if (command === "tokens") await tokensCmd(positional[0], dense);
 else if (command === "pages") await pagesCmd(dense);
 else usage();

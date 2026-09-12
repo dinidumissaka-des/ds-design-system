@@ -48,7 +48,7 @@ Each candidate is checked for:
 | `missing-required-token` | error | The prompt's documented answer was not used |
 | `focus-removed` | error | `outline: none` with no replacement |
 | `missing-focus-ring` | error | A focusable control that never draws one |
-| `hand-rolled-hover` | warn | A background swap where `.ds-state-layer` belongs |
+| `hand-rolled-hover` | warn | A background swap where `.rata-state-layer` belongs |
 | `native-disabled-styling` | warn | `:disabled`, which drops the control from the tab order |
 
 `forbidden-pairing` is an error when the combination fails in every theme (white on
@@ -81,5 +81,5 @@ node internal/vibe-tests/run.mjs check packages/css/src/button.css
 For a deliberate exception, state it in the file so the reason travels with the code:
 
 ```css
-/* ds-allow: hardcoded-motion — the spin cycle has no motion token */
+/* rata-allow: hardcoded-motion — the spin cycle has no motion token */
 ```
