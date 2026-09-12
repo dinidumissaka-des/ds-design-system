@@ -9,7 +9,8 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @rata/tokens && npm run build:themes && npm run build -w @rata/css && npm run build -w @rata/primitives && npm run build -w @rata/react && npm run build -w @rata/icons && npm run docs:components && npm run ui:sync",
+    "registry:check": "node scripts/check-registry-install.mjs",
+    "build": "npm run build -w @rata/tokens && npm run build:themes && npm run build -w @rata/css && npm run build -w @rata/primitives && npm run build -w @rata/react && npm run build -w @rata/icons && npm run registry:check && npm run docs:components && npm run ui:sync",
     "docs:check": "npm run docs:check -w @rata/tokens && node scripts/generate-component-docs.mjs --check",
     "docs:components": "node scripts/generate-component-docs.mjs",
     "vibe": "node internal/vibe-tests/run.mjs fixtures",

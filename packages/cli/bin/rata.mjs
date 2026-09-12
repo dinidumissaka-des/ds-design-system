@@ -7,7 +7,7 @@
 // `props` / `tokens` / `pages` are the agent-lookup surface described in
 // agent-workflow.md's Layer 1 — the thing that makes checking cheaper than
 // guessing, aliased at the repo root as `npm run ui -- <subcommand>`.
-import { mkdir, readFile, copyFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, copyFile } from "node:fs/promises";
 import path from "node:path";
 import {
   repoRoot,
@@ -19,6 +19,7 @@ import {
   getExamples,
 } from "../lib/index.mjs";
 import { getComponentContract } from "../lib/contract.mjs";
+import { planInstall, applyRewrites } from "../lib/install-plan.mjs";
 
 function usage() {
   console.log(`rata — design system CLI
@@ -65,39 +66,51 @@ async function list(dense) {
 async function add(names, targetDir) {
   const registry = await loadRegistry();
 
-  // Resolve transitive dependencies, depth-first, deduped.
-  const queue = [...names];
-  const resolved = new Set();
-  while (queue.length) {
-    const name = queue.shift();
-    if (resolved.has(name)) continue;
-    const entry = registry[name];
-    if (!entry) {
-      console.error(`Unknown component: ${name}`);
-      process.exitCode = 1;
-      return;
-    }
-    resolved.add(name);
-    queue.push(...(entry.dependencies ?? []));
+  const plan = await planInstall(names, registry);
+  if (plan.error) {
+    console.error(plan.error);
+    process.exitCode = 1;
+    return;
+  }
+  // A problem here means the manifest is wrong, not the copy: some file the
+  // source imports is not in the install at all. Writing the files anyway
+  // would leave the consumer with code that cannot compile and no clue why.
+  if (plan.problems.length) {
+    console.error("Cannot install — the registry is inconsistent:\n");
+    for (const problem of plan.problems) console.error(`  ${problem}`);
+    process.exitCode = 1;
+    return;
   }
 
   let copied = 0;
-  for (const name of resolved) {
-    const entry = registry[name];
-    if (!entry.files?.length) {
-      console.warn(`- ${name}: no files yet (status: ${entry.status?.react?.state ?? "tbd"}), skipped`);
-      continue;
-    }
-    for (const file of entry.files) {
-      const from = path.join(repoRoot, file.source);
-      const to = path.join(targetDir, file.target);
-      await mkdir(path.dirname(to), { recursive: true });
-      await copyFile(from, to);
-      console.log(`+ ${path.relative(process.cwd(), to)}`);
-      copied++;
+  let rewritten = 0;
+  for (const name of plan.resolved) {
+    if (!registry[name].files?.length) {
+      console.warn(
+        `- ${name}: no files yet (status: ${registry[name].status?.react?.state ?? "tbd"}), skipped`
+      );
     }
   }
-  console.log(`\nAdded ${resolved.size} component(s), ${copied} file(s).`);
+  for (const file of plan.files) {
+    const to = path.join(targetDir, file.target);
+    await mkdir(path.dirname(to), { recursive: true });
+    if (file.rewrites.length) {
+      // The install layout is not the source layout, so sibling imports have
+      // to be repointed at where each file actually lands.
+      await writeFile(to, applyRewrites(file.source, file.rewrites));
+      rewritten += file.rewrites.length;
+    } else if (typeof file.source === "string" && /\.tsx?$/.test(file.target)) {
+      await writeFile(to, file.source);
+    } else {
+      await copyFile(path.join(repoRoot, file.source), to);
+    }
+    console.log(`+ ${path.relative(process.cwd(), to)}`);
+    copied++;
+  }
+  console.log(`\nAdded ${plan.resolved.size} component(s), ${copied} file(s).`);
+  if (rewritten) {
+    console.log(`Repointed ${rewritten} relative import(s) at the install layout.`);
+  }
   console.log(`Remember to import @rata/tokens/css (or copy tokens.css) once at your app root.`);
 }
 

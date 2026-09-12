@@ -33,6 +33,10 @@
     {
       "source": "packages/react/src/cx.ts",
       "target": "lib/cx.ts"
+    },
+    {
+      "source": "packages/react/src/toggle-button-group-context.ts",
+      "target": "lib/toggle-button-group-context.ts"
     }
   ],
   "tier": "free",
