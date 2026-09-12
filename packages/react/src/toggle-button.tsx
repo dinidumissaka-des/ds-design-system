@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useState } from "react";
 import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from "react";
-import { getToggleButtonProps } from "@ds/primitives";
+import { getToggleButtonProps } from "@rata/primitives";
 import { cx } from "./cx.js";
 import { useToggleButtonGroup } from "./toggle-button-group-context.js";
 import { Spinner } from "./spinner.js";
@@ -110,11 +110,11 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
           ) => void
         }
         className={cx(
-          "ds-toggle-button",
-          "ds-state-layer",
-          `ds-toggle-button--${variant}`,
-          `ds-toggle-button--${appliedSize}`,
-          iconOnly && "ds-toggle-button--icon-only",
+          "rata-toggle-button",
+          "rata-state-layer",
+          `rata-toggle-button--${variant}`,
+          `rata-toggle-button--${appliedSize}`,
+          iconOnly && "rata-toggle-button--icon-only",
           className
         )}
       >

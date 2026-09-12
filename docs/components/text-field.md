@@ -6,7 +6,7 @@
 Single-line text input with label, helper text, and validation states.
 
 ```tsx
-import { InputTextfield } from "@ds/react";
+import { InputTextfield } from "@rata/react";
 ```
 
 | | |
@@ -15,13 +15,13 @@ import { InputTextfield } from "@ds/react";
 | Family | inputs |
 | Tier | free |
 | Status (css / react / figma) | latest / latest / future |
-| Depends on | — |
+| Depends on | `visually-hidden` |
 
 ## Behavior
 
 Label/description/message association, validation semantics, and the disabled contract — independent of React and of any styling. The caller owns the `id`; the description and message ids are derived from it, so association cannot be hand-wired wrong.
 
-Headless contract: `getTextFieldProps` in `packages/primitives/src/text-field.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getTextFieldProps` in `packages/primitives/src/text-field.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **`readOnly` is the disabled mechanism, not the native `disabled` attribute** — Consistent with the system-wide rule that disabled controls stay focusable and screen-reader discoverable. A button blocks activation in its click guard; an input has no activation to guard, so `readOnly` is the analogue. Consequence to know: a readOnly field still submits its value, where a disabled one does not.
 - **One four-state `status` enum rather than separate booleans** — `idle | validating | valid | invalid` maps one-to-one onto the four ring mappings in the token recipe, and drives `aria-invalid` and `aria-busy`. Separate `invalid`/`validating` booleans would make contradictory combinations expressible.
@@ -294,6 +294,20 @@ A server-side check is running against what the user typed.
 
 `validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`.
 
+### A passing async check, confirmed
+
+The one situation `valid` is for: a check ran, it passed, and saying so tells the user something they could not otherwise know.
+
+```tsx
+<TextField
+  label="Workspace URL"
+  status="valid"
+  message="acme.example.com is available"
+/>
+```
+
+`valid` earns its place only where the confirmation carries information. A green ring on every correctly-filled field teaches people to ignore the ring, so it is worth nothing on the field where a check actually passed. Note this state sets no aria-invalid and no aria-busy — the ring and the message are the whole of it, which is why the message is not optional here either: a ring alone would be colour-only information.
+
 ### Unavailable but readable
 
 The field depends on an answer the user has not given yet.
@@ -355,4 +369,4 @@ A single-line input with a label, helper text, and validation states.
 | hover inner band | `theme.bg.muted at border.2, drawn as an inset shadow so the fill recedes 2px while the border stays border.1 and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate` |
 | focus border-color | `theme.fg.primary — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched` |
 | focus outline | `focus.ring-width solid theme.fg.primary, offset space.0 — deliberately NOT theme.focus-ring, the only such departure in the library. It gives 16.75:1 against the field's fill where theme.focus-ring gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field` |
-| hidden label geometry | `border.1 box with space.0 padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled` |
+| hidden label geometry | `compose the .rata-visually-hidden class — the utility, not a rule of this component's own. It clips rather than using display:none, which would take the accessible name off with the pixels` |

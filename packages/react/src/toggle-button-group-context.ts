@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ToggleButtonGroupItemProps } from "@ds/primitives";
+import type { ToggleButtonGroupItemProps } from "@rata/primitives";
 import type { ToggleButtonSize } from "./toggle-button.js";
 
 /**

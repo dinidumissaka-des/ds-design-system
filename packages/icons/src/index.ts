@@ -1,5 +1,5 @@
 /**
- * @ds/icons — the curated Lucide set, plus the `Icon` wrapper that sizes it.
+ * @rata/icons — the curated Lucide set, plus the `Icon` wrapper that sizes it.
  *
  * WHY A CURATED SET rather than re-exporting all 6,236 of Lucide's exports:
  * a design system's icon list is a design decision. Two icons that mean the

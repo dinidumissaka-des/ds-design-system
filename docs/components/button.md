@@ -6,7 +6,7 @@
 Primary, secondary, tertiary, and destructive actions in three sizes, with loading and icon-only modes.
 
 ```tsx
-import { Button } from "@ds/react";
+import { Button } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { Button } from "@ds/react";
 
 Activation guarding and disabled/busy semantics, independent of React and of any styling.
 
-Headless contract: `getButtonProps` in `packages/primitives/src/button.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getButtonProps` in `packages/primitives/src/button.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **`aria-disabled` instead of the native `disabled` attribute** — A natively disabled button leaves the tab order and stops being announced, so users navigating by keyboard or screen reader cannot discover that the action exists. Activation is blocked in the click guard instead.
 - **`loading` implies inert** — One flag covers both halves of what callers actually want — show progress, and refuse a second click — so the two cannot be set inconsistently.
@@ -202,7 +202,7 @@ The single highest-priority action in a view.
 | transition-duration | `motion.interactive.duration` |
 | transition-timing-function | `motion.interactive.easing` |
 | outline (focus-visible) | `focus.ring-width solid theme.focus-ring, offset focus.ring-offset` |
-| hover/press | `compose the .ds-state-layer class — do not swap the background` |
+| hover/press | `compose the .rata-state-layer class — do not swap the background` |
 
 ### secondary
 
@@ -215,7 +215,7 @@ A supporting action shown next to a primary one. Its label is accent-toned rathe
 | border-color | `theme.secondary-role.border` |
 | height | `size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes` |
 | border-radius | `radius.element` |
-| hover/press | `compose the .ds-state-layer class` |
+| hover/press | `compose the .rata-state-layer class` |
 
 ### destructive
 
@@ -227,4 +227,4 @@ An action that deletes or revokes something.
 | color | `theme.fg.on-accent` |
 | height | `size.control.md — and size.control.sm / .lg at the other sizes; this is the only thing `size` changes` |
 | border-radius | `radius.element` |
-| hover/press | `compose the .ds-state-layer class` |
+| hover/press | `compose the .rata-state-layer class` |

@@ -1,7 +1,7 @@
 import { forwardRef, useId } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
-import { getTextFieldProps } from "@ds/primitives";
-import type { TextFieldStatus } from "@ds/primitives";
+import { getTextFieldProps } from "@rata/primitives";
+import type { TextFieldStatus } from "@rata/primitives";
 import { cx } from "./cx.js";
 
 export type { TextFieldStatus };
@@ -90,16 +90,16 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   });
 
   return (
-    <div className={cx("ds-text-field", className)} {...field.root}>
+    <div className={cx("rata-text-field", className)} {...field.root}>
       <label
-        className={cx("ds-text-field-label", labelHidden && "ds-text-field-label--hidden")}
+        className={cx("rata-text-field-label", labelHidden && "rata-visually-hidden")}
         {...field.label}
       >
         {label}
         {/* aria-hidden: aria-required already announces the requirement, and
             reading the marker too would say it twice. */}
         {required && (
-          <span className="ds-text-field-required" aria-hidden="true">
+          <span className="rata-text-field-required" aria-hidden="true">
             {" *"}
           </span>
         )}
@@ -109,11 +109,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         ref={ref}
         {...rest}
         {...field.input}
-        className={cx("ds-text-field-input", `ds-text-field-input--${size}`)}
+        className={cx("rata-text-field-input", `rata-text-field-input--${size}`)}
       />
 
       {description !== undefined && description !== "" && (
-        <p className="ds-text-field-description" {...field.description}>
+        <p className="rata-text-field-description" {...field.description}>
           {description}
         </p>
       )}
@@ -123,7 +123,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           message left behind after a reset stops being announced without
           disappearing from the page. */}
       {message !== undefined && message !== "" && (
-        <p className="ds-text-field-message" {...field.message}>
+        <p className="rata-text-field-message" {...field.message}>
           {message}
         </p>
       )}

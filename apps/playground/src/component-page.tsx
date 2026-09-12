@@ -9,10 +9,26 @@
 // The live demos are the one thing this file adds, and they are deliberately
 // the only hand-written part: a contract can say `loading` shows a spinner and
 // refuses clicks, but only a real button can be clicked.
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Spinner, TextField, ToggleButton, ToggleButtonGroup } from "@ds/react";
+import {
+  Avatar,
+  Badge,
+  Breadcrumbs,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  Spinner,
+  Switch,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@rata/react";
 import type {
+  AvatarSize,
+  BadgeVariant,
   ButtonGroupOrientation,
   TextFieldSize,
   TextFieldStatus,
@@ -21,8 +37,8 @@ import type {
   ButtonVariant,
   ToggleButtonSize,
   ToggleButtonVariant,
-} from "@ds/react";
-import type { IconSize } from "@ds/icons";
+} from "@rata/react";
+import type { IconSize } from "@rata/icons";
 import {
   Icon,
   Settings,
@@ -36,7 +52,7 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-} from "@ds/icons";
+} from "@rata/icons";
 import { COMPONENT_TABS, componentPage, hrefFor } from "./routing.js";
 import type { ComponentTab, Page } from "./routing.js";
 import contractsJson from "../../../docs/components/contracts.json";
@@ -87,13 +103,32 @@ export const contracts = (contractsJson as unknown as Contract[])
 
 export const contractsByName = new Map(contracts.map((c) => [c.name, c]));
 
+/**
+ * Artifact status, rendered with the system's own Badge.
+ *
+ * This used to be a hand-rolled `.pg-status` span with its own five colour
+ * rules — a badge in everything but name, written before there was a Badge to
+ * use. Two things came of replacing it: the duplicate stylesheet went, and the
+ * `na`/`deprecated` pills stopped pairing fg.muted with bg.muted, which
+ * measures 4.19:1 in dark and is documented as AA-large only. Badge's neutral
+ * variant uses fg.secondary, at 5.75:1.
+ */
+const STATUS_VARIANT: Record<string, BadgeVariant> = {
+  latest: "success",
+  "in-progress": "warning",
+  future: "neutral",
+  na: "neutral",
+  deprecated: "neutral",
+  tbd: "neutral",
+};
+
 export function StatusPill({ artifact }: { artifact?: { state: string; version?: string } }) {
   const state = artifact?.state ?? "tbd";
   return (
-    <span className={`pg-status pg-status--${state}`}>
+    <Badge variant={STATUS_VARIANT[state] ?? "neutral"}>
       {state}
       {artifact?.version ? ` · ${artifact.version}` : ""}
-    </span>
+    </Badge>
   );
 }
 
@@ -108,7 +143,7 @@ const DEMOS: Record<string, () => ReactNode> = {
   "state-layer": () => (
     <div className="pg-row">
       <span className="pg-row-label">hover / press</span>
-      <button type="button" className="pg-demo-surface ds-state-layer">
+      <button type="button" className="pg-demo-surface rata-state-layer">
         Composed onto any element
       </button>
     </div>
@@ -214,11 +249,134 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         defaultValue="acme"
       />
     ),
+    "A passing async check, confirmed": () => (
+      <TextField
+        className="pg-field"
+        label="Workspace URL"
+        status="valid"
+        message="acme.example.com is available"
+        defaultValue="acme"
+      />
+    ),
     "Unavailable but readable": () => (
       <TextField className="pg-field" label="State" disabled description="Choose a country first." />
     ),
     "Purpose already clear on screen": () => (
       <TextField className="pg-field" label="Search" labelHidden placeholder="Search…" />
+    ),
+  },
+
+  checkbox: {
+    "A single consent box": () => <ConsentExample />,
+    "A parent summarising a list": () => <SelectAllExample />,
+    "Unavailable but still readable": () => (
+      <Checkbox label="Ship to billing address" checked disabled />
+    ),
+  },
+
+  "radio-group": {
+    "Choosing one of a few": () => <BillingExample />,
+    "An option that cannot be chosen yet": () => (
+      <RadioGroup label="Shipping" defaultValue="standard">
+        <Radio value="standard" label="Standard" />
+        <Radio
+          value="overnight"
+          label="Overnight"
+          disabled
+          description="Not available to this address"
+        />
+      </RadioGroup>
+    ),
+  },
+
+  radio: {
+    "Inside its group": () => <RadioStage />,
+  },
+
+  badge: {
+    "A count beside a label": () => (
+      <>
+        <Button>
+          Messages
+          <Badge variant="accent">3</Badge>
+        </Button>
+        <Button variant="secondary">
+          Notifications
+          <Badge variant="warning">12</Badge>
+        </Button>
+        <Button variant="tertiary">
+          Updates
+          <Badge>New</Badge>
+        </Button>
+      </>
+    ),
+    "A status in a table row": () => (
+      <>
+        <Badge variant="success" dot>
+          Passing
+        </Badge>
+        <Badge variant="warning" dot>
+          Degraded
+        </Badge>
+        <Badge variant="danger" dot>
+          Failed
+        </Badge>
+      </>
+    ),
+  },
+
+  avatar: {
+    "A photo with its name beside it": () => (
+      <span className="pg-example-inline">
+        <Avatar name="Ada Hartley" decorative />
+        <span>Ada Hartley</span>
+      </span>
+    ),
+    "Standing alone": () => <Avatar name="Ada Hartley" />,
+    "No image at all": () => (
+      <>
+        <Avatar name="Ada Hartley" size="sm" />
+        <Avatar name="Bo Nakamura" size="md" />
+        <Avatar name="Chidi Okonkwo" size="lg" />
+      </>
+    ),
+  },
+
+  breadcrumbs: {
+    "A page three levels deep": () => (
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "#" },
+          { label: "Reports", href: "#" },
+          { label: "Q3 revenue" },
+        ]}
+      />
+    ),
+    "One landmark among several": () => (
+      <Breadcrumbs
+        label="Breadcrumb"
+        items={[
+          { label: "Settings", href: "#" },
+          { label: "Billing" },
+        ]}
+      />
+    ),
+  },
+
+  switch: {
+    "A setting that applies immediately": () => <NotificationsExample />,
+    "A setting whose consequence needs saying": () => (
+      <Switch
+        label="Public profile"
+        description="Anyone with the link can see your activity."
+        defaultChecked
+      />
+    ),
+    "A row in a settings table": () => (
+      <span className="pg-example-inline">
+        <Switch label="Email digest" labelHidden defaultChecked />
+        <Switch label="Push digest" labelHidden />
+      </span>
     ),
   },
 
@@ -340,6 +498,105 @@ function FilterGroupExample() {
       <ToggleButton value="closed">Closed</ToggleButton>
     </ToggleButtonGroup>
   );
+}
+
+/** Controlled, because the consent value is the thing the page cares about. */
+function ConsentExample() {
+  const [subscribed, setSubscribed] = useState(true);
+  return (
+    <Checkbox
+      label="Email me product updates"
+      description="Roughly monthly. Unsubscribe from any of them."
+      checked={subscribed}
+      onCheckedChange={setSubscribed}
+    />
+  );
+}
+
+/**
+ * The indeterminate case, live — a frozen screenshot of it would show the bar
+ * but not the thing the state is *for*: that activating a partly-filled parent
+ * resolves to checked rather than toggling from its own value.
+ */
+function SelectAllExample() {
+  const [rows, setRows] = useState([true, false, false]);
+  const all = rows.every(Boolean);
+  const some = rows.some(Boolean);
+  return (
+    <span className="pg-example-stack">
+      <Checkbox
+        label="Select all"
+        checked={all}
+        indeterminate={some && !all}
+        onCheckedChange={(next) => setRows(rows.map(() => next))}
+      />
+      {rows.map((on, i) => (
+        <Checkbox
+          key={i}
+          label={`Row ${i + 1}`}
+          checked={on}
+          onCheckedChange={(next) => setRows(rows.map((v, j) => (j === i ? next : v)))}
+        />
+      ))}
+    </span>
+  );
+}
+
+/** Arrow keys move and select here, which is the pattern a frozen demo hides. */
+function BillingExample() {
+  const [period, setPeriod] = useState<string | null>("annual");
+  return (
+    <RadioGroup label="Billing period" value={period} onValueChange={setPeriod}>
+      <Radio value="monthly" label="Monthly" />
+      <Radio value="annual" label="Annual" description="Two months free" />
+    </RadioGroup>
+  );
+}
+
+/**
+ * A single Radio, staged.
+ *
+ * A Radio rendered alone throws — alone it has no name to share and no siblings
+ * to be exclusive with — so a group is always present. Kept to one option, so
+ * the specimen is unmistakably the item rather than the question; the question
+ * has its own specimen on the RadioGroup page.
+ *
+ * The group is named by an off-screen element rather than by `label`, which
+ * would render a heading above a single row. Not left unnamed: the contract
+ * calls an unnamed radiogroup a mistake, and pointing labelledBy at an id that
+ * does not exist would be worse than either.
+ *
+ * A component rather than an inline render, because it needs useId and useState
+ * — a hook written straight into an EXAMPLES or INTERACTIVE entry would join
+ * the hook list of whatever is rendering it and change its length on navigation.
+ */
+function RadioStage({
+  label = "Annual",
+  description = "Two months free",
+  disabled,
+}: {
+  label?: ReactNode;
+  description?: ReactNode;
+  disabled?: boolean;
+}) {
+  const [on, setOn] = useState<string | null>("annual");
+  const labelId = `${useId()}-group`;
+  return (
+    <>
+      <span id={labelId} className="pg-visually-hidden">
+        Billing period
+      </span>
+      <RadioGroup labelledBy={labelId} value={on} onValueChange={setOn}>
+        <Radio value="annual" label={label} description={description} disabled={disabled} />
+      </RadioGroup>
+    </>
+  );
+}
+
+/** Controlled, because a setting is state the rest of the page reads. */
+function NotificationsExample() {
+  const [on, setOn] = useState(true);
+  return <Switch label="Notifications" checked={on} onCheckedChange={setOn} />;
 }
 
 /** A case the contract includes to say "don't" — its notes open with exactly that. */
@@ -470,6 +727,97 @@ interface Interactive {
 const iconLabel = (state: DemoState) => String(state.children || "Settings");
 
 const INTERACTIVE: Record<string, Interactive> = {
+  radio: {
+    // `value` is not a control: it is the option's identity, not a setting to
+    // try. Everything a Radio itself decides is here.
+    controls: ["label", "description", "disabled"],
+    render: (state) => (
+      <RadioStage
+        label={String(state.label || "Annual")}
+        description={state.description ? String(state.description) : undefined}
+        disabled={Boolean(state.disabled)}
+      />
+    ),
+  },
+  switch: {
+    controls: ["label", "labelHidden", "description", "checked", "disabled"],
+    render: (state, set) => (
+      <Switch
+        label={String(state.label || "Notifications")}
+        labelHidden={Boolean(state.labelHidden)}
+        description={state.description ? String(state.description) : undefined}
+        checked={Boolean(state.checked)}
+        disabled={Boolean(state.disabled)}
+        onCheckedChange={(next) => set({ checked: next })}
+      />
+    ),
+  },
+  checkbox: {
+    controls: ["label", "description", "checked", "indeterminate", "disabled", "required"],
+    render: (state, set) => (
+      <Checkbox
+        label={String(state.label || "Email me product updates")}
+        description={state.description ? String(state.description) : undefined}
+        checked={Boolean(state.checked)}
+        indeterminate={Boolean(state.indeterminate)}
+        disabled={Boolean(state.disabled)}
+        required={Boolean(state.required)}
+        onCheckedChange={(next) => set({ checked: next, indeterminate: false })}
+      />
+    ),
+  },
+
+  "radio-group": {
+    controls: ["label", "orientation", "disabled", "required"],
+    render: (state) => (
+      <RadioGroup
+        label={String(state.label || "Billing period")}
+        orientation={state.orientation as ButtonGroupOrientation}
+        disabled={Boolean(state.disabled)}
+        required={Boolean(state.required)}
+        defaultValue="annual"
+      >
+        <Radio value="monthly" label="Monthly" />
+        <Radio value="annual" label="Annual" />
+      </RadioGroup>
+    ),
+  },
+
+  badge: {
+    controls: ["variant", "dot"],
+    slot: { label: "Children", initial: "Passing" },
+    render: (state) => (
+      <Badge variant={state.variant as BadgeVariant} dot={Boolean(state.dot)}>
+        {String(state.children)}
+      </Badge>
+    ),
+  },
+
+  avatar: {
+    controls: ["name", "size", "decorative"],
+    render: (state) => (
+      <Avatar
+        name={String(state.name || "Ada Hartley")}
+        size={state.size as AvatarSize}
+        decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  breadcrumbs: {
+    controls: ["label", "separator"],
+    render: (state) => (
+      <Breadcrumbs
+        label={String(state.label || "Breadcrumb")}
+        separator={state.separator ? String(state.separator) : undefined}
+        items={[
+          { label: "Home", href: "#" },
+          { label: "Reports", href: "#" },
+          { label: "Q3 revenue" },
+        ]}
+      />
+    ),
+  },
   "text-field": {
     controls: ["label", "labelHidden", "size", "status", "description", "message", "disabled", "required"],
     render: (state) => (
@@ -644,49 +992,67 @@ function activeConflicts(contract: Contract, state: DemoState): string[] {
  * already shows in its first column — a second visible copy beside the input
  * would be the same word twice, so this labels without repeating.
  */
+/**
+ * A prop's control, built from the system's own components.
+ *
+ * These were a native `<select>`, `<input type="checkbox">` and text input —
+ * written before the system had a Checkbox, a RadioGroup or a TextField to use.
+ * A documentation tool that styles its own form controls by hand is the least
+ * convincing possible argument for the components it is documenting.
+ *
+ * Unions become a vertical RadioGroup rather than a segmented
+ * ToggleButtonGroup: the control column is 220px, and five attached options
+ * (badge's variant, icon's size) need closer to 370px. A group that overflows
+ * its column is worse than one that is tall.
+ *
+ * The group takes `labelledBy` rather than `label`, pointing at the prop name
+ * already rendered in the row's first column — which is precisely what that
+ * prop is documented for, and it avoids naming the same thing twice on screen.
+ */
 function Control({
   prop,
   value,
   onChange,
+  labelledBy,
 }: {
   prop: ContractProp;
   value: string | boolean;
   onChange: (value: string | boolean) => void;
+  labelledBy: string;
 }) {
   if (prop.values?.length) {
     return (
-      <select
-        className="pg-control-input"
-        aria-label={prop.name}
+      <RadioGroup
+        labelledBy={labelledBy}
         value={String(value)}
-        onChange={(event) => onChange(event.target.value)}
+        onValueChange={onChange}
       >
         {prop.values.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
+          <Radio key={option} value={option} label={option} />
         ))}
-      </select>
+      </RadioGroup>
     );
   }
 
   if (prop.type === "boolean") {
+    // The prop name is already the row's first column, so the label is hidden
+    // rather than repeated — the same reason the union control above takes
+    // `labelledBy`. Hidden, not dropped: the box keeps its accessible name.
     return (
-      <input
-        type="checkbox"
-        className="pg-control-checkbox"
-        aria-label={prop.name}
+      <Checkbox
+        label={prop.name}
+        labelHidden
         checked={Boolean(value)}
-        onChange={(event) => onChange(event.target.checked)}
+        onCheckedChange={(next) => onChange(next)}
       />
     );
   }
 
   return (
-    <input
-      type="text"
-      className="pg-control-input"
-      aria-label={prop.name}
+    <TextField
+      label={prop.name}
+      labelHidden
+      size="sm"
       placeholder="value"
       value={String(value)}
       onChange={(event) => onChange(event.target.value)}
@@ -719,7 +1085,7 @@ function PropsStage({
       <div className="pg-stage-canvas">
         <button
           type="button"
-          className="pg-stage-code-toggle ds-state-layer ds-state-layer--flush"
+          className="pg-stage-code-toggle rata-state-layer rata-state-layer--flush"
           aria-expanded={showCode}
           aria-label={showCode ? "Hide JSX" : "Show JSX"}
           onClick={() => setShowCode((open) => !open)}
@@ -773,11 +1139,14 @@ function PropRow({
   onChange?: (value: string | boolean) => void;
 }) {
   const guidance = prop.use.length + prop.dont.length + prop.conflicts.length > 0;
+  // The name in column one is what names the control in column three, so the
+  // control never repeats it.
+  const nameId = `${useId()}-name`;
 
   return (
     <div className="pg-prop-row">
       <div className="pg-prop-name">
-        <code>{prop.name}</code>
+        <code id={nameId}>{prop.name}</code>
       </div>
 
       <div className="pg-prop-detail">
@@ -833,7 +1202,9 @@ function PropRow({
       </div>
 
       <div className="pg-prop-control">
-        {onChange && <Control prop={prop} value={value ?? ""} onChange={onChange} />}
+        {onChange && (
+          <Control prop={prop} value={value ?? ""} onChange={onChange} labelledBy={nameId} />
+        )}
       </div>
     </div>
   );
@@ -1183,10 +1554,10 @@ function PropertiesTab({ contract }: { contract: Contract }) {
                   </p>
                 </div>
                 <div className="pg-prop-control">
-                  <input
-                    type="text"
-                    className="pg-control-input"
-                    aria-label="children"
+                  <TextField
+                    label="children"
+                    labelHidden
+                    size="sm"
                     placeholder="value"
                     value={String(state.children ?? "")}
                     onChange={(event) => set("children")(event.target.value)}
@@ -1250,7 +1621,7 @@ function AccessibilityTab({ contract }: { contract: Contract }) {
             <p className="pg-note">
               Headless contract: <code>{contract.behavior.primitive}</code> in{" "}
               <code>packages/primitives/src/{contract.name}.ts</code> — importable from{" "}
-              <code>@ds/primitives</code> without the React wrapper or any CSS.
+              <code>@rata/primitives</code> without the React wrapper or any CSS.
             </p>
           )}
           {decisions.map((decision) => (

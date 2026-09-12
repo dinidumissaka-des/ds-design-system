@@ -2,7 +2,7 @@
 
 ```
 packages/
-  tokens/       @ds/tokens — the token engine and the default theme.
+  tokens/       @rata/tokens — the token engine and the default theme.
     src/theme/      the generator: hct + colour maths, the four expanders,
                     defineTheme (composition/extends), resolveTokens (the shared
                     resolve pipeline). Ported from Astryx — see THEME-ENGINE.md.
@@ -19,26 +19,26 @@ packages/
                     token; TOKENS.md is generated from these
     → dist/css/tokens.css, dist/index.{js,d.ts}, dist/tailwind/preset.cjs,
       dist/usage.json, TOKENS.md
-  themes/       @ds/theme-* — brand themes: a few seeds + `extends: baseTheme`,
+  themes/       @rata/theme-* — brand themes: a few seeds + `extends: baseTheme`,
                 built by tokens/build-theme.mjs into scoped override CSS that
                 only emits if the brand holds every contrast promise
-  css/          @ds/css — framework-free component CSS, built from packages/css/src/*.css
+  css/          @rata/css — framework-free component CSS, built from packages/css/src/*.css
                 → dist/index.css (concatenated) + dist/components/*.css (per-file)
-  primitives/   @ds/primitives — headless behavior, pure functions, no DOM/React
-  react/        @ds/react — styled components: primitives behavior + css appearance
+  primitives/   @rata/primitives — headless behavior, pure functions, no DOM/React
+  react/        @rata/react — styled components: primitives behavior + css appearance
                 (source of truth the CLI copies from)
-  cli/          @ds/cli — the `ds` binary
-    bin/ds.mjs    entry point: list/add (distribution) + props/contract/tokens/pages
+  cli/          @rata/cli — the `rata` binary
+    bin/rata.mjs    entry point: list/add (distribution) + props/contract/tokens/pages
                   (agent lookup)
-    lib/index.mjs shared logic behind both — reads registry + @ds/react src + tokens dist
+    lib/index.mjs shared logic behind both — reads registry + @rata/react src + tokens dist
     lib/contract.mjs  merges each component's WRITTEN contract (its manifest) with its
-                  DERIVED props (parsed from @ds/react source) and fails on any
+                  DERIVED props (parsed from @rata/react source) and fails on any
                   disagreement between them
 
 registry/
   schema.json           the manifest shape (status states, files, tier, contract blocks)
   components/*.json     one manifest per component — name, family, status matrix,
-                         dependencies, which files `ds add` copies where, its token
+                         dependencies, which files `rata add` copies where, its token
                          recipe, and its written contract (behavior/props/usage)
 
 docs/
@@ -53,7 +53,7 @@ apps/
 scripts/
   generate-ui-context.mjs   writes .claude/ui-context.md from packages/cli/lib
   generate-component-docs.mjs  writes docs/components/*.md from the manifests +
-                         @ds/react source; --check fails instead of writing
+                         @rata/react source; --check fails instead of writing
 
 .claude/
   ui-context.md         GENERATED — regenerate with `npm run ui:sync`
@@ -76,7 +76,7 @@ signed off on, or wired to tokens that get renamed once someone actually
 looks at them.
 
 0. `registry/components/<name>.json` — the manifest, even before any code
-   exists (status: `future`). This is what `ds list` and the playground's
+   exists (status: `future`). This is what `rata list` and the playground's
    status table read. No approval needed — it's a declaration of intent,
    not a decision.
 
@@ -101,8 +101,8 @@ looks at them.
    `type.*`/`motion.*` in `semantics/*.json`, per
    [TOKENS.md](packages/tokens/TOKENS.md)). Go
    state by state, not as one batch — each mapping is its own decision
-   (e.g. "disabled → `--ds-state-disabled-opacity`", "primary background →
-   `--ds-theme-accent-role-bg`", "control padding → `--ds-space-control-padding-inline-md`"),
+   (e.g. "disabled → `--rata-state-disabled-opacity`", "primary background →
+   `--rata-theme-accent-role-bg`", "control padding → `--rata-space-control-padding-inline-md`"),
    and each gets approved on its own before moving to the next. Prefer an
    existing token — check `npm run ui -- tokens` first; only add a new one
    if nothing already fits, and that addition is its own approval too — run
@@ -119,13 +119,13 @@ looks at them.
    token mappings approved in step 2 — add it to `ORDER` in
    `packages/css/build.mjs` if load order matters relative to another
    component — and `packages/react/src/<name>.tsx`, wiring the approved
-   primitive's behavior to the approved CSS's `ds-<name>` classes. Its
+   primitive's behavior to the approved CSS's `rata-<name>` classes. Its
    exported `<Name>Props` interface and the function's default-parameter
    values are exactly what `npm run ui -- props <name>` reads — no separate
    doc to keep in sync.
 
 4. Flip the manifest's `status.css`/`status.react` to `latest`, add `files`
-   entries so `ds add <name>` can copy it, run `npm run build` (regenerates
+   entries so `rata add <name>` can copy it, run `npm run build` (regenerates
    `docs/components/` and `.claude/ui-context.md` as its last steps).
 
    Flipping the status is what switches the contract from *spec* to
@@ -211,7 +211,7 @@ reaching for the skill's `scripts/validate-tokens.mjs` directly:
 - **The built CSS has no `var()` chain.** `build.mjs` resolves every
   reference to a literal before writing `dist/css/tokens.css`, so both
   primitive and semantic custom properties land as raw values (e.g.
-  `--ds-theme-accent-role-bg: #2563EB`) — retheming happens by rebuilding
+  `--rata-theme-accent-role-bg: #2563EB`) — retheming happens by rebuilding
   from the seeds, not by cascade override. This is a deliberate divergence
   from Astryx, which keeps `var()` chains so a scoped override re-themes a
   subtree at runtime: a `var()` chain has no measurable contrast ratio, and
@@ -258,7 +258,7 @@ reference nothing / are theme-invariant" if copied in as-is).
 for the non-color scales were built out too: `accent-role`/`danger-role`'s
 `bg-hover`/`bg-active` were removed (dead — modeled a color-swap hover
 mechanism this system doesn't use), and `secondary-role`/`tertiary-role`
-were added so `.ds-button--secondary`/`--tertiary` have their own semantic
+were added so `.rata-button--secondary`/`--tertiary` have their own semantic
 sets instead of reaching into generic `bg`/`border`/`fg` tokens.
 
 **Primitives are now exactly seven scales** — `color`, `space`, `radius`,
@@ -299,8 +299,8 @@ deeper under a new shared `"theme"` JSON key instead of `"color"`; a new
 `elevation.sm`/`md`/`lg` primitive steps — extended with `sm-strong`/
 `md-strong`/`lg-strong` for dark, since a light-mode shadow opacity barely
 reads against a dark canvas) sits alongside it. Emitted CSS custom
-properties moved with it: `--ds-color-bg-canvas` → `--ds-theme-bg-canvas`,
-etc.; primitive color (`--ds-color-accent-600`, `--ds-color-neutral-*`, …)
+properties moved with it: `--rata-color-bg-canvas` → `--rata-theme-bg-canvas`,
+etc.; primitive color (`--rata-color-accent-600`, `--rata-color-neutral-*`, …)
 is untouched — only the semantic layer's prefix changed, not the raw
 palette. `packages/css/src/button.css` and `apps/playground/src/{app.tsx,
 playground.css}` (the only two consumers at the time) were updated to
@@ -337,7 +337,7 @@ hover feedback is opacity-only (see the removed `bg-hover`/`bg-active`
 tokens, above), and a ring-based hover cue would reintroduce exactly the
 second feedback channel that decision removed. `packages/tokens/TOKENS.md`
 documents the full fetch method and every new token's four description
-fields; nothing outside `@ds/tokens` needed touching beyond the same two
+fields; nothing outside `@rata/tokens` needed touching beyond the same two
 consumers as before, since the semantic *names* (`theme.elevation.raised`/
 `overlay`/`modal`) didn't change — only what they resolve to.
 
@@ -350,8 +350,8 @@ with it. `semantics/typography.json` was rebuilt alongside it to mirror
 eBay's own named composites (`title`/`body`/`signal`) where this repo has a
 real matching use. This was the one primitive/semantics update with real
 fallout in unretouched component CSS: `packages/css/src/button.css` kept
-referencing `--ds-font-weight-medium`, `--ds-font-line-height-tight`, and
-`--ds-font-size-base/lg` — names that stopped existing under the rebuilt
+referencing `--rata-font-weight-medium`, `--rata-font-line-height-tight`, and
+`--rata-font-size-base/lg` — names that stopped existing under the rebuilt
 scale — until the `usage.json` merge below added a checker that caught it;
 `button.css` now goes through `type.control.*` like everything else.
 

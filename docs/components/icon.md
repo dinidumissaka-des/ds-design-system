@@ -6,7 +6,7 @@
 A Lucide glyph sized from the size.icon.* scale, inheriting its colour from the text around it.
 
 ```tsx
-import { Icon } from "@ds/icons";
+import { Icon } from "@rata/icons";
 ```
 
 | | |
@@ -38,7 +38,7 @@ Source doc: The Lucide component to render, passed as a value so the set stays t
 
 **Use when**
 
-- Any icon imported from `@ds/icons` — the curated set — or from `lucide-react` directly when the set is missing one.
+- Any icon imported from `@rata/icons` — the curated set — or from `lucide-react` directly when the set is missing one.
 - Passing the component itself (`icon={Trash2}`), which is what keeps the icon set tree-shakeable: a string name would force every icon into the bundle.
 
 **Don't use for**

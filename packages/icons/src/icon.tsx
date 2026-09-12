@@ -21,7 +21,7 @@ export interface IconProps {
  *
  * 1. **Size comes from a token, and follows the text by default.** Lucide
  *    writes width/height as SVG presentation attributes and defaults to 24px.
- *    CSS properties beat presentation attributes, so `.ds-icon--<size>`
+ *    CSS properties beat presentation attributes, so `.rata-icon--<size>`
  *    overrides it — which keeps the number in `size.icon.*` instead of being
  *    read out of a CSS variable in JS. The default step is `size.icon.text`
  *    (1.15em), so an icon tracks whatever font-size it lands in; the fixed px
@@ -36,7 +36,7 @@ export interface IconProps {
  */
 export function Icon({ icon, size = "text", label, className }: IconProps) {
   return createElement(icon, {
-    className: ["ds-icon", `ds-icon--${size}`, className].filter(Boolean).join(" "),
+    className: ["rata-icon", `rata-icon--${size}`, className].filter(Boolean).join(" "),
     // Lucide's own `size` prop would write a fresh width/height attribute and
     // fight the class. The class is the single source, so this is pinned off.
     role: label ? "img" : undefined,

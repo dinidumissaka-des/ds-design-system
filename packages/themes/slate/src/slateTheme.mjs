@@ -10,8 +10,8 @@
  * chosen for a dark canvas instead of a lightened version of the light one.
  */
 
-import { defineTheme } from "@ds/tokens/theme";
-import { baseTheme } from "@ds/tokens/theme/base";
+import { defineTheme } from "@rata/tokens/theme";
+import { baseTheme } from "@rata/tokens/theme/base";
 
 export const slateTheme = defineTheme({
   name: "slate",

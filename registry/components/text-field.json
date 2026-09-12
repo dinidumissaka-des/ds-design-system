@@ -16,7 +16,9 @@
       "state": "future"
     }
   },
-  "dependencies": [],
+  "dependencies": [
+    "visually-hidden"
+  ],
   "files": [
     {
       "source": "packages/css/src/text-field.css",
@@ -192,6 +194,12 @@
       "notes": "`validating` is for a check on this field's own value — not for a pending form submit, which belongs to the submit button's `loading`."
     },
     {
+      "case": "A passing async check, confirmed",
+      "when": "The one situation `valid` is for: a check ran, it passed, and saying so tells the user something they could not otherwise know.",
+      "example": "<TextField\n  label=\"Workspace URL\"\n  status=\"valid\"\n  message=\"acme.example.com is available\"\n/>",
+      "notes": "`valid` earns its place only where the confirmation carries information. A green ring on every correctly-filled field teaches people to ignore the ring, so it is worth nothing on the field where a check actually passed. Note this state sets no aria-invalid and no aria-busy — the ring and the message are the whole of it, which is why the message is not optional here either: a ring alone would be colour-only information."
+    },
+    {
       "case": "Unavailable but readable",
       "when": "The field depends on an answer the user has not given yet.",
       "example": "<TextField\n  label=\"State\"\n  disabled\n  description=\"Choose a country first.\"\n/>",
@@ -231,7 +239,7 @@
         "hover inner band": "theme.bg.muted at border.2, drawn as an inset shadow so the fill recedes 2px while the border stays border.1 and the outer edge does not move. Idle only — the validation rings occupy the same 2px and box-shadow does not accumulate",
         "focus border-color": "theme.fg.primary — the same tone as the outline, so the two read as one stroke instead of a dark ring around a lighter edge. The width is never touched",
         "focus outline": "focus.ring-width solid theme.fg.primary, offset space.0 — deliberately NOT theme.focus-ring, the only such departure in the library. It gives 16.75:1 against the field's fill where theme.focus-ring gives 4.31:1, so the indicator is stronger; the cost is that focus here does not match focus on a Button. An outline rather than a thicker border because outlines are out of flow: this control sets height but not width, so a wider border would widen the field",
-        "hidden label geometry": "border.1 box with space.0 padding and border, clipped — a 1px clipped box rather than display:none or a 0x0 one, because the first removes the accessible name and the second is skipped by some assistive tech. No colour or type token applies: the label is off screen, not restyled"
+        "hidden label geometry": "compose the .rata-visually-hidden class — the utility, not a rule of this component's own. It clips rather than using display:none, which would take the accessible name off with the pixels"
       }
     }
   }

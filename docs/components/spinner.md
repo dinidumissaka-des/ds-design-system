@@ -6,7 +6,7 @@
 Inline loading indicator that scales with font size.
 
 ```tsx
-import { LoadingSpinner } from "@ds/react";
+import { LoadingSpinner } from "@rata/react";
 ```
 
 | | |

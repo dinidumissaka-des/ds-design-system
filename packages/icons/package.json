@@ -1,8 +1,8 @@
 {
-  "name": "@ds/icons",
+  "name": "@rata/icons",
   "version": "0.1.0",
   "type": "module",
-  "description": "Curated Lucide icon set for the DS design system, sized from size.icon.*.",
+  "description": "Curated Lucide icon set for the Ratā design system, sized from size.icon.*.",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,13 +17,23 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "lucide-react": "^1.44.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
-    "@ds/css": "0.1.0"
+    "@rata/css": "0.1.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.0.0",
+    "jsdom": "^30.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^5.0.0"
   }
 }

@@ -22,7 +22,7 @@ npm run ui -- props <name>         # props, types, defaults — read from source
 npm run ui -- props <name> --example  # + a real usage snippet from apps/
 npm run ui -- contract <name>      # what each prop is FOR, when not to use it,
                                    #   the a11y obligation, worked use cases
-npm run ui -- tokens [filter]      # --ds-* custom properties, optionally filtered
+npm run ui -- tokens [filter]      # --rata-* custom properties, optionally filtered
 npm run ui -- pages                # existing page shells (find the precedent)
 ```
 
@@ -128,7 +128,7 @@ exists to prevent. Use a plain `<section>` and flag the gap instead.
 
 ## Token discipline
 
-Every value comes from `@ds/tokens`, exposed as `--ds-<path>` custom
+Every value comes from `@rata/tokens`, exposed as `--rata-<path>` custom
 properties (`npm run ui -- tokens` for the full list). Never a bare hex or
 pixel value in component CSS or inline styles.
 
@@ -148,8 +148,8 @@ in three other forms:
 
 The rules that matter most:
 
-- **Semantic first.** Reach for `--ds-theme-accent-role-bg` before
-  `--ds-color-accent-600` — the `-role-*` tokens are the ones that survive a
+- **Semantic first.** Reach for `--rata-theme-accent-role-bg` before
+  `--rata-color-accent-600` — the `-role-*` tokens are the ones that survive a
   theme or brand change; the numbered scale under them is raw material.
   (`theme` is the semantic layer — colors *and* elevation, since both branch
   by light/dark; `color` on its own, with no `-role-*`/`bg`/`fg` suffix, is
@@ -169,8 +169,8 @@ The rules that matter most:
   its `fg` text.** The saturated `bg` of those roles is for non-text
   indicators (status dots, bars) only, never text.
 - **Compose the state layer, don't reinvent it.** Interactive components get
-  hover/press feedback by adding the `ds-state-layer` class alongside their
-  own (see `.ds-button` in `packages/react/src/button.tsx`), not by writing
+  hover/press feedback by adding the `rata-state-layer` class alongside their
+  own (see `.rata-button` in `packages/react/src/button.tsx`), not by writing
   a new `:hover` background rule.
 - **Focus is `theme.focus-ring` with `focus.ring-width` and
   `focus.ring-offset`, on `:focus-visible`.** Never remove the ring; never
@@ -228,22 +228,22 @@ write against the same rules — see [internal/vibe-tests/README.md](internal/vi
 | Guess what a prop is *for* from its type | `npm run ui -- contract <name>` — the type compiles, the contract is correct |
 | Add a prop without documenting it in the manifest | The build fails on it — write the contract entry in the same change |
 | Restate a prop's type or default in the manifest of an implemented component | Delete it — both are parsed from source; a hand-written copy is the drift |
-| Hardcode a color or pixel value | The matching `--ds-*` token |
-| A palette token (`--ds-color-neutral-*`, `--ds-color-accent-*`, …) directly in a component | The matching `theme.*` semantic token — palette tokens are identical in both themes |
+| Hardcode a color or pixel value | The matching `--rata-*` token |
+| A palette token (`--rata-color-neutral-*`, `--rata-color-accent-*`, …) directly in a component | The matching `theme.*` semantic token — palette tokens are identical in both themes |
 | `theme.fg.on-accent` on a status fill | That role's own label token (`theme.danger-role.on`, …) — `on-accent` inverts in dark, the status fills don't |
 | Hand-writing a colour, size, radius or duration | Change the seed in `packages/tokens/src/themes/base.mjs` — the scale is generated |
 | Forking the tokens for a new brand | A theme package under `packages/themes/*` with `extends: baseTheme` |
 | `disabled` attribute on a new interactive primitive | `aria-disabled` + a click guard, like `getButtonProps` |
-| A new `:hover`/`:active` rule for feedback | Compose `.ds-state-layer` |
+| A new `:hover`/`:active` rule for feedback | Compose `.rata-state-layer` |
 | A `<div className="card">` wrapper | Plain `<section>` — there's no Card yet, don't invent one |
-| Wrap a component in a div just for spacing | A `--ds-space-*` token on the component or its parent |
+| Wrap a component in a div just for spacing | A `--rata-space-*` token on the component or its parent |
 | Add new component CSS and assume load order | Add the file to `ORDER` in `packages/css/build.mjs` |
 | Write CSS/React for a new component before its primitive and token mapping are approved | Follow the gated order above — primitives approved, then semantics approved state by state, then component |
 | Add or rename a token without a `usage.json` entry | The build fails on it — document it in the same change |
 
 ## Knowledge check
 
-Before writing code that touches `@ds/react`, you should be able to answer
+Before writing code that touches `@rata/react`, you should be able to answer
 these without looking — if you can't, run the lookup commands above first:
 
 1. What is the exact import path for `Spinner`'s CSS if a consumer isn't
@@ -266,7 +266,7 @@ these without looking — if you can't, run the lookup commands above first:
 | A prop added, renamed, or removed | Update that component's `props` block in `registry/components/<name>.json` — the build fails until you do |
 | A component contract changed | `npm run docs:components`; `npm run docs:check` verifies it's committed current (CI runs both) |
 | A registry manifest changes (`registry/components/*.json`) | Same — `npm run build` |
-| A token is added, renamed, or its value changes | `npm run build -w @ds/tokens` regenerates `TOKENS.md`; `npm run docs:check` verifies it's committed current (CI runs both) |
+| A token is added, renamed, or its value changes | `npm run build -w @rata/tokens` regenerates `TOKENS.md`; `npm run docs:check` verifies it's committed current (CI runs both) |
 | A theme seed changes | `npm run build` regenerates everything downstream; `npm run themes:check` re-verifies every brand's contrast |
 | You're not sure a token change is actually enforced | `npm run vibe` — the A/B self-test fails if the checker stops discriminating documented answers from naive ones |
 | You give the same correction twice in one session | It belongs in this file, not a chat message |

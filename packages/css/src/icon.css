@@ -9,7 +9,7 @@
    Colour is deliberately absent: Lucide strokes with `currentColor`, so a
    glyph takes the colour of the text it sits in. That is why an icon needs no
    colour token of its own, and why it cannot contradict the label beside it. */
-.ds-icon {
+.rata-icon {
   display: inline-block;
   /* A glyph beside text must not be squeezed by it. */
   flex-shrink: 0;
@@ -22,28 +22,28 @@
    text, this no longer changes with the control either. Expressed as a
    modifier like every other step rather than on the base class, so the size
    always comes from exactly one place. */
-.ds-icon--text {
-  inline-size: var(--ds-size-icon-text);
-  block-size: var(--ds-size-icon-text);
+.rata-icon--text {
+  inline-size: var(--rata-size-icon-text);
+  block-size: var(--rata-size-icon-text);
 }
 
 /* Fixed steps — a standalone glyph, where no surrounding text sets the scale. */
-.ds-icon--xs {
-  inline-size: var(--ds-size-icon-xs);
-  block-size: var(--ds-size-icon-xs);
+.rata-icon--xs {
+  inline-size: var(--rata-size-icon-xs);
+  block-size: var(--rata-size-icon-xs);
 }
 
-.ds-icon--sm {
-  inline-size: var(--ds-size-icon-sm);
-  block-size: var(--ds-size-icon-sm);
+.rata-icon--sm {
+  inline-size: var(--rata-size-icon-sm);
+  block-size: var(--rata-size-icon-sm);
 }
 
-.ds-icon--md {
-  inline-size: var(--ds-size-icon-md);
-  block-size: var(--ds-size-icon-md);
+.rata-icon--md {
+  inline-size: var(--rata-size-icon-md);
+  block-size: var(--rata-size-icon-md);
 }
 
-.ds-icon--lg {
-  inline-size: var(--ds-size-icon-lg);
-  block-size: var(--ds-size-icon-lg);
+.rata-icon--lg {
+  inline-size: var(--rata-size-icon-lg);
+  block-size: var(--rata-size-icon-lg);
 }

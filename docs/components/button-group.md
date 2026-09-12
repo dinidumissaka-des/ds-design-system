@@ -6,7 +6,7 @@
 A named set of related buttons, spaced or attached into one bar, horizontal or vertical.
 
 ```tsx
-import { ButtonGroup } from "@ds/react";
+import { ButtonGroup } from "@rata/react";
 ```
 
 | | |
@@ -21,7 +21,7 @@ import { ButtonGroup } from "@ds/react";
 
 The group's accessible name and its grouping role — the two things the buttons inside cannot own between them. No selection state and no value: a button group runs actions, it does not hold an answer.
 
-Headless contract: `getButtonGroupProps` in `packages/primitives/src/button-group.ts` — importable from `@ds/primitives` without the React wrapper or any CSS.
+Headless contract: `getButtonGroupProps` in `packages/primitives/src/button-group.ts` — importable from `@rata/primitives` without the React wrapper or any CSS.
 
 - **`role="group"` with a required accessible name, not `role="toolbar"`** — A toolbar is a single tab stop with arrow-key navigation between its controls. That is right for a dense, persistent bar of many actions and wrong for the common case here — two or three buttons in a card footer — where collapsing them into one tab stop makes them harder to reach, not easier. Groups that genuinely want toolbar semantics should say so explicitly rather than getting them by accident from a layout wrapper.
 - **Each button keeps its own tab stop** — Follows from the role decision above. It also keeps the group composable: a `Button` inside a group behaves exactly like a `Button` outside one, so nothing about focus or activation has to be re-learned.

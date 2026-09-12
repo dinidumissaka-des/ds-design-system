@@ -53,7 +53,7 @@ const asArray = (value) => (value === undefined ? [] : Array.isArray(value) ? va
 export async function getComponentContract(name, registry) {
   const entry = registry[name];
   if (!entry) {
-    return { name, issues: [`Unknown component: "${name}". Run \`ds list\` — don't guess.`] };
+    return { name, issues: [`Unknown component: "${name}". Run \`rata list\` — don't guess.`] };
   }
 
   const written = entry.props ?? {};
@@ -107,7 +107,7 @@ export async function getComponentContract(name, registry) {
       }
       if (!derivedNames.has(propName)) {
         issues.push(
-          `${name}.props.${propName} is documented but ${derivedResult.importPath ?? "@ds/react"}'s ` +
+          `${name}.props.${propName} is documented but ${derivedResult.importPath ?? "@rata/react"}'s ` +
             `${entry.title} does not declare it. Either the contract is stale or the prop was renamed.`
         );
       }
@@ -198,7 +198,7 @@ export async function getComponentContract(name, registry) {
     tier: entry.tier ?? "free",
     status: entry.status ?? {},
     dependencies: entry.dependencies ?? [],
-    importPath: derivedResult.importPath ?? "@ds/react",
+    importPath: derivedResult.importPath ?? "@rata/react",
     mode,
     note: derivedResult.note ?? null,
     extends: derivedResult.extends ?? null,

@@ -4,7 +4,7 @@
 # Component contracts
 
 One page per component, generated from that component's registry manifest
-(the written half — what each prop is for) and its `@ds/react` source (the
+(the written half — what each prop is for) and its `@rata/react` source (the
 derived half — names, types, defaults). The build fails if the two disagree.
 
 `mode` is `documented` when the component is implemented and both halves are
@@ -13,14 +13,22 @@ behind it yet, and `css-only` when there is no props API by design.
 
 | Component | Name | Family | Status (css / react) | Mode | Tier |
 |---|---|---|---|---|---|
+| [Avatar](avatar.md) | `avatar` | content | latest / latest | documented | free |
+| [Badge](badge.md) | `badge` | content | latest / latest | documented | free |
+| [Breadcrumbs](breadcrumbs.md) | `breadcrumbs` | navigation | latest / latest | documented | free |
 | [Button](button.md) | `button` | buttons | latest / latest | documented | free |
 | [Button Group](button-group.md) | `button-group` | buttons | latest / latest | documented | free |
+| [Checkbox](checkbox.md) | `checkbox` | inputs | latest / latest | documented | free |
 | [Dialog](dialog.md) | `dialog` | overlays | future / future | spec | free |
 | [Icon](icon.md) | `icon` | content | latest / latest | documented | free |
 | [Menu](menu.md) | `menu` | overlays | future / future | spec | free |
 | [Notice](notice.md) | `notice` | feedback | future / future | spec | free |
+| [Radio](radio.md) | `radio` | inputs | latest / latest | documented | free |
+| [Radio Group](radio-group.md) | `radio-group` | inputs | latest / latest | documented | free |
 | [Loading: Spinner](spinner.md) | `spinner` | loading | latest / latest | documented | free |
 | [State layer](state-layer.md) | `state-layer` | foundations | latest / na | css-only | free |
+| [Switch](switch.md) | `switch` | inputs | latest / latest | documented | free |
 | [Input: Text field](text-field.md) | `text-field` | inputs | latest / latest | documented | free |
 | [Toggle Button](toggle-button.md) | `toggle-button` | buttons | latest / latest | documented | free |
 | [Toggle Button Group](toggle-button-group.md) | `toggle-button-group` | buttons | latest / latest | documented | free |
+| [Visually hidden](visually-hidden.md) | `visually-hidden` | foundations | latest / na | css-only | free |

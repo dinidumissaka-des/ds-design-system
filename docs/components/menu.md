@@ -36,6 +36,6 @@ A transient list of actions anchored to a trigger.
 | item color | `theme.fg.primary` |
 | destructive item color | `theme.danger-role.fg` |
 | selected item background | `theme.accent-role.subtle` |
-| item hover/press | `compose the .ds-state-layer class` |
+| item hover/press | `compose the .rata-state-layer class` |
 | separator | `border.default solid theme.border.default` |
 | enter transition | `motion.overlay.duration with motion.easing.enter` |

@@ -1,8 +1,8 @@
 {
-  "name": "@ds/theme-rust",
+  "name": "@rata/theme-rust",
   "version": "0.1.0",
   "type": "module",
-  "description": "Rust accent option for the DS design system \u2014 one seed; every token is generated.",
+  "description": "Rust accent option for the Ratā design system — one seed; every token is generated.",
   "license": "MIT",
   "exports": {
     ".": "./src/rustTheme.mjs",
@@ -17,6 +17,6 @@
     "check": "node ../../tokens/build-theme.mjs src/rustTheme.mjs --check"
   },
   "peerDependencies": {
-    "@ds/tokens": "0.1.0"
+    "@rata/tokens": "0.1.0"
   }
 }

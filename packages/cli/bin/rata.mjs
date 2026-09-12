@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// ds CLI — v0: resolves components from the local monorepo registry.
+// rata CLI — v0: resolves components from the local monorepo registry.
 // Later: fetch manifests over HTTPS from the hosted registry, with license
-// auth (`ds login`) gating pro-tier components.
+// auth (`rata login`) gating pro-tier components.
 //
 // `list` / `add` are the copy-paste distribution tool for consumer repos.
 // `props` / `tokens` / `pages` are the agent-lookup surface described in
@@ -21,21 +21,21 @@ import {
 import { getComponentContract } from "../lib/contract.mjs";
 
 function usage() {
-  console.log(`ds — design system CLI
+  console.log(`rata — design system CLI
 
 Distribution:
-  ds list                 List every component and its status
-  ds add <name...>        Copy component source (and dependencies) into ./ds
-    --dir <path>          Target directory (default: ./ds)
+  rata list                 List every component and its status
+  rata add <name...>        Copy component source (and dependencies) into ./rata
+    --dir <path>          Target directory (default: ./rata)
 
 Agent lookup (also \`npm run ui -- <subcommand>\` from the repo root):
-  ds props <name>          Props for one component, read straight from source
+  rata props <name>          Props for one component, read straight from source
     --example              Include a real usage snippet from apps/
-  ds contract <name>        Full contract: what each prop is FOR, when not to
+  rata contract <name>        Full contract: what each prop is FOR, when not to
                             reach for it, and the use cases — the written half,
                             cross-checked against source every build
-  ds tokens [filter]        Flat --ds-* token reference; filter is a substring match
-  ds pages                  Page shells already in this repo (find the precedent)
+  rata tokens [filter]        Flat --rata-* token reference; filter is a substring match
+  rata pages                  Page shells already in this repo (find the precedent)
 
   --dense                  Compact, token-efficient output for any of the above
 `);
@@ -98,12 +98,12 @@ async function add(names, targetDir) {
     }
   }
   console.log(`\nAdded ${resolved.size} component(s), ${copied} file(s).`);
-  console.log(`Remember to import @ds/tokens/css (or copy tokens.css) once at your app root.`);
+  console.log(`Remember to import @rata/tokens/css (or copy tokens.css) once at your app root.`);
 }
 
 async function props(name, { dense, example }) {
   if (!name) {
-    console.error("Usage: ds props <name> [--example]");
+    console.error("Usage: rata props <name> [--example]");
     process.exitCode = 1;
     return;
   }
@@ -145,7 +145,7 @@ async function props(name, { dense, example }) {
 
 async function contractCmd(name, dense) {
   if (!name) {
-    console.error("Usage: ds contract <name>");
+    console.error("Usage: rata contract <name>");
     process.exitCode = 1;
     return;
   }
@@ -207,7 +207,7 @@ async function contractCmd(name, dense) {
 async function tokensCmd(filter, dense) {
   const tokens = await getTokens();
   if (!tokens) {
-    console.error("Tokens haven't been built yet — run `npm run build -w @ds/tokens` (or `npm run build`) first.");
+    console.error("Tokens haven't been built yet — run `npm run build -w @rata/tokens` (or `npm run build`) first.");
     process.exitCode = 1;
     return;
   }
@@ -215,7 +215,7 @@ async function tokensCmd(filter, dense) {
     .filter((key) => !filter || key.includes(filter))
     .sort();
   for (const key of keys) {
-    console.log(dense ? `--ds-${key}` : `--ds-${key}: ${tokens[key]}`);
+    console.log(dense ? `--rata-${key}` : `--rata-${key}: ${tokens[key]}`);
   }
 }
 
@@ -235,7 +235,7 @@ const dense = rest.includes("--dense");
 const example = rest.includes("--example");
 const dirFlag = rest.indexOf("--dir");
 const targetDir =
-  dirFlag !== -1 ? path.resolve(rest[dirFlag + 1] ?? "ds") : path.resolve("ds");
+  dirFlag !== -1 ? path.resolve(rest[dirFlag + 1] ?? "rata") : path.resolve("rata");
 const positional = rest.filter(
   (arg, i) => !arg.startsWith("--") && (dirFlag === -1 || i !== dirFlag + 1)
 );
