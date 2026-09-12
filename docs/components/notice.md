@@ -264,7 +264,7 @@ The handler does two things, neither of which happens on its own: `Notice` does 
 ## Real usage in this repo
 
 ```tsx
-<Notice>Your plan renews on the 1st.</Notice>
+<Notice variant="warning">This project is read-only while the migration runs.</Notice>
 ```
 
 ## Token recipe

@@ -223,9 +223,16 @@ Don't. A menu is a list of actions; a choice with a current answer is a `RadioGr
 ## Real usage in this repo
 
 ```tsx
-<Menu trigger={<Button variant="secondary">Actions</Button>}>
-        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>
-        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>
+<Menu
+        label="Row actions"
+        trigger={
+          <Button iconOnly aria-label="Row actions" variant="tertiary">
+            <Icon icon={Ellipsis} />
+          </Button>
+        }
+      >
+        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
       </Menu>
 ```
 

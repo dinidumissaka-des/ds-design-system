@@ -224,7 +224,7 @@ Reachable by arrow keys and announced as unavailable. If the reader could never 
 ## Real usage in this repo
 
 ```tsx
-<MenuItem onSelect={() => {}}>Duplicate</MenuItem>
+<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
 ```
 
 ## Token recipe

@@ -1783,7 +1783,7 @@
         }
       }
     },
-    "example": "<Menu trigger={<Button variant=\"secondary\">Actions</Button>}>\n        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>\n        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>\n      </Menu>"
+    "example": "<Menu\n        label=\"Row actions\"\n        trigger={\n          <Button iconOnly aria-label=\"Row actions\" variant=\"tertiary\">\n            <Icon icon={Ellipsis} />\n          </Button>\n        }\n      >\n        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>\n        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>\n      </Menu>"
   },
   {
     "name": "menu-item",
@@ -2005,7 +2005,7 @@
         }
       }
     },
-    "example": "<MenuItem onSelect={() => {}}>Duplicate</MenuItem>"
+    "example": "<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>"
   },
   {
     "name": "notice",
@@ -2288,7 +2288,7 @@
         }
       }
     },
-    "example": "<Notice>Your plan renews on the 1st.</Notice>"
+    "example": "<Notice variant=\"warning\">This project is read-only while the migration runs.</Notice>"
   },
   {
     "name": "radio",

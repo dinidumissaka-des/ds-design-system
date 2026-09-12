@@ -361,15 +361,16 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     "A blocking error, where dismissing would lose work": () => (
       <DialogStage title="Connection lost" dismissible={false} destructive={false} />
     ),
-    "A wider dialog, for content that needs the room": () => (
-      <DialogStage title="Edit project" size="lg" destructive={false} />
-    ),
   },
 
   "menu-item": {
-    "One row, staged inside its menu": () => <MenuItemStage />,
-    "A destructive row": () => <MenuItemStage destructive icon={Trash2}>Delete</MenuItemStage>,
-    "A row that cannot run yet": () => <MenuItemStage disabled icon={Upload}>Publish</MenuItemStage>,
+    "A row with an icon": () => <MenuItemStage />,
+    "A destructive row, kept away from the safe ones": () => (
+      <MenuItemStage destructive icon={Trash2}>Delete</MenuItemStage>
+    ),
+    "A row that exists but cannot run yet": () => (
+      <MenuItemStage disabled icon={Upload}>Publish</MenuItemStage>
+    ),
   },
 
   menu: {
@@ -394,30 +395,14 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
       </Menu>
     ),
-    "A row that exists but cannot run yet": () => (
-      <Menu trigger={<Button variant="secondary">Actions</Button>}>
-        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>
-        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>
-      </Menu>
-    ),
   },
 
   notice: {
-    "A message that is on the page at load": () => (
+    "A page-level message that is there when the page loads": () => (
       <Notice variant="warning">This project is read-only while the migration runs.</Notice>
     ),
-    "An error after an action, announced correctly": () => <SaveFailureExample />,
-    "A dismissible confirmation": () => <InvitesExample />,
-    "Every variant": () => (
-      <div className="pg-block-stack">
-        <Notice>Your plan renews on the 1st.</Notice>
-        <Notice variant="success">Invitations sent to 12 people.</Notice>
-        <Notice variant="warning" title="Card expiring">
-          Update it before the 30th to avoid an interruption.
-        </Notice>
-        <Notice variant="danger" title="Could not save">The server refused the change.</Notice>
-      </div>
-    ),
+    "An error that appears after an action, announced correctly": () => <SaveFailureExample />,
+    "A dismissible confirmation, with focus handled": () => <InvitesExample />,
   },
 
   breadcrumbs: {

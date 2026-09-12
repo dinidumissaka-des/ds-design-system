@@ -258,9 +258,16 @@ Contract: [docs/components/icon.md](../docs/components/icon.md)
 
 Real usage (from `apps/`):
 ```tsx
-<Menu trigger={<Button variant="secondary">Actions</Button>}>
-        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>
-        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>
+<Menu
+        label="Row actions"
+        trigger={
+          <Button iconOnly aria-label="Row actions" variant="tertiary">
+            <Icon icon={Ellipsis} />
+          </Button>
+        }
+      >
+        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
       </Menu>
 ```
 
@@ -285,7 +292,7 @@ Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "o
 
 Real usage (from `apps/`):
 ```tsx
-<MenuItem onSelect={() => {}}>Duplicate</MenuItem>
+<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
 ```
 
 Contract: [docs/components/menu-item.md](../docs/components/menu-item.md)
@@ -313,7 +320,7 @@ Extends: `Omit<HTMLAttributes<HTMLDivElement>, "title" | "role">`
 
 Real usage (from `apps/`):
 ```tsx
-<Notice>Your plan renews on the 1st.</Notice>
+<Notice variant="warning">This project is read-only while the migration runs.</Notice>
 ```
 
 Contract: [docs/components/notice.md](../docs/components/notice.md)
