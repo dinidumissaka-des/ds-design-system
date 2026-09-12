@@ -1368,8 +1368,8 @@
           "why": "Save-and-restore is wrong the moment two dialogs overlap: the second captures `hidden` as the value to put back, so closing it leaves the page locked with nothing open. A counter has no stale state — the property is set while anything holds the lock and removed when the last holder lets go."
         },
         {
-          "decision": "motion.modal.duration was repointed from the slow band to medium-max",
-          "why": "It resolved to motion.duration.slow, which this system's own motion contract documents as “Continuous animation” — the spinner band. A dialog fading in over 975ms reads as broken rather than deliberate. The medium band is the entrance/exit band, and the expander's own config names “(dialog, drawer)” for it, so a modal belongs at its slowest step: 545ms, still distinct from the 410ms an overlay gets. Only this component used the role, so nothing else moved."
+          "decision": "The modal motion band was wrong, and the tempo behind it was too slow",
+          "why": "`motion.modal.duration` resolved to `motion.duration.slow`, which this system's own motion contract documents as “Continuous animation” — the spinner band. That was the category error; it is `medium-max` now, the slowest step of the entrance/exit band, which is where the expander's config names “(dialog, drawer)”. Fixing the band alone still left 545ms, because the medium band itself was too slow: Astryx's 175/410/975 tempo meant a menu took 410ms to appear. The seed came down to 130/210/700, so a dialog now enters in 280ms and a menu in 210ms. The bands kept their meanings and no role had to be remapped to one it does not belong to."
         }
       ]
     },

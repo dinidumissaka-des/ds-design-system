@@ -664,25 +664,25 @@ Duration and easing. The duration bands are generated from the theme's {fast, me
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
-| `duration.fast-min` | `var(--rata-motion-duration-fast-min)` | `130ms` | Fastest step of the fast band. |
-| `duration.fast` | `var(--rata-motion-duration-fast)` | `175ms` | Micro-interactions — hover, toggle. |
-| `duration.fast-max` | `var(--rata-motion-duration-fast-max)` | `235ms` | Slowest step of the fast band. |
-| `duration.medium-min` | `var(--rata-motion-duration-medium-min)` | `310ms` | Fastest step of the medium band. |
-| `duration.medium` | `var(--rata-motion-duration-medium)` | `410ms` | Entrance/exit — menus, popovers. |
-| `duration.medium-max` | `var(--rata-motion-duration-medium-max)` | `545ms` | Slowest step of the medium band. |
-| `duration.slow-min` | `var(--rata-motion-duration-slow-min)` | `730ms` | Fastest step of the slow band. |
-| `duration.slow` | `var(--rata-motion-duration-slow)` | `975ms` | Continuous animation. |
-| `duration.slow-max` | `var(--rata-motion-duration-slow-max)` | `1300ms` | Slowest step of the slow band. |
+| `duration.fast-min` | `var(--rata-motion-duration-fast-min)` | `100ms` | Fastest step of the fast band. |
+| `duration.fast` | `var(--rata-motion-duration-fast)` | `130ms` | Micro-interactions — hover, toggle. |
+| `duration.fast-max` | `var(--rata-motion-duration-fast-max)` | `175ms` | Slowest step of the fast band. |
+| `duration.medium-min` | `var(--rata-motion-duration-medium-min)` | `160ms` | Fastest step of the medium band. |
+| `duration.medium` | `var(--rata-motion-duration-medium)` | `210ms` | Entrance/exit — menus, popovers. |
+| `duration.medium-max` | `var(--rata-motion-duration-medium-max)` | `280ms` | Slowest step of the medium band. |
+| `duration.slow-min` | `var(--rata-motion-duration-slow-min)` | `525ms` | Fastest step of the slow band. |
+| `duration.slow` | `var(--rata-motion-duration-slow)` | `700ms` | Continuous animation. |
+| `duration.slow-max` | `var(--rata-motion-duration-slow-max)` | `935ms` | Slowest step of the slow band. |
 | `duration.spin` | `var(--rata-motion-duration-spin)` | `800ms` | A full spinner rotation. |
 | `duration.spin-reduced` | `var(--rata-motion-duration-spin-reduced)` | `2000ms` | A slowed spinner rotation for prefers-reduced-motion. |
 | `easing.standard` | `var(--rata-motion-easing-standard)` | `cubic-bezier(0.24, 1, 0.4, 1)` | The default curve. |
 | `easing.enter` | `var(--rata-motion-easing-enter)` | `cubic-bezier(0, 0, 0.38, 0.9)` | Something appearing. |
 | `easing.exit` | `var(--rata-motion-easing-exit)` | `cubic-bezier(0.2, 0, 1, 0.9)` | Something leaving. |
-| `interactive.duration` | `var(--rata-motion-interactive-duration)` | `175ms` | Hover/press feedback, toggles. |
+| `interactive.duration` | `var(--rata-motion-interactive-duration)` | `130ms` | Hover/press feedback, toggles. |
 | `interactive.easing` | `var(--rata-motion-interactive-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for interactive transitions. |
-| `overlay.duration` | `var(--rata-motion-overlay-duration)` | `410ms` | Menus, popovers, tooltips. |
+| `overlay.duration` | `var(--rata-motion-overlay-duration)` | `210ms` | Menus, popovers, tooltips. |
 | `overlay.easing` | `var(--rata-motion-overlay-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for overlay transitions. |
-| `modal.duration` | `var(--rata-motion-modal-duration)` | `545ms` | Dialogs, sheets, drawers. |
+| `modal.duration` | `var(--rata-motion-modal-duration)` | `280ms` | Dialogs, sheets, drawers. |
 | `modal.easing` | `var(--rata-motion-modal-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for modal transitions. |
 
 **Use for**

@@ -688,25 +688,25 @@ Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidde
 - `--rata-font-weight-medium`: `500`
 - `--rata-font-weight-regular`: `400`
 - `--rata-font-weight-semibold`: `600`
-- `--rata-motion-duration-fast`: `175ms`
-- `--rata-motion-duration-fast-max`: `235ms`
-- `--rata-motion-duration-fast-min`: `130ms`
-- `--rata-motion-duration-medium`: `410ms`
-- `--rata-motion-duration-medium-max`: `545ms`
-- `--rata-motion-duration-medium-min`: `310ms`
-- `--rata-motion-duration-slow`: `975ms`
-- `--rata-motion-duration-slow-max`: `1300ms`
-- `--rata-motion-duration-slow-min`: `730ms`
+- `--rata-motion-duration-fast`: `130ms`
+- `--rata-motion-duration-fast-max`: `175ms`
+- `--rata-motion-duration-fast-min`: `100ms`
+- `--rata-motion-duration-medium`: `210ms`
+- `--rata-motion-duration-medium-max`: `280ms`
+- `--rata-motion-duration-medium-min`: `160ms`
+- `--rata-motion-duration-slow`: `700ms`
+- `--rata-motion-duration-slow-max`: `935ms`
+- `--rata-motion-duration-slow-min`: `525ms`
 - `--rata-motion-duration-spin`: `800ms`
 - `--rata-motion-duration-spin-reduced`: `2000ms`
 - `--rata-motion-easing-enter`: `cubic-bezier(0, 0, 0.38, 0.9)`
 - `--rata-motion-easing-exit`: `cubic-bezier(0.2, 0, 1, 0.9)`
 - `--rata-motion-easing-standard`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-interactive-duration`: `175ms`
+- `--rata-motion-interactive-duration`: `130ms`
 - `--rata-motion-interactive-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-modal-duration`: `545ms`
+- `--rata-motion-modal-duration`: `280ms`
 - `--rata-motion-modal-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-overlay-duration`: `410ms`
+- `--rata-motion-overlay-duration`: `210ms`
 - `--rata-motion-overlay-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
 - `--rata-opacity-12`: `0.12`
 - `--rata-opacity-50`: `0.5`
