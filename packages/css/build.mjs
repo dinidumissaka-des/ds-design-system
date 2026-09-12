@@ -31,6 +31,7 @@ const ORDER = [
   "notice.css",
   // After notice: both are surfaces, and the menu sits above one.
   "menu.css",
+  "dialog.css",
   // Last on purpose: a class whose job is to hide must not lose the cascade
   // to a component rule that happens to set position or padding.
   "visually-hidden.css",

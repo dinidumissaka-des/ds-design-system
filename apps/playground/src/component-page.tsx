@@ -18,6 +18,7 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Dialog,
   Menu,
   MenuItem,
   MenuSeparator,
@@ -34,6 +35,7 @@ import type {
   AvatarSize,
   BadgeVariant,
   ButtonGroupOrientation,
+  DialogSize,
   NoticeLive,
   NoticeVariant,
   TextFieldSize,
@@ -352,6 +354,18 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  dialog: {
+    "A destructive confirmation": () => (
+      <DialogStage description="Everything in it goes too." size="sm" />
+    ),
+    "A blocking error, where dismissing would lose work": () => (
+      <DialogStage title="Connection lost" dismissible={false} destructive={false} />
+    ),
+    "A wider dialog, for content that needs the room": () => (
+      <DialogStage title="Edit project" size="lg" destructive={false} />
+    ),
+  },
+
   "menu-item": {
     "One row, staged inside its menu": () => <MenuItemStage />,
     "A destructive row": () => <MenuItemStage destructive icon={Trash2}>Delete</MenuItemStage>,
@@ -642,6 +656,57 @@ function BillingExample() {
  * rather than leaving the preview empty. The same reason `RadioStage` exists
  * below, and the menu starts open so the row is the thing you see.
  */
+/**
+ * A modal is only itself when it is open, so the page stages one behind a
+ * trigger rather than rendering it flat — `showModal()` is what supplies the
+ * focus trap and the inert page, and neither is observable from a screenshot
+ * of a dialog that was never opened.
+ */
+function DialogStage({
+  title = "Delete project",
+  description,
+  size,
+  dismissible,
+  destructive = true,
+}: {
+  title?: ReactNode;
+  description?: ReactNode;
+  size?: DialogSize;
+  dismissible?: boolean;
+  destructive?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement | null>(null);
+  return (
+    <>
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Open the dialog
+      </Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={title}
+        description={description}
+        size={size}
+        dismissible={dismissible}
+        initialFocus={cancelRef}
+        footer={
+          <>
+            <Button ref={cancelRef} variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant={destructive ? "destructive" : "primary"} onClick={() => setOpen(false)}>
+              {destructive ? "Delete" : "Save"}
+            </Button>
+          </>
+        }
+      >
+        This cannot be undone.
+      </Dialog>
+    </>
+  );
+}
+
 function MenuItemStage({
   children = "Duplicate",
   destructive,
@@ -974,6 +1039,18 @@ const INTERACTIVE: Record<string, Interactive> = {
         name={String(state.name || "Ada Hartley")}
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  dialog: {
+    controls: ["title", "description", "size", "dismissible"],
+    render: (state) => (
+      <DialogStage
+        title={String(state.title || "Delete project")}
+        description={state.description ? String(state.description) : undefined}
+        size={state.size as DialogSize}
+        dismissible={state.dismissible === undefined ? true : Boolean(state.dismissible)}
       />
     ),
   },

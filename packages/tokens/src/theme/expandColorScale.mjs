@@ -264,6 +264,13 @@ export function expandColorScale(config) {
   // boundaries stay perceivable for people who opted in.
   const borderAlpha = isHigh ? 0.2 : 0.1;
 
+  // The modal scrim. Stronger in the dark scheme for a reason that is easy to
+  // miss: at the same alpha a dark scrim over an already-dark canvas barely
+  // separates the two, so the modal stops reading as raised. High contrast
+  // takes both up, on the same logic as borderAlpha above — the boundary
+  // between "in the dialog" and "not in the dialog" is structural.
+  const scrimAlpha = isHigh ? [0.7, 0.85] : [0.5, 0.7];
+
   // Emphasized borders outline form controls — a 1.4.11 boundary. High
   // contrast starts mid-scale (guaranteeing a stronger result); standard
   // starts at 70/30 and walks only as far as it must.
@@ -349,5 +356,13 @@ export function expandColorScale(config) {
       hexWithAlpha(ND[95], borderAlpha),
     ],
     "theme.border.strong": borderStrong,
+
+    // Tone 10 rather than 0: pure black is hue-less, and taking the neutral's
+    // own tone means `ink` and `pine` dim with their own neutrals instead of
+    // every brand sharing one grey. The same tone the light hairline uses.
+    "theme.scrim": [
+      hexWithAlpha(NL[10], scrimAlpha[0]),
+      hexWithAlpha(ND[10], scrimAlpha[1]),
+    ],
   };
 }

@@ -332,6 +332,37 @@ White text/icon color for use on a filled, saturated role background.
 
 **Pairs with** `theme.accent-role.bg`, `theme.danger-role.bg`
 
+### `theme.scrim`
+
+`var(--rata-theme-scrim)` · light `#151D1A80` · dark `#151D1AB3`
+
+A translucent wash over everything behind a modal, so the surface in front reads as the only thing you can act on.
+
+**Use for**
+
+- A modal dialog's `::backdrop`.
+- Any full-screen wash whose job is to make the layer above it the only interactive one.
+
+**Do not use for**
+
+- As a background for content. It is translucent, so whatever is behind shows through and no contrast promise about text on it can hold.
+- For a non-modal overlay. A menu or popover does not dim the page, because the page is still live behind it — dimming implies the rest is inert, and for a menu it is not.
+- As a hover or press wash. That is the state layer, which tints a control rather than covering the page.
+
+**Use instead**
+
+| Instead of reaching for this | Use |
+|---|---|
+| A raised surface's own background | `theme.bg.surface` |
+| Hover or press feedback on a control | `compose the .rata-state-layer class` |
+| A recessed well behind content | `theme.bg.muted` |
+
+**Pairs with** `theme.elevation.modal`
+
+```css
+.rata-dialog::backdrop { background: var(--rata-theme-scrim); }
+```
+
 ### `theme.success-role.fg`
 
 `var(--rata-theme-success-role-fg)` · light `#166534` · dark `#4ade80`
@@ -1178,9 +1209,54 @@ A modal surface that takes over the screen.
 | box-shadow | `theme.elevation.modal` |
 | title font-size | `type.heading.size` |
 | title font-weight | `type.heading.weight` |
+| title line-height | `type.heading.line-height` |
+| description color | `theme.fg.secondary` |
 | gap between title, body, and footer | `space.stack.md` |
+| gap between title and description | `space.stack.2xs` |
 | enter transition | `motion.modal.duration` with `motion.easing.enter` |
 | exit transition | `motion.modal.duration` with `motion.easing.exit` |
+
+### dialog-backdrop
+
+The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not.
+
+| Property | Token |
+|---|---|
+| background | `theme.scrim` |
+| fade | `motion.modal.duration` with `motion.easing.enter` |
+
+### dialog-size
+
+Three widths, derived from the control scale rather than stated: a dialog is measured in controls, and inventing a size.dialog.* family for three numbers would be a scale with one consumer. Flagged as a known gap if a fourth width ever appears.
+
+| Property | Token |
+|---|---|
+| sm max-inline-size | `size.control.lg` multiplied by 10 |
+| md max-inline-size | `size.control.lg` multiplied by 14 |
+| lg max-inline-size | `size.control.lg` multiplied by 20 |
+| inline margin from the viewport | `space.padding.lg` |
+
+### dialog-footer
+
+The actions, reading after the body they act on.
+
+| Property | Token |
+|---|---|
+| gap between actions | `space.gap.sm` |
+| margin above | `space.stack.md` |
+
+### dialog-dismiss
+
+The close control. Same construction as Notice's: currentColor on a transparent background, so it cannot clash with the surface it sits on.
+
+| Property | Token |
+|---|---|
+| color | currentColor — inherited from the dialog's own foreground |
+| glyph size | `size.icon.text` |
+| target inline-size / block-size | `size.control.sm` |
+| border-radius | `radius.inner` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
 
 ### icon
 

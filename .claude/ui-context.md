@@ -24,7 +24,7 @@ this path is the honest answer to when it last actually moved.
 | [button](../docs/components/button.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [button-group](../docs/components/button-group.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [checkbox](../docs/components/checkbox.md) | `@rata/react` | inputs | latest / latest / future | free |
-| [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | future / future / future | free |
+| [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | latest / latest / future | free |
 | [icon](../docs/components/icon.md) | `@rata/react` | content | latest / latest / future | free |
 | [menu](../docs/components/menu.md) | `@rata/react` | overlays | latest / latest / future | free |
 | [menu-item](../docs/components/menu-item.md) | `@rata/react` | overlays | latest / latest / future | free |
@@ -178,9 +178,50 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 
-### Dialog
+### Dialog (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+- `title: ReactNode`
+- `children: ReactNode`
+  The dialog's content.
+- `open: boolean`
+  Whether the dialog is showing. Always controlled — `showModal()` has no prop.
+- `onClose: (reason: DialogCloseReason) => void`
+  Called when the dialog asks to close. Set `open` to false in it.
+- `description?: ReactNode`
+  A line under the title, wired as the dialog's description.
+- `footer?: ReactNode`
+  The actions. Reads after the body it acts on.
+- `size?: DialogSize` — default: `"md"`
+- `dismissible?: boolean` — default: `true`
+- `dismissLabel?: string` — default: `"Close"`
+  Accessible name for the close button.
+- `initialFocus?: RefObject<HTMLElement | null>`
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={title}
+        description={description}
+        size={size}
+        dismissible={dismissible}
+        initialFocus={cancelRef}
+        footer={
+          <>
+            <Button ref={cancelRef} variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant={destructive ? "destructive" : "primary"} onClick={() => setOpen(false)}>
+              {destructive ? "Delete" : "Save"}
+            </Button>
+          </>
+        }
+      >
+        This cannot be undone.
+      </Dialog>
+```
 
 Contract: [docs/components/dialog.md](../docs/components/dialog.md)
 
@@ -760,6 +801,7 @@ Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidde
 - `--rata-theme-fg-primary`: `#151D1A`
 - `--rata-theme-fg-secondary`: `#3B4A43`
 - `--rata-theme-focus-ring`: `#008960`
+- `--rata-theme-scrim`: `#151D1A80`
 - `--rata-theme-secondary-role-bg`: `#F3FFF9`
 - `--rata-theme-secondary-role-border`: `#84958D`
 - `--rata-theme-secondary-role-fg`: `#151D1A`

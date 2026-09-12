@@ -4,57 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { Trash2 } from "@rata/icons";
 import { Button } from "./button.js";
 import { Menu, MenuItem, MenuSeparator } from "./menu.js";
+import { installPopoverShim } from "./test-support.js";
 
 /**
- * jsdom has no popover support at all — `showPopover` is undefined in jsdom 30
- * — and its UA stylesheet still carries the spec's
- * `[popover]:not(:popover-open) { display: none }` rule. Since `:popover-open`
- * can never match there, a popover element is hidden unconditionally and
- * therefore absent from the accessibility tree, which is what Testing Library
- * queries.
- *
- * So the shim has to do three things: implement the state machine, make
- * `:popover-open` answerable through `matches()` (the component reads it to
- * avoid double-toggling), and lift the UA rule's `display: none` so the list
- * is actually in the tree.
- *
- * What this does NOT pretend to have is a top layer. Nothing asserted below
- * depends on where the list is painted — it is all ARIA, focus and handler
- * behaviour — and the placement that the real top layer and CSS anchor
- * positioning provide is exactly the part a DOM test cannot speak to.
+ * jsdom implements neither the popover API nor a top layer, and its UA sheet
+ * hides `[popover]` unconditionally. See test-support.ts for what the shim
+ * does and, more importantly, what it deliberately does not pretend to have.
  */
-beforeAll(() => {
-  const open = new WeakSet<Element>();
-  const proto = HTMLElement.prototype as unknown as {
-    showPopover(): void;
-    hidePopover(): void;
-    matches(s: string): boolean;
-  };
-  const matches = proto.matches;
-  const toggle = (el: HTMLElement, newState: "open" | "closed") =>
-    el.dispatchEvent(Object.assign(new Event("toggle"), { newState }));
-
-  proto.showPopover = function () {
-    const el = this as unknown as HTMLElement;
-    if (open.has(el)) return;
-    open.add(el);
-    // Lifts the UA sheet's unconditional display:none, since :popover-open
-    // cannot match in jsdom and the rule therefore never stops applying.
-    el.style.display = "block";
-    toggle(el, "open");
-  };
-  proto.hidePopover = function () {
-    const el = this as unknown as HTMLElement;
-    if (!open.has(el)) return;
-    open.delete(el);
-    el.style.removeProperty("display");
-    toggle(el, "closed");
-  };
-  proto.matches = function (selector: string) {
-    if (selector === ":popover-open") return open.has(this as unknown as Element);
-    return matches.call(this, selector);
-  };
-});
+beforeAll(installPopoverShim);
 
 afterEach(cleanup);
 

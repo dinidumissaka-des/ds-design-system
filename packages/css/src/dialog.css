@@ -1,0 +1,160 @@
+/* Dialog — a modal surface that takes over the screen.
+
+   A NATIVE <dialog> OPENED WITH showModal(), which is the whole point. The
+   browser supplies the things that are hardest to hand-roll and easiest to
+   get subtly wrong: a real focus trap, `inert` on everything behind it, the
+   top layer, ::backdrop, Escape-to-close, and focus returned to the opener.
+   A hand-written focus trap is the most bug-prone thing in any design
+   system; the browser's is correct by construction.
+
+   What CSS still has to do is the part the platform leaves open: the
+   appearance, and animating in and out of `display: none`. */
+.rata-dialog {
+  box-sizing: border-box;
+  /* The UA stylesheet centres a modal dialog with auto margins and gives it a
+     border and its own padding; all three are replaced here. */
+  margin: auto;
+  padding: var(--rata-space-padding-lg);
+  border: var(--rata-space-0);
+  max-inline-size: calc(100% - var(--rata-space-padding-lg) * 2);
+  max-block-size: calc(100% - var(--rata-space-padding-lg) * 2);
+  border-radius: var(--rata-radius-page);
+  background: var(--rata-theme-bg-surface);
+  color: var(--rata-theme-fg-primary);
+  box-shadow: var(--rata-theme-elevation-modal);
+  font-family: var(--rata-font-family-sans);
+  font-size: var(--rata-type-body-size);
+  line-height: var(--rata-type-body-line-height);
+}
+
+/* A dialog is display:none until opened, so `[open]` is the switch and there
+   is no separate class to keep in step with the element's real state. */
+.rata-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Three widths from the control scale rather than a size.dialog.* family:
+   a dialog is measured in controls, and a scale with one consumer is a list.
+   `inline-size: 100%` with a max is what makes them shrink on a narrow
+   viewport instead of overflowing it. */
+.rata-dialog--sm {
+  inline-size: 100%;
+  max-inline-size: calc(var(--rata-size-control-lg) * 10);
+}
+
+.rata-dialog--md {
+  inline-size: 100%;
+  max-inline-size: calc(var(--rata-size-control-lg) * 14);
+}
+
+.rata-dialog--lg {
+  inline-size: 100%;
+  max-inline-size: calc(var(--rata-size-control-lg) * 20);
+}
+
+/* theme.scrim exists for exactly this. It is not theme.bg.muted at an alpha:
+   a scrim implies the page behind it is inert, which is true here and false
+   for a menu, so the two must not share a token. */
+.rata-dialog::backdrop {
+  background: var(--rata-theme-scrim);
+}
+
+/* Animating to and from display:none needs both of these: `allow-discrete`
+   lets `display` and `overlay` flip at the right end of the transition
+   instead of immediately, and @starting-style supplies the from-state for an
+   element that was not in the DOM's rendering tree a moment ago. Without the
+   `overlay` transition the dialog drops out of the top layer the instant it
+   starts closing and the exit animation plays behind the page. */
+@media (prefers-reduced-motion: no-preference) {
+  .rata-dialog,
+  .rata-dialog::backdrop {
+    transition:
+      opacity var(--rata-motion-modal-duration) var(--rata-motion-easing-exit),
+      display var(--rata-motion-modal-duration) allow-discrete,
+      overlay var(--rata-motion-modal-duration) allow-discrete;
+    opacity: 0;
+  }
+
+  .rata-dialog[open],
+  .rata-dialog[open]::backdrop {
+    opacity: 1;
+    transition-timing-function: var(--rata-motion-easing-enter);
+  }
+
+  @starting-style {
+    .rata-dialog[open],
+    .rata-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+
+.rata-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rata-space-gap-sm);
+}
+
+/* A real heading element, unlike Notice's title.
+   The difference is that a modal genuinely is its own context — everything
+   behind it is inert — so the outline inside it starts fresh and h2 is the
+   top of it. A notice sits inside the page's existing outline and cannot
+   know what level it is at. */
+.rata-dialog-heading {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.rata-dialog-title {
+  margin: var(--rata-space-0);
+  font-size: var(--rata-type-heading-size);
+  font-weight: var(--rata-type-heading-weight);
+  line-height: var(--rata-type-heading-line-height);
+}
+
+.rata-dialog-description {
+  margin: var(--rata-space-0);
+  margin-block-start: var(--rata-space-stack-2xs);
+  color: var(--rata-theme-fg-secondary);
+}
+
+/* Scrolls on its own rather than letting the whole dialog grow past the
+   viewport, so the title stays put and the actions stay reachable. */
+.rata-dialog-body {
+  margin-block-start: var(--rata-space-stack-md);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.rata-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--rata-space-gap-sm);
+  margin-block-start: var(--rata-space-stack-md);
+}
+
+/* Same construction as Notice's dismiss: currentColor on a transparent
+   background, so the glyph matches the surface's own foreground. */
+.rata-dialog-dismiss {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--rata-size-control-sm);
+  block-size: var(--rata-size-control-sm);
+  padding: var(--rata-space-0);
+  border: var(--rata-space-0);
+  border-radius: var(--rata-radius-inner);
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+}
+
+.rata-dialog-dismiss:focus-visible {
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style)
+    var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
+}
