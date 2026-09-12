@@ -1292,10 +1292,231 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest"
       },
       "react": {
+        "state": "latest"
+      },
+      "figma": {
         "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer",
+      "menu-item"
+    ],
+    "importPath": "@rata/react",
+    "mode": "documented",
+    "note": null,
+    "extends": null,
+    "props": [
+      {
+        "name": "trigger",
+        "optional": false,
+        "type": "ReactElement",
+        "description": "",
+        "declared": true,
+        "summary": "The control that opens the menu.",
+        "use": [
+          "A `Button`. It is cloned to receive the trigger ARIA, a ref and the handlers."
+        ],
+        "dont": [
+          "A `div` or a span. The trigger must be a real button or it is not reachable by keyboard, and none of the ARIA below means anything on a non-interactive element.",
+          "Passing `onClick` on it and expecting to be called. The menu owns that handler; put your own work in `onOpenChange`."
+        ],
+        "conflicts": [],
+        "a11y": "Receives `aria-haspopup=\"menu\"`, `aria-expanded` and `aria-controls`. Its own text names the menu, which is why `label` is only for a trigger that has none."
+      },
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "`MenuItem` and `MenuSeparator` children, in the order they are read.",
+        "declared": true,
+        "summary": "`MenuItem` and `MenuSeparator`, in the order they are read.",
+        "use": [
+          "Two to about seven actions. Longer than that and the reader is scanning, not choosing."
+        ],
+        "dont": [
+          "Anything focusable that is not a `MenuItem`. The arrow keys walk the rows the menu knows about, and a stray button would be a tab stop the pattern does not account for.",
+          "A form. A menu is a list of actions; something to fill in belongs in a dialog."
+        ],
+        "conflicts": [],
+        "a11y": "Each row registers itself, so navigation follows DOM order rather than mount order — which is what the reader sees."
+      },
+      {
+        "name": "open",
+        "optional": true,
+        "type": "boolean",
+        "description": "Whether the menu is showing. Makes the component controlled.",
+        "declared": true,
+        "summary": "Whether the menu is showing. Makes the component controlled.",
+        "use": [
+          "Opening the menu from somewhere else, or keeping it open across a re-render you drive."
+        ],
+        "dont": [
+          "Passing it alongside `defaultOpen`. One of them owns the state."
+        ],
+        "conflicts": [
+          "defaultOpen"
+        ],
+        "a11y": "Controlled means the menu will not open unless you change this — the trigger still reports the request through `onOpenChange`, and `aria-expanded` follows whatever you set."
+      },
+      {
+        "name": "defaultOpen",
+        "optional": true,
+        "type": "boolean",
+        "description": "Starting state for an uncontrolled menu. Conflicts with `open`.",
+        "declared": true,
+        "summary": "Starting state for an uncontrolled menu.",
+        "use": [
+          "Almost never. A menu that is open before the reader asked for it covers the thing they were looking at."
+        ],
+        "dont": [
+          "Using it as a way to show the menu on load. That is what a `Notice` or an inline panel is for."
+        ],
+        "conflicts": [
+          "open"
+        ],
+        "a11y": null
+      },
+      {
+        "name": "onOpenChange",
+        "optional": true,
+        "type": "(open: boolean) => void",
+        "description": null,
+        "declared": true,
+        "summary": "Called when the menu should open or close.",
+        "use": [
+          "Controlled mode, to set `open`.",
+          "Uncontrolled mode, to react — closing a toolbar, or logging."
+        ],
+        "dont": [
+          "Doing work that belongs in a row's `onSelect`. This fires for every close, including Escape and clicking away."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Names the list itself, for a trigger whose own name describes the button.",
+        "declared": true,
+        "summary": "Names the list itself, for a trigger whose own name describes the button.",
+        "use": [
+          "An icon-only trigger, where the button is named \"Row actions\" and the list needs naming separately."
+        ],
+        "dont": [
+          "A trigger with visible text. The text already names the menu, and a second name would win over the one the reader can see."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes the menu's `aria-label` and suppresses the `aria-labelledby` pointing at the trigger — never both, because two names on one node is a 4.1.2 problem rather than a fallback."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the list, for placement — not for restyling it.",
+        "use": [
+          "Constraining the width when the actions are unusually long."
+        ],
+        "dont": [
+          "Positioning it. Placement comes from anchor positioning in `menu.css`; a competing `position` here is how a menu ends up in the wrong place on one page only."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "Actions on a row",
+        "when": "The commonest case: a handful of things you can do to one item.",
+        "example": "<Menu trigger={<Button variant=\"secondary\">Actions</Button>}>\n  <MenuItem onSelect={duplicate}>Duplicate</MenuItem>\n  <MenuItem onSelect={download}>Download</MenuItem>\n  <MenuSeparator />\n  <MenuItem destructive onSelect={remove}>Delete</MenuItem>\n</Menu>",
+        "notes": "The separator groups the destructive action away from the safe ones, so it is harder to hit by accident. `destructive` colours it; the separator is what actually puts distance between them."
+      },
+      {
+        "case": "An icon-only trigger, which needs the list named separately",
+        "when": "A dense table where a labelled button would not fit.",
+        "example": "<Menu\n  label=\"Row actions\"\n  trigger={<Button iconOnly aria-label=\"Row actions\" variant=\"tertiary\"><Icon icon={Ellipsis} /></Button>}\n>\n  <MenuItem onSelect={edit}>Edit</MenuItem>\n  <MenuItem destructive onSelect={remove}>Delete</MenuItem>\n</Menu>",
+        "notes": "Both names are needed and they are not redundant: the button's `aria-label` names the control you press, and `label` names the list that appears. Without the second, the menu is announced with the button's name, which describes the wrong thing."
+      },
+      {
+        "case": "Don't: a menu standing in for a choice that should be a form control",
+        "when": "Never — this is the shape to recognise and avoid.",
+        "example": "{/* Don't: this is a select wearing a menu's clothes. */}\n<Menu trigger={<Button>Sort: {sort}</Button>}>\n  <MenuItem selected={sort === \"name\"} onSelect={() => setSort(\"name\")}>Name</MenuItem>\n  <MenuItem selected={sort === \"date\"} onSelect={() => setSort(\"date\")}>Date</MenuItem>\n</Menu>",
+        "notes": "Don't. A menu is a list of actions; a choice with a current answer is a `RadioGroup`, or a select once this system has one. `selected` exists for the narrow case where a menu genuinely reflects state — a view switcher — not as licence to build a picker out of actions."
+      }
+    ],
+    "behavior": {
+      "primitive": "getMenuProps",
+      "summary": "A trigger and a list in the top layer. The list carries the `popover` attribute, so it escapes every overflow and stacking context without a portal and gets light-dismiss from the platform; CSS anchor positioning places it against the trigger and flips it near a viewport edge. No measurement code and no dependency — which matters more here than usual, because this registry is a copy-paste channel and a dependency becomes an install step for every consumer.",
+      "decisions": [
+        {
+          "decision": "Focus always returns to the trigger on Escape and after a selection",
+          "why": "It is what makes the menu usable by keyboard at all: close it and the reader has to be somewhere, and the only place that makes sense is where they were. The primitive reports the close and the wrapper does the focusing, since moving focus is a DOM act. Light-dismiss is the exception — the reader clicked something else, and taking focus back would undo their own action."
+        },
+        {
+          "decision": "Selection closes the menu before `onSelect` runs",
+          "why": "So focus is already back on the trigger by the time the handler does anything. A handler that navigates, or opens a dialog, would otherwise be fighting a menu that is still tearing down, and the dialog would steal focus from a control that is about to vanish."
+        },
+        {
+          "decision": "A disabled row is reachable and announced",
+          "why": "The `aria-disabled` rule this whole system follows: arrow keys reach it, a screen reader reads it, and activation is refused. Most menus skip disabled rows entirely, which makes the list a different length depending on whether you are looking or listening."
+        },
+        {
+          "decision": "Tab closes the menu without trapping focus",
+          "why": "Someone tabbing through a page expects to keep going. Trapping focus is what a dialog does, because a dialog is modal and a menu is not."
+        },
+        {
+          "decision": "Typeahead cycles on a single character rather than buffering a prefix",
+          "why": "A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked."
+        },
+        {
+          "decision": "The list's open state is driven imperatively, not by popovertarget",
+          "why": "`popovertarget` would let the platform toggle the popover without telling React, and `open` would drift out of step with what is painted. The trigger's click goes through the primitive instead, and the popover's own `toggle` event is what keeps state honest when the platform closes it."
+        }
+      ]
+    },
+    "tokens": {
+      "base": {
+        "summary": "A transient list of actions anchored to a trigger.",
+        "tokens": {
+          "background": "theme.bg.surface",
+          "border-radius": "radius.container",
+          "box-shadow": "theme.elevation.overlay",
+          "border": "border.default solid theme.border.default",
+          "padding": "space.1",
+          "min-inline-size": "size.control.lg multiplied — the list should not be narrower than a control",
+          "font-size": "type.control.size.sm",
+          "enter transition": "motion.overlay.duration with motion.easing.enter",
+          "gap from the trigger": "space.gap.xs"
+        }
+      },
+      "separator": {
+        "summary": "A rule between groups of actions.",
+        "tokens": {
+          "border-block-start": "border.default solid theme.border.default",
+          "margin-block": "space.1"
+        }
+      }
+    },
+    "example": "<Menu trigger={<Button variant=\"secondary\">Actions</Button>}>\n        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>\n        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>\n      </Menu>"
+  },
+  {
+    "name": "menu-item",
+    "title": "MenuItem",
+    "description": "One action in a Menu, plus the separator that groups them.",
+    "family": "overlays",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest"
+      },
+      "react": {
+        "state": "latest"
       },
       "figma": {
         "state": "future"
@@ -1305,32 +1526,206 @@
       "state-layer"
     ],
     "importPath": "@rata/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
-    "props": [],
-    "usage": [],
-    "behavior": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\" | \"role\" | \"onSelect\">",
+    "props": [
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "The action's label.",
+        "declared": true,
+        "summary": "The action's label.",
+        "use": [
+          "A verb. \"Duplicate\", not \"Duplication\" — a row is a thing you do."
+        ],
+        "dont": [
+          "A sentence. If the action needs explaining, the menu is the wrong container.",
+          "Only an icon. A glyph with no text is unreadable to anyone who does not already know the icon, and there is no `aria-label` here to rescue it."
+        ],
+        "conflicts": [],
+        "a11y": "The row's accessible name, and — when it is a plain string — the text typeahead matches on."
+      },
+      {
+        "name": "value",
+        "optional": true,
+        "type": "string",
+        "description": "",
+        "declared": true,
+        "summary": "Identifies this row. Defaults to the children when they are a plain string.",
+        "use": [
+          "A row whose children are not a plain string, where there is no text to borrow.",
+          "Keeping the identity stable when the label is translated."
+        ],
+        "dont": [
+          "Restating the label. Passing the same string the children already are is the duplication the default exists to avoid."
+        ],
+        "conflicts": [],
+        "a11y": "Not announced. It is how the menu tracks which row holds focus, so it has to be unique within one menu."
+      },
+      {
+        "name": "onSelect",
+        "optional": true,
+        "type": "() => void",
+        "description": null,
+        "declared": true,
+        "summary": "Called when the row is activated.",
+        "use": [
+          "The action itself. The menu has already closed and focus is already back on the trigger by the time this runs."
+        ],
+        "dont": [
+          "Closing the menu yourself. It is closed before this is called, and closing again would fight the state."
+        ],
+        "conflicts": [],
+        "a11y": "Runs after focus has returned to the trigger, which is what makes it safe to navigate or open a dialog here."
+      },
+      {
+        "name": "disabled",
+        "optional": true,
+        "type": "boolean",
+        "description": "Unavailable, but still focusable and announced — activation is guarded.",
+        "default": "false",
+        "declared": true,
+        "summary": "Unavailable, but still focusable and announced.",
+        "use": [
+          "An action that exists but cannot run right now — and where the reader benefits from knowing it exists."
+        ],
+        "dont": [
+          "Hiding a capability the reader does not have at all. A row they can never use is noise; leave it out."
+        ],
+        "conflicts": [],
+        "a11y": "`aria-disabled` with a guarded activation, never the native attribute. Arrow keys reach it and a screen reader reads it, so the list is the same length whether you look or listen."
+      },
+      {
+        "name": "destructive",
+        "optional": true,
+        "type": "boolean",
+        "description": "Marks an action that removes something.",
+        "declared": true,
+        "summary": "Marks an action that removes something.",
+        "use": [
+          "Delete, revoke, discard — something that cannot be undone by doing it again."
+        ],
+        "dont": [
+          "\"Important\". It means something is destroyed, and spending it on emphasis teaches readers to ignore it.",
+          "Relying on the colour alone. Put a separator above it so it is harder to hit by accident, and confirm the destruction elsewhere if it matters."
+        ],
+        "conflicts": [],
+        "a11y": "Colour only — nothing about the row is announced differently, because the label is what has to say what it does. \"Delete\" already does."
+      },
+      {
+        "name": "selected",
+        "optional": true,
+        "type": "boolean",
+        "description": "Marks the row that is the current answer, for a menu standing in for a choice.",
+        "declared": true,
+        "summary": "Marks the row that is the current answer.",
+        "use": [
+          "The narrow case where a menu genuinely reflects state, such as a view switcher."
+        ],
+        "dont": [
+          "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract."
+        ],
+        "conflicts": [],
+        "a11y": "Sets `aria-checked`, so the state is announced rather than only tinted."
+      },
+      {
+        "name": "icon",
+        "optional": true,
+        "type": "LucideIcon",
+        "description": null,
+        "declared": true,
+        "summary": "A glyph before the label.",
+        "use": [
+          "A set of rows where every one has an icon, so the column reads as a column."
+        ],
+        "dont": [
+          "Icons on some rows and not others. The labels then start at two different places and the list is harder to scan than with none at all."
+        ],
+        "conflicts": [],
+        "a11y": "`aria-hidden`, like every decorative glyph here — the label carries the meaning."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the row, for placement — not for restyling it.",
+        "use": [
+          "Rarely. The row's appearance is the menu's, and a row that looks different reads as a different kind of thing."
+        ],
+        "dont": [
+          "Colouring it. `destructive` is the one colour variation a row has, and it is a semantic one."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "A row with an icon",
+        "when": "Rows whose actions have recognisable glyphs, all of them.",
+        "example": "<MenuItem icon={Download} onSelect={download}>Download</MenuItem>",
+        "notes": "The icon is aria-hidden and the label is the name, so nothing is announced twice."
+      },
+      {
+        "case": "A destructive row, kept away from the safe ones",
+        "when": "The menu contains something that cannot be undone.",
+        "example": "<MenuSeparator />\n<MenuItem destructive icon={Trash2} onSelect={remove}>Delete</MenuItem>",
+        "notes": "The separator is doing the safety work; the colour only confirms it. A destructive row directly under a benign one is one misclick away."
+      },
+      {
+        "case": "A row that exists but cannot run yet",
+        "when": "The action is real, and the reader benefits from knowing it is there.",
+        "example": "<MenuItem disabled onSelect={publish}>Publish</MenuItem>",
+        "notes": "Reachable by arrow keys and announced as unavailable. If the reader could never use it at all, leave it out instead — a permanently dead row is noise."
+      }
+    ],
+    "behavior": {
+      "summary": "A real `<button>` carrying `role=\"menuitem\"`, reading its ARIA, its tabindex and its click handling from the `Menu` above it through context. It throws when rendered outside one rather than degrading: alone it has no list to navigate and no trigger to return focus to, so it would look like a button and behave like nothing.",
+      "decisions": [
+        {
+          "decision": "Context, not cloneElement",
+          "why": "The row writes its ARIA and click handling after spreading `rest`, deliberately, so a caller cannot clobber the accessibility contract with a prop. That same ordering means a cloned prop could not reach those attributes either — so the menu has to be something the row reads, not something done to it. The same reasoning as ToggleButton."
+        },
+        {
+          "decision": "`value` defaults to the children when they are a plain string",
+          "why": "The menu identifies rows by value and typeahead matches on their text, and for almost every row both are just the label. Requiring it stated twice would make the common case noisier than the rare one. A row with non-string children has no text to borrow, so it must say what it is."
+        }
+      ]
+    },
     "tokens": {
       "base": {
-        "summary": "A transient list of actions anchored to a trigger.",
+        "summary": "One action. Its own focus ring, because the roving tabindex means an item — not the menu — is what focus lands on.",
         "tokens": {
-          "background": "theme.bg.surface",
-          "border-radius": "radius.container",
-          "box-shadow": "theme.elevation.overlay",
-          "padding": "space.1",
-          "item height": "size.control.sm",
-          "item padding-inline": "space.control.padding-inline.sm",
-          "item color": "theme.fg.primary",
-          "destructive item color": "theme.danger-role.fg",
-          "selected item background": "theme.accent-role.subtle",
-          "item hover/press": "compose the .rata-state-layer class",
-          "separator": "border.default solid theme.border.default",
-          "enter transition": "motion.overlay.duration with motion.easing.enter"
+          "block-size": "size.control.sm",
+          "padding-inline": "space.control.padding-inline.sm",
+          "border-radius": "radius.inner",
+          "color": "theme.fg.primary",
+          "gap between icon and label": "space.gap.sm",
+          "icon size": "size.icon.text",
+          "hover / press": "compose the .rata-state-layer class",
+          "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible",
+          "disabled": "state.disabled-opacity"
+        }
+      },
+      "destructive": {
+        "summary": "An action that removes something. Uses the danger role's foreground on the menu's own surface — a pairing the token contracts verify for text at any size — rather than a tinted row, which would read as a status.",
+        "tokens": {
+          "color": "theme.danger-role.fg"
+        }
+      },
+      "selected": {
+        "summary": "A menu standing in for a choice already made, where one row is the current answer.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "color": "theme.fg.primary"
         }
       }
     },
-    "example": null
+    "example": "<MenuItem onSelect={() => {}}>Duplicate</MenuItem>"
   },
   {
     "name": "notice",

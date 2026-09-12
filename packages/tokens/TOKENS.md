@@ -1193,6 +1193,39 @@ A glyph sized from the text around it, taking its colour from that text too.
 | stroke | currentColor — the icon inherits the colour of the text it sits in, so it needs no colour token of its own and cannot contradict its label |
 | flex-shrink | 0 — a glyph beside text must not be squeezed by it, which is a layout fact rather than a token |
 
+### menu-item
+
+One action. Its own focus ring, because the roving tabindex means an item — not the menu — is what focus lands on.
+
+| Property | Token |
+|---|---|
+| block-size | `size.control.sm` |
+| padding-inline | `space.control.padding-inline.sm` |
+| border-radius | `radius.inner` |
+| color | `theme.fg.primary` |
+| gap between icon and label | `space.gap.sm` |
+| icon size | `size.icon.text` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| disabled | `state.disabled-opacity` |
+
+### menu-item-destructive
+
+An action that removes something. Uses the danger role's foreground on the menu's own surface — a pairing the token contracts verify for text at any size — rather than a tinted row, which would read as a status.
+
+| Property | Token |
+|---|---|
+| color | `theme.danger-role.fg` |
+
+### menu-item-selected
+
+A menu standing in for a choice already made, where one row is the current answer.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.fg.primary` |
+
 ### menu
 
 A transient list of actions anchored to a trigger.
@@ -1202,15 +1235,21 @@ A transient list of actions anchored to a trigger.
 | background | `theme.bg.surface` |
 | border-radius | `radius.container` |
 | box-shadow | `theme.elevation.overlay` |
+| border | `border.default` solid `theme.border.default` |
 | padding | `space.1` |
-| item height | `size.control.sm` |
-| item padding-inline | `space.control.padding-inline.sm` |
-| item color | `theme.fg.primary` |
-| destructive item color | `theme.danger-role.fg` |
-| selected item background | `theme.accent-role.subtle` |
-| item hover/press | compose the .rata-state-layer class |
-| separator | `border.default` solid `theme.border.default` |
+| min-inline-size | `size.control.lg` multiplied — the list should not be narrower than a control |
+| font-size | `type.control.size.sm` |
 | enter transition | `motion.overlay.duration` with `motion.easing.enter` |
+| gap from the trigger | `space.gap.xs` |
+
+### menu-separator
+
+A rule between groups of actions.
+
+| Property | Token |
+|---|---|
+| border-block-start | `border.default` solid `theme.border.default` |
+| margin-block | `space.1` |
 
 ### notice
 

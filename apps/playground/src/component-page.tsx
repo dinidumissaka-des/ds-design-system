@@ -18,6 +18,9 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Menu,
+  MenuItem,
+  MenuSeparator,
   Notice,
   Radio,
   RadioGroup,
@@ -41,12 +44,16 @@ import type {
   ToggleButtonSize,
   ToggleButtonVariant,
 } from "@rata/react";
-import type { IconSize } from "@rata/icons";
+import type { IconSize, LucideIcon } from "@rata/icons";
 import {
   Icon,
   Settings,
   X,
   Trash2,
+  Ellipsis,
+  Pencil,
+  Copy,
+  Upload,
   Download,
   CircleAlert,
   ChevronLeft,
@@ -345,6 +352,42 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  "menu-item": {
+    "One row, staged inside its menu": () => <MenuItemStage />,
+    "A destructive row": () => <MenuItemStage destructive icon={Trash2}>Delete</MenuItemStage>,
+    "A row that cannot run yet": () => <MenuItemStage disabled icon={Upload}>Publish</MenuItemStage>,
+  },
+
+  menu: {
+    "Actions on a row": () => (
+      <Menu trigger={<Button variant="secondary">Actions</Button>}>
+        <MenuItem icon={Copy} onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem icon={Download} onSelect={() => {}}>Download</MenuItem>
+        <MenuSeparator />
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+    ),
+    "An icon-only trigger, which needs the list named separately": () => (
+      <Menu
+        label="Row actions"
+        trigger={
+          <Button iconOnly aria-label="Row actions" variant="tertiary">
+            <Icon icon={Ellipsis} />
+          </Button>
+        }
+      >
+        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+    ),
+    "A row that exists but cannot run yet": () => (
+      <Menu trigger={<Button variant="secondary">Actions</Button>}>
+        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>
+      </Menu>
+    ),
+  },
+
   notice: {
     "A message that is on the page at load": () => (
       <Notice variant="warning">This project is read-only while the migration runs.</Notice>
@@ -591,6 +634,48 @@ function BillingExample() {
  * — a hook written straight into an EXAMPLES or INTERACTIVE entry would join
  * the hook list of whatever is rendering it and change its length on navigation.
  */
+/**
+ * A single row, shown the only way a row can be shown: inside a menu.
+ *
+ * `MenuItem` throws outside a `Menu` on purpose — alone it has no list to
+ * navigate and no trigger to return focus to — so the page for it stages one
+ * rather than leaving the preview empty. The same reason `RadioStage` exists
+ * below, and the menu starts open so the row is the thing you see.
+ */
+function MenuItemStage({
+  children = "Duplicate",
+  destructive,
+  selected,
+  disabled,
+  icon = Copy,
+}: {
+  children?: ReactNode;
+  destructive?: boolean;
+  selected?: boolean;
+  disabled?: boolean;
+  icon?: LucideIcon;
+}) {
+  const [open, setOpen] = useState(true);
+  return (
+    <Menu
+      open={open}
+      onOpenChange={setOpen}
+      trigger={<Button variant="secondary">Actions</Button>}
+    >
+      <MenuItem
+        value="row"
+        icon={icon}
+        destructive={destructive}
+        selected={selected}
+        disabled={disabled}
+        onSelect={() => {}}
+      >
+        {children}
+      </MenuItem>
+    </Menu>
+  );
+}
+
 function RadioStage({
   label = "Annual",
   description = "Two months free",
@@ -890,6 +975,35 @@ const INTERACTIVE: Record<string, Interactive> = {
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
       />
+    ),
+  },
+
+  "menu-item": {
+    controls: ["destructive", "selected", "disabled"],
+    slot: { label: "Children", initial: "Duplicate" },
+    render: (state) => (
+      <MenuItemStage
+        destructive={Boolean(state.destructive)}
+        selected={Boolean(state.selected)}
+        disabled={Boolean(state.disabled)}
+      >
+        {String(state.children)}
+      </MenuItemStage>
+    ),
+  },
+
+  menu: {
+    controls: ["label"],
+    render: (state) => (
+      <Menu
+        label={state.label ? String(state.label) : undefined}
+        trigger={<Button variant="secondary">Actions</Button>}
+      >
+        <MenuItem icon={Copy} onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem icon={Download} onSelect={() => {}}>Download</MenuItem>
+        <MenuSeparator />
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
     ),
   },
 

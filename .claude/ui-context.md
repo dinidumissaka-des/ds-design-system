@@ -26,7 +26,8 @@ this path is the honest answer to when it last actually moved.
 | [checkbox](../docs/components/checkbox.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | future / future / future | free |
 | [icon](../docs/components/icon.md) | `@rata/react` | content | latest / latest / future | free |
-| [menu](../docs/components/menu.md) | `@rata/react` | overlays | future / future / future | free |
+| [menu](../docs/components/menu.md) | `@rata/react` | overlays | latest / latest / future | free |
+| [menu-item](../docs/components/menu-item.md) | `@rata/react` | overlays | latest / latest / future | free |
 | [notice](../docs/components/notice.md) | `@rata/react` | feedback | latest / latest / future | free |
 | [radio](../docs/components/radio.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [radio-group](../docs/components/radio-group.md) | `@rata/react` | inputs | latest / latest / future | free |
@@ -200,11 +201,53 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/icon.md](../docs/components/icon.md)
 
-### Menu
+### Menu (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+- `trigger: ReactElement`
+- `children: ReactNode`
+  `MenuItem` and `MenuSeparator` children, in the order they are read.
+- `open?: boolean`
+  Whether the menu is showing. Makes the component controlled.
+- `defaultOpen?: boolean`
+  Starting state for an uncontrolled menu. Conflicts with `open`.
+- `onOpenChange?: (open: boolean) => void`
+- `label?: string`
+  Names the list itself, for a trigger whose own name describes the button.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Menu trigger={<Button variant="secondary">Actions</Button>}>
+        <MenuItem onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem disabled onSelect={() => {}}>Publish</MenuItem>
+      </Menu>
+```
 
 Contract: [docs/components/menu.md](../docs/components/menu.md)
+
+### MenuItem (`@rata/react`)
+
+Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "onSelect">`
+
+- `children: ReactNode`
+  The action's label.
+- `value?: string`
+- `onSelect?: () => void`
+- `disabled?: boolean` — default: `false`
+  Unavailable, but still focusable and announced — activation is guarded.
+- `destructive?: boolean`
+  Marks an action that removes something.
+- `selected?: boolean`
+  Marks the row that is the current answer, for a menu standing in for a choice.
+- `icon?: LucideIcon`
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<MenuItem onSelect={() => {}}>Duplicate</MenuItem>
+```
+
+Contract: [docs/components/menu-item.md](../docs/components/menu-item.md)
 
 ### Notice (`@rata/react`)
 
