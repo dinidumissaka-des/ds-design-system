@@ -60,15 +60,28 @@ let scrollLocks = 0;
 
 function lockScroll(): void {
   scrollLocks += 1;
-  if (scrollLocks === 1) document.body.style.overflow = "hidden";
+  if (scrollLocks !== 1) return;
+  const { body, documentElement } = document;
+  // Hiding the overflow takes the scrollbar away with it, and the page reflows
+  // into the space it occupied — everything shifts sideways as the dialog
+  // opens and jumps back as it closes, which is far more noticeable than the
+  // scrolling this is meant to prevent. Holding the width with padding keeps
+  // the page still. Measured, not a token: it is whatever this browser and
+  // this user's settings make it, and it is zero for overlay scrollbars.
+  const gutter = window.innerWidth - documentElement.clientWidth;
+  body.style.overflow = "hidden";
+  if (gutter > 0) body.style.paddingInlineEnd = `${gutter}px`;
 }
 
 function unlockScroll(): void {
   scrollLocks = Math.max(0, scrollLocks - 1);
+  if (scrollLocks !== 0) return;
   // Removed rather than set to "": leaves the page exactly as it was found,
-  // including a stylesheet's own overflow, which an empty inline value would
-  // not restore.
-  if (scrollLocks === 0) document.body.style.removeProperty("overflow");
+  // including a stylesheet's own overflow or padding, which an empty inline
+  // value would shadow instead of restoring.
+  const { body } = document;
+  body.style.removeProperty("overflow");
+  body.style.removeProperty("padding-inline-end");
 }
 
 /**

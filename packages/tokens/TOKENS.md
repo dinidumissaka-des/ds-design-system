@@ -1216,10 +1216,11 @@ A modal surface that takes over the screen.
 | enter transition | `motion.modal.duration` with `motion.easing.enter`, fading and rising |
 | exit transition | `motion.modal.duration` with `motion.easing.exit` |
 | enter/exit rise distance | `space.2` |
+| exit pointer-events | none while closing — the top layer is held for the exit, so the backdrop would go on catching clicks after the reader closed it |
 
 ### dialog-backdrop
 
-The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not.
+The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not. It transitions `overlay` alongside the dialog, which is what keeps the scrim on screen for the length of the exit rather than dropping it the instant the dialog starts closing.
 
 | Property | Token |
 |---|---|

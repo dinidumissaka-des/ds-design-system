@@ -80,10 +80,18 @@
    `overlay` transition the dialog drops out of the top layer the instant it
    starts closing and the exit animation plays behind the page.
 
+   BOTH the dialog and its backdrop transition `overlay`, and the backdrop
+   needs it as much as the dialog does. `overlay` is what holds an element in
+   the top layer for the length of its exit; leaving it off the backdrop drops
+   the scrim the instant `close()` runs, so the dialog spends its whole exit
+   animating over a live, undimmed page. Which is the bug this comment
+   previously argued for, on the grounds that a backdrop "has no such
+   property" — it participates in the top layer with its originating element,
+   and it does.
+
    A rise as well as a fade: opacity alone reads as the surface being revealed
    rather than arriving, which is the wrong impression for something that
-   takes the screen over. `overlay` is transitioned only on the dialog — the
-   backdrop is not a top-layer element of its own and has no such property. */
+   takes the screen over. */
 @media (prefers-reduced-motion: no-preference) {
   .rata-dialog {
     transition:
@@ -93,12 +101,18 @@
       overlay var(--rata-motion-modal-duration) allow-discrete;
     opacity: 0;
     translate: 0 var(--rata-space-2);
+    /* The flip side of holding the top layer for the length of the exit: for
+       those 280ms the backdrop is still there, invisible and still catching
+       clicks, so the page ignores the reader right after they closed it.
+       Restored on [open] below. */
+    pointer-events: none;
   }
 
   .rata-dialog::backdrop {
     transition:
       opacity var(--rata-motion-modal-duration) var(--rata-motion-easing-exit),
-      display var(--rata-motion-modal-duration) allow-discrete;
+      display var(--rata-motion-modal-duration) allow-discrete,
+      overlay var(--rata-motion-modal-duration) allow-discrete;
     opacity: 0;
   }
 
@@ -110,6 +124,7 @@
 
   .rata-dialog[open] {
     translate: 0 var(--rata-space-0);
+    pointer-events: auto;
   }
 
   /* Last, so it wins over the [open] rules above for the one frame it

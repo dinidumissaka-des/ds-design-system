@@ -200,6 +200,41 @@ describe("Dialog", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
   });
 
+  test("the page does not shift sideways when the scrollbar is taken away", () => {
+    // Hiding the overflow removes the scrollbar and the page reflows into the
+    // space it occupied — content jumps as the dialog opens and jumps back as
+    // it closes. jsdom reports no scrollbar of its own, so one is simulated.
+    const clientWidth = vi
+      .spyOn(document.documentElement, "clientWidth", "get")
+      .mockReturnValue(window.innerWidth - 15);
+
+    const { unmount } = render(<Fixture />);
+    expect(document.body.style.overflow).toBe("hidden");
+    expect(document.body.style.paddingInlineEnd).toBe("15px");
+
+    unmount();
+    // Removed, not blanked, so a stylesheet's own padding comes back.
+    expect(document.body.style.paddingInlineEnd).toBe("");
+    expect(document.body.getAttribute("style")).not.toContain("padding-inline-end");
+    clientWidth.mockRestore();
+  });
+
+  test("overlay scrollbars take up no width, so nothing is padded", () => {
+    // The macOS default: there is no gutter to hold, and adding one would
+    // itself be the shift this is meant to prevent. Mocked rather than left
+    // to the environment because jsdom does no layout and reports
+    // clientWidth as 0 — which would look like a full-viewport gutter.
+    const clientWidth = vi
+      .spyOn(document.documentElement, "clientWidth", "get")
+      .mockReturnValue(window.innerWidth);
+
+    const { unmount } = render(<Fixture />);
+    expect(document.body.style.overflow).toBe("hidden");
+    expect(document.body.style.paddingInlineEnd).toBe("");
+    unmount();
+    clientWidth.mockRestore();
+  });
+
   test("two overlapping dialogs do not leave the page locked", () => {
     // Save-and-restore gets this wrong: the second dialog captures "hidden" as
     // the value to put back, so closing it locks the page with nothing open.

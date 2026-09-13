@@ -50,11 +50,12 @@
         "gap between title and description": "space.stack.2xs",
         "enter transition": "motion.modal.duration with motion.easing.enter, fading and rising",
         "exit transition": "motion.modal.duration with motion.easing.exit",
-        "enter/exit rise distance": "space.2"
+        "enter/exit rise distance": "space.2",
+        "exit pointer-events": "none while closing — the top layer is held for the exit, so the backdrop would go on catching clicks after the reader closed it"
       }
     },
     "backdrop": {
-      "summary": "The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not.",
+      "summary": "The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not. It transitions `overlay` alongside the dialog, which is what keeps the scrim on screen for the length of the exit rather than dropping it the instant the dialog starts closing.",
       "tokens": {
         "background": "theme.scrim",
         "fade": "motion.modal.duration with motion.easing.enter"
@@ -119,6 +120,10 @@
       {
         "decision": "The modal motion band was wrong, and the tempo behind it was too slow",
         "why": "`motion.modal.duration` resolved to `motion.duration.slow`, which this system's own motion contract documents as “Continuous animation” — the spinner band. That was the category error; it is `medium-max` now, the slowest step of the entrance/exit band, which is where the expander's config names “(dialog, drawer)”. Fixing the band alone still left 545ms, because the medium band itself was too slow: Astryx's 175/410/975 tempo meant a menu took 410ms to appear. The seed came down to 130/210/700, so a dialog now enters in 280ms and a menu in 210ms. The bands kept their meanings and no role had to be remapped to one it does not belong to."
+      },
+      {
+        "decision": "The page's scroll is locked with the scrollbar's width held open",
+        "why": "Hiding the overflow takes the scrollbar away and the page reflows into the space it occupied, so everything shifts sideways as the dialog opens and jumps back as it closes — more noticeable than the scrolling being prevented. The width is measured at lock time rather than tokenised, because it is whatever the browser and the reader's settings make it, and it is zero for overlay scrollbars."
       }
     ]
   },
