@@ -19,10 +19,11 @@ behind it yet, and `css-only` when there is no props API by design.
 | [Button](button.md) | `button` | buttons | latest / latest | documented | free |
 | [Button Group](button-group.md) | `button-group` | buttons | latest / latest | documented | free |
 | [Checkbox](checkbox.md) | `checkbox` | inputs | latest / latest | documented | free |
-| [Dialog](dialog.md) | `dialog` | overlays | future / future | spec | free |
+| [Dialog](dialog.md) | `dialog` | overlays | latest / latest | documented | free |
 | [Icon](icon.md) | `icon` | content | latest / latest | documented | free |
-| [Menu](menu.md) | `menu` | overlays | future / future | spec | free |
-| [Notice](notice.md) | `notice` | feedback | future / future | spec | free |
+| [Menu](menu.md) | `menu` | overlays | latest / latest | documented | free |
+| [MenuItem](menu-item.md) | `menu-item` | overlays | latest / latest | documented | free |
+| [Notice](notice.md) | `notice` | feedback | latest / latest | documented | free |
 | [Radio](radio.md) | `radio` | inputs | latest / latest | documented | free |
 | [Radio Group](radio-group.md) | `radio-group` | inputs | latest / latest | documented | free |
 | [Loading: Spinner](spinner.md) | `spinner` | loading | latest / latest | documented | free |

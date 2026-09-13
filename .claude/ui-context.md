@@ -24,10 +24,11 @@ this path is the honest answer to when it last actually moved.
 | [button](../docs/components/button.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [button-group](../docs/components/button-group.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [checkbox](../docs/components/checkbox.md) | `@rata/react` | inputs | latest / latest / future | free |
-| [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | future / future / future | free |
+| [dialog](../docs/components/dialog.md) | `@rata/react` | overlays | latest / latest / future | free |
 | [icon](../docs/components/icon.md) | `@rata/react` | content | latest / latest / future | free |
-| [menu](../docs/components/menu.md) | `@rata/react` | overlays | future / future / future | free |
-| [notice](../docs/components/notice.md) | `@rata/react` | feedback | future / future / future | free |
+| [menu](../docs/components/menu.md) | `@rata/react` | overlays | latest / latest / future | free |
+| [menu-item](../docs/components/menu-item.md) | `@rata/react` | overlays | latest / latest / future | free |
+| [notice](../docs/components/notice.md) | `@rata/react` | feedback | latest / latest / future | free |
 | [radio](../docs/components/radio.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [radio-group](../docs/components/radio-group.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@rata/react` | loading | latest / latest / future | free |
@@ -177,9 +178,53 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 
-### Dialog
+### Dialog (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<`
+
+- `title: ReactNode`
+- `children: ReactNode`
+  The dialog's content.
+- `open: boolean`
+  Whether the dialog is showing. Always controlled — `showModal()` has no prop.
+- `onClose: (reason: DialogCloseReason) => void`
+  Called when the dialog asks to close. Set `open` to false in it.
+- `description?: ReactNode`
+  A line under the title, wired as the dialog's description.
+- `footer?: ReactNode`
+  The actions. Reads after the body it acts on.
+- `size?: DialogSize` — default: `"md"`
+- `dismissible?: boolean` — default: `true`
+- `dismissLabel?: string` — default: `"Close"`
+  Accessible name for the close button.
+- `role?: DialogRole` — default: `"dialog"`
+- `initialFocus?: RefObject<HTMLElement | null>`
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={title}
+        description={description}
+        size={size}
+        dismissible={dismissible}
+        initialFocus={cancelRef}
+        footer={
+          <>
+            <Button ref={cancelRef} variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant={destructive ? "destructive" : "primary"} onClick={() => setOpen(false)}>
+              {destructive ? "Delete" : "Save"}
+            </Button>
+          </>
+        }
+      >
+        This cannot be undone.
+      </Dialog>
+```
 
 Contract: [docs/components/dialog.md](../docs/components/dialog.md)
 
@@ -200,15 +245,87 @@ Real usage (from `apps/`):
 
 Contract: [docs/components/icon.md](../docs/components/icon.md)
 
-### Menu
+### Menu (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<`
+
+- `trigger: ReactElement`
+- `children: ReactNode`
+  `MenuItem` and `MenuSeparator` children, in the order they are read.
+- `open?: boolean`
+  Whether the menu is showing. Makes the component controlled.
+- `defaultOpen?: boolean`
+  Starting state for an uncontrolled menu. Conflicts with `open`.
+- `onOpenChange?: (open: boolean) => void`
+- `label?: string`
+  Names the list itself, for a trigger whose own name describes the button.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Menu
+        label="Row actions"
+        trigger={
+          <Button iconOnly aria-label="Row actions" variant="tertiary">
+            <Icon icon={Ellipsis} />
+          </Button>
+        }
+      >
+        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+```
 
 Contract: [docs/components/menu.md](../docs/components/menu.md)
 
-### Notice
+### MenuItem (`@rata/react`)
 
-No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.
+Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "onSelect">`
+
+- `children: ReactNode`
+  The action's label.
+- `value?: string`
+- `onSelect?: () => void`
+- `disabled?: boolean` — default: `false`
+  Unavailable, but still focusable and announced — activation is guarded.
+- `destructive?: boolean`
+  Marks an action that removes something.
+- `selected?: boolean`
+- `icon?: LucideIcon`
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+```
+
+Contract: [docs/components/menu-item.md](../docs/components/menu-item.md)
+
+### Notice (`@rata/react`)
+
+Extends: `Omit<HTMLAttributes<HTMLDivElement>, "title" | "role">`
+
+- `children: ReactNode`
+  The message.
+- `variant?: NoticeVariant` — default: `"info"`
+  Which kind of message this is.
+- `live?: NoticeLive` — default: `"off"`
+  Whether assistive technology is told about this notice when it appears.
+- `title?: ReactNode`
+  A short first line above the message.
+- `icon?: LucideIcon | false`
+  Overrides the icon the variant chooses, or removes it.
+- `actions?: ReactNode`
+  Buttons or links for what to do about the message.
+- `onDismiss?: () => void`
+  Called when the reader closes the notice. Its presence is what renders the close button.
+- `dismissLabel?: string` — default: `"Dismiss"`
+  Accessible name for the close button.
+
+Real usage (from `apps/`):
+```tsx
+<Notice variant="warning">This project is read-only while the migration runs.</Notice>
+```
 
 Contract: [docs/components/notice.md](../docs/components/notice.md)
 
@@ -575,25 +692,25 @@ Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidde
 - `--rata-font-weight-medium`: `500`
 - `--rata-font-weight-regular`: `400`
 - `--rata-font-weight-semibold`: `600`
-- `--rata-motion-duration-fast`: `175ms`
-- `--rata-motion-duration-fast-max`: `235ms`
-- `--rata-motion-duration-fast-min`: `130ms`
-- `--rata-motion-duration-medium`: `410ms`
-- `--rata-motion-duration-medium-max`: `545ms`
-- `--rata-motion-duration-medium-min`: `310ms`
-- `--rata-motion-duration-slow`: `975ms`
-- `--rata-motion-duration-slow-max`: `1300ms`
-- `--rata-motion-duration-slow-min`: `730ms`
+- `--rata-motion-duration-fast`: `130ms`
+- `--rata-motion-duration-fast-max`: `175ms`
+- `--rata-motion-duration-fast-min`: `100ms`
+- `--rata-motion-duration-medium`: `210ms`
+- `--rata-motion-duration-medium-max`: `280ms`
+- `--rata-motion-duration-medium-min`: `160ms`
+- `--rata-motion-duration-slow`: `700ms`
+- `--rata-motion-duration-slow-max`: `935ms`
+- `--rata-motion-duration-slow-min`: `525ms`
 - `--rata-motion-duration-spin`: `800ms`
 - `--rata-motion-duration-spin-reduced`: `2000ms`
 - `--rata-motion-easing-enter`: `cubic-bezier(0, 0, 0.38, 0.9)`
 - `--rata-motion-easing-exit`: `cubic-bezier(0.2, 0, 1, 0.9)`
 - `--rata-motion-easing-standard`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-interactive-duration`: `175ms`
+- `--rata-motion-interactive-duration`: `130ms`
 - `--rata-motion-interactive-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-modal-duration`: `975ms`
+- `--rata-motion-modal-duration`: `280ms`
 - `--rata-motion-modal-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
-- `--rata-motion-overlay-duration`: `410ms`
+- `--rata-motion-overlay-duration`: `210ms`
 - `--rata-motion-overlay-easing`: `cubic-bezier(0.24, 1, 0.4, 1)`
 - `--rata-opacity-12`: `0.12`
 - `--rata-opacity-50`: `0.5`
@@ -695,6 +812,7 @@ Contract: [docs/components/visually-hidden.md](../docs/components/visually-hidde
 - `--rata-theme-fg-primary`: `#151D1A`
 - `--rata-theme-fg-secondary`: `#3B4A43`
 - `--rata-theme-focus-ring`: `#008960`
+- `--rata-theme-scrim`: `#151D1A80`
 - `--rata-theme-secondary-role-bg`: `#F3FFF9`
 - `--rata-theme-secondary-role-border`: `#84958D`
 - `--rata-theme-secondary-role-fg`: `#151D1A`

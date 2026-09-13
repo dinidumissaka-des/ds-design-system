@@ -1109,23 +1109,301 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest"
       },
       "react": {
-        "state": "future"
+        "state": "latest"
       },
       "figma": {
         "state": "future"
       }
     },
-    "dependencies": [],
+    "dependencies": [
+      "state-layer",
+      "icon"
+    ],
     "importPath": "@rata/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
-    "props": [],
-    "usage": [],
-    "behavior": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<",
+    "props": [
+      {
+        "name": "title",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "",
+        "declared": true,
+        "summary": "The dialog's name. Required.",
+        "use": [
+          "A noun phrase naming what this is about: “Delete project”, not “Are you sure?”"
+        ],
+        "dont": [
+          "A question. The title is the name, and “Are you sure?” names nothing — put the question in the body.",
+          "Leaving it out. It is required, and the type will not let you."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered as an `<h2>` and wired with `aria-labelledby`, so the dialog announces with this name when it opens. A real heading, because a modal is its own outline — everything behind it is inert."
+      },
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "The dialog's content.",
+        "declared": true,
+        "summary": "The dialog's content.",
+        "use": [
+          "What the reader needs in order to answer the title. It scrolls on its own if it is tall."
+        ],
+        "dont": [
+          "Another dialog. Two modals deep, the reader has lost track of what the first one asked."
+        ],
+        "conflicts": [],
+        "a11y": "Scrolls in its own region so the title stays put and the footer actions stay reachable — a dialog taller than the viewport otherwise puts its buttons off-screen."
+      },
+      {
+        "name": "open",
+        "optional": false,
+        "type": "boolean",
+        "description": "Whether the dialog is showing. Always controlled — `showModal()` has no prop.",
+        "declared": true,
+        "summary": "Whether the dialog is showing. Always controlled.",
+        "use": [
+          "Always. There is no uncontrolled mode, because `showModal()` is a method rather than an attribute and the component has to drive it."
+        ],
+        "dont": [
+          "Expecting the dialog to close itself. Every dismissal arrives through `onClose`; setting this to false is what actually closes it."
+        ],
+        "conflicts": [],
+        "a11y": "Drives `showModal()` and `close()`. Nothing else makes the dialog modal — see the behaviour note."
+      },
+      {
+        "name": "onClose",
+        "optional": false,
+        "type": "(reason: DialogCloseReason) => void",
+        "description": "Called when the dialog asks to close. Set `open` to false in it.",
+        "declared": true,
+        "summary": "Called when the dialog asks to close, with why.",
+        "use": [
+          "Setting `open` to false.",
+          "Branching on the reason: `escape`, `close-button` or `backdrop` — a form might confirm on a backdrop click but not on the close button."
+        ],
+        "dont": [
+          "Ignoring it. Nothing closes the dialog on its own, so an empty handler makes a dialog nobody can leave."
+        ],
+        "conflicts": [],
+        "a11y": "Focus returns to whatever opened the dialog automatically, because the platform restores it — you do not need to do it yourself."
+      },
+      {
+        "name": "description",
+        "optional": true,
+        "type": "ReactNode",
+        "description": "A line under the title, wired as the dialog's description.",
+        "declared": true,
+        "summary": "A line under the title, wired as the dialog's description.",
+        "use": [
+          "A consequence worth hearing with the name: “Everything in it goes too.”"
+        ],
+        "dont": [
+          "The whole body. It is announced along with the title, so a paragraph here is read before the reader has asked for it."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes `aria-describedby`. Omitted, there is no dangling reference — a describedby pointing at nothing is silently dropped by some screen readers and read as empty by others."
+      },
+      {
+        "name": "footer",
+        "optional": true,
+        "type": "ReactNode",
+        "description": "The actions. Reads after the body it acts on.",
+        "declared": true,
+        "summary": "The actions.",
+        "use": [
+          "One or two buttons, the primary one last.",
+          "The only way out when `dismissible` is false."
+        ],
+        "dont": [
+          "Putting the close control here. That is what `dismissible` renders, placed and named for you."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered after the body in DOM order, so the actions are reached after the content they act on."
+      },
+      {
+        "name": "size",
+        "optional": true,
+        "type": "DialogSize",
+        "description": null,
+        "default": "\"md\"",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "declared": true,
+        "summary": "How wide it is allowed to get.",
+        "use": [
+          "`sm` for a confirm — one question and two buttons.",
+          "`md` for a short form. The default.",
+          "`lg` for content that genuinely needs the room, such as a table."
+        ],
+        "dont": [
+          "`lg` for a confirmation. A wide dialog with one sentence in it reads as a mistake, and the buttons end up a long way from the text."
+        ],
+        "conflicts": [],
+        "a11y": "Width only. Every size shrinks to fit a narrow viewport rather than overflowing it."
+      },
+      {
+        "name": "dismissible",
+        "optional": true,
+        "type": "boolean",
+        "description": "",
+        "default": "true",
+        "declared": true,
+        "summary": "Whether the reader can close it themselves.",
+        "use": [
+          "`true` — the default — for everything except the case below.",
+          "`false` for a blocking error where dismissing would lose work, or a decision that genuinely must be made now."
+        ],
+        "dont": [
+          "A dialog with no footer action. Escape and the close button are the reader's escape hatches; removing both without giving them another traps them, which is the one thing this prop can do wrong.",
+          "`false` to stop people skipping something. A dialog that cannot be dismissed is a dialog people close by leaving the page."
+        ],
+        "conflicts": [],
+        "a11y": "`false` removes the close button and prevents the `cancel` event, so Escape does nothing. The footer then MUST contain a labelled way out."
+      },
+      {
+        "name": "dismissLabel",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible name for the close button.",
+        "default": "\"Close\"",
+        "declared": true,
+        "summary": "Accessible name for the close button.",
+        "use": [
+          "Translating it, or naming what is being closed when the context needs it."
+        ],
+        "dont": [
+          "An empty string. The button is icon-only, so this is the only name it has."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes the button's `aria-label`. Without it the control announces as an unnamed button, a 4.1.2 failure."
+      },
+      {
+        "name": "role",
+        "optional": true,
+        "type": "DialogRole",
+        "description": "",
+        "default": "\"dialog\"",
+        "values": [
+          "dialog",
+          "alertdialog"
+        ],
+        "declared": true,
+        "summary": "ARIA's kind of dialog.",
+        "use": [
+          "`alertdialog` when the dialog's whole content is a message needing a response — a destructive confirmation, a blocking error.",
+          "`dialog`, the default, for anything with work in it: a form, a panel, a picker."
+        ],
+        "dont": [
+          "`alertdialog` for a form. It is announced more insistently and its description is read with its name, which is wrong for something the reader has to fill in and right for something they have to answer.",
+          "Reaching for it to make a dialog feel important. The role describes what the dialog is, not how much it matters."
+        ],
+        "conflicts": [],
+        "a11y": "A native `<dialog>` is already `role=\"dialog\"`; this only ever narrows it to `alertdialog`, which the element cannot be on its own. Under `alertdialog` a screen reader reads `description` along with `title` rather than waiting to be asked, which is why the destructive confirmation below sets both."
+      },
+      {
+        "name": "initialFocus",
+        "optional": true,
+        "type": "RefObject<HTMLElement | null>",
+        "description": "",
+        "declared": true,
+        "summary": "What to focus when it opens. Defaults to the platform's choice.",
+        "use": [
+          "A destructive confirm, pointed at Cancel — so the dangerous button is not one Enter away.",
+          "A form, pointed at the first field."
+        ],
+        "dont": [
+          "React's `autoFocus` instead. It does not work here: React calls `.focus()` during commit rather than emitting the attribute, so `showModal()` runs afterwards and applies its own default, undoing it."
+        ],
+        "conflicts": [],
+        "a11y": "Applied after `showModal()`, which is the only order that works. Left out, focus lands on the first focusable thing inside — usually the close button."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the dialog, for placement — not for restyling it.",
+        "use": [
+          "Rarely. `size` is the intended way to change its shape."
+        ],
+        "dont": [
+          "Overriding the backdrop or the position. Both come from `dialog.css`, and a competing rule is how a modal ends up unreachable on one page."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "A destructive confirmation",
+        "when": "The commonest modal: one question, two ways out, and the dangerous one must not be the easy one.",
+        "example": "const cancelRef = useRef<HTMLButtonElement>(null);\n\n<Dialog\n  open={confirming}\n  onClose={() => setConfirming(false)}\n  role=\"alertdialog\"\n  title=\"Delete project\"\n  description=\"Everything in it goes too.\"\n  size=\"sm\"\n  initialFocus={cancelRef}\n  footer={\n    <>\n      <Button ref={cancelRef} variant=\"secondary\" onClick={() => setConfirming(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={remove}>Delete</Button>\n    </>\n  }\n>\n  This cannot be undone.\n</Dialog>",
+        "notes": "`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence. `alertdialog` is the role for this: the dialog's whole content is a question the reader has to answer, so the description is read along with the name instead of waiting to be asked."
+      },
+      {
+        "case": "A blocking error, where dismissing would lose work",
+        "when": "Rare, and the only kind of dialog that should refuse to close.",
+        "example": "<Dialog\n  open={disconnected}\n  onClose={() => {}}\n  dismissible={false}\n  title=\"Connection lost\"\n  footer={<Button onClick={reconnect}>Reconnect</Button>}\n>\n  Your changes are saved locally and will sync when you reconnect.\n</Dialog>",
+        "notes": "The footer action is not optional here — with no close button and Escape blocked, it is the only way out, and a dialog like this without one traps the reader."
+      },
+      {
+        "case": "Don't: a dialog opened from inside a dialog",
+        "when": "Never — this is the shape to recognise and avoid.",
+        "example": "{/* Don't: by the time the second one is open, the reader has lost\n    track of what the first one asked. */}\n<Dialog open={editing} onClose={close} title=\"Edit project\">\n  <Button onClick={() => setConfirming(true)}>Delete project</Button>\n  <Dialog open={confirming} onClose={closeConfirm} title=\"Delete project\">\n    This cannot be undone.\n  </Dialog>\n</Dialog>",
+        "notes": "Don't. Close the first, then ask — or ask inline in the dialog already open. The scroll lock and the focus trap both cope with stacking, so nothing breaks; it is the reader who loses the thread."
+      }
+    ],
+    "behavior": {
+      "summary": "A native `<dialog>` opened with `showModal()`. The browser supplies a real focus trap, `inert` on everything behind it, the top layer, `::backdrop`, Escape-to-close and focus returned to whatever opened it. A hand-written focus trap is the most bug-prone component in any design system, and the platform's is correct by construction — including for the cases hand-rolled ones miss, such as a screen reader's own navigation and the browser's find-in-page.",
+      "decisions": [
+        {
+          "decision": "`showModal()`, never the `open` attribute",
+          "why": "Rendering `<dialog open>` shows the dialog NON-modally: no focus trap, no backdrop, and a live page behind it. There is no attribute for the modal state, only the method, which is why `open` is applied in an effect. Getting this wrong is the easiest way to ship a \"modal\" that is not one, and it looks correct on screen."
+        },
+        {
+          "decision": "`title` is required rather than optional",
+          "why": "A modal with no accessible name is announced as \"dialog\" and nothing else. There is no sensible default and no case where omitting it is right, so the type refuses it instead of the contract asking nicely."
+        },
+        {
+          "decision": "The title is a real `<h2>`, unlike Notice's",
+          "why": "A modal is genuinely its own context — everything behind it is inert — so the outline inside it starts fresh and the title is the top of it. A notice sits inside the page's existing outline and cannot know what level it is at, which is why that one is a styled paragraph."
+        },
+        {
+          "decision": "Escape is always prevented, then reported",
+          "why": "The platform would close the dialog itself, leaving `open` still saying it is showing. Preventing the default and reporting through `onClose` keeps React the single source of truth for whether it is open."
+        },
+        {
+          "decision": "Initial focus is a ref, because React's `autoFocus` cannot work here",
+          "why": "React implements `autoFocus` by calling `.focus()` during commit rather than by emitting the HTML attribute, so `showModal()` — which runs afterwards, in an effect — never sees an `[autofocus]` element and applies its own default, undoing it. `initialFocus` is applied after `showModal()` and therefore wins."
+        },
+        {
+          "decision": "The scroll lock counts holders rather than saving and restoring",
+          "why": "Save-and-restore is wrong the moment two dialogs overlap: the second captures `hidden` as the value to put back, so closing it leaves the page locked with nothing open. A counter has no stale state — the property is set while anything holds the lock and removed when the last holder lets go."
+        },
+        {
+          "decision": "The modal motion band was wrong, and the tempo behind it was too slow",
+          "why": "`motion.modal.duration` resolved to `motion.duration.slow`, which this system's own motion contract documents as “Continuous animation” — the spinner band. That was the category error; it is `medium-max` now, the slowest step of the entrance/exit band, which is where the expander's config names “(dialog, drawer)”. Fixing the band alone still left 545ms, because the medium band itself was too slow: Astryx's 175/410/975 tempo meant a menu took 410ms to appear. The seed came down to 130/210/700, so a dialog now enters in 280ms and a menu in 210ms. The bands kept their meanings and no role had to be remapped to one it does not belong to."
+        },
+        {
+          "decision": "The page's scroll is locked with the scrollbar's width held open",
+          "why": "Hiding the overflow takes the scrollbar away and the page reflows into the space it occupied, so everything shifts sideways as the dialog opens and jumps back as it closes — more noticeable than the scrolling being prevented. The width is measured at lock time rather than tokenised, because it is whatever the browser and the reader's settings make it, and it is zero for overlay scrollbars."
+        },
+        {
+          "decision": "A native close is reported rather than ignored",
+          "why": "`<form method=\"dialog\">` is the documented HTML way to close a dialog, and the platform can close one for its own reasons too. Neither goes through `onClose`, and the effect that drives the dialog is keyed on `open`, so it never re-runs to notice — `open` went on claiming the dialog was showing, and the scroll lock stayed on the body with nothing open, leaving the page unable to scroll at all. The native `close` event now reports `external`, and only while React still believes the dialog is open, so the component's own `close()` is not mistaken for someone else's."
+        }
+      ]
+    },
     "tokens": {
       "base": {
         "summary": "A modal surface that takes over the screen.",
@@ -1137,13 +1415,53 @@
           "box-shadow": "theme.elevation.modal",
           "title font-size": "type.heading.size",
           "title font-weight": "type.heading.weight",
+          "title line-height": "type.heading.line-height",
+          "description color": "theme.fg.secondary",
           "gap between title, body, and footer": "space.stack.md",
-          "enter transition": "motion.modal.duration with motion.easing.enter",
-          "exit transition": "motion.modal.duration with motion.easing.exit"
+          "gap between title and description": "space.stack.2xs",
+          "enter transition": "motion.modal.duration with motion.easing.enter, fading and rising",
+          "exit transition": "motion.modal.duration with motion.easing.exit",
+          "enter/exit rise distance": "space.2",
+          "exit pointer-events": "none while closing — the top layer is held for the exit, so the backdrop would go on catching clicks after the reader closed it"
+        }
+      },
+      "backdrop": {
+        "summary": "The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not. It transitions `overlay` alongside the dialog, which is what keeps the scrim on screen for the length of the exit rather than dropping it the instant the dialog starts closing.",
+        "tokens": {
+          "background": "theme.scrim",
+          "fade": "motion.modal.duration with motion.easing.enter"
+        }
+      },
+      "size": {
+        "summary": "Three widths, derived from the control scale rather than stated: a dialog is measured in controls, and inventing a size.dialog.* family for three numbers would be a scale with one consumer. Flagged as a known gap if a fourth width ever appears.",
+        "tokens": {
+          "sm max-inline-size": "size.control.lg multiplied by 10, or the viewport less its inset — whichever is smaller",
+          "md max-inline-size": "size.control.lg multiplied by 14, or the viewport less its inset — whichever is smaller",
+          "lg max-inline-size": "size.control.lg multiplied by 20, or the viewport less its inset — whichever is smaller",
+          "inline and block inset from the viewport": "space.padding.lg"
+        }
+      },
+      "footer": {
+        "summary": "The actions, reading after the body they act on.",
+        "tokens": {
+          "gap between actions": "space.gap.sm",
+          "margin above": "space.stack.md"
+        }
+      },
+      "dismiss": {
+        "summary": "The close control. Same construction as Notice's: currentColor on a transparent background, so it cannot clash with the surface it sits on.",
+        "tokens": {
+          "color": "currentColor — inherited from the dialog's own foreground",
+          "glyph size": "size.icon.text",
+          "target inline-size / block-size": "size.control.sm",
+          "border-radius": "radius.inner",
+          "hover / press": "compose the .rata-state-layer class",
+          "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible",
+          "block alignment": "centred on the title's first line, from type.heading.size and type.heading.line-height"
         }
       }
     },
-    "example": null
+    "example": "<Dialog\n        open={open}\n        onClose={() => setOpen(false)}\n        title={title}\n        description={description}\n        size={size}\n        dismissible={dismissible}\n        initialFocus={cancelRef}\n        footer={\n          <>\n            <Button ref={cancelRef} variant=\"secondary\" onClick={() => setOpen(false)}>\n              Cancel\n            </Button>\n            <Button variant={destructive ? \"destructive\" : \"primary\"} onClick={() => setOpen(false)}>\n              {destructive ? \"Delete\" : \"Save\"}\n            </Button>\n          </>\n        }\n      >\n        This cannot be undone.\n      </Dialog>"
   },
   {
     "name": "icon",
@@ -1292,10 +1610,236 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest"
       },
       "react": {
+        "state": "latest"
+      },
+      "figma": {
         "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer",
+      "menu-item"
+    ],
+    "importPath": "@rata/react",
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<",
+    "props": [
+      {
+        "name": "trigger",
+        "optional": false,
+        "type": "ReactElement",
+        "description": "",
+        "declared": true,
+        "summary": "The control that opens the menu.",
+        "use": [
+          "A `Button`. It is cloned to receive the trigger ARIA, a ref and the handlers."
+        ],
+        "dont": [
+          "A `div` or a span. The trigger must be a real button or it is not reachable by keyboard, and none of the ARIA below means anything on a non-interactive element.",
+          "Passing `onClick` on it and expecting to be called. The menu owns that handler; put your own work in `onOpenChange`."
+        ],
+        "conflicts": [],
+        "a11y": "Receives `aria-haspopup=\"menu\"`, `aria-expanded` and `aria-controls`. Its own text names the menu, which is why `label` is only for a trigger that has none."
+      },
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "`MenuItem` and `MenuSeparator` children, in the order they are read.",
+        "declared": true,
+        "summary": "`MenuItem` and `MenuSeparator`, in the order they are read.",
+        "use": [
+          "Two to about seven actions. Longer than that and the reader is scanning, not choosing."
+        ],
+        "dont": [
+          "Anything focusable that is not a `MenuItem`. The arrow keys walk the rows the menu knows about, and a stray button would be a tab stop the pattern does not account for.",
+          "A form. A menu is a list of actions; something to fill in belongs in a dialog."
+        ],
+        "conflicts": [],
+        "a11y": "Each row registers itself, so navigation follows DOM order rather than mount order — which is what the reader sees."
+      },
+      {
+        "name": "open",
+        "optional": true,
+        "type": "boolean",
+        "description": "Whether the menu is showing. Makes the component controlled.",
+        "declared": true,
+        "summary": "Whether the menu is showing. Makes the component controlled.",
+        "use": [
+          "Opening the menu from somewhere else, or keeping it open across a re-render you drive."
+        ],
+        "dont": [
+          "Passing it alongside `defaultOpen`. One of them owns the state.",
+          "Opening more than one at a time. The list is a `popover=\"auto\"`, and the platform allows exactly one of those open at once — showing a second closes the first, and the menu reports that through `onOpenChange` rather than silently disagreeing with your state."
+        ],
+        "conflicts": [
+          "defaultOpen"
+        ],
+        "a11y": "Controlled means the menu will not open unless you change this — the trigger still reports the request through `onOpenChange`, and `aria-expanded` follows whatever you set."
+      },
+      {
+        "name": "defaultOpen",
+        "optional": true,
+        "type": "boolean",
+        "description": "Starting state for an uncontrolled menu. Conflicts with `open`.",
+        "declared": true,
+        "summary": "Starting state for an uncontrolled menu.",
+        "use": [
+          "Almost never. A menu that is open before the reader asked for it covers the thing they were looking at."
+        ],
+        "dont": [
+          "Using it as a way to show the menu on load. That is what a `Notice` or an inline panel is for."
+        ],
+        "conflicts": [
+          "open"
+        ],
+        "a11y": "Focus is NOT moved into the menu, and that is deliberate: focus follows the reader's own action, and taking it on page load would be hostile. The first row is still the tab stop, so Tab reaches it and the arrow keys work from there. The same is true of setting `open` programmatically."
+      },
+      {
+        "name": "onOpenChange",
+        "optional": true,
+        "type": "(open: boolean) => void",
+        "description": null,
+        "declared": true,
+        "summary": "Called when the menu should open or close.",
+        "use": [
+          "Controlled mode, to set `open`.",
+          "Uncontrolled mode, to react — closing a toolbar, or logging."
+        ],
+        "dont": [
+          "Doing work that belongs in a row's `onSelect`. This fires for every close, including Escape and clicking away."
+        ],
+        "conflicts": [],
+        "a11y": null
+      },
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Names the list itself, for a trigger whose own name describes the button.",
+        "declared": true,
+        "summary": "Names the list itself, for a trigger whose own name describes the button.",
+        "use": [
+          "An icon-only trigger, where the button is named \"Row actions\" and the list needs naming separately."
+        ],
+        "dont": [
+          "A trigger with visible text. The text already names the menu, and a second name would win over the one the reader can see."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes the menu's `aria-label` and suppresses the `aria-labelledby` pointing at the trigger — never both, because two names on one node is a 4.1.2 problem rather than a fallback."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the list, for placement — not for restyling it.",
+        "use": [
+          "Constraining the width when the actions are unusually long."
+        ],
+        "dont": [
+          "Positioning it. Placement comes from anchor positioning in `menu.css`; a competing `position` here is how a menu ends up in the wrong place on one page only."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "Actions on a row",
+        "when": "The commonest case: a handful of things you can do to one item.",
+        "example": "<Menu trigger={<Button variant=\"secondary\">Actions</Button>}>\n  <MenuItem onSelect={duplicate}>Duplicate</MenuItem>\n  <MenuItem onSelect={download}>Download</MenuItem>\n  <MenuSeparator />\n  <MenuItem destructive onSelect={remove}>Delete</MenuItem>\n</Menu>",
+        "notes": "The separator groups the destructive action away from the safe ones, so it is harder to hit by accident. `destructive` colours it; the separator is what actually puts distance between them."
+      },
+      {
+        "case": "An icon-only trigger, which needs the list named separately",
+        "when": "A dense table where a labelled button would not fit.",
+        "example": "<Menu\n  label=\"Row actions\"\n  trigger={<Button iconOnly aria-label=\"Row actions\" variant=\"tertiary\"><Icon icon={Ellipsis} /></Button>}\n>\n  <MenuItem onSelect={edit}>Edit</MenuItem>\n  <MenuItem destructive onSelect={remove}>Delete</MenuItem>\n</Menu>",
+        "notes": "Both names are needed and they are not redundant: the button's `aria-label` names the control you press, and `label` names the list that appears. Without the second, the menu is announced with the button's name, which describes the wrong thing."
+      },
+      {
+        "case": "Don't: a menu standing in for a choice that should be a form control",
+        "when": "Never — this is the shape to recognise and avoid.",
+        "example": "{/* Don't: this is a select wearing a menu's clothes. */}\n<Menu trigger={<Button>Sort: {sort}</Button>}>\n  <MenuItem selected={sort === \"name\"} onSelect={() => setSort(\"name\")}>Name</MenuItem>\n  <MenuItem selected={sort === \"date\"} onSelect={() => setSort(\"date\")}>Date</MenuItem>\n</Menu>",
+        "notes": "Don't. A menu is a list of actions; a choice with a current answer is a `RadioGroup`, or a select once this system has one. `selected` exists for the narrow case where a menu genuinely reflects state — a view switcher — not as licence to build a picker out of actions."
+      }
+    ],
+    "behavior": {
+      "primitive": "getMenuProps",
+      "summary": "A trigger and a list in the top layer. The list carries the `popover` attribute, so it escapes every overflow and stacking context without a portal and gets light-dismiss from the platform; CSS anchor positioning places it against the trigger and flips it near a viewport edge. No measurement code and no dependency — which matters more here than usual, because this registry is a copy-paste channel and a dependency becomes an install step for every consumer.",
+      "decisions": [
+        {
+          "decision": "Focus always returns to the trigger on Escape and after a selection",
+          "why": "It is what makes the menu usable by keyboard at all: close it and the reader has to be somewhere, and the only place that makes sense is where they were. The primitive reports the close and the wrapper does the focusing, since moving focus is a DOM act. Light-dismiss is the exception — the reader clicked something else, and taking focus back would undo their own action."
+        },
+        {
+          "decision": "Selection closes the menu before `onSelect` runs",
+          "why": "So focus is already back on the trigger by the time the handler does anything. A handler that navigates, or opens a dialog, would otherwise be fighting a menu that is still tearing down, and the dialog would steal focus from a control that is about to vanish."
+        },
+        {
+          "decision": "A disabled row is reachable and announced",
+          "why": "The `aria-disabled` rule this whole system follows: arrow keys reach it, a screen reader reads it, and activation is refused. Most menus skip disabled rows entirely, which makes the list a different length depending on whether you are looking or listening."
+        },
+        {
+          "decision": "Tab closes the menu without trapping focus",
+          "why": "Someone tabbing through a page expects to keep going. Trapping focus is what a dialog does, because a dialog is modal and a menu is not."
+        },
+        {
+          "decision": "Typeahead cycles on a single character rather than buffering a prefix",
+          "why": "A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked. It also ignores a keypress with Ctrl, Meta or Alt held: `event.key` for Ctrl+D is just \"d\", so without that check a browser shortcut was indistinguishable from someone typing, and typeahead both hijacked the key and preventDefault'd it."
+        },
+        {
+          "decision": "The list's open state is driven imperatively, not by popovertarget",
+          "why": "`popovertarget` would let the platform toggle the popover without telling React, and `open` would drift out of step with what is painted. The trigger's click goes through the primitive instead, and the popover's own `toggle` event is what keeps state honest when the platform closes it."
+        },
+        {
+          "decision": "The anchor name is generated per instance, not written in the stylesheet",
+          "why": "`anchor-name` is a global ident, and the spec resolves a duplicated one to the LAST acceptable anchor in tree order. A single name in the CSS therefore made every menu on a page position itself against whichever trigger came last, which is invisible until a second menu exists. CSS cannot mint a unique ident, so the component passes one in as a custom property — on both the trigger and the list, because a sibling inherits nothing. It is sanitised: React 18's `useId` produces `:r0:` and a colon is not valid in an ident."
+        }
+      ]
+    },
+    "tokens": {
+      "base": {
+        "summary": "A transient list of actions anchored to a trigger.",
+        "tokens": {
+          "background": "theme.bg.surface",
+          "border-radius": "radius.container",
+          "box-shadow": "theme.elevation.overlay",
+          "border": "border.default solid theme.border.default",
+          "padding": "space.1",
+          "min-inline-size": "size.control.lg multiplied — the list should not be narrower than a control",
+          "font-size": "type.control.size.sm",
+          "enter transition": "motion.overlay.duration with motion.easing.enter",
+          "gap from the trigger": "space.gap.xs"
+        }
+      },
+      "separator": {
+        "summary": "A rule between groups of actions.",
+        "tokens": {
+          "border-block-start": "border.default solid theme.border.default",
+          "margin-block": "space.1"
+        }
+      }
+    },
+    "example": "<Menu\n        label=\"Row actions\"\n        trigger={\n          <Button iconOnly aria-label=\"Row actions\" variant=\"tertiary\">\n            <Icon icon={Ellipsis} />\n          </Button>\n        }\n      >\n        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>\n        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>\n      </Menu>"
+  },
+  {
+    "name": "menu-item",
+    "title": "MenuItem",
+    "description": "One action in a Menu, plus the separator that groups them.",
+    "family": "overlays",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest"
+      },
+      "react": {
+        "state": "latest"
       },
       "figma": {
         "state": "future"
@@ -1305,32 +1849,212 @@
       "state-layer"
     ],
     "importPath": "@rata/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
-    "props": [],
-    "usage": [],
-    "behavior": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"disabled\" | \"role\" | \"onSelect\">",
+    "props": [
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "The action's label.",
+        "declared": true,
+        "summary": "The action's label.",
+        "use": [
+          "A verb. \"Duplicate\", not \"Duplication\" — a row is a thing you do."
+        ],
+        "dont": [
+          "A sentence. If the action needs explaining, the menu is the wrong container.",
+          "Only an icon. A glyph with no text is unreadable to anyone who does not already know the icon, and there is no `aria-label` here to rescue it."
+        ],
+        "conflicts": [],
+        "a11y": "The row's accessible name, and — when it is a plain string — the text typeahead matches on."
+      },
+      {
+        "name": "value",
+        "optional": true,
+        "type": "string",
+        "description": "",
+        "declared": true,
+        "summary": "Identifies this row. Defaults to the children when they are a plain string.",
+        "use": [
+          "A row whose children are not a plain string, where there is no text to borrow.",
+          "Keeping the identity stable when the label is translated."
+        ],
+        "dont": [
+          "Restating the label. Passing the same string the children already are is the duplication the default exists to avoid."
+        ],
+        "conflicts": [],
+        "a11y": "Not announced. It is how the menu tracks which row holds focus, so it has to be unique within one menu."
+      },
+      {
+        "name": "onSelect",
+        "optional": true,
+        "type": "() => void",
+        "description": null,
+        "declared": true,
+        "summary": "Called when the row is activated.",
+        "use": [
+          "The action itself. The menu has already closed and focus is already back on the trigger by the time this runs."
+        ],
+        "dont": [
+          "Closing the menu yourself. It is closed before this is called, and closing again would fight the state."
+        ],
+        "conflicts": [],
+        "a11y": "Runs after focus has returned to the trigger, which is what makes it safe to navigate or open a dialog here."
+      },
+      {
+        "name": "disabled",
+        "optional": true,
+        "type": "boolean",
+        "description": "Unavailable, but still focusable and announced — activation is guarded.",
+        "default": "false",
+        "declared": true,
+        "summary": "Unavailable, but still focusable and announced.",
+        "use": [
+          "An action that exists but cannot run right now — and where the reader benefits from knowing it exists."
+        ],
+        "dont": [
+          "Hiding a capability the reader does not have at all. A row they can never use is noise; leave it out."
+        ],
+        "conflicts": [],
+        "a11y": "`aria-disabled` with a guarded activation, never the native attribute. Arrow keys reach it and a screen reader reads it, so the list is the same length whether you look or listen."
+      },
+      {
+        "name": "destructive",
+        "optional": true,
+        "type": "boolean",
+        "description": "Marks an action that removes something.",
+        "declared": true,
+        "summary": "Marks an action that removes something.",
+        "use": [
+          "Delete, revoke, discard — something that cannot be undone by doing it again."
+        ],
+        "dont": [
+          "\"Important\". It means something is destroyed, and spending it on emphasis teaches readers to ignore it.",
+          "Relying on the colour alone. Put a separator above it so it is harder to hit by accident, and confirm the destruction elsewhere if it matters."
+        ],
+        "conflicts": [],
+        "a11y": "Colour only — nothing about the row is announced differently, because the label is what has to say what it does. \"Delete\" already does."
+      },
+      {
+        "name": "selected",
+        "optional": true,
+        "type": "boolean",
+        "description": "",
+        "declared": true,
+        "summary": "Marks the row that is the current answer. Its presence changes the row's role.",
+        "use": [
+          "The narrow case where a menu genuinely reflects state, such as a view switcher.",
+          "On EVERY row of the set — `selected={sort === \"name\"}` on each — not only the chosen one."
+        ],
+        "dont": [
+          "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract.",
+          "Passing it on one row only. The others stay plain `menuitem`s, so the set is not announced as a set and the reader cannot tell how many options there were."
+        ],
+        "conflicts": [],
+        "a11y": "Stating it at all — true or false — makes the row a `menuitemradio` rather than a `menuitem`, because that is the role ARIA lets carry a checked state. `aria-checked` on a plain `menuitem` is invalid and a screen reader may ignore it, which would leave the chosen row marked by colour alone."
+      },
+      {
+        "name": "icon",
+        "optional": true,
+        "type": "LucideIcon",
+        "description": null,
+        "declared": true,
+        "summary": "A glyph before the label.",
+        "use": [
+          "A set of rows where every one has an icon, so the column reads as a column."
+        ],
+        "dont": [
+          "Icons on some rows and not others. The labels then start at two different places and the list is harder to scan than with none at all."
+        ],
+        "conflicts": [],
+        "a11y": "`aria-hidden`, like every decorative glyph here — the label carries the meaning."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the row, for placement — not for restyling it.",
+        "use": [
+          "Rarely. The row's appearance is the menu's, and a row that looks different reads as a different kind of thing."
+        ],
+        "dont": [
+          "Colouring it. `destructive` is the one colour variation a row has, and it is a semantic one."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "A row with an icon",
+        "when": "Rows whose actions have recognisable glyphs, all of them.",
+        "example": "<MenuItem icon={Download} onSelect={download}>Download</MenuItem>",
+        "notes": "The icon is aria-hidden and the label is the name, so nothing is announced twice."
+      },
+      {
+        "case": "A destructive row, kept away from the safe ones",
+        "when": "The menu contains something that cannot be undone.",
+        "example": "<MenuSeparator />\n<MenuItem destructive icon={Trash2} onSelect={remove}>Delete</MenuItem>",
+        "notes": "The separator is doing the safety work; the colour only confirms it. A destructive row directly under a benign one is one misclick away."
+      },
+      {
+        "case": "A row that exists but cannot run yet",
+        "when": "The action is real, and the reader benefits from knowing it is there.",
+        "example": "<MenuItem disabled onSelect={publish}>Publish</MenuItem>",
+        "notes": "Reachable by arrow keys and announced as unavailable. If the reader could never use it at all, leave it out instead — a permanently dead row is noise."
+      }
+    ],
+    "behavior": {
+      "summary": "A real `<button>` carrying `role=\"menuitem\"`, reading its ARIA, its tabindex and its click handling from the `Menu` above it through context. It throws when rendered outside one rather than degrading: alone it has no list to navigate and no trigger to return focus to, so it would look like a button and behave like nothing.",
+      "decisions": [
+        {
+          "decision": "Context, not cloneElement",
+          "why": "The row writes its ARIA and click handling after spreading `rest`, deliberately, so a caller cannot clobber the accessibility contract with a prop. That same ordering means a cloned prop could not reach those attributes either — so the menu has to be something the row reads, not something done to it. The same reasoning as ToggleButton."
+        },
+        {
+          "decision": "`value` defaults to the children when they are a plain string",
+          "why": "The menu identifies rows by value and typeahead matches on their text, and for almost every row both are just the label. Requiring it stated twice would make the common case noisier than the rare one. A row with non-string children has no text to borrow, so it must say what it is."
+        },
+        {
+          "decision": "A checkable row is a different role, not a menuitem with an extra attribute",
+          "why": "ARIA does not support `aria-checked` on `menuitem` — only on `menuitemradio` and `menuitemcheckbox`. Setting it anyway is invalid and a screen reader is free to drop it, which would leave the selected row distinguished by colour alone: the exact failure the rest of this system's contracts are written to prevent. So `selected` changes the role, and the primitive owns that decision."
+        }
+      ]
+    },
     "tokens": {
       "base": {
-        "summary": "A transient list of actions anchored to a trigger.",
+        "summary": "One action. Its own focus ring, because the roving tabindex means an item — not the menu — is what focus lands on.",
         "tokens": {
-          "background": "theme.bg.surface",
-          "border-radius": "radius.container",
-          "box-shadow": "theme.elevation.overlay",
-          "padding": "space.1",
-          "item height": "size.control.sm",
-          "item padding-inline": "space.control.padding-inline.sm",
-          "item color": "theme.fg.primary",
-          "destructive item color": "theme.danger-role.fg",
-          "selected item background": "theme.accent-role.subtle",
-          "item hover/press": "compose the .rata-state-layer class",
-          "separator": "border.default solid theme.border.default",
-          "enter transition": "motion.overlay.duration with motion.easing.enter"
+          "block-size": "size.control.sm",
+          "padding-inline": "space.control.padding-inline.sm",
+          "border-radius": "radius.inner",
+          "color": "theme.fg.primary",
+          "gap between icon and label": "space.gap.sm",
+          "icon size": "size.icon.text",
+          "hover / press": "compose the .rata-state-layer class",
+          "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible",
+          "disabled": "state.disabled-opacity"
+        }
+      },
+      "destructive": {
+        "summary": "An action that removes something. Uses the danger role's foreground on the menu's own surface — a pairing the token contracts verify for text at any size — rather than a tinted row, which would read as a status.",
+        "tokens": {
+          "color": "theme.danger-role.fg"
+        }
+      },
+      "selected": {
+        "summary": "A menu standing in for a choice already made, where one row is the current answer.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "color": "theme.fg.primary"
         }
       }
     },
-    "example": null
+    "example": "<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>"
   },
   {
     "name": "notice",
@@ -1340,39 +2064,280 @@
     "tier": "free",
     "status": {
       "css": {
-        "state": "future"
+        "state": "latest"
       },
       "react": {
-        "state": "future"
+        "state": "latest"
       },
       "figma": {
         "state": "future"
       }
     },
-    "dependencies": [],
+    "dependencies": [
+      "icon"
+    ],
     "importPath": "@rata/react",
-    "mode": "spec",
-    "note": "No React implementation yet (status: future). There is nothing to look up — don't invent props for this one.",
-    "extends": null,
-    "props": [],
-    "usage": [],
-    "behavior": null,
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLDivElement>, \"title\" | \"role\">",
+    "props": [
+      {
+        "name": "children",
+        "optional": false,
+        "type": "ReactNode",
+        "description": "The message.",
+        "declared": true,
+        "summary": "The message.",
+        "use": [
+          "One or two sentences saying what happened and, when there is one, what to do about it."
+        ],
+        "dont": [
+          "A bare status word. \"Error\" tells the reader nothing they cannot already see from the colour.",
+          "A paragraph. A notice is read in passing; anything longer belongs on the page itself."
+        ],
+        "conflicts": [],
+        "a11y": "The text carries the meaning. The icon beside it is aria-hidden, so this is the only thing announced besides `title`."
+      },
+      {
+        "name": "variant",
+        "optional": true,
+        "type": "NoticeVariant",
+        "description": "Which kind of message this is.",
+        "default": "\"info\"",
+        "values": [
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "declared": true,
+        "summary": "Which kind of message this is.",
+        "use": [
+          "`info` for context the reader did not ask for but benefits from — the default.",
+          "`success` to confirm something completed.",
+          "`warning` for something that will go wrong if it is left alone.",
+          "`danger` for something that has already gone wrong."
+        ],
+        "dont": [
+          "`danger` for \"important\". It means something is broken, and spending it on emphasis is how readers learn to ignore it.",
+          "`warning` where the reader has nothing to do. A warning with no action is just noise in a louder colour."
+        ],
+        "conflicts": [],
+        "a11y": "Colour alone never carries the severity: each variant also gets its own icon, and the text states the problem. `info` is tinted neutral rather than with the brand accent, so it cannot impersonate an error in a red or orange brand."
+      },
+      {
+        "name": "live",
+        "optional": true,
+        "type": "NoticeLive",
+        "description": "Whether assistive technology is told about this notice when it appears.",
+        "default": "\"off\"",
+        "values": [
+          "off",
+          "polite",
+          "assertive"
+        ],
+        "declared": true,
+        "summary": "Whether assistive technology is told about this notice when it appears.",
+        "use": [
+          "`off` for a notice that is part of the page when it loads — the default, and correct more often than it looks.",
+          "`polite` for a notice that appears in response to something the user did and can wait for a pause: a save confirmation.",
+          "`assertive` only when the user must stop: their work failed to save, or a deadline just passed."
+        ],
+        "dont": [
+          "`assertive` as the default for `danger`. It interrupts whatever is being read mid-sentence, and most errors can wait one clause.",
+          "Any live setting on a notice that is present at page load. There is no change to announce, so it is read out of context or silently dropped.",
+          "More than one assertive region on a screen. They interrupt each other and the user hears fragments."
+        ],
+        "conflicts": [],
+        "a11y": "`polite` renders `role=\"status\"`, `assertive` renders `role=\"alert\"`, and `off` renders no role at all. A live region must already be in the document before its content arrives, so `{error && <Notice live=\"assertive\">…}` is unreliable — the persistent wrapper has to be yours. See the usage case below."
+      },
+      {
+        "name": "title",
+        "optional": true,
+        "type": "ReactNode",
+        "description": "A short first line above the message.",
+        "declared": true,
+        "summary": "A short first line above the message.",
+        "use": [
+          "A notice long enough that the reader needs to know whether it concerns them before reading it."
+        ],
+        "dont": [
+          "Repeating the variant. \"Error\" over an error notice adds a line and no information.",
+          "A title on a one-line notice. The line is already the title."
+        ],
+        "conflicts": [],
+        "a11y": "Renders as a styled paragraph, not an `<h2>`. A notice cannot know the heading level it sits under, and announcing a wrong one breaks heading navigation for the whole page."
+      },
+      {
+        "name": "icon",
+        "optional": true,
+        "type": "LucideIcon | false",
+        "description": "Overrides the icon the variant chooses, or removes it.",
+        "declared": true,
+        "summary": "Overrides the icon the variant chooses, or removes it.",
+        "use": [
+          "A glyph more specific than the severity when the notice is about one recognisable thing — a clock for an expiry, a lock for a permission.",
+          "`false` only where a parent already shows the severity and a second glyph is noise."
+        ],
+        "dont": [
+          "`false` to save space. The icon is the non-colour cue for the variant; removing it leaves colour carrying the severity alone.",
+          "An icon that contradicts the variant. It is aria-hidden, so a screen reader cannot correct the impression it gives a sighted reader."
+        ],
+        "conflicts": [],
+        "a11y": "Always `aria-hidden`, whichever glyph it is: it repeats the severity the text and the variant already carry."
+      },
+      {
+        "name": "actions",
+        "optional": true,
+        "type": "ReactNode",
+        "description": "Buttons or links for what to do about the message.",
+        "declared": true,
+        "summary": "Buttons or links for what to do about the message.",
+        "use": [
+          "One action, occasionally two: \"Retry\", or \"Retry\" and \"Download the log\".",
+          "`Button` with `variant=\"secondary\"` or a plain link — a notice is not the page's primary call to action."
+        ],
+        "dont": [
+          "A third action. At that point the notice is a form and belongs in a dialog.",
+          "The dismiss control. That is `onDismiss`, which places and names it for you."
+        ],
+        "conflicts": [],
+        "a11y": "Rendered after the message in DOM order, so it is reached after the text explaining it. Each action needs its own accessible name — \"Retry\" is fine; an icon-only button here needs `aria-label` like anywhere else."
+      },
+      {
+        "name": "onDismiss",
+        "optional": true,
+        "type": "() => void",
+        "description": "Called when the reader closes the notice. Its presence is what renders the close button.",
+        "declared": true,
+        "summary": "Called when the reader closes the notice. Its presence is what renders the close button.",
+        "use": [
+          "A notice the reader can finish with: a confirmation, or a tip.",
+          "Removing the notice from your own state in the handler — `Notice` does not hide itself, because it cannot know what should fill the space."
+        ],
+        "dont": [
+          "A notice reporting a condition that is still true. Dismissing an unsaved-changes warning does not save the changes, and offering the button implies it might.",
+          "Relying on it to unmount anything. The handler is yours; nothing happens to the notice unless you make it happen."
+        ],
+        "conflicts": [],
+        "a11y": "Dismissing destroys the element that had focus, so focus falls to `<body>` and the reader loses their place. `Notice` cannot know where focus belongs next — move it in your handler, usually to whatever the notice was about."
+      },
+      {
+        "name": "dismissLabel",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible name for the close button.",
+        "default": "\"Dismiss\"",
+        "declared": true,
+        "summary": "Accessible name for the close button.",
+        "use": [
+          "Translating it, or naming what is being dismissed when several notices are on screen at once: \"Dismiss the payment warning\"."
+        ],
+        "dont": [
+          "An empty string. The button is icon-only, so this is the only name it has."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes the button's `aria-label`. Without it the control announces as an unnamed button, which is a 4.1.2 failure."
+      }
+    ],
+    "usage": [
+      {
+        "case": "A page-level message that is there when the page loads",
+        "when": "The commonest case, and the one where `live` should stay off.",
+        "example": "<Notice variant=\"warning\">\n  This project is read-only while the migration runs.\n</Notice>",
+        "notes": "No `live`: there is no change to announce. A screen reader reaches this in document order like any other content, which is the behaviour you want for something that was always on the page."
+      },
+      {
+        "case": "An error that appears after an action, announced correctly",
+        "when": "The user pressed Save and it failed. Their attention is on the button, not on the banner.",
+        "example": "{/* The wrapper is always rendered, so the live region exists\n    before the notice arrives. Rendering the Notice itself\n    conditionally is what makes announcements unreliable. */}\n<div aria-live=\"polite\">\n  {error ? (\n    <Notice variant=\"danger\" title=\"Could not save\" actions={<Button variant=\"secondary\" onClick={retry}>Retry</Button>}>\n      {error.message}\n    </Notice>\n  ) : null}\n</div>",
+        "notes": "`polite` on the wrapper rather than `live` on the Notice, because the region has to pre-exist its content. Use `live` on the Notice when the notice itself is always mounted and only its text changes."
+      },
+      {
+        "case": "A dismissible confirmation, with focus handled",
+        "when": "Something succeeded and the reader can be done with the message.",
+        "example": "{/* `live` stays off and the region sits on the wrapper: the notice is\n    mounted at the same moment its text appears, and a live region has\n    to pre-exist its content to be announced reliably. */}\n<div aria-live=\"polite\">\n  {sent ? (\n    <Notice\n      variant=\"success\"\n      onDismiss={() => {\n        setSent(false);\n        // Dismissing destroys the focused button, so focus has to go\n        // somewhere deliberate rather than fall to <body>.\n        tableRef.current?.focus();\n      }}\n    >\n      Invitations sent to 12 people.\n    </Notice>\n  ) : null}\n</div>",
+        "notes": "The handler does two things, neither of which happens on its own: `Notice` does not own its visibility, and it cannot guess where the reader's place was. Reach for `live` on the notice itself only when the notice stays mounted and only its children change — a status line that updates in place, not a banner that appears."
+      }
+    ],
+    "behavior": {
+      "summary": "A plain div. There is no primitive: nothing here owns keyboard interaction, roving focus or an activation to guard, and the one stateful thing — whether the notice is still on screen — belongs to the caller, who is the only one who knows what replaces it.",
+      "decisions": [
+        {
+          "decision": "When it announces is a prop, not a consequence of the variant",
+          "why": "A live region announces *changes*. A notice already on the page at load is therefore either read out of context during load or not at all, while one that appears because the user pressed something must be read, since their attention is on the button. That distinction is about when the notice arrived, not what it says: a validation summary rendered at load and an error that appears after a failed save are the same variant with opposite requirements. Deriving it from `variant` would get one of them wrong every time, so `live` is explicit and silent by default."
+        },
+        {
+          "decision": "The icon is on by default",
+          "why": "Colour is the only thing separating the four variants, so the icon is the 1.4.1 redundancy rather than decoration — which is also why it is aria-hidden: it repeats the severity the text already carries, and a glyph that could disagree with its message is worse than no glyph."
+        },
+        {
+          "decision": "`info` is tinted neutral, not with the brand accent",
+          "why": "There is no info role in the token set, and the obvious substitute — accent-role.subtle — moves with the brand. In rust (#C22D05) or ember an informational notice would be tinted red and read as an error, which is a worse failure than looking plain. bg.muted with fg.primary is the same pairing Badge's neutral uses and is safe in all seven brands."
+        },
+        {
+          "decision": "`title` is a styled paragraph, never a heading element",
+          "why": "A notice cannot know what heading level it sits under, and a wrong level breaks the document outline for anyone navigating by headings — a quieter failure than an unstyled title, and a harder one to notice."
+        }
+      ]
+    },
     "tokens": {
       "base": {
-        "summary": "An inline banner. Only the tinted subtle backgrounds carry text; the saturated role fills do not.",
+        "summary": "The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are not used here at all — they are non-text indicator tones, and text on them is a recorded contrast gap.",
         "tokens": {
-          "info background / text": "theme.accent-role.subtle / theme.accent-role.fg",
-          "success background / text": "theme.success-role.subtle / theme.success-role.fg",
-          "warning background / text": "theme.warning-role.subtle / theme.warning-role.fg",
-          "error background / text": "theme.danger-role.subtle / theme.danger-role.fg",
           "padding": "space.padding.sm space.padding.md",
           "border-radius": "radius.element",
           "gap between icon and text": "space.gap.sm",
-          "leading accent bar (optional)": "the matching role bg — a non-text use"
+          "gap between title and message": "space.stack.2xs",
+          "gap between message and actions": "space.stack.xs",
+          "font-size": "type.body.size",
+          "line-height": "type.body.line-height",
+          "title font-weight": "type.label.weight",
+          "icon size": "size.icon.text"
+        }
+      },
+      "info": {
+        "summary": "Tinted neutral rather than with the brand accent: there is no info role, and accent-role.subtle moves with the brand, so in a red or orange theme an info notice would read as an error.",
+        "tokens": {
+          "background": "theme.bg.muted",
+          "color": "theme.fg.primary"
+        }
+      },
+      "success": {
+        "summary": "The role's subtle tint with its own foreground.",
+        "tokens": {
+          "background": "theme.success-role.subtle",
+          "color": "theme.success-role.fg"
+        }
+      },
+      "warning": {
+        "summary": "The role's subtle tint with its own foreground.",
+        "tokens": {
+          "background": "theme.warning-role.subtle",
+          "color": "theme.warning-role.fg"
+        }
+      },
+      "danger": {
+        "summary": "The role's subtle tint with its own foreground.",
+        "tokens": {
+          "background": "theme.danger-role.subtle",
+          "color": "theme.danger-role.fg"
+        }
+      },
+      "dismiss": {
+        "summary": "The close button, when `onDismiss` is passed. It takes currentColor so the glyph always matches the variant's foreground and cannot clash with the tint it sits on — which is also why it is not a Button: a tertiary Button would bring its own colour into a tinted surface.",
+        "tokens": {
+          "color": "currentColor — inherited from the variant's own foreground",
+          "glyph size": "size.icon.text",
+          "target inline-size / block-size": "size.control.sm",
+          "border-radius": "radius.inner",
+          "hover / press": "compose the .rata-state-layer class",
+          "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible",
+          "background": "transparent — the variant's tint shows through"
         }
       }
     },
-    "example": null
+    "example": "<Notice variant=\"warning\">This project is read-only while the migration runs.</Notice>"
   },
   {
     "name": "radio",

@@ -332,6 +332,37 @@ White text/icon color for use on a filled, saturated role background.
 
 **Pairs with** `theme.accent-role.bg`, `theme.danger-role.bg`
 
+### `theme.scrim`
+
+`var(--rata-theme-scrim)` · light `#151D1A80` · dark `#151D1AB3`
+
+A translucent wash over everything behind a modal, so the surface in front reads as the only thing you can act on.
+
+**Use for**
+
+- A modal dialog's `::backdrop`.
+- Any full-screen wash whose job is to make the layer above it the only interactive one.
+
+**Do not use for**
+
+- As a background for content. It is translucent, so whatever is behind shows through and no contrast promise about text on it can hold.
+- For a non-modal overlay. A menu or popover does not dim the page, because the page is still live behind it — dimming implies the rest is inert, and for a menu it is not.
+- As a hover or press wash. That is the state layer, which tints a control rather than covering the page.
+
+**Use instead**
+
+| Instead of reaching for this | Use |
+|---|---|
+| A raised surface's own background | `theme.bg.surface` |
+| Hover or press feedback on a control | `compose the .rata-state-layer class` |
+| A recessed well behind content | `theme.bg.muted` |
+
+**Pairs with** `theme.elevation.modal`
+
+```css
+.rata-dialog::backdrop { background: var(--rata-theme-scrim); }
+```
+
 ### `theme.success-role.fg`
 
 `var(--rata-theme-success-role-fg)` · light `#166534` · dark `#4ade80`
@@ -633,25 +664,25 @@ Duration and easing. The duration bands are generated from the theme's {fast, me
 
 | Step | CSS variable | Value | Use for |
 |---|---|---|---|
-| `duration.fast-min` | `var(--rata-motion-duration-fast-min)` | `130ms` | Fastest step of the fast band. |
-| `duration.fast` | `var(--rata-motion-duration-fast)` | `175ms` | Micro-interactions — hover, toggle. |
-| `duration.fast-max` | `var(--rata-motion-duration-fast-max)` | `235ms` | Slowest step of the fast band. |
-| `duration.medium-min` | `var(--rata-motion-duration-medium-min)` | `310ms` | Fastest step of the medium band. |
-| `duration.medium` | `var(--rata-motion-duration-medium)` | `410ms` | Entrance/exit — menus, popovers. |
-| `duration.medium-max` | `var(--rata-motion-duration-medium-max)` | `545ms` | Slowest step of the medium band. |
-| `duration.slow-min` | `var(--rata-motion-duration-slow-min)` | `730ms` | Fastest step of the slow band. |
-| `duration.slow` | `var(--rata-motion-duration-slow)` | `975ms` | Continuous animation. |
-| `duration.slow-max` | `var(--rata-motion-duration-slow-max)` | `1300ms` | Slowest step of the slow band. |
+| `duration.fast-min` | `var(--rata-motion-duration-fast-min)` | `100ms` | Fastest step of the fast band. |
+| `duration.fast` | `var(--rata-motion-duration-fast)` | `130ms` | Micro-interactions — hover, toggle. |
+| `duration.fast-max` | `var(--rata-motion-duration-fast-max)` | `175ms` | Slowest step of the fast band. |
+| `duration.medium-min` | `var(--rata-motion-duration-medium-min)` | `160ms` | Fastest step of the medium band. |
+| `duration.medium` | `var(--rata-motion-duration-medium)` | `210ms` | Entrance/exit — menus, popovers. |
+| `duration.medium-max` | `var(--rata-motion-duration-medium-max)` | `280ms` | Slowest step of the medium band. |
+| `duration.slow-min` | `var(--rata-motion-duration-slow-min)` | `525ms` | Fastest step of the slow band. |
+| `duration.slow` | `var(--rata-motion-duration-slow)` | `700ms` | Continuous animation. |
+| `duration.slow-max` | `var(--rata-motion-duration-slow-max)` | `935ms` | Slowest step of the slow band. |
 | `duration.spin` | `var(--rata-motion-duration-spin)` | `800ms` | A full spinner rotation. |
 | `duration.spin-reduced` | `var(--rata-motion-duration-spin-reduced)` | `2000ms` | A slowed spinner rotation for prefers-reduced-motion. |
 | `easing.standard` | `var(--rata-motion-easing-standard)` | `cubic-bezier(0.24, 1, 0.4, 1)` | The default curve. |
 | `easing.enter` | `var(--rata-motion-easing-enter)` | `cubic-bezier(0, 0, 0.38, 0.9)` | Something appearing. |
 | `easing.exit` | `var(--rata-motion-easing-exit)` | `cubic-bezier(0.2, 0, 1, 0.9)` | Something leaving. |
-| `interactive.duration` | `var(--rata-motion-interactive-duration)` | `175ms` | Hover/press feedback, toggles. |
+| `interactive.duration` | `var(--rata-motion-interactive-duration)` | `130ms` | Hover/press feedback, toggles. |
 | `interactive.easing` | `var(--rata-motion-interactive-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for interactive transitions. |
-| `overlay.duration` | `var(--rata-motion-overlay-duration)` | `410ms` | Menus, popovers, tooltips. |
+| `overlay.duration` | `var(--rata-motion-overlay-duration)` | `210ms` | Menus, popovers, tooltips. |
 | `overlay.easing` | `var(--rata-motion-overlay-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for overlay transitions. |
-| `modal.duration` | `var(--rata-motion-modal-duration)` | `975ms` | Dialogs, sheets, drawers. |
+| `modal.duration` | `var(--rata-motion-modal-duration)` | `280ms` | Dialogs, sheets, drawers. |
 | `modal.easing` | `var(--rata-motion-modal-easing)` | `cubic-bezier(0.24, 1, 0.4, 1)` | Curve for modal transitions. |
 
 **Use for**
@@ -941,7 +972,7 @@ Ratios are measured from the resolved token values every build. A pairing listed
 | `theme.warning-role.fg` | `theme.warning-role.subtle` | AA-text | 6.84:1 | 8.97:1 |
 | `theme.danger-role.fg` | `theme.bg.canvas` | AA-text | 5.70:1 | 6.85:1 |
 | `theme.danger-role.fg` | `theme.bg.surface` | AA-text | 6.31:1 | 6.21:1 |
-| `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-large | 5.91:1 | 5.84:1 |
+| `theme.danger-role.fg` | `theme.danger-role.subtle` | AA-text | 5.91:1 | 5.84:1 |
 | `theme.fg.on-accent` | `theme.accent-role.bg` | AA-text | 6.31:1 | 7.31:1 |
 | `theme.focus-ring` | `theme.bg.canvas` | AA-nontext | 3.89:1 | 8.26:1 |
 | `theme.focus-ring` | `theme.bg.surface` | AA-nontext | 4.31:1 | 7.49:1 |
@@ -1178,9 +1209,57 @@ A modal surface that takes over the screen.
 | box-shadow | `theme.elevation.modal` |
 | title font-size | `type.heading.size` |
 | title font-weight | `type.heading.weight` |
+| title line-height | `type.heading.line-height` |
+| description color | `theme.fg.secondary` |
 | gap between title, body, and footer | `space.stack.md` |
-| enter transition | `motion.modal.duration` with `motion.easing.enter` |
+| gap between title and description | `space.stack.2xs` |
+| enter transition | `motion.modal.duration` with `motion.easing.enter`, fading and rising |
 | exit transition | `motion.modal.duration` with `motion.easing.exit` |
+| enter/exit rise distance | `space.2` |
+| exit pointer-events | none while closing — the top layer is held for the exit, so the backdrop would go on catching clicks after the reader closed it |
+
+### dialog-backdrop
+
+The wash over the inert page behind it. Its own token, added for this component: nothing else in the system dims the page, and a non-modal overlay must not. It transitions `overlay` alongside the dialog, which is what keeps the scrim on screen for the length of the exit rather than dropping it the instant the dialog starts closing.
+
+| Property | Token |
+|---|---|
+| background | `theme.scrim` |
+| fade | `motion.modal.duration` with `motion.easing.enter` |
+
+### dialog-size
+
+Three widths, derived from the control scale rather than stated: a dialog is measured in controls, and inventing a size.dialog.* family for three numbers would be a scale with one consumer. Flagged as a known gap if a fourth width ever appears.
+
+| Property | Token |
+|---|---|
+| sm max-inline-size | `size.control.lg` multiplied by 10, or the viewport less its inset — whichever is smaller |
+| md max-inline-size | `size.control.lg` multiplied by 14, or the viewport less its inset — whichever is smaller |
+| lg max-inline-size | `size.control.lg` multiplied by 20, or the viewport less its inset — whichever is smaller |
+| inline and block inset from the viewport | `space.padding.lg` |
+
+### dialog-footer
+
+The actions, reading after the body they act on.
+
+| Property | Token |
+|---|---|
+| gap between actions | `space.gap.sm` |
+| margin above | `space.stack.md` |
+
+### dialog-dismiss
+
+The close control. Same construction as Notice's: currentColor on a transparent background, so it cannot clash with the surface it sits on.
+
+| Property | Token |
+|---|---|
+| color | currentColor — inherited from the dialog's own foreground |
+| glyph size | `size.icon.text` |
+| target inline-size / block-size | `size.control.sm` |
+| border-radius | `radius.inner` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| block alignment | centred on the title's first line, from `type.heading.size` and `type.heading.line-height` |
 
 ### icon
 
@@ -1193,6 +1272,39 @@ A glyph sized from the text around it, taking its colour from that text too.
 | stroke | currentColor — the icon inherits the colour of the text it sits in, so it needs no colour token of its own and cannot contradict its label |
 | flex-shrink | 0 — a glyph beside text must not be squeezed by it, which is a layout fact rather than a token |
 
+### menu-item
+
+One action. Its own focus ring, because the roving tabindex means an item — not the menu — is what focus lands on.
+
+| Property | Token |
+|---|---|
+| block-size | `size.control.sm` |
+| padding-inline | `space.control.padding-inline.sm` |
+| border-radius | `radius.inner` |
+| color | `theme.fg.primary` |
+| gap between icon and label | `space.gap.sm` |
+| icon size | `size.icon.text` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| disabled | `state.disabled-opacity` |
+
+### menu-item-destructive
+
+An action that removes something. Uses the danger role's foreground on the menu's own surface — a pairing the token contracts verify for text at any size — rather than a tinted row, which would read as a status.
+
+| Property | Token |
+|---|---|
+| color | `theme.danger-role.fg` |
+
+### menu-item-selected
+
+A menu standing in for a choice already made, where one row is the current answer.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| color | `theme.fg.primary` |
+
 ### menu
 
 A transient list of actions anchored to a trigger.
@@ -1202,30 +1314,87 @@ A transient list of actions anchored to a trigger.
 | background | `theme.bg.surface` |
 | border-radius | `radius.container` |
 | box-shadow | `theme.elevation.overlay` |
+| border | `border.default` solid `theme.border.default` |
 | padding | `space.1` |
-| item height | `size.control.sm` |
-| item padding-inline | `space.control.padding-inline.sm` |
-| item color | `theme.fg.primary` |
-| destructive item color | `theme.danger-role.fg` |
-| selected item background | `theme.accent-role.subtle` |
-| item hover/press | compose the .rata-state-layer class |
-| separator | `border.default` solid `theme.border.default` |
+| min-inline-size | `size.control.lg` multiplied — the list should not be narrower than a control |
+| font-size | `type.control.size.sm` |
 | enter transition | `motion.overlay.duration` with `motion.easing.enter` |
+| gap from the trigger | `space.gap.xs` |
 
-### notice
+### menu-separator
 
-An inline banner. Only the tinted subtle backgrounds carry text; the saturated role fills do not.
+A rule between groups of actions.
 
 | Property | Token |
 |---|---|
-| info background / text | `theme.accent-role.subtle` / `theme.accent-role.fg` |
-| success background / text | `theme.success-role.subtle` / `theme.success-role.fg` |
-| warning background / text | `theme.warning-role.subtle` / `theme.warning-role.fg` |
-| error background / text | `theme.danger-role.subtle` / `theme.danger-role.fg` |
+| border-block-start | `border.default` solid `theme.border.default` |
+| margin-block | `space.1` |
+
+### notice
+
+The shared frame. Only the tinted subtle backgrounds carry text; the saturated role fills are not used here at all — they are non-text indicator tones, and text on them is a recorded contrast gap.
+
+| Property | Token |
+|---|---|
 | padding | `space.padding.sm` `space.padding.md` |
 | border-radius | `radius.element` |
 | gap between icon and text | `space.gap.sm` |
-| leading accent bar (optional) | the matching role bg — a non-text use |
+| gap between title and message | `space.stack.2xs` |
+| gap between message and actions | `space.stack.xs` |
+| font-size | `type.body.size` |
+| line-height | `type.body.line-height` |
+| title font-weight | `type.label.weight` |
+| icon size | `size.icon.text` |
+
+### notice-info
+
+Tinted neutral rather than with the brand accent: there is no info role, and accent-role.subtle moves with the brand, so in a red or orange theme an info notice would read as an error.
+
+| Property | Token |
+|---|---|
+| background | `theme.bg.muted` |
+| color | `theme.fg.primary` |
+
+### notice-success
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.success-role.subtle` |
+| color | `theme.success-role.fg` |
+
+### notice-warning
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.warning-role.subtle` |
+| color | `theme.warning-role.fg` |
+
+### notice-danger
+
+The role's subtle tint with its own foreground.
+
+| Property | Token |
+|---|---|
+| background | `theme.danger-role.subtle` |
+| color | `theme.danger-role.fg` |
+
+### notice-dismiss
+
+The close button, when `onDismiss` is passed. It takes currentColor so the glyph always matches the variant's foreground and cannot clash with the tint it sits on — which is also why it is not a Button: a tertiary Button would bring its own colour into a tinted surface.
+
+| Property | Token |
+|---|---|
+| color | currentColor — inherited from the variant's own foreground |
+| glyph size | `size.icon.text` |
+| target inline-size / block-size | `size.control.sm` |
+| border-radius | `radius.inner` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+| background | transparent — the variant's tint shows through |
 
 ### radio-group-vertical
 

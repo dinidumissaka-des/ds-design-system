@@ -9,7 +9,7 @@
 // The live demos are the one thing this file adds, and they are deliberately
 // the only hand-written part: a contract can say `loading` shows a spinner and
 // refuses clicks, but only a real button can be clicked.
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   Avatar,
@@ -18,6 +18,11 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Dialog,
+  Menu,
+  MenuItem,
+  MenuSeparator,
+  Notice,
   Radio,
   RadioGroup,
   Spinner,
@@ -30,6 +35,9 @@ import type {
   AvatarSize,
   BadgeVariant,
   ButtonGroupOrientation,
+  DialogSize,
+  NoticeLive,
+  NoticeVariant,
   TextFieldSize,
   TextFieldStatus,
   ToggleButtonGroupSelectionMode,
@@ -38,12 +46,16 @@ import type {
   ToggleButtonSize,
   ToggleButtonVariant,
 } from "@rata/react";
-import type { IconSize } from "@rata/icons";
+import type { IconSize, LucideIcon } from "@rata/icons";
 import {
   Icon,
   Settings,
   X,
   Trash2,
+  Ellipsis,
+  Pencil,
+  Copy,
+  Upload,
   Download,
   CircleAlert,
   ChevronLeft,
@@ -342,6 +354,57 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
     ),
   },
 
+  dialog: {
+    "A destructive confirmation": () => (
+      <DialogStage description="Everything in it goes too." size="sm" />
+    ),
+    "A blocking error, where dismissing would lose work": () => (
+      <DialogStage title="Connection lost" dismissible={false} destructive={false} />
+    ),
+  },
+
+  "menu-item": {
+    "A row with an icon": () => <MenuItemStage />,
+    "A destructive row, kept away from the safe ones": () => (
+      <MenuItemStage destructive icon={Trash2}>Delete</MenuItemStage>
+    ),
+    "A row that exists but cannot run yet": () => (
+      <MenuItemStage disabled icon={Upload}>Publish</MenuItemStage>
+    ),
+  },
+
+  menu: {
+    "Actions on a row": () => (
+      <Menu trigger={<Button variant="secondary">Actions</Button>}>
+        <MenuItem icon={Copy} onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem icon={Download} onSelect={() => {}}>Download</MenuItem>
+        <MenuSeparator />
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+    ),
+    "An icon-only trigger, which needs the list named separately": () => (
+      <Menu
+        label="Row actions"
+        trigger={
+          <Button iconOnly aria-label="Row actions" variant="tertiary">
+            <Icon icon={Ellipsis} />
+          </Button>
+        }
+      >
+        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+    ),
+  },
+
+  notice: {
+    "A page-level message that is there when the page loads": () => (
+      <Notice variant="warning">This project is read-only while the migration runs.</Notice>
+    ),
+    "An error that appears after an action, announced correctly": () => <SaveFailureExample />,
+    "A dismissible confirmation, with focus handled": () => <InvitesExample />,
+  },
+
   breadcrumbs: {
     "A page three levels deep": () => (
       <Breadcrumbs
@@ -570,6 +633,104 @@ function BillingExample() {
  * — a hook written straight into an EXAMPLES or INTERACTIVE entry would join
  * the hook list of whatever is rendering it and change its length on navigation.
  */
+/**
+ * A single row, shown the only way a row can be shown: inside a menu.
+ *
+ * `MenuItem` throws outside a `Menu` on purpose — alone it has no list to
+ * navigate and no trigger to return focus to — so the page for it stages one
+ * rather than leaving the preview empty. Same reason `RadioStage` exists below.
+ *
+ * It starts CLOSED, which is not a stylistic choice: the menu is a
+ * `popover="auto"`, and the platform allows exactly one of those open at a
+ * time. Three stages on one page each opening on mount meant each evicted the
+ * one before it, so two cards showed a bare trigger and only the last showed
+ * a menu. Clicking is the honest way to see it, and it matches `DialogStage`.
+ */
+/**
+ * A modal is only itself when it is open, so the page stages one behind a
+ * trigger rather than rendering it flat — `showModal()` is what supplies the
+ * focus trap and the inert page, and neither is observable from a screenshot
+ * of a dialog that was never opened.
+ */
+function DialogStage({
+  title = "Delete project",
+  description,
+  size,
+  dismissible,
+  destructive = true,
+}: {
+  title?: ReactNode;
+  description?: ReactNode;
+  size?: DialogSize;
+  dismissible?: boolean;
+  destructive?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement | null>(null);
+  return (
+    <>
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Open the dialog
+      </Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={title}
+        description={description}
+        size={size}
+        dismissible={dismissible}
+        initialFocus={cancelRef}
+        footer={
+          <>
+            <Button ref={cancelRef} variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant={destructive ? "destructive" : "primary"} onClick={() => setOpen(false)}>
+              {destructive ? "Delete" : "Save"}
+            </Button>
+          </>
+        }
+      >
+        This cannot be undone.
+      </Dialog>
+    </>
+  );
+}
+
+function MenuItemStage({
+  children = "Duplicate",
+  destructive,
+  selected,
+  disabled,
+  icon = Copy,
+}: {
+  children?: ReactNode;
+  destructive?: boolean;
+  selected?: boolean;
+  disabled?: boolean;
+  icon?: LucideIcon;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Menu
+      open={open}
+      onOpenChange={setOpen}
+      trigger={<Button variant="secondary">Open the menu</Button>}
+    >
+      <MenuItem
+        value="row"
+        icon={icon}
+        destructive={destructive}
+        selected={selected}
+        disabled={disabled}
+        onSelect={() => {}}
+      >
+        {children}
+      </MenuItem>
+    </Menu>
+  );
+}
+
 function RadioStage({
   label = "Annual",
   description = "Two months free",
@@ -597,6 +758,74 @@ function RadioStage({
 function NotificationsExample() {
   const [on, setOn] = useState(true);
   return <Switch label="Notifications" checked={on} onCheckedChange={setOn} />;
+}
+
+/**
+ * The live-region pattern the contract insists on.
+ *
+ * The wrapper is always rendered, so the region exists before the notice's text
+ * arrives — mounting the region and its content in the same commit is what
+ * makes announcements unreliable, and it is invisible in testing unless you are
+ * listening. `live` stays off on the Notice for exactly that reason.
+ */
+function SaveFailureExample() {
+  const [failed, setFailed] = useState(true);
+  return (
+    <div className="pg-block-stack">
+      <div aria-live="polite">
+        {failed ? (
+          <Notice
+            variant="danger"
+            title="Could not save"
+            actions={
+              <Button variant="secondary" onClick={() => setFailed(false)}>
+                Retry
+              </Button>
+            }
+          >
+            The server refused the change.
+          </Notice>
+        ) : null}
+      </div>
+      {!failed && (
+        <Button variant="secondary" onClick={() => setFailed(true)}>
+          Make it fail again
+        </Button>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Dismissal, with the two things Notice deliberately does not do.
+ *
+ * It does not hide itself — this component owns that — and it does not move
+ * focus, so the handler puts focus somewhere deliberate instead of letting it
+ * fall to <body> when the close button it was on disappears.
+ */
+function InvitesExample() {
+  const [sent, setSent] = useState(true);
+  const afterRef = useRef<HTMLButtonElement | null>(null);
+  return (
+    <div className="pg-block-stack">
+      <div aria-live="polite">
+        {sent ? (
+          <Notice
+            variant="success"
+            onDismiss={() => {
+              setSent(false);
+              afterRef.current?.focus();
+            }}
+          >
+            Invitations sent to 12 people.
+          </Notice>
+        ) : null}
+      </div>
+      <Button ref={afterRef} variant="secondary" onClick={() => setSent(true)}>
+        {sent ? "Send more" : "Send again"}
+      </Button>
+    </div>
+  );
 }
 
 /** A case the contract includes to say "don't" — its notes open with exactly that. */
@@ -801,6 +1030,61 @@ const INTERACTIVE: Record<string, Interactive> = {
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
       />
+    ),
+  },
+
+  dialog: {
+    controls: ["title", "description", "size", "dismissible"],
+    render: (state) => (
+      <DialogStage
+        title={String(state.title || "Delete project")}
+        description={state.description ? String(state.description) : undefined}
+        size={state.size as DialogSize}
+        dismissible={state.dismissible === undefined ? true : Boolean(state.dismissible)}
+      />
+    ),
+  },
+
+  "menu-item": {
+    controls: ["destructive", "selected", "disabled"],
+    slot: { label: "Children", initial: "Duplicate" },
+    render: (state) => (
+      <MenuItemStage
+        destructive={Boolean(state.destructive)}
+        selected={Boolean(state.selected)}
+        disabled={Boolean(state.disabled)}
+      >
+        {String(state.children)}
+      </MenuItemStage>
+    ),
+  },
+
+  menu: {
+    controls: ["label"],
+    render: (state) => (
+      <Menu
+        label={state.label ? String(state.label) : undefined}
+        trigger={<Button variant="secondary">Actions</Button>}
+      >
+        <MenuItem icon={Copy} onSelect={() => {}}>Duplicate</MenuItem>
+        <MenuItem icon={Download} onSelect={() => {}}>Download</MenuItem>
+        <MenuSeparator />
+        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
+      </Menu>
+    ),
+  },
+
+  notice: {
+    controls: ["variant", "live", "title"],
+    slot: { label: "Children", initial: "This project is read-only while the migration runs." },
+    render: (state) => (
+      <Notice
+        variant={state.variant as NoticeVariant}
+        live={state.live as NoticeLive}
+        title={state.title ? String(state.title) : undefined}
+      >
+        {String(state.children)}
+      </Notice>
     ),
   },
 
