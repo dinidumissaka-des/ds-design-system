@@ -31,6 +31,7 @@ this path is the honest answer to when it last actually moved.
 | [notice](../docs/components/notice.md) | `@rata/react` | feedback | latest / latest / future | free |
 | [radio](../docs/components/radio.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [radio-group](../docs/components/radio-group.md) | `@rata/react` | inputs | latest / latest / future | free |
+| [search](../docs/components/search.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@rata/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@rata/react` | foundations | latest / na / future | free |
 | [switch](../docs/components/switch.md) | `@rata/react` | inputs | latest / latest / future | free |
@@ -386,6 +387,43 @@ Real usage (from `apps/`):
 ```
 
 Contract: [docs/components/radio-group.md](../docs/components/radio-group.md)
+
+### Search (`@rata/react`)
+
+Extends: `Omit<`
+
+- `label: ReactNode`
+  The field's accessible name. Required.
+- `labelHidden?: boolean` — default: `true`
+  Whether the label is off screen. Defaults to true, unlike every other field here.
+- `value?: string`
+  The query. Makes the component controlled.
+- `defaultValue?: string`
+  Starting query for an uncontrolled field. Conflicts with `value`.
+- `onValueChange?: (value: string) => void`
+  Called on every keystroke, and when the field is cleared.
+- `onSearch?: (value: string) => void`
+  Called when the reader commits the query, by pressing Enter.
+- `loading?: boolean`
+  A query is in flight. The leading glyph becomes a spinner.
+- `landmark?: boolean`
+  Wraps the field in a search landmark.
+- `placeholder?: string`
+- `size?: SearchSize` — default: `"md"`
+- `clearLabel?: string`
+  Accessible name for the clear control.
+- `disabled?: boolean`
+  Blocks the field while keeping it focusable and readable.
+- `id?: string`
+  Stable id for the input. Defaults to a generated one.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<Search label="Filter rows" size={size} value={query} onValueChange={setQuery} />
+```
+
+Contract: [docs/components/search.md](../docs/components/search.md)
 
 ### Loading: Spinner (`@rata/react`)
 

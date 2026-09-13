@@ -1273,6 +1273,26 @@ code {
 /* A plain vertical stack for full-width examples — notices, and anything else
    that fills its line. Deliberately not .pg-example-stack, which indents each
    sibling to show a parent/child relationship these do not have. */
+/* The filter example's result list — plain rows, so the search is the thing
+   being demonstrated rather than the list. */
+.pg-search-results {
+  margin: var(--rata-space-0);
+  padding: var(--rata-space-0);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rata-space-stack-2xs);
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-supporting-size);
+}
+
+.pg-search-empty,
+.pg-search-status {
+  color: var(--rata-theme-fg-muted);
+  font-size: var(--rata-type-supporting-size);
+  margin: var(--rata-space-0);
+}
+
 .pg-block-stack {
   display: flex;
   flex-direction: column;

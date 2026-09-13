@@ -25,6 +25,7 @@ import {
   Notice,
   Radio,
   RadioGroup,
+  Search,
   Spinner,
   Switch,
   TextField,
@@ -36,6 +37,7 @@ import type {
   BadgeVariant,
   ButtonGroupOrientation,
   DialogSize,
+  SearchSize,
   NoticeLive,
   NoticeVariant,
   TextFieldSize,
@@ -352,6 +354,14 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         <Avatar name="Chidi Okonkwo" size="lg" />
       </>
     ),
+  },
+
+  search: {
+    "The site's search, in a header": () => (
+      <Search landmark label="Search" placeholder="Search invoices" onSearch={() => {}} />
+    ),
+    "Filtering a list as you type": () => <SearchFilterStage size="sm" />,
+    "A committed query that went to the network": () => <SearchPendingStage />,
   },
 
   dialog: {
@@ -697,6 +707,55 @@ function DialogStage({
   );
 }
 
+/** Filtering over data already on the client, so every keystroke is free. */
+function SearchFilterStage({ size }: { size?: SearchSize }) {
+  const rows = ["Acme Ltd", "Borealis", "Cygnus Freight", "Delta Rail"];
+  const [query, setQuery] = useState("");
+  const shown = rows.filter((r) => r.toLowerCase().includes(query.toLowerCase()));
+  return (
+    <div className="pg-block-stack">
+      <Search label="Filter rows" size={size} value={query} onValueChange={setQuery} />
+      <ul className="pg-search-results">
+        {shown.map((row) => (
+          <li key={row}>{row}</li>
+        ))}
+        {shown.length === 0 && <li className="pg-search-empty">No rows match.</li>}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * A committed query that cost something.
+ *
+ * The live region is the point of the example: `loading` covers the sighted
+ * case, and the count — which Search cannot know — covers the other one.
+ */
+function SearchPendingStage() {
+  const [pending, setPending] = useState(false);
+  const [found, setFound] = useState<number | null>(null);
+  return (
+    <div className="pg-block-stack">
+      <Search
+        label="Search invoices"
+        placeholder="Search invoices"
+        loading={pending}
+        onSearch={(query) => {
+          setPending(true);
+          setFound(null);
+          window.setTimeout(() => {
+            setPending(false);
+            setFound(query.length * 3);
+          }, 1200);
+        }}
+      />
+      <p aria-live="polite" className="pg-search-status">
+        {pending ? "" : found === null ? "Press Enter to search." : `${found} found`}
+      </p>
+    </div>
+  );
+}
+
 function MenuItemStage({
   children = "Duplicate",
   destructive,
@@ -1029,6 +1088,21 @@ const INTERACTIVE: Record<string, Interactive> = {
         name={String(state.name || "Ada Hartley")}
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  search: {
+    controls: ["label", "labelHidden", "placeholder", "size", "loading", "landmark", "disabled"],
+    render: (state) => (
+      <Search
+        label={String(state.label || "Search")}
+        labelHidden={state.labelHidden === undefined ? true : Boolean(state.labelHidden)}
+        placeholder={state.placeholder ? String(state.placeholder) : undefined}
+        size={state.size as SearchSize}
+        loading={Boolean(state.loading)}
+        landmark={Boolean(state.landmark)}
+        disabled={Boolean(state.disabled)}
       />
     ),
   },

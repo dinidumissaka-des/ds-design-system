@@ -29,6 +29,8 @@ export type {
   MenuCloseReason,
   MenuKeyEvent,
 } from "./menu.js";
+export { getSearchProps } from "./search.js";
+export type { SearchOptions, SearchProps, SearchKeyEvent } from "./search.js";
 export { getSwitchProps } from "./switch.js";
 export type { SwitchOptions, SwitchProps } from "./switch.js";
 export { getTextFieldProps } from "./text-field.js";

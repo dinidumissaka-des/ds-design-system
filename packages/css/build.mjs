@@ -19,6 +19,8 @@ const ORDER = [
   "toggle-button-group.css",
   "icon.css",
   "text-field.css",
+  // After text-field: search borrows its look and its focus treatment.
+  "search.css",
   "checkbox.css",
   // After checkbox: radio shares its construction and overrides the shape.
   "radio.css",

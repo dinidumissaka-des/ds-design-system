@@ -1444,6 +1444,56 @@ One option in a radio group. Circular, so its shape says 'one of these' before t
 | border-radius | `radius.pill` — a circle, which is the one thing that tells a radio from a checkbox before either is read |
 | checked mark | `theme.fg.on-accent` as a centred dot; a radio is filled, not ticked |
 
+### search
+
+The field itself, matching text-field step for step so the two line up in a row — including its focus treatment, which is that component's documented departure from the system ring.
+
+| Property | Token |
+|---|---|
+| border | `border.default` solid `theme.border.strong` |
+| border-radius | `radius.element` |
+| background | `theme.bg.surface` |
+| color | `theme.fg.primary` |
+| font-size | `type.control.size.md` — constant across sizes, as size changes the box not the text |
+| line-height | `type.control.line-height.md` |
+| placeholder colour | `theme.fg.muted` |
+| hover | inset band of `theme.bg.muted` at `border.2` |
+| focus | outline `theme.fg.primary` at `focus.ring-width`, offset `space.0`, border darkened to match |
+| transition | `motion.interactive.duration` with `motion.interactive.easing` |
+
+### search-size
+
+Height and inline padding only, matching button and text-field step for step.
+
+| Property | Token |
+|---|---|
+| sm block-size / padding-inline | `size.control.sm` / `space.control.padding-inline.sm` |
+| md block-size / padding-inline | `size.control.md` / `space.control.padding-inline.md` |
+| lg block-size / padding-inline | `size.control.lg` / `space.control.padding-inline.lg` |
+
+### search-glyph
+
+The leading magnifier, and the spinner that replaces it in flight. Decorative: the label names the field.
+
+| Property | Token |
+|---|---|
+| size | `size.icon.text` |
+| colour | `theme.fg.muted` |
+| gap to the text | `space.gap.sm` |
+
+### search-clear
+
+The trailing clear control, present only when there is a query. Same construction as Notice's and Dialog's dismiss: currentColor on a transparent background.
+
+| Property | Token |
+|---|---|
+| glyph size | `size.icon.text` |
+| target inline-size / block-size | `size.control.sm` |
+| border-radius | `radius.inner` |
+| colour | `theme.fg.secondary` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+
 ### switch
 
 A track the thumb slides along. The track's fill is the state, and the thumb's position says the same thing a second way, so the setting is never carried by colour alone.

@@ -26,6 +26,7 @@ behind it yet, and `css-only` when there is no props API by design.
 | [Notice](notice.md) | `notice` | feedback | latest / latest | documented | free |
 | [Radio](radio.md) | `radio` | inputs | latest / latest | documented | free |
 | [Radio Group](radio-group.md) | `radio-group` | inputs | latest / latest | documented | free |
+| [Search](search.md) | `search` | inputs | latest / latest | documented | free |
 | [Loading: Spinner](spinner.md) | `spinner` | loading | latest / latest | documented | free |
 | [State layer](state-layer.md) | `state-layer` | foundations | latest / na | css-only | free |
 | [Switch](switch.md) | `switch` | inputs | latest / latest | documented | free |
