@@ -8,7 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ButtonHTMLAttributes, CSSProperties, ReactElement, ReactNode } from "react";
+import type {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  HTMLAttributes,
+  ReactElement,
+  ReactNode,
+} from "react";
 import { getMenuProps } from "@rata/primitives";
 import type { MenuCloseReason, MenuItemDescriptor } from "@rata/primitives";
 import { Icon } from "@rata/icons";
@@ -16,7 +22,13 @@ import type { LucideIcon } from "@rata/icons";
 import { cx } from "./cx.js";
 import { MenuContext, useMenuContext } from "./menu-context.js";
 
-export interface MenuProps {
+export interface MenuProps
+  extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    // `id` is pointed at by the trigger's aria-controls, and `role`/`popover`
+    // are what make the list a menu in the top layer at all.
+    "id" | "role" | "children" | "onToggle" | "popover"
+  > {
   /**
    * The control that opens the menu — usually a `Button`. Cloned to receive
    * the trigger's ARIA, its ref and its handlers.
@@ -48,7 +60,13 @@ export interface MenuItemProps
   disabled?: boolean;
   /** Marks an action that removes something. */
   destructive?: boolean;
-  /** Marks the row that is the current answer, for a menu standing in for a choice. */
+  /**
+   * Marks the row that is the current answer, for a menu standing in for a
+   * choice. Passing it at all — true or false — makes the row a
+   * `menuitemradio` rather than a `menuitem`, because that is the role ARIA
+   * lets carry a checked state. Pass it on every row of the set, not only the
+   * chosen one.
+   */
   selected?: boolean;
   icon?: LucideIcon;
   className?: string;
@@ -99,6 +117,7 @@ export function Menu({
   onOpenChange,
   label,
   className,
+  ...rest
 }: MenuProps) {
   const generated = useId();
   const triggerId = `${generated}-trigger`;
@@ -132,12 +151,19 @@ export function Menu({
   const itemsRef = useRef(new Map<string, HTMLButtonElement | null>());
 
   const registerDescriptor = useCallback(
-    (value: string, text: string | undefined, disabled: boolean) => {
+    (value: string, text: string | undefined, disabled: boolean, selected?: boolean) => {
       setDescriptors((current) => {
         const existing = current.find((d) => d.value === value);
-        if (existing && existing.text === text && existing.disabled === disabled) return current;
+        if (
+          existing &&
+          existing.text === text &&
+          existing.disabled === disabled &&
+          existing.selected === selected
+        ) {
+          return current;
+        }
         const next = current.filter((d) => d.value !== value);
-        next.push({ value, text, disabled });
+        next.push({ value, text, disabled, selected });
         // Re-sorted into DOM order, because registration order is mount order
         // and the arrow keys have to walk the list the reader sees.
         return sortByDom(next, itemsRef.current);
@@ -245,6 +271,7 @@ export function Menu({
     <MenuContext.Provider value={context}>
       {triggerNode}
       <div
+        {...rest}
         {...menu.menu}
         ref={menuRef}
         popover="auto"
@@ -310,9 +337,9 @@ export function MenuItem({
     context;
 
   useEffect(() => {
-    registerDescriptor(resolved, text, disabled);
+    registerDescriptor(resolved, text, disabled, selected);
     return () => unregisterDescriptor(resolved);
-  }, [registerDescriptor, unregisterDescriptor, resolved, text, disabled]);
+  }, [registerDescriptor, unregisterDescriptor, resolved, text, disabled, selected]);
 
   useEffect(() => {
     registerSelect(resolved, onSelect);
@@ -325,7 +352,6 @@ export function MenuItem({
       type="button"
       {...rest}
       {...itemProps}
-      aria-checked={selected ? true : undefined}
       className={cx(
         "rata-menu-item",
         "rata-state-layer",

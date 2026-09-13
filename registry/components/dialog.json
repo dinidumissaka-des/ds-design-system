@@ -124,6 +124,10 @@
       {
         "decision": "The page's scroll is locked with the scrollbar's width held open",
         "why": "Hiding the overflow takes the scrollbar away and the page reflows into the space it occupied, so everything shifts sideways as the dialog opens and jumps back as it closes — more noticeable than the scrolling being prevented. The width is measured at lock time rather than tokenised, because it is whatever the browser and the reader's settings make it, and it is zero for overlay scrollbars."
+      },
+      {
+        "decision": "A native close is reported rather than ignored",
+        "why": "`<form method=\"dialog\">` is the documented HTML way to close a dialog, and the platform can close one for its own reasons too. Neither goes through `onClose`, and the effect that drives the dialog is keyed on `open`, so it never re-runs to notice — `open` went on claiming the dialog was showing, and the scroll lock stayed on the body with nothing open, leaving the page unable to scroll at all. The native `close` event now reports `external`, and only while React still believes the dialog is open, so the component's own `close()` is not mistaken for someone else's."
       }
     ]
   },
@@ -225,6 +229,18 @@
       ],
       "a11y": "Becomes the button's `aria-label`. Without it the control announces as an unnamed button, a 4.1.2 failure."
     },
+    "role": {
+      "summary": "ARIA's kind of dialog.",
+      "use": [
+        "`alertdialog` when the dialog's whole content is a message needing a response — a destructive confirmation, a blocking error.",
+        "`dialog`, the default, for anything with work in it: a form, a panel, a picker."
+      ],
+      "dont": [
+        "`alertdialog` for a form. It is announced more insistently and its description is read with its name, which is wrong for something the reader has to fill in and right for something they have to answer.",
+        "Reaching for it to make a dialog feel important. The role describes what the dialog is, not how much it matters."
+      ],
+      "a11y": "A native `<dialog>` is already `role=\"dialog\"`; this only ever narrows it to `alertdialog`, which the element cannot be on its own. Under `alertdialog` a screen reader reads `description` along with `title` rather than waiting to be asked, which is why the destructive confirmation below sets both."
+    },
     "initialFocus": {
       "summary": "What to focus when it opens. Defaults to the platform's choice.",
       "use": [
@@ -250,8 +266,8 @@
     {
       "case": "A destructive confirmation",
       "when": "The commonest modal: one question, two ways out, and the dangerous one must not be the easy one.",
-      "example": "const cancelRef = useRef<HTMLButtonElement>(null);\n\n<Dialog\n  open={confirming}\n  onClose={() => setConfirming(false)}\n  title=\"Delete project\"\n  description=\"Everything in it goes too.\"\n  size=\"sm\"\n  initialFocus={cancelRef}\n  footer={\n    <>\n      <Button ref={cancelRef} variant=\"secondary\" onClick={() => setConfirming(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={remove}>Delete</Button>\n    </>\n  }\n>\n  This cannot be undone.\n</Dialog>",
-      "notes": "`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence."
+      "example": "const cancelRef = useRef<HTMLButtonElement>(null);\n\n<Dialog\n  open={confirming}\n  onClose={() => setConfirming(false)}\n  role=\"alertdialog\"\n  title=\"Delete project\"\n  description=\"Everything in it goes too.\"\n  size=\"sm\"\n  initialFocus={cancelRef}\n  footer={\n    <>\n      <Button ref={cancelRef} variant=\"secondary\" onClick={() => setConfirming(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={remove}>Delete</Button>\n    </>\n  }\n>\n  This cannot be undone.\n</Dialog>",
+      "notes": "`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence. `alertdialog` is the role for this: the dialog's whole content is a question the reader has to answer, so the description is read along with the name instead of waiting to be asked."
     },
     {
       "case": "A blocking error, where dismissing would lose work",

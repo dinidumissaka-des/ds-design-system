@@ -259,6 +259,50 @@ describe("Menu", () => {
     );
   });
 
+  test("a selected row is a menuitemradio, because that is the role that can be checked", async () => {
+    render(
+      <Menu trigger={<Button>Sort</Button>}>
+        <MenuItem selected>Name</MenuItem>
+        <MenuItem selected={false}>Date</MenuItem>
+      </Menu>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Sort" }));
+    // Not `menuitem` with an aria-checked bolted on: ARIA does not support
+    // that combination, and an unsupported attribute may simply be ignored.
+    const chosen = screen.getByRole("menuitemradio", { name: "Name", checked: true });
+    expect(chosen).toBeTruthy();
+    expect(screen.getByRole("menuitemradio", { name: "Date", checked: false })).toBeTruthy();
+    expect(screen.queryByRole("menuitem")).toBeNull();
+  });
+
+  test("a menu of plain actions has no checked state at all", async () => {
+    render(<Fixture />);
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    expect(screen.getAllByRole("menuitem")).toHaveLength(3);
+    expect(screen.queryByRole("menuitemradio")).toBeNull();
+    for (const item of screen.getAllByRole("menuitem")) {
+      expect(item.getAttribute("aria-checked")).toBeNull();
+    }
+  });
+
+  test("a browser shortcut is not typeahead", async () => {
+    render(<Fixture />);
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    const first = screen.getByRole("menuitem", { name: "Duplicate" });
+    expect(document.activeElement).toBe(first);
+    // Ctrl+D would otherwise jump to Duplicate and swallow the binding.
+    await userEvent.keyboard("{Control>}d{/Control}");
+    expect(document.activeElement).toBe(first);
+  });
+
+  test("the list passes the rest through, so it can be identified by the caller", async () => {
+    render(<Fixture data-testid="m" />);
+    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    expect(screen.getByRole("menu").getAttribute("data-testid")).toBe("m");
+    // Not at the cost of what makes it a menu.
+    expect(screen.getByRole("menu").id).toBeTruthy();
+  });
+
   test("MenuItem throws outside a Menu rather than rendering a dead button", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => render(<MenuItem>Orphan</MenuItem>)).toThrow(/must be rendered inside a <Menu>/);

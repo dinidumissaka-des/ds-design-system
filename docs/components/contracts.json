@@ -1125,7 +1125,7 @@
     "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
-    "extends": null,
+    "extends": "Omit<",
     "props": [
       {
         "name": "title",
@@ -1287,6 +1287,29 @@
         "a11y": "Becomes the button's `aria-label`. Without it the control announces as an unnamed button, a 4.1.2 failure."
       },
       {
+        "name": "role",
+        "optional": true,
+        "type": "DialogRole",
+        "description": "",
+        "default": "\"dialog\"",
+        "values": [
+          "dialog",
+          "alertdialog"
+        ],
+        "declared": true,
+        "summary": "ARIA's kind of dialog.",
+        "use": [
+          "`alertdialog` when the dialog's whole content is a message needing a response — a destructive confirmation, a blocking error.",
+          "`dialog`, the default, for anything with work in it: a form, a panel, a picker."
+        ],
+        "dont": [
+          "`alertdialog` for a form. It is announced more insistently and its description is read with its name, which is wrong for something the reader has to fill in and right for something they have to answer.",
+          "Reaching for it to make a dialog feel important. The role describes what the dialog is, not how much it matters."
+        ],
+        "conflicts": [],
+        "a11y": "A native `<dialog>` is already `role=\"dialog\"`; this only ever narrows it to `alertdialog`, which the element cannot be on its own. Under `alertdialog` a screen reader reads `description` along with `title` rather than waiting to be asked, which is why the destructive confirmation below sets both."
+      },
+      {
         "name": "initialFocus",
         "optional": true,
         "type": "RefObject<HTMLElement | null>",
@@ -1324,8 +1347,8 @@
       {
         "case": "A destructive confirmation",
         "when": "The commonest modal: one question, two ways out, and the dangerous one must not be the easy one.",
-        "example": "const cancelRef = useRef<HTMLButtonElement>(null);\n\n<Dialog\n  open={confirming}\n  onClose={() => setConfirming(false)}\n  title=\"Delete project\"\n  description=\"Everything in it goes too.\"\n  size=\"sm\"\n  initialFocus={cancelRef}\n  footer={\n    <>\n      <Button ref={cancelRef} variant=\"secondary\" onClick={() => setConfirming(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={remove}>Delete</Button>\n    </>\n  }\n>\n  This cannot be undone.\n</Dialog>",
-        "notes": "`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence."
+        "example": "const cancelRef = useRef<HTMLButtonElement>(null);\n\n<Dialog\n  open={confirming}\n  onClose={() => setConfirming(false)}\n  role=\"alertdialog\"\n  title=\"Delete project\"\n  description=\"Everything in it goes too.\"\n  size=\"sm\"\n  initialFocus={cancelRef}\n  footer={\n    <>\n      <Button ref={cancelRef} variant=\"secondary\" onClick={() => setConfirming(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={remove}>Delete</Button>\n    </>\n  }\n>\n  This cannot be undone.\n</Dialog>",
+        "notes": "`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence. `alertdialog` is the role for this: the dialog's whole content is a question the reader has to answer, so the description is read along with the name instead of waiting to be asked."
       },
       {
         "case": "A blocking error, where dismissing would lose work",
@@ -1374,6 +1397,10 @@
         {
           "decision": "The page's scroll is locked with the scrollbar's width held open",
           "why": "Hiding the overflow takes the scrollbar away and the page reflows into the space it occupied, so everything shifts sideways as the dialog opens and jumps back as it closes — more noticeable than the scrolling being prevented. The width is measured at lock time rather than tokenised, because it is whatever the browser and the reader's settings make it, and it is zero for overlay scrollbars."
+        },
+        {
+          "decision": "A native close is reported rather than ignored",
+          "why": "`<form method=\"dialog\">` is the documented HTML way to close a dialog, and the platform can close one for its own reasons too. Neither goes through `onClose`, and the effect that drives the dialog is keyed on `open`, so it never re-runs to notice — `open` went on claiming the dialog was showing, and the scroll lock stayed on the body with nothing open, leaving the page unable to scroll at all. The native `close` event now reports `external`, and only while React still believes the dialog is open, so the component's own `close()` is not mistaken for someone else's."
         }
       ]
     },
@@ -1599,7 +1626,7 @@
     "importPath": "@rata/react",
     "mode": "documented",
     "note": null,
-    "extends": null,
+    "extends": "Omit<",
     "props": [
       {
         "name": "trigger",
@@ -1670,7 +1697,7 @@
         "conflicts": [
           "open"
         ],
-        "a11y": null
+        "a11y": "Focus is NOT moved into the menu, and that is deliberate: focus follows the reader's own action, and taking it on page load would be hostile. The first row is still the tab stop, so Tab reaches it and the arrow keys work from there. The same is true of setting `open` programmatically."
       },
       {
         "name": "onOpenChange",
@@ -1764,7 +1791,7 @@
         },
         {
           "decision": "Typeahead cycles on a single character rather than buffering a prefix",
-          "why": "A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked."
+          "why": "A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked. It also ignores a keypress with Ctrl, Meta or Alt held: `event.key` for Ctrl+D is just \"d\", so without that check a browser shortcut was indistinguishable from someone typing, and typeahead both hijacked the key and preventDefault'd it."
         },
         {
           "decision": "The list's open state is driven imperatively, not by popovertarget",
@@ -1914,17 +1941,19 @@
         "name": "selected",
         "optional": true,
         "type": "boolean",
-        "description": "Marks the row that is the current answer, for a menu standing in for a choice.",
+        "description": "",
         "declared": true,
-        "summary": "Marks the row that is the current answer.",
+        "summary": "Marks the row that is the current answer. Its presence changes the row's role.",
         "use": [
-          "The narrow case where a menu genuinely reflects state, such as a view switcher."
+          "The narrow case where a menu genuinely reflects state, such as a view switcher.",
+          "On EVERY row of the set — `selected={sort === \"name\"}` on each — not only the chosen one."
         ],
         "dont": [
-          "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract."
+          "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract.",
+          "Passing it on one row only. The others stay plain `menuitem`s, so the set is not announced as a set and the reader cannot tell how many options there were."
         ],
         "conflicts": [],
-        "a11y": "Sets `aria-checked`, so the state is announced rather than only tinted."
+        "a11y": "Stating it at all — true or false — makes the row a `menuitemradio` rather than a `menuitem`, because that is the role ARIA lets carry a checked state. `aria-checked` on a plain `menuitem` is invalid and a screen reader may ignore it, which would leave the chosen row marked by colour alone."
       },
       {
         "name": "icon",
@@ -1989,6 +2018,10 @@
         {
           "decision": "`value` defaults to the children when they are a plain string",
           "why": "The menu identifies rows by value and typeahead matches on their text, and for almost every row both are just the label. Requiring it stated twice would make the common case noisier than the rare one. A row with non-string children has no text to borrow, so it must say what it is."
+        },
+        {
+          "decision": "A checkable row is a different role, not a menuitem with an extra attribute",
+          "why": "ARIA does not support `aria-checked` on `menuitem` — only on `menuitemradio` and `menuitemcheckbox`. Setting it anyway is invalid and a screen reader is free to drop it, which would leave the selected row distinguished by colour alone: the exact failure the rest of this system's contracts are written to prevent. So `selected` changes the role, and the primitive owns that decision."
         }
       ]
     },

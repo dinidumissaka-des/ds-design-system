@@ -31,7 +31,7 @@ export type { RadioProps } from "./radio.js";
 export { RadioGroup } from "./radio-group.js";
 export type { RadioGroupProps } from "./radio-group.js";
 export { Dialog } from "./dialog.js";
-export type { DialogProps, DialogSize, DialogCloseReason } from "./dialog.js";
+export type { DialogProps, DialogSize, DialogRole, DialogCloseReason } from "./dialog.js";
 export { Menu, MenuItem, MenuSeparator } from "./menu.js";
 export type { MenuProps, MenuItemProps } from "./menu.js";
 export { Notice } from "./notice.js";

@@ -27,11 +27,13 @@ Headless contract: `getMenuProps` in `packages/primitives/src/menu.ts` — impor
 - **Selection closes the menu before `onSelect` runs** — So focus is already back on the trigger by the time the handler does anything. A handler that navigates, or opens a dialog, would otherwise be fighting a menu that is still tearing down, and the dialog would steal focus from a control that is about to vanish.
 - **A disabled row is reachable and announced** — The `aria-disabled` rule this whole system follows: arrow keys reach it, a screen reader reads it, and activation is refused. Most menus skip disabled rows entirely, which makes the list a different length depending on whether you are looking or listening.
 - **Tab closes the menu without trapping focus** — Someone tabbing through a page expects to keep going. Trapping focus is what a dialog does, because a dialog is modal and a menu is not.
-- **Typeahead cycles on a single character rather than buffering a prefix** — A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked.
+- **Typeahead cycles on a single character rather than buffering a prefix** — A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked. It also ignores a keypress with Ctrl, Meta or Alt held: `event.key` for Ctrl+D is just "d", so without that check a browser shortcut was indistinguishable from someone typing, and typeahead both hijacked the key and preventDefault'd it.
 - **The list's open state is driven imperatively, not by popovertarget** — `popovertarget` would let the platform toggle the popover without telling React, and `open` would drift out of step with what is painted. The trigger's click goes through the primitive instead, and the popover's own `toggle` event is what keeps state honest when the platform closes it.
 - **The anchor name is generated per instance, not written in the stylesheet** — `anchor-name` is a global ident, and the spec resolves a duplicated one to the LAST acceptable anchor in tree order. A single name in the CSS therefore made every menu on a page position itself against whichever trigger came last, which is invisible until a second menu exists. CSS cannot mint a unique ident, so the component passes one in as a custom property — on both the trigger and the list, because a sibling inherits nothing. It is sanitised: React 18's `useId` produces `:r0:` and a colon is not valid in an ident.
 
 ## Props
+
+Extends `Omit<`.
 
 | Prop | Type | Default | Summary |
 |---|---|---|---|
@@ -123,6 +125,8 @@ Source doc: Starting state for an uncontrolled menu. Conflicts with `open`.
 - Using it as a way to show the menu on load. That is what a `Notice` or an inline panel is for.
 
 **Conflicts with** `open`
+
+**Accessibility** Focus is NOT moved into the menu, and that is deliberate: focus follows the reader's own action, and taking it on page load would be hostile. The first row is still the tab stop, so Tab reaches it and the arrow keys work from there. The same is true of setting `open` programmatically.
 
 ### `onOpenChange`
 

@@ -29,8 +29,11 @@ A native `<dialog>` opened with `showModal()`. The browser supplies a real focus
 - **The scroll lock counts holders rather than saving and restoring** — Save-and-restore is wrong the moment two dialogs overlap: the second captures `hidden` as the value to put back, so closing it leaves the page locked with nothing open. A counter has no stale state — the property is set while anything holds the lock and removed when the last holder lets go.
 - **The modal motion band was wrong, and the tempo behind it was too slow** — `motion.modal.duration` resolved to `motion.duration.slow`, which this system's own motion contract documents as “Continuous animation” — the spinner band. That was the category error; it is `medium-max` now, the slowest step of the entrance/exit band, which is where the expander's config names “(dialog, drawer)”. Fixing the band alone still left 545ms, because the medium band itself was too slow: Astryx's 175/410/975 tempo meant a menu took 410ms to appear. The seed came down to 130/210/700, so a dialog now enters in 280ms and a menu in 210ms. The bands kept their meanings and no role had to be remapped to one it does not belong to.
 - **The page's scroll is locked with the scrollbar's width held open** — Hiding the overflow takes the scrollbar away and the page reflows into the space it occupied, so everything shifts sideways as the dialog opens and jumps back as it closes — more noticeable than the scrolling being prevented. The width is measured at lock time rather than tokenised, because it is whatever the browser and the reader's settings make it, and it is zero for overlay scrollbars.
+- **A native close is reported rather than ignored** — `<form method="dialog">` is the documented HTML way to close a dialog, and the platform can close one for its own reasons too. Neither goes through `onClose`, and the effect that drives the dialog is keyed on `open`, so it never re-runs to notice — `open` went on claiming the dialog was showing, and the scroll lock stayed on the body with nothing open, leaving the page unable to scroll at all. The native `close` event now reports `external`, and only while React still believes the dialog is open, so the component's own `close()` is not mistaken for someone else's.
 
 ## Props
+
+Extends `Omit<`.
 
 | Prop | Type | Default | Summary |
 |---|---|---|---|
@@ -43,6 +46,7 @@ A native `<dialog>` opened with `showModal()`. The browser supplies a real focus
 | `size?` | `DialogSize` | `"md"` | How wide it is allowed to get. |
 | `dismissible?` | `boolean` | `true` | Whether the reader can close it themselves. |
 | `dismissLabel?` | `string` | `"Close"` | Accessible name for the close button. |
+| `role?` | `DialogRole` | `"dialog"` | ARIA's kind of dialog. |
 | `initialFocus?` | `RefObject<HTMLElement \| null>` | — | What to focus when it opens. Defaults to the platform's choice. |
 | `className?` | `string` | — | Extra classes on the dialog, for placement — not for restyling it. |
 
@@ -221,6 +225,26 @@ Accessible name for the close button.
 
 **Accessibility** Becomes the button's `aria-label`. Without it the control announces as an unnamed button, a 4.1.2 failure.
 
+### `role`
+
+```ts
+role?: DialogRole = "dialog"
+```
+
+ARIA's kind of dialog.
+
+**Use when**
+
+- `alertdialog` when the dialog's whole content is a message needing a response — a destructive confirmation, a blocking error.
+- `dialog`, the default, for anything with work in it: a form, a panel, a picker.
+
+**Don't use for**
+
+- `alertdialog` for a form. It is announced more insistently and its description is read with its name, which is wrong for something the reader has to fill in and right for something they have to answer.
+- Reaching for it to make a dialog feel important. The role describes what the dialog is, not how much it matters.
+
+**Accessibility** A native `<dialog>` is already `role="dialog"`; this only ever narrows it to `alertdialog`, which the element cannot be on its own. Under `alertdialog` a screen reader reads `description` along with `title` rather than waiting to be asked, which is why the destructive confirmation below sets both.
+
 ### `initialFocus`
 
 ```ts
@@ -268,6 +292,7 @@ const cancelRef = useRef<HTMLButtonElement>(null);
 <Dialog
   open={confirming}
   onClose={() => setConfirming(false)}
+  role="alertdialog"
   title="Delete project"
   description="Everything in it goes too."
   size="sm"
@@ -283,7 +308,7 @@ const cancelRef = useRef<HTMLButtonElement>(null);
 </Dialog>
 ```
 
-`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence.
+`initialFocus` on Cancel is the point: without it focus lands on the first focusable thing, and a reader who opens this and presses Enter should not have deleted anything. `sm` keeps the buttons near the sentence. `alertdialog` is the role for this: the dialog's whole content is a question the reader has to answer, so the description is read along with the name instead of waiting to be asked.
 
 ### A blocking error, where dismissing would lose work
 

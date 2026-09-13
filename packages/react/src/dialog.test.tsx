@@ -1,5 +1,5 @@
 import { describe, expect, test, vi, afterEach, beforeAll } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRef, useState } from "react";
 import { Button } from "./button.js";
@@ -198,6 +198,78 @@ describe("Dialog", () => {
     // The first focusable descendant — the close button. Documented rather
     // than fought, because `initialFocus` is the way to override it.
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
+  });
+
+  test("a native close is reported, so the page does not stay locked", () => {
+    // `<form method="dialog">` is the documented HTML way to close a dialog,
+    // and the platform can close one for its own reasons too. Neither goes
+    // through onClose, and the effect is keyed on `open` so it never re-runs
+    // to notice — `open` went on claiming the dialog was showing and the
+    // scroll lock stayed on the body with nothing open.
+    const reasons: string[] = [];
+    function Harness() {
+      const [open, setOpen] = useState(true);
+      return (
+        <Dialog
+          title="Edit"
+          open={open}
+          onClose={(reason) => {
+            reasons.push(reason);
+            setOpen(false);
+          }}
+        >
+          <form method="dialog">
+            <button type="submit">Done</button>
+          </form>
+        </Dialog>
+      );
+    }
+    render(<Harness />);
+    expect(document.body.style.overflow).toBe("hidden");
+
+    act(() => {
+      (document.querySelector("dialog") as HTMLDialogElement).close();
+    });
+
+    expect(reasons).toEqual(["external"]);
+    expect(document.body.style.overflow).toBe("");
+  });
+
+  test("our own close does not report itself as external", () => {
+    const reasons: string[] = [];
+    function Harness() {
+      const [open, setOpen] = useState(true);
+      return (
+        <Dialog title="Edit" open={open} onClose={(r) => { reasons.push(r); setOpen(false); }}>
+          body
+        </Dialog>
+      );
+    }
+    render(<Harness />);
+    // The close button's own path. `node.close()` fires the same native event,
+    // so the handler has to tell the two apart — it reports only while React
+    // still believes the dialog is open.
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(reasons).toEqual(["close-button"]);
+  });
+
+  test("role narrows to alertdialog, which a native dialog cannot be on its own", () => {
+    render(<Fixture role="alertdialog" description="Everything in it goes too." />);
+    expect(screen.getByRole("alertdialog", { name: "Delete project" })).toBeTruthy();
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  test("it is a plain dialog by default", () => {
+    render(<Fixture />);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+  });
+
+  test("passes the rest through, so it can be identified by the caller", () => {
+    render(<Fixture id="confirm" data-testid="d" />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.id).toBe("confirm");
+    expect(dialog.getAttribute("data-testid")).toBe("d");
   });
 
   test("the page does not shift sideways when the scrollbar is taken away", () => {

@@ -199,10 +199,51 @@ describe("getMenuProps — typeahead", () => {
     expect(e.preventDefault).not.toHaveBeenCalled();
   });
 
+  test("a modifier held down is a shortcut, not typing", () => {
+    // `event.key` for Ctrl+D is just "d", so without the modifier check
+    // typeahead both hijacked the browser's binding and preventDefault'd it.
+    for (const modifier of ["ctrlKey", "metaKey", "altKey"] as const) {
+      const onFocusValue = vi.fn();
+      const event = { key: "d", [modifier]: true, preventDefault: vi.fn() };
+      open({ focusedValue: "arch", onFocusValue }).menu.onKeyDown(event);
+      expect(onFocusValue, modifier).not.toHaveBeenCalled();
+      expect(event.preventDefault, modifier).not.toHaveBeenCalled();
+    }
+  });
+
   test("Space is not typeahead — it activates the focused item", () => {
     const onFocusValue = vi.fn();
     open({ focusedValue: "dup", onFocusValue }).menu.onKeyDown(key(" "));
     expect(onFocusValue).not.toHaveBeenCalled();
+  });
+});
+
+describe("getMenuProps — a checkable row is a different role", () => {
+  test("a plain row is a menuitem with no checked state", () => {
+    const p = props({ open: true });
+    expect(p.item("dup").role).toBe("menuitem");
+    // ARIA does not support aria-checked on menuitem, so it must be absent
+    // rather than false — a screen reader is free to ignore an unsupported
+    // attribute, which would leave the row distinguished by colour alone.
+    expect(p.item("dup")["aria-checked"]).toBeUndefined();
+  });
+
+  test("stating `selected` at all makes the row a menuitemradio", () => {
+    const items = [
+      { value: "name", selected: true },
+      { value: "date", selected: false },
+      { value: "other" },
+    ];
+    const p = getMenuProps({ items, triggerId: "t", menuId: "m", open: true });
+    expect(p.item("name").role).toBe("menuitemradio");
+    expect(p.item("name")["aria-checked"]).toBe(true);
+    // False, not absent: every row of a radio set carries the state, or the
+    // set is not announced as a set.
+    expect(p.item("date").role).toBe("menuitemradio");
+    expect(p.item("date")["aria-checked"]).toBe(false);
+    // A row that says nothing stays a plain action.
+    expect(p.item("other").role).toBe("menuitem");
+    expect(p.item("other")["aria-checked"]).toBeUndefined();
   });
 });
 

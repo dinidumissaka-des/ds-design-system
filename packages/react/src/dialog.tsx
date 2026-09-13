@@ -1,14 +1,41 @@
 import { useEffect, useId, useRef } from "react";
-import type { ReactNode, RefObject } from "react";
+import type { DialogHTMLAttributes, ReactNode, RefObject } from "react";
 import { Icon, X } from "@rata/icons";
 import { cx } from "./cx.js";
 
 export type DialogSize = "sm" | "md" | "lg";
 
-/** Why the dialog is closing. `null` means the caller set `open` to false itself. */
-export type DialogCloseReason = "escape" | "close-button" | "backdrop";
+/**
+ * Which kind of dialog this is, in ARIA's terms.
+ *
+ * `alertdialog` is for a dialog whose whole content is a message the reader
+ * has to respond to — a destructive confirmation being the canonical case. It
+ * is announced more insistently, and a screen reader reads the description
+ * with the name rather than waiting to be asked. `dialog` is everything else,
+ * and a form or a panel must not claim to be an alert.
+ */
+export type DialogRole = "dialog" | "alertdialog";
 
-export interface DialogProps {
+/**
+ * Why the dialog is closing.
+ *
+ * `external` means something other than this component closed it — a
+ * `<form method="dialog">` inside it being submitted, which is the documented
+ * HTML way to close a dialog, or the platform doing it for its own reasons.
+ * It is reported rather than ignored because `open` would otherwise go on
+ * saying the dialog is showing while it is not, and the scroll lock would
+ * stay on with nothing open.
+ */
+export type DialogCloseReason = "escape" | "close-button" | "backdrop" | "external";
+
+export interface DialogProps
+  extends Omit<
+    DialogHTMLAttributes<HTMLDialogElement>,
+    // `open` is the dangerous one: as an attribute it renders the dialog
+    // NON-modally, with no focus trap and no backdrop, which is the opposite
+    // of what this component is for. The rest are the component's own.
+    "open" | "title" | "onClose" | "onCancel" | "role" | "children"
+  > {
   /**
    * The dialog's name. Required, not optional: a modal with no accessible name
    * is announced as "dialog" and nothing else, and there is no sensible
@@ -33,6 +60,12 @@ export interface DialogProps {
   dismissible?: boolean;
   /** Accessible name for the close button. */
   dismissLabel?: string;
+  /**
+   * ARIA's kind of dialog. `alertdialog` for a message needing a response —
+   * a destructive confirmation, a blocking error — and `dialog`, the default,
+   * for anything with work in it.
+   */
+  role?: DialogRole;
   /**
    * What to focus when it opens. Defaults to the platform's choice, which is
    * the first focusable thing inside — usually the close button.
@@ -122,7 +155,9 @@ export function Dialog({
   dismissible = true,
   dismissLabel = "Close",
   initialFocus,
+  role = "dialog",
   className,
+  ...rest
 }: DialogProps) {
   const generated = useId();
   const titleId = `${generated}-title`;
@@ -162,8 +197,12 @@ export function Dialog({
 
   return (
     <dialog
+      {...rest}
       ref={ref}
       className={cx("rata-dialog", `rata-dialog--${size}`, className)}
+      // A native <dialog> is already role="dialog"; this only ever narrows it
+      // to alertdialog, which the element cannot be by itself.
+      role={role}
       aria-labelledby={titleId}
       aria-describedby={hasDescription ? descriptionId : undefined}
       onCancel={(event) => {
@@ -179,6 +218,16 @@ export function Dialog({
         // it is showing while it is not.
         event.preventDefault();
         onClose("escape");
+      }}
+      onClose={() => {
+        // The NATIVE close event, not this component's `onClose` prop. It
+        // fires for our own `node.close()` too, which is why this only reports
+        // when React still believes the dialog is open: that is the case where
+        // something else closed it — `<form method="dialog">` being the
+        // documented one — and nothing would otherwise resync. The effect
+        // below is keyed on `open`, so it does not re-run to notice, and the
+        // scroll lock stayed on the body with no dialog open at all.
+        if (open) onClose("external");
       }}
       onClick={(event) => {
         // A click that lands on the <dialog> itself rather than on anything

@@ -23,6 +23,7 @@ A real `<button>` carrying `role="menuitem"`, reading its ARIA, its tabindex and
 
 - **Context, not cloneElement** — The row writes its ARIA and click handling after spreading `rest`, deliberately, so a caller cannot clobber the accessibility contract with a prop. That same ordering means a cloned prop could not reach those attributes either — so the menu has to be something the row reads, not something done to it. The same reasoning as ToggleButton.
 - **`value` defaults to the children when they are a plain string** — The menu identifies rows by value and typeahead matches on their text, and for almost every row both are just the label. Requiring it stated twice would make the common case noisier than the rare one. A row with non-string children has no text to borrow, so it must say what it is.
+- **A checkable row is a different role, not a menuitem with an extra attribute** — ARIA does not support `aria-checked` on `menuitem` — only on `menuitemradio` and `menuitemcheckbox`. Setting it anyway is invalid and a screen reader is free to drop it, which would leave the selected row distinguished by colour alone: the exact failure the rest of this system's contracts are written to prevent. So `selected` changes the role, and the primitive owns that decision.
 
 ## Props
 
@@ -35,7 +36,7 @@ Extends `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "on
 | `onSelect?` | `() => void` | — | Called when the row is activated. |
 | `disabled?` | `boolean` | `false` | Unavailable, but still focusable and announced. |
 | `destructive?` | `boolean` | — | Marks an action that removes something. |
-| `selected?` | `boolean` | — | Marks the row that is the current answer. |
+| `selected?` | `boolean` | — | Marks the row that is the current answer. Its presence changes the row's role. |
 | `icon?` | `LucideIcon` | — | A glyph before the label. |
 | `className?` | `string` | — | Extra classes on the row, for placement — not for restyling it. |
 
@@ -140,19 +141,19 @@ Marks an action that removes something.
 selected?: boolean
 ```
 
-Marks the row that is the current answer.
-
-Source doc: Marks the row that is the current answer, for a menu standing in for a choice.
+Marks the row that is the current answer. Its presence changes the row's role.
 
 **Use when**
 
 - The narrow case where a menu genuinely reflects state, such as a view switcher.
+- On EVERY row of the set — `selected={sort === "name"}` on each — not only the chosen one.
 
 **Don't use for**
 
 - Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract.
+- Passing it on one row only. The others stay plain `menuitem`s, so the set is not announced as a set and the reader cannot tell how many options there were.
 
-**Accessibility** Sets `aria-checked`, so the state is announced rather than only tinted.
+**Accessibility** Stating it at all — true or false — makes the row a `menuitemradio` rather than a `menuitem`, because that is the role ARIA lets carry a checked state. `aria-checked` on a plain `menuitem` is invalid and a screen reader may ignore it, which would leave the chosen row marked by colour alone.
 
 ### `icon`
 

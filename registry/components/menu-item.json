@@ -46,6 +46,10 @@
       {
         "decision": "`value` defaults to the children when they are a plain string",
         "why": "The menu identifies rows by value and typeahead matches on their text, and for almost every row both are just the label. Requiring it stated twice would make the common case noisier than the rare one. A row with non-string children has no text to borrow, so it must say what it is."
+      },
+      {
+        "decision": "A checkable row is a different role, not a menuitem with an extra attribute",
+        "why": "ARIA does not support `aria-checked` on `menuitem` — only on `menuitemradio` and `menuitemcheckbox`. Setting it anyway is invalid and a screen reader is free to drop it, which would leave the selected row distinguished by colour alone: the exact failure the rest of this system's contracts are written to prevent. So `selected` changes the role, and the primitive owns that decision."
       }
     ]
   },
@@ -104,14 +108,16 @@
       "a11y": "Colour only — nothing about the row is announced differently, because the label is what has to say what it does. \"Delete\" already does."
     },
     "selected": {
-      "summary": "Marks the row that is the current answer.",
+      "summary": "Marks the row that is the current answer. Its presence changes the row's role.",
       "use": [
-        "The narrow case where a menu genuinely reflects state, such as a view switcher."
+        "The narrow case where a menu genuinely reflects state, such as a view switcher.",
+        "On EVERY row of the set — `selected={sort === \"name\"}` on each — not only the chosen one."
       ],
       "dont": [
-        "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract."
+        "Building a picker out of a menu. A choice with a current answer is a `RadioGroup` — see the counter-example in the Menu contract.",
+        "Passing it on one row only. The others stay plain `menuitem`s, so the set is not announced as a set and the reader cannot tell how many options there were."
       ],
-      "a11y": "Sets `aria-checked`, so the state is announced rather than only tinted."
+      "a11y": "Stating it at all — true or false — makes the row a `menuitemradio` rather than a `menuitem`, because that is the role ARIA lets carry a checked state. `aria-checked` on a plain `menuitem` is invalid and a screen reader may ignore it, which would leave the chosen row marked by colour alone."
     },
     "icon": {
       "summary": "A glyph before the label.",
