@@ -25,13 +25,24 @@
   font-family: var(--rata-font-family-sans);
   font-size: var(--rata-type-body-size);
   line-height: var(--rata-type-body-line-height);
+  /* Here and NOT on [open], which is the trap. `display` is transitioned with
+     `allow-discrete`, so on close it stays `flex` for the whole exit — while
+     every other declaration scoped to [open] reverts the instant the attribute
+     goes. `flex-direction` is not animatable, so it snapped back to `row` and
+     the header, body and footer laid out side by side for the length of the
+     closing animation.
+
+     The invariant that keeps this from coming back: [open] carries `display`
+     and nothing else that layout depends on. Anything scoped there must be
+     either animatable or something that is *meant* to revert at once, like
+     pointer-events. */
+  flex-direction: column;
 }
 
 /* A dialog is display:none until opened, so `[open]` is the switch and there
    is no separate class to keep in step with the element's real state. */
 .rata-dialog[open] {
   display: flex;
-  flex-direction: column;
 }
 
 /* Three widths from the control scale rather than a size.dialog.* family:

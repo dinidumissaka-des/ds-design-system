@@ -46,13 +46,22 @@
   box-shadow: var(--rata-theme-elevation-overlay);
   font-family: var(--rata-font-family-sans);
   font-size: var(--rata-type-control-size-sm);
+  flex-direction: column;
 }
 
 /* `popover` elements are display:none until shown, so there is no separate
-   open class to keep in step with aria-expanded. */
+   open class to keep in step with aria-expanded — the state selector carries
+   `display` and nothing else.
+
+   `flex-direction` lives on the base rule above, not here. It does not bite
+   today because this menu animates in with keyframes and closes instantly, so
+   `display` never lingers. It would bite the moment anyone gave it an exit
+   transition: `display` would be held by `allow-discrete` while
+   `flex-direction`, which is not animatable, reverted at once and laid the
+   rows out side by side for the whole exit. That is exactly what happened to
+   the dialog. */
 .rata-menu:popover-open {
   display: flex;
-  flex-direction: column;
 }
 
 @media (prefers-reduced-motion: no-preference) {
