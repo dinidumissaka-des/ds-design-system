@@ -33,4 +33,5 @@ behind it yet, and `css-only` when there is no props API by design.
 | [Input: Text field](text-field.md) | `text-field` | inputs | latest / latest | documented | free |
 | [Toggle Button](toggle-button.md) | `toggle-button` | buttons | latest / latest | documented | free |
 | [Toggle Button Group](toggle-button-group.md) | `toggle-button-group` | buttons | latest / latest | documented | free |
+| [TopNav](top-nav.md) | `top-nav` | navigation | latest / latest | documented | free |
 | [Visually hidden](visually-hidden.md) | `visually-hidden` | foundations | latest / na | css-only | free |

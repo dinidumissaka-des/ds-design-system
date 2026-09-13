@@ -36,6 +36,8 @@ export { Menu, MenuItem, MenuSeparator } from "./menu.js";
 export type { MenuProps, MenuItemProps } from "./menu.js";
 export { Notice } from "./notice.js";
 export type { NoticeProps, NoticeVariant, NoticeLive } from "./notice.js";
+export { TopNav } from "./top-nav.js";
+export type { TopNavProps, TopNavItem } from "./top-nav.js";
 export { Search } from "./search.js";
 export type { SearchProps, SearchSize } from "./search.js";
 export { Spinner } from "./spinner.js";

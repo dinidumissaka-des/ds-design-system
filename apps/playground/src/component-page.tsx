@@ -26,6 +26,7 @@ import {
   Radio,
   RadioGroup,
   Search,
+  TopNav,
   Spinner,
   Switch,
   TextField,
@@ -52,6 +53,7 @@ import type { IconSize, LucideIcon } from "@rata/icons";
 import {
   Icon,
   Settings,
+  User,
   X,
   Trash2,
   Ellipsis,
@@ -353,6 +355,42 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         <Avatar name="Bo Nakamura" size="md" />
         <Avatar name="Chidi Okonkwo" size="lg" />
       </>
+    ),
+  },
+
+  "top-nav": {
+    "An application banner": () => (
+      <TopNav
+        brand={<strong className="pg-brand">Ratā</strong>}
+        items={[
+          { label: "Invoices", href: "#", current: true },
+          { label: "Clients", href: "#" },
+          { label: "Reports", href: "#" },
+        ]}
+        actions={
+          <Menu
+            label="Account"
+            trigger={
+              <Button iconOnly aria-label="Account" variant="tertiary">
+                <Icon icon={User} />
+              </Button>
+            }
+          >
+            <MenuItem icon={Settings} onSelect={() => {}}>Settings</MenuItem>
+            <MenuItem onSelect={() => {}}>Sign out</MenuItem>
+          </Menu>
+        }
+      />
+    ),
+    "A banner beside a side nav, where both landmarks need names": () => (
+      <TopNav
+        label="Main"
+        brand={<strong className="pg-brand">Ratā</strong>}
+        items={[
+          { label: "Invoices", href: "#", current: true },
+          { label: "Clients", href: "#" },
+        ]}
+      />
     ),
   },
 
@@ -1088,6 +1126,22 @@ const INTERACTIVE: Record<string, Interactive> = {
         name={String(state.name || "Ada Hartley")}
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  "top-nav": {
+    controls: ["label"],
+    render: (state) => (
+      <TopNav
+        label={String(state.label || "Main")}
+        brand={<strong className="pg-brand">Ratā</strong>}
+        items={[
+          { label: "Invoices", href: "#", current: true },
+          { label: "Clients", href: "#" },
+          { label: "Reports", href: "#" },
+        ]}
+        actions={<Button variant="secondary">New invoice</Button>}
       />
     ),
   },

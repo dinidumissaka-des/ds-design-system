@@ -1671,6 +1671,45 @@ The on state of a borderless toggle: the tint alone separates it from its unpres
 | hover/press | compose the .rata-state-layer class — do not swap the background |
 | opacity (aria-disabled) | `state.disabled-opacity` |
 
+### top-nav
+
+The bar. Its height comes from its padding and the controls inside it rather than a stated number, so a nav with a taller control in its actions slot grows instead of clipping.
+
+| Property | Token |
+|---|---|
+| background | `theme.bg.surface` |
+| border-block-end | `border.default` solid `theme.border.default` |
+| padding-block | `space.padding.sm` |
+| padding-inline | `space.padding.lg` |
+| gap between brand, nav and actions | `space.gap.lg` |
+| minimum height of the row | `size.control.lg` |
+
+### top-nav-item
+
+One destination. The resting colour is the secondary text tone, so the current page reads as the emphasised one rather than the others reading as dimmed.
+
+| Property | Token |
+|---|---|
+| colour | `theme.fg.secondary` |
+| font-size | `type.control.size.sm` |
+| font-weight | `type.control.weight` |
+| padding-inline | `space.control.padding-inline.sm` |
+| block-size | `size.control.md` |
+| border-radius | `radius.element` |
+| gap between icon and label | `space.gap.sm` |
+| icon size | `size.icon.text` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+
+### top-nav-item-current
+
+The page you are on. Marked twice over: the accent bar is the visual cue and aria-current is the announced one, so the state is never carried by colour alone.
+
+| Property | Token |
+|---|---|
+| colour | `theme.fg.primary` |
+| indicator | `theme.accent-role.bg` at `border.2`, along the block-end edge |
+
 ### visually-hidden
 
 Geometry only. Nothing here is a colour or a type decision, because the element is off screen rather than restyled.

@@ -30,6 +30,7 @@ const ORDER = [
   "badge.css",
   "avatar.css",
   "breadcrumbs.css",
+  "top-nav.css",
   "notice.css",
   // After notice: both are surfaces, and the menu sits above one.
   "menu.css",

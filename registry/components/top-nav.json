@@ -1,0 +1,161 @@
+{
+  "name": "top-nav",
+  "title": "TopNav",
+  "family": "navigation",
+  "description": "The page's banner: a brand, the primary navigation, and room for actions.",
+  "status": {
+    "css": {
+      "state": "latest"
+    },
+    "react": {
+      "state": "latest"
+    },
+    "figma": {
+      "state": "future"
+    }
+  },
+  "dependencies": [
+    "state-layer",
+    "icon"
+  ],
+  "files": [
+    {
+      "source": "packages/css/src/top-nav.css",
+      "target": "styles/top-nav.css"
+    },
+    {
+      "source": "packages/react/src/top-nav.tsx",
+      "target": "components/top-nav.tsx"
+    },
+    {
+      "source": "packages/react/src/cx.ts",
+      "target": "lib/cx.ts"
+    }
+  ],
+  "tier": "free",
+  "behavior": {
+    "summary": "A `<header>` containing a `<nav>`: the bar is the page's banner landmark, and the links inside it are a navigation landmark of their own. No primitive — there is no keyboard interaction to own. Nav links are each a tab stop, which is correct for navigation; roving tabindex belongs to a menubar, and calling this one would promise arrow-key behaviour that navigation does not have.",
+    "decisions": [
+      {
+        "decision": "It renders the `<header>`, so it is the page's banner",
+        "why": "A top nav IS the banner — brand, navigation and actions in one bar — and pretending otherwise would mean emitting a bare `<nav>` with a logo and an avatar menu inside it, neither of which is navigation. The consequence is a real constraint rather than a detail: one per page, and not nested inside a `<header>` you already have."
+      },
+      {
+        "decision": "Links are data; everything else is a slot",
+        "why": "The component has to own what the list says — the ordered set of destinations, and which one you are on — so those come in as an array, the same bargain Breadcrumbs makes. A logo, a search box and an account menu are not destinations and do not belong in the nav landmark at all, so they are `brand` and `actions` slots outside it."
+      },
+      {
+        "decision": "The current page is stated per item, not matched from a path",
+        "why": "Only the caller knows whether /invoices/123 counts as being on /invoices — that is their routing, not this component's. A `currentHref` prop would have to guess between exact and prefix matching and would be wrong for someone either way, silently. `current` on the item is one boolean the caller already has the answer to."
+      }
+    ]
+  },
+  "props": {
+    "items": {
+      "summary": "The primary destinations, in the order they are read.",
+      "use": [
+        "Between two and about seven top-level destinations. More than that is a side nav, or a nav plus an overflow menu."
+      ],
+      "dont": [
+        "Actions. A button that does something is not a destination — put it in `actions`, where it is outside the nav landmark.",
+        "Every page in the product. This is the top level; the rest belongs to a side nav within a section."
+      ],
+      "a11y": "Rendered as a list inside the `<nav>`, so the count and the order are announced. The item marked `current` gets `aria-current=\"page\"`."
+    },
+    "label": {
+      "summary": "Accessible name for the navigation landmark.",
+      "use": [
+        "Changing it only when a page has more than one navigation landmark and they need telling apart — a top nav and a side nav on the same page do."
+      ],
+      "dont": [
+        "The word \"navigation\". A screen reader already says the role; \"Main navigation navigation\" is what that produces."
+      ],
+      "a11y": "Becomes the `<nav>`'s `aria-label`. It names the nav, not the banner — the banner is unnamed, because a page has one."
+    },
+    "brand": {
+      "summary": "The product's mark, at the start of the bar.",
+      "use": [
+        "A logo, a wordmark, or both — wrapped in a link to the root if it should be clickable."
+      ],
+      "dont": [
+        "Relying on it for the accessible name of anything. If it is an image it needs its own alt text, and if it is a link it needs link text.",
+        "Putting navigation in it. It sits outside the nav landmark, so a destination here is not findable as one."
+      ],
+      "a11y": "Outside the `<nav>` on purpose: a logo is not a destination in the list, even when it links home."
+    },
+    "actions": {
+      "summary": "Controls at the end of the bar — search, account, notifications.",
+      "use": [
+        "`Search`, a `Menu` for the account, a `Button` for the primary action."
+      ],
+      "dont": [
+        "Destinations. Anything that navigates belongs in `items`, inside the landmark where it can be found."
+      ],
+      "a11y": "Outside the `<nav>`, because none of it is navigation. Each control names itself as it would anywhere else — an icon-only button here still needs its `aria-label`."
+    },
+    "className": {
+      "summary": "Extra classes on the banner, for placement — not for restyling it.",
+      "use": [
+        "Making it sticky, which is a layout decision the component deliberately leaves open."
+      ],
+      "dont": [
+        "Changing its height or colours. Those come from the recipe, and a bar that differs per page reads as two different products."
+      ]
+    }
+  },
+  "usage": [
+    {
+      "case": "An application banner",
+      "when": "The commonest case: a mark, a few destinations, and an account menu.",
+      "example": "<TopNav\n  brand={<a href=\"/\" className=\"brand\">Ratā</a>}\n  items={[\n    { label: \"Invoices\", href: \"/invoices\", current: true },\n    { label: \"Clients\", href: \"/clients\" },\n    { label: \"Reports\", href: \"/reports\" },\n  ]}\n  actions={\n    <Menu\n      label=\"Account\"\n      trigger={<Button iconOnly aria-label=\"Account\" variant=\"tertiary\"><Icon icon={User} /></Button>}\n    >\n      <MenuItem onSelect={settings}>Settings</MenuItem>\n      <MenuItem onSelect={signOut}>Sign out</MenuItem>\n    </Menu>\n  }\n/>",
+      "notes": "`current` is stated rather than derived: only the caller knows whether the invoice they are looking at counts as being on Invoices. The account menu is an action, not a destination, so it sits outside the nav landmark where it cannot be mistaken for one."
+    },
+    {
+      "case": "A banner beside a side nav, where both landmarks need names",
+      "when": "Any page with two navigation landmarks.",
+      "example": "<TopNav label=\"Main\" items={sections} brand={<Wordmark />} />\n<SideNav label=\"Invoices\" items={pages} />",
+      "notes": "Two navigation landmarks with the same name are indistinguishable in a landmark list, which is the one place they are most useful. Naming them for what they contain — not \"top\" and \"side\", which describe where they happen to sit — survives a redesign that moves them."
+    },
+    {
+      "case": "Don't: an action in the items array",
+      "when": "Never — this is the shape to recognise and avoid.",
+      "example": "{/* Don't: \"New invoice\" is not a place. */}\n<TopNav\n  items={[\n    { label: \"Invoices\", href: \"/invoices\" },\n    { label: \"New invoice\", href: \"#\", current: false },\n  ]}\n/>",
+      "notes": "Don't. Everything in `items` is announced as part of a list of destinations and rendered as a link, so an action here is announced as a place and navigates nowhere. It belongs in `actions` as a `Button`."
+    }
+  ],
+  "tokens": {
+    "base": {
+      "summary": "The bar. Its height comes from its padding and the controls inside it rather than a stated number, so a nav with a taller control in its actions slot grows instead of clipping.",
+      "tokens": {
+        "background": "theme.bg.surface",
+        "border-block-end": "border.default solid theme.border.default",
+        "padding-block": "space.padding.sm",
+        "padding-inline": "space.padding.lg",
+        "gap between brand, nav and actions": "space.gap.lg",
+        "minimum height of the row": "size.control.lg"
+      }
+    },
+    "item": {
+      "summary": "One destination. The resting colour is the secondary text tone, so the current page reads as the emphasised one rather than the others reading as dimmed.",
+      "tokens": {
+        "colour": "theme.fg.secondary",
+        "font-size": "type.control.size.sm",
+        "font-weight": "type.control.weight",
+        "padding-inline": "space.control.padding-inline.sm",
+        "block-size": "size.control.md",
+        "border-radius": "radius.element",
+        "gap between icon and label": "space.gap.sm",
+        "icon size": "size.icon.text",
+        "hover / press": "compose the .rata-state-layer class",
+        "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible"
+      }
+    },
+    "item-current": {
+      "summary": "The page you are on. Marked twice over: the accent bar is the visual cue and aria-current is the announced one, so the state is never carried by colour alone.",
+      "tokens": {
+        "colour": "theme.fg.primary",
+        "indicator": "theme.accent-role.bg at border.2, along the block-end edge"
+      }
+    }
+  }
+}

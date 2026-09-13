@@ -38,6 +38,7 @@ this path is the honest answer to when it last actually moved.
 | [text-field](../docs/components/text-field.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [toggle-button](../docs/components/toggle-button.md) | `@rata/react` | buttons | latest / latest / future | free |
 | [toggle-button-group](../docs/components/toggle-button-group.md) | `@rata/react` | buttons | latest / latest / future | free |
+| [top-nav](../docs/components/top-nav.md) | `@rata/react` | navigation | latest / latest / future | free |
 | [visually-hidden](../docs/components/visually-hidden.md) | `@rata/react` | foundations | latest / na / na | free |
 
 ## Props
@@ -241,7 +242,7 @@ Contract: [docs/components/dialog.md](../docs/components/dialog.md)
 
 Real usage (from `apps/`):
 ```tsx
-<Icon icon={Bold} />
+<Icon icon={User} />
 ```
 
 Contract: [docs/components/icon.md](../docs/components/icon.md)
@@ -265,16 +266,16 @@ Extends: `Omit<`
 Real usage (from `apps/`):
 ```tsx
 <Menu
-        label="Row actions"
-        trigger={
-          <Button iconOnly aria-label="Row actions" variant="tertiary">
-            <Icon icon={Ellipsis} />
-          </Button>
-        }
-      >
-        <MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
-        <MenuItem destructive icon={Trash2} onSelect={() => {}}>Delete</MenuItem>
-      </Menu>
+            label="Account"
+            trigger={
+              <Button iconOnly aria-label="Account" variant="tertiary">
+                <Icon icon={User} />
+              </Button>
+            }
+          >
+            <MenuItem icon={Settings} onSelect={() => {}}>Settings</MenuItem>
+            <MenuItem onSelect={() => {}}>Sign out</MenuItem>
+          </Menu>
 ```
 
 Contract: [docs/components/menu.md](../docs/components/menu.md)
@@ -297,7 +298,7 @@ Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "o
 
 Real usage (from `apps/`):
 ```tsx
-<MenuItem icon={Pencil} onSelect={() => {}}>Edit</MenuItem>
+<MenuItem onSelect={() => {}}>Sign out</MenuItem>
 ```
 
 Contract: [docs/components/menu-item.md](../docs/components/menu-item.md)
@@ -570,6 +571,22 @@ Real usage (from `apps/`):
 ```
 
 Contract: [docs/components/toggle-button-group.md](../docs/components/toggle-button-group.md)
+
+### TopNav (`@rata/react`)
+
+Extends: `Omit<HTMLAttributes<HTMLElement>, "children">`
+
+- `items: TopNavItem[]`
+  The primary destinations, in the order they are read.
+- `label?: string` — default: `"Main"`
+  Accessible name for the navigation landmark.
+- `brand?: ReactNode`
+  The product's mark, at the start of the bar.
+- `actions?: ReactNode`
+  Controls at the end of the bar — search, account, notifications.
+- `className?: string`
+
+Contract: [docs/components/top-nav.md](../docs/components/top-nav.md)
 
 ### Visually hidden
 
