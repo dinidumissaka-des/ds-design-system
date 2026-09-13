@@ -27,6 +27,32 @@ export interface MenuItemDescriptor {
   text?: string;
   /** Unavailable, but still focusable and announced — activation is guarded. */
   disabled?: boolean;
+  /**
+   * Whether this row is the current answer, for a menu standing in for a
+   * choice. Its presence — true OR false — is what makes the row checkable,
+   * and it changes the row's ROLE, not just an attribute: ARIA does not
+   * support `aria-checked` on `menuitem`, only on `menuitemradio` and
+   * `menuitemcheckbox`. Setting it on a plain menuitem is invalid, and a
+   * screen reader is free to ignore it — which would leave the selected row
+   * distinguished by colour alone.
+   */
+  selected?: boolean;
+}
+
+/**
+ * The part of a keyboard event this reads.
+ *
+ * The modifier flags are here for typeahead: without them a single printable
+ * `key` is indistinguishable from a shortcut, so Ctrl+D in an open menu jumped
+ * to "Duplicate" and swallowed the browser's own binding. Optional, so a
+ * caller testing plain keys need not state them.
+ */
+export interface MenuKeyEvent {
+  key: string;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  altKey?: boolean;
+  preventDefault(): void;
 }
 
 /** Why the menu is closing. The wrapper uses it to decide about focus. */
@@ -58,13 +84,15 @@ export interface MenuTriggerProps {
   "aria-expanded": boolean;
   "aria-controls": string;
   onClick: (event: { preventDefault(): void }) => void;
-  onKeyDown: (event: { key: string; preventDefault(): void }) => void;
+  onKeyDown: (event: MenuKeyEvent) => void;
 }
 
 export interface MenuItemProps {
-  role: "menuitem";
+  role: "menuitem" | "menuitemradio";
   tabIndex: number;
   "aria-disabled": true | undefined;
+  /** Only ever set alongside the `menuitemradio` role, which is the one that takes it. */
+  "aria-checked": boolean | undefined;
   onClick: (event: { preventDefault(): void }) => void;
 }
 
@@ -75,7 +103,7 @@ export interface MenuProps {
     role: "menu";
     "aria-labelledby": string | undefined;
     "aria-label": string | undefined;
-    onKeyDown: (event: { key: string; preventDefault(): void }) => void;
+    onKeyDown: (event: MenuKeyEvent) => void;
   };
   item: (value: string) => MenuItemProps;
   /** The item focus enters at, exposed so a wrapper can open at the right place. */
@@ -86,9 +114,16 @@ export interface MenuProps {
 const PREVIOUS_KEYS = new Set(["ArrowUp"]);
 const NEXT_KEYS = new Set(["ArrowDown"]);
 
-/** A single printable character — the typeahead trigger. Modifier combos are not. */
-function isTypeaheadKey(key: string): boolean {
-  return key.length === 1 && key !== " ";
+/**
+ * A single printable character with no modifier held — the typeahead trigger.
+ *
+ * The modifier test is the point: `event.key` for Ctrl+D is just "d", so
+ * without it a browser shortcut was indistinguishable from someone typing,
+ * and typeahead both hijacked the key and called preventDefault on it.
+ */
+function isTypeaheadKey(event: MenuKeyEvent): boolean {
+  if (event.ctrlKey === true || event.metaKey === true || event.altKey === true) return false;
+  return event.key.length === 1 && event.key !== " ";
 }
 
 export function getMenuProps(options: MenuOptions): MenuProps {
@@ -227,7 +262,7 @@ export function getMenuProps(options: MenuOptions): MenuProps {
           close("tab");
           return;
         }
-        if (isTypeaheadKey(event.key)) {
+        if (isTypeaheadKey(event)) {
           const target = typeaheadTarget(event.key, current);
           if (target !== null) {
             event.preventDefault();
@@ -238,7 +273,10 @@ export function getMenuProps(options: MenuOptions): MenuProps {
     },
 
     item: (value: string) => ({
-      role: "menuitem",
+      // A checkable row is a different role, not a menuitem with an extra
+      // attribute. `aria-checked` is unsupported on `menuitem`.
+      role: byValue.get(value)?.selected === undefined ? "menuitem" : "menuitemradio",
+      "aria-checked": byValue.get(value)?.selected,
       // Roving tabindex: exactly one item is tabbable, so the menu is a single
       // stop from the outside and the arrow keys move within it.
       tabIndex: value === current ? 0 : -1,

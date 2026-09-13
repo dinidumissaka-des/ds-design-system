@@ -25,7 +25,12 @@ export interface MenuContextValue {
    * disabled state until they render. They report it, and the menu re-derives
    * navigation from what it was told.
    */
-  registerDescriptor: (value: string, text: string | undefined, disabled: boolean) => void;
+  registerDescriptor: (
+    value: string,
+    text: string | undefined,
+    disabled: boolean,
+    selected?: boolean
+  ) => void;
   unregisterDescriptor: (value: string) => void;
   /**
    * Registers a row's `onSelect`.

@@ -27,6 +27,7 @@ export type {
   MenuItemDescriptor,
   MenuTriggerProps,
   MenuCloseReason,
+  MenuKeyEvent,
 } from "./menu.js";
 export { getSwitchProps } from "./switch.js";
 export type { SwitchOptions, SwitchProps } from "./switch.js";

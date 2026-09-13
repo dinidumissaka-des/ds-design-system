@@ -180,6 +180,8 @@ Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 
 ### Dialog (`@rata/react`)
 
+Extends: `Omit<`
+
 - `title: ReactNode`
 - `children: ReactNode`
   The dialog's content.
@@ -195,6 +197,7 @@ Contract: [docs/components/checkbox.md](../docs/components/checkbox.md)
 - `dismissible?: boolean` — default: `true`
 - `dismissLabel?: string` — default: `"Close"`
   Accessible name for the close button.
+- `role?: DialogRole` — default: `"dialog"`
 - `initialFocus?: RefObject<HTMLElement | null>`
 - `className?: string`
 
@@ -244,6 +247,8 @@ Contract: [docs/components/icon.md](../docs/components/icon.md)
 
 ### Menu (`@rata/react`)
 
+Extends: `Omit<`
+
 - `trigger: ReactElement`
 - `children: ReactNode`
   `MenuItem` and `MenuSeparator` children, in the order they are read.
@@ -286,7 +291,6 @@ Extends: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "role" | "o
 - `destructive?: boolean`
   Marks an action that removes something.
 - `selected?: boolean`
-  Marks the row that is the current answer, for a menu standing in for a choice.
 - `icon?: LucideIcon`
 - `className?: string`
 
