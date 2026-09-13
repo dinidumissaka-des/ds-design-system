@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ButtonHTMLAttributes, CSSProperties, ReactElement, ReactNode } from "react";
 import { getMenuProps } from "@rata/primitives";
 import type { MenuCloseReason, MenuItemDescriptor } from "@rata/primitives";
 import { Icon } from "@rata/icons";
@@ -103,6 +103,22 @@ export function Menu({
   const generated = useId();
   const triggerId = `${generated}-trigger`;
   const menuId = `${generated}-menu`;
+
+  /**
+   * A per-instance anchor name, passed to CSS as a custom property.
+   *
+   * `anchor-name` is a global ident: when several elements declare the same
+   * one, the spec resolves it to the LAST acceptable anchor in tree order. A
+   * single hard-coded name in the stylesheet therefore made every menu on a
+   * page position itself against whichever trigger happened to come last —
+   * which is fine until a page has two menus, and the playground has four.
+   *
+   * `useId` is sanitised because React 18 produces `:r0:` and a colon is not
+   * valid in a CSS ident; React 19's `_r_0_` already is. The package supports
+   * both.
+   */
+  const anchorName = `--rata-menu-${generated.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const anchorStyle = { "--rata-menu-anchor": anchorName } as CSSProperties;
 
   const isControlled = open !== undefined;
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
@@ -212,13 +228,16 @@ export function Menu({
     [menu.item, registerItem, registerDescriptor, unregisterDescriptor, registerSelect]
   );
 
+  const triggerProps = trigger.props as { className?: string; style?: CSSProperties };
   const triggerNode = isValidElement(trigger)
     ? cloneElement(trigger as ReactElement<Record<string, unknown>>, {
         ...menu.trigger,
         // Not `popovertarget`: that would toggle the popover without telling
         // React, and `open` would drift out of step with what is painted.
         ref: triggerRef,
-        className: cx("rata-menu-trigger", (trigger.props as { className?: string }).className),
+        className: cx("rata-menu-trigger", triggerProps.className),
+        // Merged, not replaced: the caller's own style has to survive.
+        style: { ...triggerProps.style, ...anchorStyle },
       })
     : trigger;
 
@@ -230,6 +249,9 @@ export function Menu({
         ref={menuRef}
         popover="auto"
         className={cx("rata-menu", className)}
+        // The same name the trigger declares — a sibling does not inherit a
+        // custom property, so both carry it.
+        style={anchorStyle}
         onToggle={(event) => {
           // The platform closed it — light-dismiss, or Escape handled by the
           // popover itself before our keydown saw it. Without this the

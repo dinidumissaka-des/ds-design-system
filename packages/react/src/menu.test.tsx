@@ -212,6 +212,53 @@ describe("Menu", () => {
     expect(screen.getByRole("separator")).toBeTruthy();
   });
 
+  test("each menu gets its own anchor name, so two on a page do not collide", () => {
+    // `anchor-name` is a global ident: when several elements declare the same
+    // one, the spec resolves it to the LAST acceptable anchor in tree order.
+    // A single name in the stylesheet made every menu on a page position
+    // against whichever trigger came last.
+    render(
+      <>
+        <Menu trigger={<Button>First</Button>}>
+          <MenuItem>A</MenuItem>
+        </Menu>
+        <Menu trigger={<Button>Second</Button>}>
+          <MenuItem>B</MenuItem>
+        </Menu>
+      </>
+    );
+    const names = screen
+      .getAllByRole("button")
+      .map((b) => b.style.getPropertyValue("--rata-menu-anchor"));
+
+    expect(names).toHaveLength(2);
+    expect(names[0]).toMatch(/^--rata-menu-/);
+    expect(names[0]).not.toBe(names[1]);
+    // A CSS ident: React 18's useId produces `:r0:`, and a colon is invalid.
+    for (const name of names) expect(name).toMatch(/^--[A-Za-z0-9_-]+$/);
+  });
+
+  test("the trigger keeps its own style, which the anchor name is merged into", () => {
+    render(
+      <Menu trigger={<Button style={{ marginTop: "4px" }}>Actions</Button>}>
+        <MenuItem>A</MenuItem>
+      </Menu>
+    );
+    const trigger = screen.getByRole("button");
+    expect(trigger.style.marginTop).toBe("4px");
+    expect(trigger.style.getPropertyValue("--rata-menu-anchor")).toMatch(/^--rata-menu-/);
+  });
+
+  test("the list carries the same anchor name, since a sibling inherits nothing", async () => {
+    render(<Fixture />);
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    await userEvent.click(trigger);
+    const menu = screen.getByRole("menu");
+    expect(menu.style.getPropertyValue("--rata-menu-anchor")).toBe(
+      trigger.style.getPropertyValue("--rata-menu-anchor")
+    );
+  });
+
   test("MenuItem throws outside a Menu rather than rendering a dead button", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => render(<MenuItem>Orphan</MenuItem>)).toThrow(/must be rendered inside a <Menu>/);

@@ -29,6 +29,7 @@ Headless contract: `getMenuProps` in `packages/primitives/src/menu.ts` — impor
 - **Tab closes the menu without trapping focus** — Someone tabbing through a page expects to keep going. Trapping focus is what a dialog does, because a dialog is modal and a menu is not.
 - **Typeahead cycles on a single character rather than buffering a prefix** — A buffer has to be cleared after a pause, which needs a timer, which needs state — and the primitive is a pure function with neither. Repeating a key walks the matching rows, which is what typeahead is actually used for. Typing `de` to reach Delete past Duplicate is the part that is missing, and it is documented rather than faked.
 - **The list's open state is driven imperatively, not by popovertarget** — `popovertarget` would let the platform toggle the popover without telling React, and `open` would drift out of step with what is painted. The trigger's click goes through the primitive instead, and the popover's own `toggle` event is what keeps state honest when the platform closes it.
+- **The anchor name is generated per instance, not written in the stylesheet** — `anchor-name` is a global ident, and the spec resolves a duplicated one to the LAST acceptable anchor in tree order. A single name in the CSS therefore made every menu on a page position itself against whichever trigger came last, which is invisible until a second menu exists. CSS cannot mint a unique ident, so the component passes one in as a custom property — on both the trigger and the list, because a sibling inherits nothing. It is sanitised: React 18's `useId` produces `:r0:` and a colon is not valid in an ident.
 
 ## Props
 
@@ -97,6 +98,7 @@ Whether the menu is showing. Makes the component controlled.
 **Don't use for**
 
 - Passing it alongside `defaultOpen`. One of them owns the state.
+- Opening more than one at a time. The list is a `popover="auto"`, and the platform allows exactly one of those open at once — showing a second closes the first, and the menu reports that through `onOpenChange` rather than silently disagreeing with your state.
 
 **Conflicts with** `defaultOpen`
 

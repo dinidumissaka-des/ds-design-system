@@ -21,11 +21,21 @@
    every consumer. */
 
 /* The trigger is whatever the caller passed — usually a Button — so this adds
-   only the anchor name, and no appearance it did not ask for. */
+   only the anchor name, and no appearance it did not ask for.
+
+   The name comes from the component as a custom property rather than being
+   written here, because `anchor-name` is a GLOBAL ident: when several elements
+   declare the same one, the spec resolves it to the last acceptable anchor in
+   tree order. Hard-coded, every menu on a page anchored itself to whichever
+   trigger came last. */
+/* rata-allow: unknown-token — not a design token but component plumbing: CSS
+   cannot generate a unique ident, so the component passes one in. */
 .rata-menu-trigger {
-  anchor-name: --rata-menu-anchor;
+  anchor-name: var(--rata-menu-anchor);
 }
 
+/* rata-allow: unknown-token — --rata-menu-anchor is the per-instance anchor
+   name the component passes in, not a value from the token set. */
 .rata-menu {
   box-sizing: border-box;
   /* The popover attribute supplies the top layer; these reset the UA styles
@@ -33,7 +43,7 @@
   margin: var(--rata-space-0);
   padding: var(--rata-space-1);
   border: var(--rata-border-default) solid var(--rata-theme-border-default);
-  position-anchor: --rata-menu-anchor;
+  position-anchor: var(--rata-menu-anchor);
   position: absolute;
   position-area: block-end span-inline-end;
   /* Tried in order: below, then above, then mirrored inline. The first that

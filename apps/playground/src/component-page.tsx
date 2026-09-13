@@ -638,8 +638,13 @@ function BillingExample() {
  *
  * `MenuItem` throws outside a `Menu` on purpose — alone it has no list to
  * navigate and no trigger to return focus to — so the page for it stages one
- * rather than leaving the preview empty. The same reason `RadioStage` exists
- * below, and the menu starts open so the row is the thing you see.
+ * rather than leaving the preview empty. Same reason `RadioStage` exists below.
+ *
+ * It starts CLOSED, which is not a stylistic choice: the menu is a
+ * `popover="auto"`, and the platform allows exactly one of those open at a
+ * time. Three stages on one page each opening on mount meant each evicted the
+ * one before it, so two cards showed a bare trigger and only the last showed
+ * a menu. Clicking is the honest way to see it, and it matches `DialogStage`.
  */
 /**
  * A modal is only itself when it is open, so the page stages one behind a
@@ -705,12 +710,12 @@ function MenuItemStage({
   disabled?: boolean;
   icon?: LucideIcon;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <Menu
       open={open}
       onOpenChange={setOpen}
-      trigger={<Button variant="secondary">Actions</Button>}
+      trigger={<Button variant="secondary">Open the menu</Button>}
     >
       <MenuItem
         value="row"
