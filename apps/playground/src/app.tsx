@@ -385,7 +385,14 @@ export function App() {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.dataset.dsTheme = accent;
+    // `rataTheme`, which writes data-rata-theme — the attribute every brand
+    // stylesheet is scoped to. It read `dsTheme` until now, a survivor of the
+    // rename: that pass searched for the literal string "data-ds-theme", and
+    // the camelCase dataset key does not contain it. So the attribute being
+    // set and the attribute being matched had different names, and no brand
+    // theme applied at all — the switcher moved its own swatches (each carries
+    // the attribute itself) while the page behind them never changed.
+    document.documentElement.dataset.rataTheme = accent;
   }, [accent]);
 
   // Both the accent and the scheme are applied as attributes on <html>, which
