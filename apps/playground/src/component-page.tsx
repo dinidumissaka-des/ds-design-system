@@ -26,6 +26,7 @@ import {
   Radio,
   RadioGroup,
   Search,
+  SideNav,
   TopNav,
   Spinner,
   Switch,
@@ -355,6 +356,46 @@ const EXAMPLES: Record<string, Record<string, () => ReactNode>> = {
         <Avatar name="Bo Nakamura" size="md" />
         <Avatar name="Chidi Okonkwo" size="lg" />
       </>
+    ),
+  },
+
+  "side-nav": {
+    "A grouped rail inside one area of the product": () => (
+      <SideNav
+        className="pg-rail"
+        label="Invoices"
+        sections={[
+          {
+            label: "Billing",
+            items: [
+              { label: "Invoices", href: "#", current: true },
+              { label: "Credit notes", href: "#" },
+            ],
+          },
+          {
+            label: "Setup",
+            items: [
+              { label: "Tax rates", href: "#" },
+              { label: "Templates", href: "#" },
+            ],
+          },
+        ]}
+      />
+    ),
+    "A flat rail, with nothing to group": () => (
+      <SideNav
+        className="pg-rail"
+        label="Settings"
+        sections={[
+          {
+            items: [
+              { label: "Profile", href: "#", current: true },
+              { label: "Notifications", href: "#" },
+              { label: "Security", href: "#" },
+            ],
+          },
+        ]}
+      />
     ),
   },
 
@@ -1126,6 +1167,26 @@ const INTERACTIVE: Record<string, Interactive> = {
         name={String(state.name || "Ada Hartley")}
         size={state.size as AvatarSize}
         decorative={Boolean(state.decorative)}
+      />
+    ),
+  },
+
+  "side-nav": {
+    controls: ["label"],
+    render: (state) => (
+      <SideNav
+        className="pg-rail"
+        label={String(state.label || "Sections")}
+        sections={[
+          {
+            label: "Billing",
+            items: [
+              { label: "Invoices", href: "#", current: true },
+              { label: "Credit notes", href: "#" },
+            ],
+          },
+          { label: "Setup", items: [{ label: "Tax rates", href: "#" }] },
+        ]}
       />
     ),
   },

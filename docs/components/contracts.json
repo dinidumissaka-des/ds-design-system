@@ -3077,6 +3077,172 @@
     "example": "<Search label=\"Filter rows\" size={size} value={query} onValueChange={setQuery} />"
   },
   {
+    "name": "side-nav",
+    "title": "SideNav",
+    "description": "A vertical navigation rail, grouped into named sections.",
+    "family": "navigation",
+    "tier": "free",
+    "status": {
+      "css": {
+        "state": "latest"
+      },
+      "react": {
+        "state": "latest"
+      },
+      "figma": {
+        "state": "future"
+      }
+    },
+    "dependencies": [
+      "state-layer",
+      "icon"
+    ],
+    "importPath": "@rata/react",
+    "mode": "documented",
+    "note": null,
+    "extends": "Omit<HTMLAttributes<HTMLElement>, \"children\">",
+    "props": [
+      {
+        "name": "sections",
+        "optional": false,
+        "type": "SideNavSection[]",
+        "description": "The destinations, grouped. One unlabelled section is a flat nav.",
+        "declared": true,
+        "summary": "The destinations, grouped. One unlabelled section is a flat nav.",
+        "use": [
+          "A named section per group of related pages: \"Billing\", \"Settings\".",
+          "A single section with no `label` when there is nothing to group."
+        ],
+        "dont": [
+          "A section per item. A group of one is a heading over nothing, and it reads as a mistake.",
+          "Actions. Everything here is announced as a destination and rendered as a link."
+        ],
+        "conflicts": [],
+        "a11y": "Each section is a list; a labelled one is pointed at its own label with `aria-labelledby`, so the group is announced with its name. The count and order within each come free with the list."
+      },
+      {
+        "name": "label",
+        "optional": true,
+        "type": "string",
+        "description": "Accessible name for the navigation landmark.",
+        "default": "\"Sections\"",
+        "declared": true,
+        "summary": "Accessible name for the navigation landmark.",
+        "use": [
+          "Naming it for what it contains — \"Invoices\" for the rail inside that area — so it is distinguishable from the top nav in a landmark list."
+        ],
+        "dont": [
+          "Leaving the default when a page also has a `TopNav`. Two navigation landmarks need distinct names, and that is the one place they matter most.",
+          "The word \"navigation\", which the role already says."
+        ],
+        "conflicts": [],
+        "a11y": "Becomes the `<nav>`'s `aria-label`."
+      },
+      {
+        "name": "className",
+        "optional": true,
+        "type": "string",
+        "description": null,
+        "declared": true,
+        "summary": "Extra classes on the nav, for placement — not for restyling it.",
+        "use": [
+          "Giving the rail its width, or making it stick — both layout decisions the component deliberately leaves to the page."
+        ],
+        "dont": [
+          "Changing the item treatment. The current-page marker is load-bearing, and a rail that marks it differently from the top nav reads as a different product."
+        ],
+        "conflicts": [],
+        "a11y": null
+      }
+    ],
+    "usage": [
+      {
+        "case": "A grouped rail inside one area of the product",
+        "when": "The commonest case: enough pages that they need grouping.",
+        "example": "<SideNav\n  label=\"Invoices\"\n  sections={[\n    {\n      label: \"Billing\",\n      items: [\n        { label: \"Invoices\", href: \"/invoices\", current: true },\n        { label: \"Credit notes\", href: \"/credit-notes\" },\n      ],\n    },\n    {\n      label: \"Setup\",\n      items: [\n        { label: \"Tax rates\", href: \"/tax\" },\n        { label: \"Templates\", href: \"/templates\" },\n      ],\n    },\n  ]}\n/>",
+        "notes": "`label` names the landmark for what the rail contains, not for where it sits — \"Invoices\", not \"Side\". A page with a `TopNav` as well has two navigation landmarks, and that is exactly when the names earn their keep."
+      },
+      {
+        "case": "A flat rail, with nothing to group",
+        "when": "Few enough destinations that a heading over them would be noise.",
+        "example": "<SideNav\n  label=\"Settings\"\n  sections={[\n    {\n      items: [\n        { label: \"Profile\", href: \"/profile\", current: true },\n        { label: \"Notifications\", href: \"/notifications\" },\n        { label: \"Security\", href: \"/security\" },\n      ],\n    },\n  ]}\n/>",
+        "notes": "One section with no `label`. The braces are the cost of there being a single shape rather than two props that cannot both be used — the contract's reasoning for that is in the behaviour notes."
+      },
+      {
+        "case": "Don't: a section for every item",
+        "when": "Never — this is the shape to recognise and avoid.",
+        "example": "{/* Don't: three headings over one link each. */}\n<SideNav\n  sections={[\n    { label: \"Invoices\", items: [{ label: \"All invoices\", href: \"/invoices\" }] },\n    { label: \"Clients\", items: [{ label: \"All clients\", href: \"/clients\" }] },\n  ]}\n/>",
+        "notes": "Don't. A group of one is a heading over nothing: it doubles the reading length, and a screen reader announces a list of one item under a name that repeats it. Those are two flat items in one unlabelled section."
+      }
+    ],
+    "behavior": {
+      "summary": "A `<nav>` containing one list per section. No primitive and no keyboard handling: every link is its own tab stop, which is what navigation should be. Unlike TopNav this claims no page-level landmark beyond the nav itself — where the rail sits, and whether it is inside a `<main>` or beside it, is the caller's layout decision.",
+      "decisions": [
+        {
+          "decision": "Sections are the only shape, even for a flat list",
+          "why": "A side nav exists because there are enough destinations to group; a flat one is the special case, not the default. Offering both `items` and `sections` would mean two mutually exclusive props and a rule about which wins — so a flat nav is one unlabelled section, which costs a pair of braces and removes the ambiguity entirely."
+        },
+        {
+          "decision": "A section's label names its list rather than being a heading",
+          "why": "Same reasoning as Notice's title: a nav cannot know what heading level it sits under, and a wrong one breaks heading navigation for the whole page. The label is a plain element with an id, and the list points at it with `aria-labelledby` — so the group is announced with its name and the document outline is untouched."
+        },
+        {
+          "decision": "Collapsing to an icon-only rail is out of scope",
+          "why": "A collapsed rail hides the labels, which is the point of collapsing and also the problem: a sighted reader then needs the name on hover, and this system has no Tooltip. Shipping the collapse without one would trade an accessible nav for a row of unexplained glyphs. It belongs with a Tooltip, not before one."
+        },
+        {
+          "decision": "The current page is stated per item, as in TopNav",
+          "why": "Only the caller knows whether /invoices/123 counts as being on /invoices. Matching a path here would have to guess between exact and prefix and would be silently wrong for someone either way."
+        }
+      ]
+    },
+    "tokens": {
+      "base": {
+        "summary": "The rail. No background of its own: it sits on whatever surface the page gives it, so the same component works against the canvas and inside a panel. Its width is the page's to set.",
+        "tokens": {
+          "padding-block": "space.padding.sm",
+          "padding-inline": "space.padding.sm",
+          "gap between sections": "space.stack.md"
+        }
+      },
+      "section": {
+        "summary": "A named group. The label is the list's accessible name, not a heading — a nav cannot know what heading level it sits under.",
+        "tokens": {
+          "label colour": "theme.fg.muted",
+          "label font-size": "type.supporting.size",
+          "label font-weight": "type.label.weight",
+          "label text-transform": "type.label.text-transform",
+          "gap between label and items": "space.stack.2xs",
+          "gap between items": "space.stack.2xs"
+        }
+      },
+      "item": {
+        "summary": "One destination, filling the rail's width so the whole row is the target.",
+        "tokens": {
+          "colour": "theme.fg.secondary",
+          "font-size": "type.control.size.sm",
+          "font-weight": "type.control.weight",
+          "block-size": "size.control.md",
+          "padding-inline": "space.control.padding-inline.sm",
+          "border-radius": "radius.element",
+          "gap between icon and label": "space.gap.sm",
+          "icon size": "size.icon.text",
+          "hover / press": "compose the .rata-state-layer class",
+          "focus ring": "theme.focus-ring at focus.ring-width, offset focus.ring-offset, on :focus-visible"
+        }
+      },
+      "item-current": {
+        "summary": "The page you are on. A tinted row plus an edge marker, alongside aria-current, so the state is never carried by colour alone.",
+        "tokens": {
+          "background": "theme.accent-role.subtle",
+          "colour": "theme.fg.primary",
+          "indicator": "theme.accent-role.bg at border.2, along the inline-start edge"
+        }
+      }
+    },
+    "example": "<SideNav\n        className=\"pg-rail\"\n        label=\"Settings\"\n        sections={[\n          {\n            items: [\n              { label: \"Profile\", href: \"#\", current: true },\n              { label: \"Notifications\", href: \"#\" },\n              { label: \"Security\", href: \"#\" },\n            ],\n          },\n        ]}\n      />"
+  },
+  {
     "name": "spinner",
     "title": "Loading: Spinner",
     "description": "Inline loading indicator that scales with font size.",

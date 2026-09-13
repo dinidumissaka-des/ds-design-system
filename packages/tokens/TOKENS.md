@@ -1494,6 +1494,56 @@ The trailing clear control, present only when there is a query. Same constructio
 | hover / press | compose the .rata-state-layer class |
 | focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
 
+### side-nav
+
+The rail. No background of its own: it sits on whatever surface the page gives it, so the same component works against the canvas and inside a panel. Its width is the page's to set.
+
+| Property | Token |
+|---|---|
+| padding-block | `space.padding.sm` |
+| padding-inline | `space.padding.sm` |
+| gap between sections | `space.stack.md` |
+
+### side-nav-section
+
+A named group. The label is the list's accessible name, not a heading — a nav cannot know what heading level it sits under.
+
+| Property | Token |
+|---|---|
+| label colour | `theme.fg.muted` |
+| label font-size | `type.supporting.size` |
+| label font-weight | `type.label.weight` |
+| label text-transform | `type.label.text-transform` |
+| gap between label and items | `space.stack.2xs` |
+| gap between items | `space.stack.2xs` |
+
+### side-nav-item
+
+One destination, filling the rail's width so the whole row is the target.
+
+| Property | Token |
+|---|---|
+| colour | `theme.fg.secondary` |
+| font-size | `type.control.size.sm` |
+| font-weight | `type.control.weight` |
+| block-size | `size.control.md` |
+| padding-inline | `space.control.padding-inline.sm` |
+| border-radius | `radius.element` |
+| gap between icon and label | `space.gap.sm` |
+| icon size | `size.icon.text` |
+| hover / press | compose the .rata-state-layer class |
+| focus ring | `theme.focus-ring` at `focus.ring-width`, offset `focus.ring-offset`, on :focus-visible |
+
+### side-nav-item-current
+
+The page you are on. A tinted row plus an edge marker, alongside aria-current, so the state is never carried by colour alone.
+
+| Property | Token |
+|---|---|
+| background | `theme.accent-role.subtle` |
+| colour | `theme.fg.primary` |
+| indicator | `theme.accent-role.bg` at `border.2`, along the inline-start edge |
+
 ### switch
 
 A track the thumb slides along. The track's fill is the state, and the thumb's position says the same thing a second way, so the setting is never carried by colour alone.

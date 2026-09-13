@@ -1,0 +1,85 @@
+/* SideNav — a vertical navigation rail, grouped into named sections.
+
+   No background of its own, deliberately: the rail sits on whatever surface
+   the page gives it, so the same component works against the canvas and
+   inside a panel. Its width is the page's to set too — a rail that states its
+   own is a rail that fights every layout it is put in. */
+.rata-side-nav {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rata-space-stack-md);
+  padding-block: var(--rata-space-padding-sm);
+  padding-inline: var(--rata-space-padding-sm);
+  font-family: var(--rata-font-family-sans);
+}
+
+.rata-side-nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rata-space-stack-2xs);
+}
+
+/* The group's accessible name, pointed at by its list — not a heading, because
+   a nav cannot know what level it sits under and a wrong one breaks heading
+   navigation for the whole page. Same reasoning as Notice's title. */
+.rata-side-nav-section-label {
+  padding-inline: var(--rata-space-control-padding-inline-sm);
+  color: var(--rata-theme-fg-muted);
+  font-size: var(--rata-type-supporting-size);
+  font-weight: var(--rata-type-label-weight);
+  text-transform: var(--rata-type-label-text-transform);
+}
+
+.rata-side-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rata-space-stack-2xs);
+  margin: var(--rata-space-0);
+  padding: var(--rata-space-0);
+  /* The list semantics are for assistive technology; the bullets are not. */
+  list-style: none;
+}
+
+/* Fills the rail so the whole row is the target, not just the words. */
+.rata-side-nav-link {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--rata-space-gap-sm);
+  block-size: var(--rata-size-control-md);
+  padding-inline: var(--rata-space-control-padding-inline-sm);
+  border-radius: var(--rata-radius-element);
+  color: var(--rata-theme-fg-secondary);
+  font-size: var(--rata-type-control-size-sm);
+  font-weight: var(--rata-type-control-weight);
+  text-decoration: none;
+}
+
+.rata-side-nav-link:focus-visible {
+  outline: var(--rata-focus-ring-width) var(--rata-focus-ring-style)
+    var(--rata-theme-focus-ring);
+  outline-offset: var(--rata-focus-ring-offset);
+}
+
+/* The page you are on: a tinted row and an edge marker, alongside
+   aria-current in the markup, so the state is never carried by colour alone.
+
+   The tint is accent-role.subtle with fg.primary on it — a pairing the token
+   contracts verify for text at any size — rather than the saturated fill,
+   which is a non-text indicator tone. */
+.rata-side-nav-link[aria-current="page"] {
+  background: var(--rata-theme-accent-role-subtle);
+  color: var(--rata-theme-fg-primary);
+}
+
+.rata-side-nav-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--rata-space-0);
+  inset-block: var(--rata-space-1);
+  inline-size: var(--rata-border-2);
+  background: var(--rata-theme-accent-role-bg);
+  border-radius: var(--rata-radius-pill);
+}

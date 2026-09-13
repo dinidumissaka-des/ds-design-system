@@ -32,6 +32,7 @@ this path is the honest answer to when it last actually moved.
 | [radio](../docs/components/radio.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [radio-group](../docs/components/radio-group.md) | `@rata/react` | inputs | latest / latest / future | free |
 | [search](../docs/components/search.md) | `@rata/react` | inputs | latest / latest / future | free |
+| [side-nav](../docs/components/side-nav.md) | `@rata/react` | navigation | latest / latest / future | free |
 | [spinner](../docs/components/spinner.md) | `@rata/react` | loading | latest / latest / future | free |
 | [state-layer](../docs/components/state-layer.md) | `@rata/react` | foundations | latest / na / future | free |
 | [switch](../docs/components/switch.md) | `@rata/react` | inputs | latest / latest / future | free |
@@ -425,6 +426,35 @@ Real usage (from `apps/`):
 ```
 
 Contract: [docs/components/search.md](../docs/components/search.md)
+
+### SideNav (`@rata/react`)
+
+Extends: `Omit<HTMLAttributes<HTMLElement>, "children">`
+
+- `sections: SideNavSection[]`
+  The destinations, grouped. One unlabelled section is a flat nav.
+- `label?: string` — default: `"Sections"`
+  Accessible name for the navigation landmark.
+- `className?: string`
+
+Real usage (from `apps/`):
+```tsx
+<SideNav
+        className="pg-rail"
+        label="Settings"
+        sections={[
+          {
+            items: [
+              { label: "Profile", href: "#", current: true },
+              { label: "Notifications", href: "#" },
+              { label: "Security", href: "#" },
+            ],
+          },
+        ]}
+      />
+```
+
+Contract: [docs/components/side-nav.md](../docs/components/side-nav.md)
 
 ### Loading: Spinner (`@rata/react`)
 
